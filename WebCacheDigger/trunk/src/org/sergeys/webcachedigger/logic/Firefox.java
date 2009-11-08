@@ -10,9 +10,9 @@ public class Firefox implements IBrowser {
 	public ArrayList<String> getDefaultCachePaths() throws Exception {
 		ArrayList<String> paths = new ArrayList<String>();
 		
-		String userName = System.getProperty("user.name");
+		//String userName = System.getProperty("user.name");
 		String userHome = System.getProperty("user.home");
-		String userDir = System.getProperty("user.dir");
+		//String userDir = System.getProperty("user.dir");
 		
 		//paths.add("username: " + userName);
 		//paths.add("userhome: " + userHome);
