@@ -5,14 +5,18 @@
 		<mkdir dir="jar" />
 		<jar destfile="jar/webcachedigger1.0.jar" basedir="bin">
 			<manifest>
-				<attribute name="Main-Class" value="org.sergeys.webcachedigger.WebCacheDigger" />
+				<attribute name="Main-Class" value="org.sergeys.webcachedigger.ui.WebCacheDigger" />
 			</manifest>
 		</jar>
 		<echo>packed</echo>
+		<!-- signjar>
+		</signjar -->
+		<echo>TODO: signed</echo>
 	</target>
-
+<!-- TODO: leave directory
 	<target name="clean">
 		<delete dir="jar" />
 	</target>
-	
+	-->
 </project>
+
