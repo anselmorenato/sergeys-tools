@@ -1,7 +1,6 @@
 package org.sergeys.webcachedigger.logic;
 
 import java.io.File;
-import java.net.URI;
 
 import javax.activation.FileDataSource;
 
