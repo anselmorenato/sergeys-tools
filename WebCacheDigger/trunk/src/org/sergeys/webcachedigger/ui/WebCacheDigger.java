@@ -27,9 +27,11 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.FileCollector;
 import org.sergeys.webcachedigger.logic.Firefox;
 import org.sergeys.webcachedigger.logic.IBrowser;
+import org.sergeys.webcachedigger.logic.InternetExplorer;
 
 public class WebCacheDigger {
 
@@ -384,19 +386,22 @@ public class WebCacheDigger {
 	private void doSearch(){					
 		
 		try {
-			IBrowser browser = new Firefox();
+			
 			//List<String> paths = browser.getDefaultCachePaths();
 			ArrayList<IBrowser> browsers = new ArrayList<IBrowser>();
 			browsers.add(new Firefox());
+			browsers.add(new InternetExplorer());
 			FileCollector fileCollector = new FileCollector(browsers);
-			List<File> files = fileCollector.collect();
-			/*
-			JOptionPane.showMessageDialog(getJFrame(), 
-					//String.format("Failed to collect files: %1$s", e.getMessage()), 
-					String.format("Paths:\n\n%s", msg),
-					"Message", 
-					JOptionPane.INFORMATION_MESSAGE);*/
+			List<CachedFile> files = fileCollector.collect();
 			getFilesListPanel().init(files);
+			
+			String msg = String.format("Total files: %d", files.size());
+			
+			JOptionPane.showMessageDialog(getJFrame(), 					 
+					msg,
+					"Message", 
+					JOptionPane.INFORMATION_MESSAGE);
+			
 		} catch (Exception e) {
 			//e.printStackTrace();
 			JOptionPane.showMessageDialog(getJFrame(), 

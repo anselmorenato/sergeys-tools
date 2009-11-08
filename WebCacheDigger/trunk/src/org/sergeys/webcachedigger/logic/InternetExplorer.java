@@ -1,0 +1,83 @@
+package org.sergeys.webcachedigger.logic;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * IE 8 on Windows XP
+ * 
+ * @author sergeys
+ *
+ */
+public class InternetExplorer extends AbstractBrowser {
+
+	@Override
+	public List<CachedFile> collectCachedFiles() throws Exception {
+		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
+
+		for (String path : this.getCachePaths()) {
+			File directory = new File(path);
+
+			if (directory.isDirectory()) {
+
+				List<File> dirFiles = Arrays.asList(directory
+						.listFiles(new FileFilter() {
+							public boolean accept(File file) {
+								return (!file.isDirectory() && !file.getName().equalsIgnoreCase("desktop.ini"));
+							}
+						}));
+
+				for (File file : dirFiles) {
+					files.add(new CachedFile(file.getAbsolutePath()));
+				}
+
+			} else {
+				// TODO: log warning
+				throw new Exception(String.format("'%s' is not a directory.",
+						path));
+			}
+
+		}
+
+		return files;
+	}
+
+	@Override
+	protected List<String> collectDefaultCachePaths() throws Exception {
+		ArrayList<String> paths = new ArrayList<String>();
+
+		// String userName = System.getProperty("user.name");
+		String userHome = System.getProperty("user.home");
+		// String userDir = System.getProperty("user.dir");
+
+		// paths.add("username: " + userName);
+		// paths.add("userhome: " + userHome);
+		// paths.add("userdir: " + userDir);
+
+		// TODO: Windows specific path
+		String profilesDirPath = userHome + File.separator
+				+ "Local Settings\\Temporary Internet Files\\Content.IE5";
+		File profilesDir = new File(profilesDirPath);
+		// if (!profilesDir.isDirectory()) {
+		// throw new Exception(String.format("'%s' is not a directory.",
+		// profilesDirPath));
+		// }
+
+		List<File> profiles = Arrays.asList(profilesDir
+				.listFiles(new FileFilter() {
+					public boolean accept(File file) {
+						return file.isDirectory();
+					}
+				}));
+		for (File profile : profiles) {
+			// paths.add(String.format("%s\\Cache", profile.getAbsolutePath()));
+			paths.add(profile.getAbsolutePath());
+		}
+
+		return paths;
+	}
+
+}

@@ -22,6 +22,16 @@ public class FilesListUtils {
 		column.setHeaderValue("Type");
 		column.setModelIndex(2);
 		model.addColumn(column);
+
+		column = new TableColumn();
+		column.setHeaderValue("Size");
+		column.setModelIndex(3);
+		model.addColumn(column);
+
+		column = new TableColumn();
+		column.setHeaderValue("Last Modified");
+		column.setModelIndex(4);
+		model.addColumn(column);
 		
 		return model;
 	}

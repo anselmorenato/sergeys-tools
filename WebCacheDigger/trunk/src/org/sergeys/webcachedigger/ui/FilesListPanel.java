@@ -8,6 +8,9 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.TableRowSorter;
+
+import org.sergeys.webcachedigger.logic.CachedFile;
 
 public class FilesListPanel extends JPanel {
 
@@ -59,8 +62,10 @@ public class FilesListPanel extends JPanel {
 		return jTableFoundFiles;
 	}
 	
-	public void init(List<File> files){
-		getJTableFoundFiles().setModel(new FilesTableModel(files));
+	public void init(List<CachedFile> files){
+		FilesTableModel model = new FilesTableModel(files);
+		getJTableFoundFiles().setModel(model);
 		getJTableFoundFiles().setColumnModel(FilesListUtils.getColumnModel());
+		getJTableFoundFiles().setRowSorter(new TableRowSorter<FilesTableModel>(model));
 	}
 }

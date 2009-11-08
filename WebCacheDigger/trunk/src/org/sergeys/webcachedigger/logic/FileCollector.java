@@ -14,12 +14,12 @@ public class FileCollector {
 		this.browsers = browsers;
 	}
 
-	public ArrayList<File> collect() throws Exception {
+	public ArrayList<CachedFile> collect() throws Exception {
 
-		ArrayList<File> files = new ArrayList<File>();
+		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
 
 		for (IBrowser browser : browsers) {
-			files.addAll(browser.collect());
+			files.addAll(browser.collectCachedFiles());
 		}
 
 		return files;
