@@ -28,7 +28,11 @@ import javax.swing.JButton;
 import com.sun.corba.se.impl.protocol.giopmsgheaders.MessageBase;
 
 import java.awt.GridBagConstraints;
+import java.util.ArrayList;
+
 import javax.swing.JSplitPane;
+
+import org.sergeys.webcachedigger.logic.*;
 
 public class WebCacheDigger {
 
@@ -121,7 +125,7 @@ public class WebCacheDigger {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					//JOptionPane.showMessageDialog(getJFrame(), "not implemented", "warning", JOptionPane.INFORMATION_MESSAGE);
-					showNotImplemented();
+					WebCacheDigger.this.showNotImplemented();
 				}
 			});
 		}
@@ -168,7 +172,8 @@ public class WebCacheDigger {
 			jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
-					showNotImplemented();
+					//showNotImplemented();
+					WebCacheDigger.this.doSearch();
 				}
 			});
 		}
@@ -390,6 +395,29 @@ public class WebCacheDigger {
 	}
 	
 	private void showNotImplemented(){
-		JOptionPane.showMessageDialog(getJFrame(), "Not implemented yet.", "Warning", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this.getJFrame(), "Not implemented yet.", "Warning", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void doSearch(){
+		IBrowser browser = new Firefox();		
+		
+		
+		try {
+			ArrayList<String> paths = browser.getDefaultCachePaths();
+			FileCollector fileCollector = new FileCollector(paths);
+			String msg = fileCollector.collect();
+			JOptionPane.showMessageDialog(getJFrame(), 
+					//String.format("Failed to collect files: %1$s", e.getMessage()), 
+					String.format("Paths:\n\n%s", msg),
+					"Message", 
+					JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception e) {
+			//e.printStackTrace();
+			JOptionPane.showMessageDialog(getJFrame(), 
+					//String.format("Failed to collect files: %1$s", e.getMessage()), 
+					String.format("Failed to collect files: %s", e.getMessage()),
+					"Error", 
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
