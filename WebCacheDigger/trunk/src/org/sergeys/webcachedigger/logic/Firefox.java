@@ -3,11 +3,18 @@ package org.sergeys.webcachedigger.logic;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Firefox implements IBrowser {
+	
+	private List<String> paths;
 
-	@Override
-	public ArrayList<String> getDefaultCachePaths() throws Exception {
+	public Firefox() throws Exception{
+		paths = getDefaultCachePaths();
+	}
+	
+	private ArrayList<String> getDefaultCachePaths() throws Exception {
 		ArrayList<String> paths = new ArrayList<String>();
 		
 		//String userName = System.getProperty("user.name");
@@ -25,12 +32,45 @@ public class Firefox implements IBrowser {
 			throw new Exception(String.format("'%s' is not a directory.", profilesDirPath));
 		}
 		
-		File[] profiles = profilesDir.listFiles(new DirectoryFileFilter());
-		for(int i = 0; i < profiles.length; i++){
-			paths.add(String.format("%s\\Cache", profiles[i].getAbsolutePath()));
+		List<File> profiles = Arrays.asList(profilesDir.listFiles(new FileFilter(){
+			public boolean accept(File file) {
+				return file.isDirectory();
+			}
+		}));
+		for(File profile : profiles){
+			paths.add(String.format("%s\\Cache", profile.getAbsolutePath()));
 		}
 		
 		return paths;
+	}
+	
+	@Override
+	public List<File> collect() throws Exception {
+		
+		ArrayList<File> files = new ArrayList<File>();
+		
+		for(String path : paths){
+			
+			File directory = new File(path);
+			
+			if(directory.isDirectory()){
+				
+				List<File> dirFiles = Arrays.asList(directory.listFiles(new FileFilter(){
+					public boolean accept(File file) {
+						return (!file.isDirectory()) && !file.getName().toLowerCase().startsWith("_cache_");
+					}
+				}));
+				
+				files.addAll(dirFiles);
+			}
+			else{
+				// TODO: log warning
+				throw new Exception(String.format("'%s' is not a directory.", path));
+			}
+			
+		}
+		
+		return files; //sb.toString();		
 	}
 
 }

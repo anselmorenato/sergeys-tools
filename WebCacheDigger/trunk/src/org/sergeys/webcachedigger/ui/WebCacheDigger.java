@@ -1,38 +1,35 @@
 package org.sergeys.webcachedigger.ui;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Event;
 import java.awt.BorderLayout;
-
-import javax.print.attribute.standard.JobMessageFromOperator;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.KeyStroke;
+import java.awt.Dimension;
+import java.awt.Event;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Point;
-import javax.swing.JLabel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JMenuItem;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JFrame;
-import javax.swing.JDialog;
-import java.awt.GridBagLayout;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import java.awt.Dimension;
-import javax.swing.JButton;
-
-import com.sun.corba.se.impl.protocol.giopmsgheaders.MessageBase;
-
-import java.awt.GridBagConstraints;
-import java.util.ArrayList;
-
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
-import org.sergeys.webcachedigger.logic.*;
+import org.sergeys.webcachedigger.logic.FileCollector;
+import org.sergeys.webcachedigger.logic.Firefox;
+import org.sergeys.webcachedigger.logic.IBrowser;
 
 public class WebCacheDigger {
 
@@ -51,13 +48,12 @@ public class WebCacheDigger {
 	
 	private JDialog aboutDialog = null;
 	private JPanel jPanelFoundFiles = null;
-	private JScrollPane jScrollPaneFoundFiles = null;
-	private JTable jTableFoundFiles = null;
 	private JPanel jPanelFoundFilesActions = null;
 	private JButton jButtonCopySelectedFiles = null;
 	private JSplitPane jSplitPaneMain = null;
 	private JPanel jPanelTop = null;
 	private JButton jButtonSearch = null;
+	private FilesListPanel filesListPanel = null;
 	/**
 	 * This method initializes jPanelFoundFiles	
 	 * 	
@@ -67,35 +63,10 @@ public class WebCacheDigger {
 		if (jPanelFoundFiles == null) {
 			jPanelFoundFiles = new JPanel();
 			jPanelFoundFiles.setLayout(new BorderLayout());
-			jPanelFoundFiles.add(getJScrollPaneFoundFiles(), BorderLayout.CENTER);
 			jPanelFoundFiles.add(getJPanelFoundFilesActions(), BorderLayout.SOUTH);
+			jPanelFoundFiles.add(getFilesListPanel(), BorderLayout.CENTER);
 		}
 		return jPanelFoundFiles;
-	}
-
-	/**
-	 * This method initializes jScrollPaneFoundFiles	
-	 * 	
-	 * @return javax.swing.JScrollPane	
-	 */
-	private JScrollPane getJScrollPaneFoundFiles() {
-		if (jScrollPaneFoundFiles == null) {
-			jScrollPaneFoundFiles = new JScrollPane();
-			jScrollPaneFoundFiles.setViewportView(getJTableFoundFiles());
-		}
-		return jScrollPaneFoundFiles;
-	}
-
-	/**
-	 * This method initializes jTableFoundFiles	
-	 * 	
-	 * @return javax.swing.JTable	
-	 */
-	private JTable getJTableFoundFiles() {
-		if (jTableFoundFiles == null) {
-			jTableFoundFiles = new JTable();
-		}
-		return jTableFoundFiles;
 	}
 
 	/**
@@ -178,6 +149,18 @@ public class WebCacheDigger {
 			});
 		}
 		return jButtonSearch;
+	}
+
+	/**
+	 * This method initializes filesListPanel	
+	 * 	
+	 * @return org.sergeys.webcachedigger.ui.FilesListPanel	
+	 */
+	private FilesListPanel getFilesListPanel() {
+		if (filesListPanel == null) {
+			filesListPanel = new FilesListPanel();
+		}
+		return filesListPanel;
 	}
 
 	/**
@@ -398,19 +381,22 @@ public class WebCacheDigger {
 		JOptionPane.showMessageDialog(this.getJFrame(), "Not implemented yet.", "Warning", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	private void doSearch(){
-		IBrowser browser = new Firefox();		
-		
+	private void doSearch(){					
 		
 		try {
-			ArrayList<String> paths = browser.getDefaultCachePaths();
-			FileCollector fileCollector = new FileCollector(paths);
-			String msg = fileCollector.collect();
+			IBrowser browser = new Firefox();
+			//List<String> paths = browser.getDefaultCachePaths();
+			ArrayList<IBrowser> browsers = new ArrayList<IBrowser>();
+			browsers.add(new Firefox());
+			FileCollector fileCollector = new FileCollector(browsers);
+			List<File> files = fileCollector.collect();
+			/*
 			JOptionPane.showMessageDialog(getJFrame(), 
 					//String.format("Failed to collect files: %1$s", e.getMessage()), 
 					String.format("Paths:\n\n%s", msg),
 					"Message", 
-					JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.INFORMATION_MESSAGE);*/
+			getFilesListPanel().init(files);
 		} catch (Exception e) {
 			//e.printStackTrace();
 			JOptionPane.showMessageDialog(getJFrame(), 

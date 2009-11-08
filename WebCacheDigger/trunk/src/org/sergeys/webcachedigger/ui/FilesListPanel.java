@@ -1,13 +1,13 @@
 package org.sergeys.webcachedigger.ui;
 
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import java.awt.GridBagConstraints;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class FilesListPanel extends JPanel {
 
@@ -59,7 +59,7 @@ public class FilesListPanel extends JPanel {
 		return jTableFoundFiles;
 	}
 	
-	public void init(ArrayList<File> files){
+	public void init(List<File> files){
 		getJTableFoundFiles().setModel(new FilesTableModel(files));
 		getJTableFoundFiles().setColumnModel(FilesListUtils.getColumnModel());
 	}

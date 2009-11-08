@@ -1,34 +1,27 @@
 package org.sergeys.webcachedigger.logic;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.List;
 
 public class FileCollector {
-	
-	private ArrayList<String> paths;
-	
-	public FileCollector(ArrayList<String> paths){
-		this.paths = paths;
+
+	private List<IBrowser> browsers;
+
+	public FileCollector(List<IBrowser> browsers) {
+		this.browsers = browsers;
 	}
-	
-	public String collect() throws Exception{
-		
-		StringBuilder sb = new StringBuilder();
-		
-		for(Iterator<String> i = paths.iterator(); i.hasNext(); ){
-			String path = i.next();
-			File directory = new File(path);
-			/*
-			if(!directory.isDirectory()){
-				//throw new Exception(String.format("'%1$s' is not a directory.", this.path));
-				throw new Exception(String.format("'%s' is not a directory.", path));
-			}
-			*/
-			sb.append(String.format("'%s'\n", directory.getAbsolutePath()));
+
+	public ArrayList<File> collect() throws Exception {
+
+		ArrayList<File> files = new ArrayList<File>();
+
+		for (IBrowser browser : browsers) {
+			files.addAll(browser.collect());
 		}
-		
-		return sb.toString();		
+
+		return files;
 	}
 }

@@ -10,14 +10,17 @@ public class FilesListUtils {
 		
 		TableColumn column = new TableColumn();
 		column.setHeaderValue("");		
+		column.setModelIndex(0);
 		model.addColumn(column);
 		
 		column = new TableColumn();
-		column.setHeaderValue("File");		
+		column.setHeaderValue("File");
+		column.setModelIndex(1);
 		model.addColumn(column);
 		
 		column = new TableColumn();
-		column.setHeaderValue("Type");		
+		column.setHeaderValue("Type");
+		column.setModelIndex(2);
 		model.addColumn(column);
 		
 		return model;
