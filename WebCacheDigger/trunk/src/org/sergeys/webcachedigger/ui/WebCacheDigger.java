@@ -93,8 +93,6 @@ public class WebCacheDigger {
 			jButtonCopySelectedFiles.setText("Copy Selected");
 			jButtonCopySelectedFiles.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
-					//JOptionPane.showMessageDialog(getJFrame(), "not implemented", "warning", JOptionPane.INFORMATION_MESSAGE);
 					WebCacheDigger.this.showNotImplemented();
 				}
 			});
@@ -141,8 +139,6 @@ public class WebCacheDigger {
 			jButtonSearch.setText("Search");
 			jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
-					//showNotImplemented();
 					WebCacheDigger.this.doSearch();
 				}
 			});
@@ -166,7 +162,6 @@ public class WebCacheDigger {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				WebCacheDigger application = new WebCacheDigger();
@@ -187,7 +182,7 @@ public class WebCacheDigger {
 			jFrame.setJMenuBar(getJJMenuBar());
 			jFrame.setSize(649, 402);
 			jFrame.setContentPane(getJContentPane());
-			jFrame.setTitle("Application");
+			jFrame.setTitle("Web Cache Digger");
 		}
 		return jFrame;
 	}

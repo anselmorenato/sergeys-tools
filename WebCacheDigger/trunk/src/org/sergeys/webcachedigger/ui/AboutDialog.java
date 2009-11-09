@@ -103,7 +103,6 @@ public class AboutDialog extends JDialog {
 			jButtonOK.setText("OK");
 			jButtonOK.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					//System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					setVisible(false);
 				}
 			});

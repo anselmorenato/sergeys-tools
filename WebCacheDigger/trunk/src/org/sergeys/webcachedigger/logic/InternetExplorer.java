@@ -7,43 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * IE 8 on Windows XP
+ * IE 8 on Windows XP 
+ * TODO: Windows specific
  * 
  * @author sergeys
- *
+ * 
  */
 public class InternetExplorer extends AbstractBrowser {
-
-	@Override
-	public List<CachedFile> collectCachedFiles() throws Exception {
-		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
-
-		for (String path : this.getCachePaths()) {
-			File directory = new File(path);
-
-			if (directory.isDirectory()) {
-
-				List<File> dirFiles = Arrays.asList(directory
-						.listFiles(new FileFilter() {
-							public boolean accept(File file) {
-								return (!file.isDirectory() && !file.getName().equalsIgnoreCase("desktop.ini"));
-							}
-						}));
-
-				for (File file : dirFiles) {
-					files.add(new CachedFile(file.getAbsolutePath()));
-				}
-
-			} else {
-				// TODO: log warning
-				throw new Exception(String.format("'%s' is not a directory.",
-						path));
-			}
-
-		}
-
-		return files;
-	}
 
 	@Override
 	protected List<String> collectDefaultCachePaths() throws Exception {
@@ -57,7 +27,7 @@ public class InternetExplorer extends AbstractBrowser {
 		// paths.add("userhome: " + userHome);
 		// paths.add("userdir: " + userDir);
 
-		// TODO: Windows specific path
+		// 
 		String profilesDirPath = userHome + File.separator
 				+ "Local Settings\\Temporary Internet Files\\Content.IE5";
 		File profilesDir = new File(profilesDirPath);
@@ -80,4 +50,35 @@ public class InternetExplorer extends AbstractBrowser {
 		return paths;
 	}
 
+	@Override
+	public List<CachedFile> collectCachedFiles() throws Exception {
+		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
+
+		for (String path : this.getCachePaths()) {
+			File directory = new File(path);
+
+			if (directory.isDirectory()) {
+
+				List<File> dirFiles = Arrays.asList(directory
+						.listFiles(new FileFilter() {
+							public boolean accept(File file) {
+								return (!file.isDirectory() && !file.getName()
+										.equalsIgnoreCase("desktop.ini"));
+							}
+						}));
+
+				for (File file : dirFiles) {
+					files.add(new CachedFile(file.getAbsolutePath()));
+				}
+
+			} else {
+				// TODO: log warning
+				throw new Exception(String.format("'%s' is not a directory.",
+						path));
+			}
+
+		}
+
+		return files;
+	}
 }
