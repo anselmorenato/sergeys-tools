@@ -1,0 +1,12 @@
+- settings panel and dialog
+- save/load settings logic, take upgrades in account
+- certificate, sign app for webstart security
+- versioning for jars: find ant task, or write it?
+- versioning for app
+- determine file type by content
+- updatable file signatures list, ability to define own signatures
+- remember which files were copied
+- only test files larger than certain size
+
+============
+http://sourceforge.net/projects/mime-util/

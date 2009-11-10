@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -29,6 +30,8 @@ import org.sergeys.webcachedigger.logic.FileCollector;
 import org.sergeys.webcachedigger.logic.Firefox;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.InternetExplorer;
+
+import eu.medsea.mimeutil.MimeUtil;
 
 public class WebCacheDigger {
 
@@ -387,7 +390,12 @@ public class WebCacheDigger {
 			List<CachedFile> files = fileCollector.collect();
 			getFilesListPanel().init(files);
 			
+			// http://www.medsea.eu/mime-util/detectors.html
+			MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
+			Collection mt = MimeUtil.getMimeTypes(files.get(0));
+			
 			String msg = String.format("Total files: %d", files.size());
+			msg = msg + "\n" + mt;
 			
 			JOptionPane.showMessageDialog(getJFrame(), 					 
 					msg,
