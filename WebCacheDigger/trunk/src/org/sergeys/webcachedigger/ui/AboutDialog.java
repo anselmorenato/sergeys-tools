@@ -11,6 +11,10 @@ import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
 import java.awt.Dimension;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import java.awt.FlowLayout;
 
 public class AboutDialog extends JDialog {
 
@@ -24,6 +28,13 @@ public class AboutDialog extends JDialog {
 	private JLabel jLabelVersion = null;
 	private JLabel jLabelAuthor = null;
 	private JPanel jPanelSystem = null;
+	private JPanel jPanelLibraries = null;
+	private JTextArea jTextAreaLibraries = null;
+	private JScrollPane jScrollPaneSystemProperties = null;
+	private JTable jTableSystemProperties = null;
+	private JButton jButtonSave = null;
+	private JPanel jPanelSystemActions = null;
+	private JButton jButtonSubmit = null;
 
 	/**
 	 * @param owner
@@ -39,8 +50,8 @@ public class AboutDialog extends JDialog {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(300, 200);
-		this.setPreferredSize(new Dimension(300, 200));
+		this.setSize(500, 300);
+		this.setPreferredSize(new Dimension(500, 300));
 		this.setTitle("About");
 		this.setContentPane(getJContentPane());
 	}
@@ -70,6 +81,7 @@ public class AboutDialog extends JDialog {
 			jTabbedPaneCenter = new JTabbedPane();
 			jTabbedPaneCenter.addTab("About", null, getJPanelAbout(), null);
 			jTabbedPaneCenter.addTab("System", null, getJPanelSystem(), null);
+			jTabbedPaneCenter.addTab("Libraries", null, getJPanelLibraries(), null);
 		}
 		return jTabbedPaneCenter;
 	}
@@ -81,13 +93,13 @@ public class AboutDialog extends JDialog {
 	 */
 	private JPanel getJPanelBottom() {
 		if (jPanelBottom == null) {
-			GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			gridBagConstraints.gridx = 0;
-			gridBagConstraints.gridy = 0;
+			FlowLayout flowLayout = new FlowLayout();
+			flowLayout.setVgap(0);
+			flowLayout.setAlignment(FlowLayout.RIGHT);
 			jPanelBottom = new JPanel();
-			jPanelBottom.setLayout(new GridBagLayout());
+			jPanelBottom.setLayout(flowLayout);
 			jPanelBottom.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-			jPanelBottom.add(getJButtonOK(), gridBagConstraints);
+			jPanelBottom.add(getJButtonOK(), null);
 		}
 		return jPanelBottom;
 	}
@@ -150,9 +162,106 @@ public class AboutDialog extends JDialog {
 	private JPanel getJPanelSystem() {
 		if (jPanelSystem == null) {
 			jPanelSystem = new JPanel();
-			jPanelSystem.setLayout(new GridBagLayout());
+			jPanelSystem.setLayout(new BorderLayout());
+			jPanelSystem.add(getJScrollPaneSystemProperties(), BorderLayout.CENTER);
+			jPanelSystem.add(getJPanelSystemActions(), BorderLayout.SOUTH);
 		}
 		return jPanelSystem;
 	}
 
-}
+	/**
+	 * This method initializes jPanelLibraries	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanelLibraries() {
+		if (jPanelLibraries == null) {
+			jPanelLibraries = new JPanel();
+			jPanelLibraries.setLayout(new BorderLayout());
+			jPanelLibraries.add(getJTextAreaLibraries(), BorderLayout.CENTER);
+		}
+		return jPanelLibraries;
+	}
+
+	/**
+	 * This method initializes jTextAreaLibraries	
+	 * 	
+	 * @return javax.swing.JTextArea	
+	 */
+	private JTextArea getJTextAreaLibraries() {
+		if (jTextAreaLibraries == null) {
+			jTextAreaLibraries = new JTextArea();
+			jTextAreaLibraries.setEditable(false);
+		}
+		return jTextAreaLibraries;
+	}
+
+	/**
+	 * This method initializes jScrollPaneSystemProperties	
+	 * 	
+	 * @return javax.swing.JScrollPane	
+	 */
+	private JScrollPane getJScrollPaneSystemProperties() {
+		if (jScrollPaneSystemProperties == null) {
+			jScrollPaneSystemProperties = new JScrollPane();
+			jScrollPaneSystemProperties.setViewportView(getJTableSystemProperties());
+		}
+		return jScrollPaneSystemProperties;
+	}
+
+	/**
+	 * This method initializes jTableSystemProperties	
+	 * 	
+	 * @return javax.swing.JTable	
+	 */
+	private JTable getJTableSystemProperties() {
+		if (jTableSystemProperties == null) {
+			jTableSystemProperties = new JTable();
+		}
+		return jTableSystemProperties;
+	}
+
+	/**
+	 * This method initializes jButtonSave	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButtonSave() {
+		if (jButtonSave == null) {
+			jButtonSave = new JButton();
+			jButtonSave.setText("Save to File...");
+		}
+		return jButtonSave;
+	}
+
+	/**
+	 * This method initializes jPanelSystemActions	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanelSystemActions() {
+		if (jPanelSystemActions == null) {
+			FlowLayout flowLayout1 = new FlowLayout();
+			flowLayout1.setAlignment(FlowLayout.RIGHT);
+			jPanelSystemActions = new JPanel();
+			jPanelSystemActions.setLayout(flowLayout1);
+			jPanelSystemActions.add(getJButtonSave(), null);
+			jPanelSystemActions.add(getJButtonSubmit(), null);
+		}
+		return jPanelSystemActions;
+	}
+
+	/**
+	 * This method initializes jButtonSubmit	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButtonSubmit() {
+		if (jButtonSubmit == null) {
+			jButtonSubmit = new JButton();
+			jButtonSubmit.setText("Submit...");
+		}
+		return jButtonSubmit;
+	}
+
+}  //  @jve:decl-index=0:visual-constraint="10,10"

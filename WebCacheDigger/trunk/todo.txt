@@ -7,6 +7,8 @@
 - updatable file signatures list, ability to define own signatures
 - remember which files were copied
 - only test files larger than certain size
+- show licenses in about
 
 ============
 http://sourceforge.net/projects/mime-util/
+http://www.slf4j.org/index.html
