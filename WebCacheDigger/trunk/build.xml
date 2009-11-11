@@ -3,7 +3,7 @@
 
 	<target name="jar">
 		<mkdir dir="jar" />
-		<jar destfile="jar/webcachedigger1.0.jar" basedir="bin">
+		<jar destfile="jar/webcachedigger1.0.1.jar" basedir="bin">
 			<manifest>
 				<attribute name="Main-Class" value="org.sergeys.webcachedigger.ui.WebCacheDigger" />
 			</manifest>

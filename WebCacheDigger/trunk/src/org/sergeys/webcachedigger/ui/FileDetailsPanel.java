@@ -1,11 +1,11 @@
 package org.sergeys.webcachedigger.ui;
 
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class FileDetailsPanel extends JPanel {
 

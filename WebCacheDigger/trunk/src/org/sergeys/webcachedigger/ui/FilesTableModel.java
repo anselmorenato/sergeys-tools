@@ -46,5 +46,9 @@ public class FilesTableModel extends AbstractTableModel {
 		}
 
 	}
+	
+	public CachedFile getCachedFile(int rowIndex){
+		return this.files.get(rowIndex);
+	}
 
 }

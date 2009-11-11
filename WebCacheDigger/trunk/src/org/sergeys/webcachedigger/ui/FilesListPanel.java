@@ -1,8 +1,13 @@
 package org.sergeys.webcachedigger.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -56,6 +61,11 @@ public class FilesListPanel extends JPanel {
 	private JTable getJTableFoundFiles() {
 		if (jTableFoundFiles == null) {
 			jTableFoundFiles = new JTable();
+			jTableFoundFiles.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseClicked(java.awt.event.MouseEvent e) {					
+					FilesListPanel.this.mouseClicked(e);
+				}
+			});
 		}
 		return jTableFoundFiles;
 	}
@@ -65,5 +75,42 @@ public class FilesListPanel extends JPanel {
 		getJTableFoundFiles().setModel(model);
 		getJTableFoundFiles().setColumnModel(FilesListUtils.getColumnModel());
 		getJTableFoundFiles().setRowSorter(new TableRowSorter<FilesTableModel>(model));
+	}
+	
+	private void mouseClicked(MouseEvent e){
+		if(e.getClickCount() == 2){
+			//
+			
+			int rowNo = getJTableFoundFiles().getSelectedRow();
+			int modelRowNo = getJTableFoundFiles().convertRowIndexToModel(rowNo);
+			FilesTableModel model = (FilesTableModel)getJTableFoundFiles().getModel();
+			CachedFile cf = model.getCachedFile(modelRowNo);
+			
+			//MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
+			//Collection mt = MimeUtil.getMimeTypes(cf);
+
+			String msg = String.format("%s\n%s", cf.getName(), cf.getFileType());
+			JOptionPane.showMessageDialog(this, msg);
+			
+			if(CachedFile.extensionByMimetype.containsKey(cf.getFileType())){
+				try {
+					File tmp = File.createTempFile("wcd", "." + CachedFile.extensionByMimetype.get(cf.getFileType()));
+					CachedFile.copyFile(cf, tmp);
+					Desktop.getDesktop().open(tmp);
+					if(JOptionPane.showConfirmDialog(this, "Delete temp file " + tmp.getAbsolutePath() + "?") == JOptionPane.YES_OPTION){
+						tmp.delete();
+					}
+					
+				} catch (IOException ex) {					
+					JOptionPane.showMessageDialog(this, "Failed to preview file: " + ex.getMessage());
+					ex.printStackTrace();
+				}
+			}
+			
+			// copy file
+			//File.createTempFile("wcd", suffix)
+			
+			//Desktop.getDesktop().open(cf);
+		}
 	}
 }

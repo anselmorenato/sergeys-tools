@@ -138,7 +138,7 @@ public class AboutDialog extends JDialog {
 			gridBagConstraints2.gridx = 0;
 			gridBagConstraints2.gridy = 1;
 			jLabelVersion = new JLabel();
-			jLabelVersion.setText("1.01 Nov 7 2009");
+			jLabelVersion.setText("Nov 11 2009");
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.gridx = 0;
 			gridBagConstraints1.gridy = 0;

@@ -3,15 +3,13 @@ package org.sergeys.webcachedigger.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Event;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -33,9 +31,6 @@ import org.sergeys.webcachedigger.logic.FileCollector;
 import org.sergeys.webcachedigger.logic.Firefox;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.InternetExplorer;
-
-import eu.medsea.mimeutil.MimeUtil;
-import java.awt.FlowLayout;
 
 public class WebCacheDigger {
 
@@ -438,11 +433,11 @@ public class WebCacheDigger {
 			getFilesListPanel().init(files);
 			
 			// http://www.medsea.eu/mime-util/detectors.html
-			MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-			Collection mt = MimeUtil.getMimeTypes(files.get(0));
+			//MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
+			//Collection mt = MimeUtil.getMimeTypes(files.get(0));
 			
 			String msg = String.format("Total files: %d", files.size());
-			msg = msg + "\n" + mt;
+			//msg = msg + "\n" + mt;
 			
 			JOptionPane.showMessageDialog(getJFrame(), 					 
 					msg,
