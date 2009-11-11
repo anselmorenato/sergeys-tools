@@ -71,7 +71,10 @@ public class Firefox extends AbstractBrowser {
 						}));
 
 				for (File file : dirFiles) {
-					files.add(new CachedFile(file.getAbsolutePath()));
+					// TODO: filter by size
+					if(file.length() > 100000){
+						files.add(new CachedFile(file.getAbsolutePath()));
+					}
 				}
 
 			} else {
