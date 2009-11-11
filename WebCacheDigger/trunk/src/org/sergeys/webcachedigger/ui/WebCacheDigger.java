@@ -6,6 +6,7 @@ import java.awt.Event;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -24,6 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.FileCollector;
@@ -32,6 +35,7 @@ import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.InternetExplorer;
 
 import eu.medsea.mimeutil.MimeUtil;
+import java.awt.FlowLayout;
 
 public class WebCacheDigger {
 
@@ -56,6 +60,7 @@ public class WebCacheDigger {
 	private JPanel jPanelTop = null;
 	private JButton jButtonSearch = null;
 	private FilesListPanel filesListPanel = null;
+	private JPanel jPanelFileDetails = null;
 	/**
 	 * This method initializes jPanelFoundFiles	
 	 * 	
@@ -79,8 +84,8 @@ public class WebCacheDigger {
 	private JPanel getJPanelFoundFilesActions() {
 		if (jPanelFoundFilesActions == null) {
 			jPanelFoundFilesActions = new JPanel();
-			jPanelFoundFilesActions.setLayout(new GridBagLayout());
-			jPanelFoundFilesActions.add(getJButtonCopySelectedFiles(), new GridBagConstraints());
+			jPanelFoundFilesActions.setLayout(new FlowLayout());
+			jPanelFoundFilesActions.add(getJButtonCopySelectedFiles(), null);
 		}
 		return jPanelFoundFilesActions;
 	}
@@ -112,6 +117,7 @@ public class WebCacheDigger {
 		if (jSplitPaneMain == null) {
 			jSplitPaneMain = new JSplitPane();
 			jSplitPaneMain.setPreferredSize(new Dimension(564, 350));
+			jSplitPaneMain.setRightComponent(getJPanelFileDetails());
 			jSplitPaneMain.setLeftComponent(getJPanelFoundFiles());
 		}
 		return jSplitPaneMain;
@@ -125,8 +131,8 @@ public class WebCacheDigger {
 	private JPanel getJPanelTop() {
 		if (jPanelTop == null) {
 			jPanelTop = new JPanel();
-			jPanelTop.setLayout(new GridBagLayout());
-			jPanelTop.add(getJButtonSearch(), new GridBagConstraints());
+			jPanelTop.setLayout(new FlowLayout());
+			jPanelTop.add(getJButtonSearch(), null);
 		}
 		return jPanelTop;
 	}
@@ -162,13 +168,54 @@ public class WebCacheDigger {
 	}
 
 	/**
+	 * This method initializes jPanelFileDetails	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanelFileDetails() {
+		if (jPanelFileDetails == null) {
+			jPanelFileDetails = new FileDetailsPanel();
+			
+		}
+		return jPanelFileDetails;
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+
+				try {
+					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UnsupportedLookAndFeelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				WebCacheDigger application = new WebCacheDigger();
-				application.getJFrame().setVisible(true);
+				
+				JFrame mainWindow = application.getJFrame(); 
+				
+				// TODO: set size and position of main window here 
+				
+				Dimension desktop = Toolkit.getDefaultToolkit().getScreenSize();
+				
+				mainWindow.setLocation((desktop.width-mainWindow.getWidth())/2,
+						(desktop.height-mainWindow.getHeight())/2);				
+				mainWindow.setVisible(true);
+				
+				
 			}
 		});
 	}
