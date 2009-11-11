@@ -18,7 +18,11 @@ public class CachedFile extends File {
 		MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
 
 		extensionByMimetype = new Hashtable<String, String>();
+		// TODO: any internal audio, video playback?
 		extensionByMimetype.put("video/x-flv", 	"flv");
+		extensionByMimetype.put("audio/mpeg", 	"mp3");	// need more careful detection?
+		
+		// TODO: internal preview?
 		extensionByMimetype.put("image/gif", 	"gif");
 		extensionByMimetype.put("image/jpeg", 	"jpg");
 		extensionByMimetype.put("image/png", 	"png");
