@@ -56,6 +56,7 @@ public class WebCacheDigger {
 	private JButton jButtonSearch = null;
 	private FilesListPanel filesListPanel = null;
 	private JPanel jPanelFileDetails = null;
+	private JMenuItem jMenuItemSettings = null;
 	/**
 	 * This method initializes jPanelFoundFiles	
 	 * 	
@@ -176,6 +177,24 @@ public class WebCacheDigger {
 	}
 
 	/**
+	 * This method initializes jMenuItemSettings	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getJMenuItemSettings() {
+		if (jMenuItemSettings == null) {
+			jMenuItemSettings = new JMenuItem();
+			jMenuItemSettings.setText("Settings ...");
+			jMenuItemSettings.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					WebCacheDigger.this.editSettings();
+				}
+			});
+		}
+		return jMenuItemSettings;
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -289,6 +308,7 @@ public class WebCacheDigger {
 			editMenu.add(getCutMenuItem());
 			editMenu.add(getCopyMenuItem());
 			editMenu.add(getPasteMenuItem());
+			editMenu.add(getJMenuItemSettings());
 		}
 		return editMenu;
 	}
@@ -333,14 +353,15 @@ public class WebCacheDigger {
 	private JMenuItem getAboutMenuItem() {
 		if (aboutMenuItem == null) {
 			aboutMenuItem = new JMenuItem();
-			aboutMenuItem.setText("About");
+			aboutMenuItem.setText("About ...");
 			aboutMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					JDialog aboutDialog = getAboutDialog();
-					aboutDialog.pack();
-					Point loc = getJFrame().getLocation();
-					loc.translate(20, 20);
-					aboutDialog.setLocation(loc);
+					//aboutDialog.pack();
+					//Point loc = getJFrame().getLocation();
+					//loc.translate(20, 20);
+					//aboutDialog.setLocation(loc);
+					aboutDialog.setLocationRelativeTo(getJContentPane());
 					aboutDialog.setVisible(true);
 				}
 			});
@@ -452,5 +473,19 @@ public class WebCacheDigger {
 					"Error", 
 					JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	private SettingsDialog settingsDialog;
+	private SettingsDialog getSettingsDialog(){
+		if(settingsDialog == null){
+			settingsDialog = new SettingsDialog(this.getJFrame());
+			
+		}
+		settingsDialog.setLocationRelativeTo(getJContentPane());
+		return settingsDialog;
+	}
+	
+	private void editSettings(){		
+		getSettingsDialog().setVisible(true);
 	}
 }
