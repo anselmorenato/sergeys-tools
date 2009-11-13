@@ -9,6 +9,9 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +34,9 @@ import org.sergeys.webcachedigger.logic.FileCollector;
 import org.sergeys.webcachedigger.logic.Firefox;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.InternetExplorer;
+import org.sergeys.webcachedigger.logic.Settings;
 
-public class WebCacheDigger {
+public class WebCacheDigger implements WindowListener {
 
 	private JFrame jFrame = null;  //  @jve:decl-index=0:visual-constraint="10,10"
 	private JPanel jContentPane = null;
@@ -57,6 +61,9 @@ public class WebCacheDigger {
 	private FilesListPanel filesListPanel = null;
 	private JPanel jPanelFileDetails = null;
 	private JMenuItem jMenuItemSettings = null;
+	
+	private Settings settings;
+	
 	/**
 	 * This method initializes jPanelFoundFiles	
 	 * 	
@@ -479,7 +486,7 @@ public class WebCacheDigger {
 	private SettingsDialog getSettingsDialog(){
 		if(settingsDialog == null){
 			settingsDialog = new SettingsDialog(this.getJFrame());
-			
+			settingsDialog.addWindowListener(this);
 		}
 		settingsDialog.setLocationRelativeTo(getJContentPane());
 		return settingsDialog;
@@ -488,4 +495,67 @@ public class WebCacheDigger {
 	private void editSettings(){		
 		getSettingsDialog().setVisible(true);
 	}
+
+
+	/*
+	public void windowStateChanged(WindowEvent e) {
+		int i = 0;
+		if(e.getWindow() instanceof SettingsDialog){
+			switch(e.getNewState()){
+				case WindowEvent.WINDOW_CLOSING:
+					i = 1;
+					break;				
+			}
+		}
+	}
+	*/
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		int i = 0;	
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		int i = 0;
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+		int i = 0;
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getWindow() instanceof SettingsDialog){
+			switch(e.getNewState()){
+				case WindowEvent.WINDOW_CLOSING:
+					int i = 1;
+					break;				
+			}
+		}
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		int i = 0;		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		int i = 0;
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		int i = 0;		
+	}
+	
 }

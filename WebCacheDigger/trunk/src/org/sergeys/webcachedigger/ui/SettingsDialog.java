@@ -7,8 +7,12 @@ import javax.swing.JDialog;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
+
+import org.sergeys.webcachedigger.logic.Settings;
+
 import java.awt.GridBagConstraints;
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
 
 public class SettingsDialog extends JDialog {
 
@@ -33,7 +37,7 @@ public class SettingsDialog extends JDialog {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(617, 287);
+		this.setSize(387, 154);
 		this.setModal(true);
 		this.setTitle("Settings");
 		this.setContentPane(getJContentPane());
@@ -80,9 +84,10 @@ public class SettingsDialog extends JDialog {
 		if (jButtonSave == null) {
 			jButtonSave = new JButton();
 			jButtonSave.setText("Save");
+			jButtonSave.setActionCommand(Settings.SAVE_SETTINGS_COMMAND);			
 			jButtonSave.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					doSave();
 				}
 			});
 		}
@@ -100,7 +105,7 @@ public class SettingsDialog extends JDialog {
 			jButtonCancel.setText("Cancel");
 			jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					setVisible(false);
 				}
 			});
 		}
@@ -115,9 +120,13 @@ public class SettingsDialog extends JDialog {
 	private SettingsPanel getJPanelSettings() {
 		if (jPanelSettings == null) {
 			jPanelSettings = new SettingsPanel();
+			jPanelSettings.setLayout(new GridBagLayout());
 			
 		}
 		return jPanelSettings;
 	}
 	
+	private void doSave(){		
+		setVisible(false);
+	}
 }  //  @jve:decl-index=0:visual-constraint="10,10"
