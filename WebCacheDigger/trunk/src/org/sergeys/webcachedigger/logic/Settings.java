@@ -16,14 +16,16 @@ public class Settings extends Properties {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	// where to save
 	public static final String SETTINGS_PATH = ".WebCacheDigger";
 	public static final String SETTINGS_FILE = "settings.properties";
 	
-	// actions
-	public static final String SAVE_SETTINGS_COMMAND = "SAVE_SETTINGS_COMMAND"; 
+	// action names for events
+	public static final String COMMAND_SAVE_SETTINGS = "COMMAND_SAVE_SETTINGS"; 
 	
-	// keys
+	// property keys
 	public static final String SAVE_TO_PATH = "SAVE_TO_PATH";
+	public static final String MIN_FILE_SIZE_BYTES = "MIN_FILE_SIZE_BYTES";
 	
 //	private Hashtable<String, String> settings = new Hashtable<String, String>();
 //	
@@ -78,4 +80,20 @@ public class Settings extends Properties {
 		
 		return settings;
 	}
+	
+	public int getIntProperty(String key){		
+		//String value = getProperty(key);
+		//return (value == null) ? null : Integer.parseInt(value);				
+		return Integer.parseInt(getProperty(key));
+	}
+	
+	public void setIntProperty(String key, int value){
+		setProperty(key, String.valueOf(value));
+	}
+	
+	public void setIntProperty(String key, String value){
+		Integer.parseInt(value); // check for valid int
+		setProperty(key, value);
+	}
+	
 }

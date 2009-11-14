@@ -39,7 +39,7 @@ public class SettingsDialog extends JDialog {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(387, 154);
+		this.setSize(478, 154);
 		this.setModal(true);
 		this.setTitle("Settings");
 		this.setContentPane(getJContentPane());
@@ -86,7 +86,7 @@ public class SettingsDialog extends JDialog {
 		if (jButtonSave == null) {
 			jButtonSave = new JButton();
 			jButtonSave.setText("Save");
-			jButtonSave.setActionCommand(Settings.SAVE_SETTINGS_COMMAND);			
+			jButtonSave.setActionCommand(Settings.COMMAND_SAVE_SETTINGS);			
 			jButtonSave.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					setVisible(false);

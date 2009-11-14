@@ -14,6 +14,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableRowSorter;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
+import javax.swing.ListSelectionModel;
 
 public class FilesListPanel extends JPanel {
 
@@ -61,6 +62,7 @@ public class FilesListPanel extends JPanel {
 	private JTable getJTableFoundFiles() {
 		if (jTableFoundFiles == null) {
 			jTableFoundFiles = new JTable();
+			jTableFoundFiles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			jTableFoundFiles.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {					
 					FilesListPanel.this.mouseClicked(e);

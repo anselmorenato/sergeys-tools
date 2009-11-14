@@ -531,7 +531,7 @@ public class WebCacheDigger implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getActionCommand() == Settings.SAVE_SETTINGS_COMMAND){
+		if(e.getActionCommand() == Settings.COMMAND_SAVE_SETTINGS){
 			//JOptionPane.showMessageDialog(getJFrame(), "save settings");
 			setSettings(getSettingsDialog().getSettings());
 			try {
