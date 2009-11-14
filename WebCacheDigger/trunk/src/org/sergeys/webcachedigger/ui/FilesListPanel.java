@@ -94,9 +94,11 @@ public class FilesListPanel extends JPanel {
 			String msg = String.format("%s\n%s", cf.getName(), cf.getFileType());
 			JOptionPane.showMessageDialog(this, msg);
 			
-			if(CachedFile.extensionByMimetype.containsKey(cf.getFileType())){
+			//if(CachedFile.extensionByMimetype.containsKey(cf.getFileType())){
+			if(cf.guessExtension() != null){
 				try {
-					File tmp = File.createTempFile("wcd", "." + CachedFile.extensionByMimetype.get(cf.getFileType()));
+					//File tmp = File.createTempFile("wcd", "." + CachedFile.extensionByMimetype.get(cf.getFileType()));
+					File tmp = File.createTempFile("wcd", "." + cf.guessExtension());
 					CachedFile.copyFile(cf, tmp);
 					Desktop.getDesktop().open(tmp);
 					if(JOptionPane.showConfirmDialog(this, "Delete temp file " + tmp.getAbsolutePath() + "?") == JOptionPane.YES_OPTION){
@@ -115,4 +117,9 @@ public class FilesListPanel extends JPanel {
 			//Desktop.getDesktop().open(cf);
 		}
 	}
+	
+	public List<CachedFile> getCachedFiles() {
+		return ((FilesTableModel)getJTableFoundFiles().getModel()).getCachedFiles();
+	}
+
 }

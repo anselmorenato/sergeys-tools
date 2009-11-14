@@ -12,11 +12,12 @@ import eu.medsea.mimeutil.MimeUtil;
 
 public class CachedFile extends File {
 
-	public static Hashtable<String, String> extensionByMimetype;
+	private static Hashtable<String, String> extensionByMimetype;
 
 	static {
 		MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
 
+		// TODO: load from resources, or from webstart
 		extensionByMimetype = new Hashtable<String, String>();
 		// TODO: any internal audio, video playback?
 		extensionByMimetype.put("video/x-flv", 	"flv");
@@ -33,6 +34,8 @@ public class CachedFile extends File {
 
 	private String hash;
 	private String fileType = null;
+	
+	private boolean selectedToCopy = false;
 
 	public CachedFile(String pathname) {
 		super(pathname);
@@ -63,6 +66,10 @@ public class CachedFile extends File {
 	// http://www.rgagnon.com/javadetails/java-0064.html
 	// note limit of 64MB
 	public static void copyFile(File in, File out) throws IOException {
+		copyFile(in.getAbsolutePath(), out.getAbsolutePath());
+	}
+
+	public static void copyFile(String in, String out) throws IOException {
 		FileChannel inChannel = new FileInputStream(in).getChannel();
 		FileChannel outChannel = new FileOutputStream(out).getChannel();
 		try {
@@ -77,6 +84,24 @@ public class CachedFile extends File {
 				outChannel.close();
 			}
 		}
+	}
+	
+	public String guessExtension(){
+		return extensionByMimetype.get(getFileType());
+	}
+	
+	/**
+	 * @param selectedToCopy the selectedToCopy to set
+	 */
+	public void setSelectedToCopy(boolean selectedToCopy) {
+		this.selectedToCopy = selectedToCopy;
+	}
+
+	/**
+	 * @return the selectedToCopy
+	 */
+	public boolean isSelectedToCopy() {
+		return selectedToCopy;
 	}
 
 }

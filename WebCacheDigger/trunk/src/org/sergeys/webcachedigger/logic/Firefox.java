@@ -51,9 +51,10 @@ public class Firefox extends AbstractBrowser {
 	}
 
 	@Override
-	public List<CachedFile> collectCachedFiles() throws Exception {
+	public List<CachedFile> collectCachedFiles(Settings settings) throws Exception {
 
 		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
+		int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
 
 		for (String path : getCachePaths()) {
 
@@ -71,8 +72,7 @@ public class Firefox extends AbstractBrowser {
 						}));
 
 				for (File file : dirFiles) {
-					// TODO: filter by size
-					if(file.length() > 100000){
+					if(file.length() > minFileSize){
 						files.add(new CachedFile(file.getAbsolutePath()));
 					}
 				}

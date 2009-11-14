@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,10 +103,11 @@ public class WebCacheDigger implements ActionListener {
 	private JButton getJButtonCopySelectedFiles() {
 		if (jButtonCopySelectedFiles == null) {
 			jButtonCopySelectedFiles = new JButton();
-			jButtonCopySelectedFiles.setText("Copy Selected");
+			jButtonCopySelectedFiles.setText("Copy Checked Files");
 			jButtonCopySelectedFiles.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					WebCacheDigger.this.showNotImplemented();
+					//WebCacheDigger.this.showNotImplemented();
+					WebCacheDigger.this.copyFiles();					
 				}
 			});
 		}
@@ -152,7 +154,7 @@ public class WebCacheDigger implements ActionListener {
 			jButtonSearch.setText("Search");
 			jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					WebCacheDigger.this.doSearch();
+					WebCacheDigger.this.searchCachedFiles();
 				}
 			});
 		}
@@ -449,7 +451,7 @@ public class WebCacheDigger implements ActionListener {
 		JOptionPane.showMessageDialog(this.getJFrame(), "Not implemented yet.", "Warning", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	private void doSearch(){					
+	private void searchCachedFiles(){					
 		
 		try {
 			
@@ -458,7 +460,7 @@ public class WebCacheDigger implements ActionListener {
 			browsers.add(new Firefox());
 			browsers.add(new InternetExplorer());
 			FileCollector fileCollector = new FileCollector(browsers);
-			List<CachedFile> files = fileCollector.collect();
+			List<CachedFile> files = fileCollector.collect(getSettings());
 			getFilesListPanel().init(files);
 			
 			// http://www.medsea.eu/mime-util/detectors.html
@@ -546,4 +548,31 @@ public class WebCacheDigger implements ActionListener {
 			}
 		}
 	}	
+	
+	private void copyFiles(){
+		String targetDir = settings.getProperty(Settings.SAVE_TO_PATH);
+		for(CachedFile file: getFilesListPanel().getCachedFiles()){
+			if(file.isSelectedToCopy()){
+				String targetFile = file.getName();
+				if(file.guessExtension() != null){
+					targetFile = targetDir + File.separator + 
+						targetFile + "." + file.guessExtension(); 
+				}
+				try {
+					CachedFile.copyFile(file.getAbsolutePath(), targetFile);
+				} catch (IOException e) {
+					String msg = String.format("Failed to copy file from 's' to 's':\n\n%s\n\n" +
+							"Continue to copy other selected files, if present?", e.getMessage());
+					if(JOptionPane.NO_OPTION ==
+					JOptionPane.showConfirmDialog(getJFrame(), 
+							msg, 
+							"Failed to copy", 
+							JOptionPane.YES_NO_OPTION, 
+							JOptionPane.ERROR_MESSAGE)){
+						break;
+					}
+				}
+			}
+		}
+	}
 }

@@ -9,12 +9,12 @@ public class FilesListUtils {
 		TableColumnModel model = new DefaultTableColumnModel();
 		
 		TableColumn column = new TableColumn();
-		column.setHeaderValue("");		
+		column.setHeaderValue("Copy");		
 		column.setModelIndex(0);
 		model.addColumn(column);
 		
 		column = new TableColumn();
-		column.setHeaderValue("File");
+		column.setHeaderValue("File Name");
 		column.setModelIndex(1);
 		model.addColumn(column);
 		

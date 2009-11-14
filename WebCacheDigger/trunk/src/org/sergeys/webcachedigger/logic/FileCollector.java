@@ -11,12 +11,12 @@ public class FileCollector {
 		this.browsers = browsers;
 	}
 
-	public ArrayList<CachedFile> collect() throws Exception {
+	public ArrayList<CachedFile> collect(Settings settings) throws Exception {
 
 		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
 
 		for (IBrowser browser : browsers) {
-			files.addAll(browser.collectCachedFiles());
+			files.addAll(browser.collectCachedFiles(settings));
 		}
 
 		return files;

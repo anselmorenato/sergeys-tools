@@ -20,7 +20,5 @@ public abstract class AbstractBrowser implements IBrowser {
 		return cachePaths;
 	}
 				
-	@Override
-	public abstract List<CachedFile> collectCachedFiles() throws Exception;
 
 }
