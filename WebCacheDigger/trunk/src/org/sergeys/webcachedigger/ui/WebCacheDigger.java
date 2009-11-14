@@ -8,6 +8,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,11 +46,6 @@ public class WebCacheDigger implements ActionListener {
 	private JMenu helpMenu = null;
 	private JMenuItem exitMenuItem = null;
 	private JMenuItem aboutMenuItem = null;
-	private JMenuItem cutMenuItem = null;
-	private JMenuItem copyMenuItem = null;
-	private JMenuItem pasteMenuItem = null;
-	private JMenuItem saveMenuItem = null;
-	
 	private JDialog aboutDialog = null;
 	private JPanel jPanelFoundFiles = null;
 	private JPanel jPanelFoundFilesActions = null;
@@ -126,6 +123,9 @@ public class WebCacheDigger implements ActionListener {
 			jSplitPaneMain.setPreferredSize(new Dimension(564, 350));
 			jSplitPaneMain.setRightComponent(getJPanelFileDetails());
 			jSplitPaneMain.setLeftComponent(getJPanelFoundFiles());
+			
+			//getFilesListPanel().addPropertyChangeListener("selectedfile", getJPanelFileDetails());
+			getFilesListPanel().addPropertyChangeListener("selectedfile", (PropertyChangeListener)getJPanelFileDetails());
 		}
 		return jSplitPaneMain;
 	}
@@ -169,7 +169,7 @@ public class WebCacheDigger implements ActionListener {
 	 */
 	private FilesListPanel getFilesListPanel() {
 		if (filesListPanel == null) {
-			filesListPanel = new FilesListPanel();
+			filesListPanel = new FilesListPanel();			
 		}
 		return filesListPanel;
 	}
@@ -250,8 +250,9 @@ public class WebCacheDigger implements ActionListener {
 		if (jFrame == null) {
 			jFrame = new JFrame();
 			jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			jFrame.setPreferredSize(new Dimension(750, 400));
 			jFrame.setJMenuBar(getJJMenuBar());
-			jFrame.setSize(649, 402);
+			jFrame.setSize(750, 400);
 			jFrame.setContentPane(getJContentPane());
 			jFrame.setTitle("Web Cache Digger");
 		}
@@ -297,7 +298,6 @@ public class WebCacheDigger implements ActionListener {
 		if (fileMenu == null) {
 			fileMenu = new JMenu();
 			fileMenu.setText("File");
-			fileMenu.add(getSaveMenuItem());
 			fileMenu.add(getExitMenuItem());
 		}
 		return fileMenu;
@@ -312,9 +312,6 @@ public class WebCacheDigger implements ActionListener {
 		if (editMenu == null) {
 			editMenu = new JMenu();
 			editMenu.setText("Edit");
-			editMenu.add(getCutMenuItem());
-			editMenu.add(getCopyMenuItem());
-			editMenu.add(getPasteMenuItem());
 			editMenu.add(getJMenuItemSettings());
 		}
 		return editMenu;
@@ -374,66 +371,6 @@ public class WebCacheDigger implements ActionListener {
 			});
 		}
 		return aboutMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getCutMenuItem() {
-		if (cutMenuItem == null) {
-			cutMenuItem = new JMenuItem();
-			cutMenuItem.setText("Cut");
-			cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-					Event.CTRL_MASK, true));
-		}
-		return cutMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getCopyMenuItem() {
-		if (copyMenuItem == null) {
-			copyMenuItem = new JMenuItem();
-			copyMenuItem.setText("Copy");
-			copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-					Event.CTRL_MASK, true));
-		}
-		return copyMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getPasteMenuItem() {
-		if (pasteMenuItem == null) {
-			pasteMenuItem = new JMenuItem();
-			pasteMenuItem.setText("Paste");
-			pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-					Event.CTRL_MASK, true));
-		}
-		return pasteMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getSaveMenuItem() {
-		if (saveMenuItem == null) {
-			saveMenuItem = new JMenuItem();
-			saveMenuItem.setText("Save");
-			saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-					Event.CTRL_MASK, true));
-		}
-		return saveMenuItem;
 	}
 
 	private JDialog getAboutDialog() {
@@ -560,4 +497,5 @@ public class WebCacheDigger implements ActionListener {
 		
 		return copied;
 	}
+
 }

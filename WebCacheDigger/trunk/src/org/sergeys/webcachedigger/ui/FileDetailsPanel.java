@@ -2,12 +2,17 @@ package org.sergeys.webcachedigger.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class FileDetailsPanel extends JPanel {
+import org.sergeys.webcachedigger.logic.CachedFile;
+import java.awt.Dimension;
+
+public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	private JLabel jLabel1 = null;
@@ -46,6 +51,7 @@ public class FileDetailsPanel extends JPanel {
 		jLabel2.setText("File size:");
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 		gridBagConstraints1.gridx = 1;
+		gridBagConstraints1.gridwidth = 3;
 		gridBagConstraints1.gridy = 0;
 		jLabelFileName = new JLabel();
 		jLabelFileName.setText("<unknown>");
@@ -54,7 +60,7 @@ public class FileDetailsPanel extends JPanel {
 		gridBagConstraints.gridy = 0;
 		jLabel1 = new JLabel();
 		jLabel1.setText("File name:");
-		this.setSize(300, 200);
+		this.setSize(217, 114);
 		this.setLayout(new GridBagLayout());
 		this.add(jLabel1, gridBagConstraints);
 		this.add(jLabelFileName, gridBagConstraints1);
@@ -76,4 +82,13 @@ public class FileDetailsPanel extends JPanel {
 		return jButtonPreview;
 	}
 
-}
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {		
+		if(evt.getPropertyName() == "selectedfile"){
+			CachedFile file = (CachedFile)evt.getNewValue();
+			jLabelFileName.setText(file.getName());
+			jLabelFileSize.setText(String.valueOf(file.length()));
+		}		
+	}
+
+}  //  @jve:decl-index=0:visual-constraint="10,10"
