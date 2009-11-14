@@ -4,14 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.FlowLayout;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -106,8 +102,13 @@ public class WebCacheDigger implements ActionListener {
 			jButtonCopySelectedFiles.setText("Copy Checked Files");
 			jButtonCopySelectedFiles.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					//WebCacheDigger.this.showNotImplemented();
-					WebCacheDigger.this.copyFiles();					
+					int count = WebCacheDigger.this.copyFiles();
+					String msg = String.format("Copied %d file(s).", count);
+					
+					JOptionPane.showMessageDialog(getJFrame(), 					 
+							msg,
+							"Message", 
+							JOptionPane.INFORMATION_MESSAGE);
 				}
 			});
 		}
@@ -214,16 +215,12 @@ public class WebCacheDigger implements ActionListener {
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (UnsupportedLookAndFeelException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -447,15 +444,9 @@ public class WebCacheDigger implements ActionListener {
 		return aboutDialog;
 	}
 	
-	private void showNotImplemented(){
-		JOptionPane.showMessageDialog(this.getJFrame(), "Not implemented yet.", "Warning", JOptionPane.INFORMATION_MESSAGE);
-	}
-	
 	private void searchCachedFiles(){					
 		
 		try {
-			
-			//List<String> paths = browser.getDefaultCachePaths();
 			ArrayList<IBrowser> browsers = new ArrayList<IBrowser>();
 			browsers.add(new Firefox());
 			browsers.add(new InternetExplorer());
@@ -464,21 +455,16 @@ public class WebCacheDigger implements ActionListener {
 			getFilesListPanel().init(files);
 			
 			// http://www.medsea.eu/mime-util/detectors.html
-			//MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-			//Collection mt = MimeUtil.getMimeTypes(files.get(0));
 			
-			String msg = String.format("Total files: %d", files.size());
-			//msg = msg + "\n" + mt;
-			
-			JOptionPane.showMessageDialog(getJFrame(), 					 
-					msg,
-					"Message", 
-					JOptionPane.INFORMATION_MESSAGE);
+//			String msg = String.format("Total files: %d", files.size());
+//			
+//			JOptionPane.showMessageDialog(getJFrame(), 					 
+//					msg,
+//					"Message", 
+//					JOptionPane.INFORMATION_MESSAGE);
 			
 		} catch (Exception e) {
-			//e.printStackTrace();
 			JOptionPane.showMessageDialog(getJFrame(), 
-					//String.format("Failed to collect files: %1$s", e.getMessage()), 
 					String.format("Failed to collect files: %s", e.getMessage()),
 					"Error", 
 					JOptionPane.ERROR_MESSAGE);
@@ -532,15 +518,11 @@ public class WebCacheDigger implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		if(e.getActionCommand() == Settings.COMMAND_SAVE_SETTINGS){
-			//JOptionPane.showMessageDialog(getJFrame(), "save settings");
 			setSettings(getSettingsDialog().getSettings());
 			try {
 				getSettings().save();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				//e1.printStackTrace();
 				JOptionPane.showMessageDialog(getJFrame(), 
 						String.format("Failed to save settings to '%s':\n\n%s", Settings.getSettingsFilePath(), e1.getMessage()), 
 						"", 
@@ -549,17 +531,18 @@ public class WebCacheDigger implements ActionListener {
 		}
 	}	
 	
-	private void copyFiles(){
+	private int copyFiles(){
+		int copied = 0;
 		String targetDir = settings.getProperty(Settings.SAVE_TO_PATH);
 		for(CachedFile file: getFilesListPanel().getCachedFiles()){
 			if(file.isSelectedToCopy()){
-				String targetFile = file.getName();
+				String targetFile = targetDir + File.separator + file.getName();
 				if(file.guessExtension() != null){
-					targetFile = targetDir + File.separator + 
-						targetFile + "." + file.guessExtension(); 
+					targetFile = targetFile + "." + file.guessExtension(); 
 				}
 				try {
 					CachedFile.copyFile(file.getAbsolutePath(), targetFile);
+					copied++;
 				} catch (IOException e) {
 					String msg = String.format("Failed to copy file from 's' to 's':\n\n%s\n\n" +
 							"Continue to copy other selected files, if present?", e.getMessage());
@@ -574,5 +557,7 @@ public class WebCacheDigger implements ActionListener {
 				}
 			}
 		}
+		
+		return copied;
 	}
 }

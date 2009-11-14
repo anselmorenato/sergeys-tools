@@ -8,6 +8,7 @@
 - remember which files were copied
 - only test files larger than certain size
 - show licenses in about
+- add logo to about
 
 ============
 http://sourceforge.net/projects/mime-util/

@@ -1,18 +1,15 @@
 package org.sergeys.webcachedigger.ui;
 
-import javax.swing.JPanel;
-import java.awt.Frame;
 import java.awt.BorderLayout;
-import javax.swing.JDialog;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
 
 import org.sergeys.webcachedigger.logic.Settings;
-
-import java.awt.GridBagConstraints;
-import java.awt.FlowLayout;
-import java.awt.event.ActionListener;
 
 public class SettingsDialog extends JDialog {
 

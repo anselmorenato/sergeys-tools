@@ -1,19 +1,18 @@
 package org.sergeys.webcachedigger.ui;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.File;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.sergeys.webcachedigger.logic.Settings;
-import java.awt.GridLayout;
-import javax.swing.JLabel;
-import java.awt.FlowLayout;
-
-import javax.swing.JFileChooser;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.io.File;
 
 public class SettingsPanel extends JPanel {
 
