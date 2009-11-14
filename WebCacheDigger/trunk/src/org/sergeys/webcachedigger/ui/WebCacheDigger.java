@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class WebCacheDigger implements ActionListener {
 	private JPanel jPanelFileDetails = null;
 	private JMenuItem jMenuItemSettings = null;
 	
-	private Settings settings;
+	private Settings settings;  //  @jve:decl-index=0:
 	
 	/**
 	 * This method initializes jPanelFoundFiles	
@@ -494,15 +495,55 @@ public class WebCacheDigger implements ActionListener {
 	
 	private void editSettings(){
 		SettingsDialog dlg = getSettingsDialog();
-		dlg.setSettings(settings);
+		try {
+			dlg.setSettings(getSettings());
+		} catch (IOException e) {
+
+			JOptionPane.showMessageDialog(getJFrame(), 
+					String.format("Failed to load settings from '%s':\n\n%s", 
+							Settings.getSettingsFilePath(), e.getMessage()), 
+					"", 
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		dlg.setVisible(true);
+	}
+
+	/**
+	 * @return the settings
+	 * @throws IOException 
+	 */
+	public Settings getSettings() throws IOException {
+		if(settings == null){
+			settings = Settings.load();
+		}
+		
+		return settings;
+	}
+
+	/**
+	 * @param settings the settings to set
+	 */
+	public void setSettings(Settings settings) {
+		this.settings = settings;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand() == Settings.SAVE_SETTINGS_COMMAND){
-			JOptionPane.showMessageDialog(getJFrame(), "save settings");
+			//JOptionPane.showMessageDialog(getJFrame(), "save settings");
+			setSettings(getSettingsDialog().getSettings());
+			try {
+				getSettings().save();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				//e1.printStackTrace();
+				JOptionPane.showMessageDialog(getJFrame(), 
+						String.format("Failed to save settings to '%s':\n\n%s", Settings.getSettingsFilePath(), e1.getMessage()), 
+						"", 
+						JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}	
 }

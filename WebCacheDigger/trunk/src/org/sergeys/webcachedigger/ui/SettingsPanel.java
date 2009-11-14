@@ -7,6 +7,8 @@ import org.sergeys.webcachedigger.logic.Settings;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import java.awt.FlowLayout;
+
+import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Dimension;
@@ -50,9 +52,13 @@ public class SettingsPanel extends JPanel {
 
 	public void setSettings(Settings settings){
 		this.settings = settings;
+		
+		getJTextFieldSavePath().setText(this.settings.getProperty(Settings.SAVE_TO_PATH));
 	}
 	
 	public Settings getSettings(){
+		settings.setProperty(Settings.SAVE_TO_PATH, getJTextFieldSavePath().getText());
+		
 		return settings;
 	}
 
@@ -93,7 +99,18 @@ public class SettingsPanel extends JPanel {
 		if (jButtonSavePath == null) {
 			jButtonSavePath = new JButton();
 			jButtonSavePath.setText("...");
+			jButtonSavePath.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					SettingsPanel.this.choosePath();
+				}
+			});
 		}
 		return jButtonSavePath;
 	}
+	
+	private void choosePath(){
+		JFileChooser fc = new JFileChooser();
+		//fc.showDialog(parent, approveButtonText)
+	}
+	
 }  //  @jve:decl-index=0:visual-constraint="10,10"
