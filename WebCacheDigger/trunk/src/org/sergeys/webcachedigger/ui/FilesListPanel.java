@@ -2,6 +2,7 @@ package org.sergeys.webcachedigger.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
@@ -12,14 +13,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
-import javax.swing.ListSelectionModel;
-import java.awt.Dimension;
 
 public class FilesListPanel extends JPanel implements ListSelectionListener {
 
@@ -193,7 +192,6 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		//
 		// @Override
 		// public void run() {
-		// // TODO Auto-generated method stub
 		// FilesListPanel.this.firePropertyChange("selectedfile",
 		// FilesListPanel.this.oldCachedFile,
 		// FilesListPanel.this.getSelectedCachedFile());

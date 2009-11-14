@@ -10,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
-import java.awt.Dimension;
 
 public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 

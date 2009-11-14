@@ -1,3 +1,4 @@
+- sort by date by default
 - settings panel and dialog
 - save/load settings logic, take upgrades in account
 - certificate, sign app for webstart security
@@ -9,6 +10,13 @@
 - only test files larger than certain size
 - show licenses in about
 - add logo to about
+- add new name for copy, edit directly in the table
+- add name of browser to the file
+
+= context menu:
+- select all
+- add selection of all of this type
+- clear all checks
 
 ============
 http://sourceforge.net/projects/mime-util/
