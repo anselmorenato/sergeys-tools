@@ -23,6 +23,8 @@ public class SettingsDialog extends JDialog {
 	private JButton jButtonCancel = null;
 	private SettingsPanel jPanelSettings = null;
 
+	private Settings settings;  //  @jve:decl-index=0:
+	
 	/**
 	 * @param owner
 	 */
@@ -87,7 +89,7 @@ public class SettingsDialog extends JDialog {
 			jButtonSave.setActionCommand(Settings.SAVE_SETTINGS_COMMAND);			
 			jButtonSave.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					doSave();
+					setVisible(false);
 				}
 			});
 		}
@@ -120,13 +122,33 @@ public class SettingsDialog extends JDialog {
 	private SettingsPanel getJPanelSettings() {
 		if (jPanelSettings == null) {
 			jPanelSettings = new SettingsPanel();
-			jPanelSettings.setLayout(new GridBagLayout());
+			//jPanelSettings.setLayout(new GridBagLayout());
 			
 		}
 		return jPanelSettings;
 	}
 	
-	private void doSave(){		
-		setVisible(false);
+//	private void doSave(){		
+//		setVisible(false);
+//	}
+	
+	public void addSaveActionListener(ActionListener l){
+		getJButtonSave().addActionListener(l);
+	}
+
+	/**
+	 * @param settings the settings to set
+	 */
+	public void setSettings(Settings settings) {
+		this.settings = settings;
+		getJPanelSettings().setSettings(this.settings);
+	}
+
+	/**
+	 * @return the settings
+	 */
+	public Settings getSettings() {
+		settings = getJPanelSettings().getSettings();
+		return settings;
 	}
 }  //  @jve:decl-index=0:visual-constraint="10,10"

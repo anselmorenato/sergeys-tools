@@ -10,6 +10,7 @@ import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 
 public class SettingsPanel extends JPanel {
 
@@ -41,9 +42,7 @@ public class SettingsPanel extends JPanel {
 	private void initialize() {
 		jLabel1 = new JLabel();
 		jLabel1.setText("Save files to:");
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.setRows(1);
-		this.setLayout(gridLayout);
+		this.setLayout(new GridBagLayout());
 		this.setSize(618, 200);
 		this.add(jLabel1, null);
 		this.add(getJPanelSavePath(), null);

@@ -36,7 +36,7 @@ import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.InternetExplorer;
 import org.sergeys.webcachedigger.logic.Settings;
 
-public class WebCacheDigger implements WindowListener {
+public class WebCacheDigger implements ActionListener {
 
 	private JFrame jFrame = null;  //  @jve:decl-index=0:visual-constraint="10,10"
 	private JPanel jContentPane = null;
@@ -486,76 +486,23 @@ public class WebCacheDigger implements WindowListener {
 	private SettingsDialog getSettingsDialog(){
 		if(settingsDialog == null){
 			settingsDialog = new SettingsDialog(this.getJFrame());
-			settingsDialog.addWindowListener(this);
+			settingsDialog.addSaveActionListener(this);
 		}
 		settingsDialog.setLocationRelativeTo(getJContentPane());
 		return settingsDialog;
 	}
 	
-	private void editSettings(){		
-		getSettingsDialog().setVisible(true);
+	private void editSettings(){
+		SettingsDialog dlg = getSettingsDialog();
+		dlg.setSettings(settings);
+		dlg.setVisible(true);
 	}
 
-
-	/*
-	public void windowStateChanged(WindowEvent e) {
-		int i = 0;
-		if(e.getWindow() instanceof SettingsDialog){
-			switch(e.getNewState()){
-				case WindowEvent.WINDOW_CLOSING:
-					i = 1;
-					break;				
-			}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getActionCommand() == Settings.SAVE_SETTINGS_COMMAND){
+			JOptionPane.showMessageDialog(getJFrame(), "save settings");
 		}
-	}
-	*/
-
-	@Override
-	public void windowActivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		int i = 0;	
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
-		int i = 0;
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		// TODO Auto-generated method stub
-		int i = 0;
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getWindow() instanceof SettingsDialog){
-			switch(e.getNewState()){
-				case WindowEvent.WINDOW_CLOSING:
-					int i = 1;
-					break;				
-			}
-		}
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-		int i = 0;		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-		int i = 0;
-	}
-
-	@Override
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-		int i = 0;		
-	}
-	
+	}	
 }
