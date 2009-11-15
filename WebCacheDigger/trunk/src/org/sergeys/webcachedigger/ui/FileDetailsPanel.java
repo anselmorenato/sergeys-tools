@@ -19,6 +19,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 	private JLabel jLabel2 = null;
 	private JLabel jLabelFileSize = null;
 	private JButton jButtonPreview = null;
+	private JPanel jPanelPreview = null;
 
 	/**
 	 * This is the default constructor
@@ -34,29 +35,32 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 	 * @return void
 	 */
 	private void initialize() {
+		GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+		gridBagConstraints11.gridx = 1;
+		gridBagConstraints11.gridy = 0;
 		GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 		gridBagConstraints4.gridx = 0;
 		gridBagConstraints4.gridwidth = 3;
-		gridBagConstraints4.gridy = 2;
+		gridBagConstraints4.gridy = 3;
 		GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 		gridBagConstraints3.gridx = 1;
-		gridBagConstraints3.gridy = 1;
+		gridBagConstraints3.gridy = 2;
 		jLabelFileSize = new JLabel();
 		jLabelFileSize.setText("<unknown>");
 		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 		gridBagConstraints2.gridx = 0;
-		gridBagConstraints2.gridy = 1;
+		gridBagConstraints2.gridy = 2;
 		jLabel2 = new JLabel();
 		jLabel2.setText("File size:");
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 		gridBagConstraints1.gridx = 1;
-		gridBagConstraints1.gridwidth = 3;
-		gridBagConstraints1.gridy = 0;
+		//gridBagConstraints1.gridwidth = 2;
+		gridBagConstraints1.gridy = 1;
 		jLabelFileName = new JLabel();
 		jLabelFileName.setText("<unknown>");
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
+		gridBagConstraints.gridy = 1;
 		jLabel1 = new JLabel();
 		jLabel1.setText("File name:");
 		this.setSize(217, 114);
@@ -66,6 +70,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		this.add(jLabel2, gridBagConstraints2);
 		this.add(jLabelFileSize, gridBagConstraints3);
 		this.add(getJButtonPreview(), gridBagConstraints4);
+		this.add(getJPanelPreview(), gridBagConstraints11);
 	}
 
 	/**
@@ -87,7 +92,37 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 			CachedFile file = (CachedFile)evt.getNewValue();
 			jLabelFileName.setText(file.getName());
 			jLabelFileSize.setText(String.valueOf(file.length()));
+			
+			FilePreviewPanel preview = FilePreviewPanel.createFilePreviewPanel(file.getFileType());
+			if(preview != null){
+				preview.setCachedFile(file);							
+				//jPanelPreview = preview;								
+			}
+			else{
+				//jPanelPreview = null;
+				//jPanelPreview = new JPanel();	// empty panel
+			}
+			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+			gridBagConstraints11.gridx = 1;
+			gridBagConstraints11.gridy = 0;
+			this.remove(getJPanelPreview());
+			jPanelPreview = (preview == null) ? new JPanel() : preview; 
+			this.add(getJPanelPreview(), gridBagConstraints11);
+			invalidate();
 		}		
+	}
+
+	/**
+	 * This method initializes jPanelPreview	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanelPreview() {
+		if (jPanelPreview == null) {
+			jPanelPreview = new JPanel();
+			jPanelPreview.setLayout(new GridBagLayout());
+		}
+		return jPanelPreview;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

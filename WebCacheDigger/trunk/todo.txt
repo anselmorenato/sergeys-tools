@@ -4,14 +4,16 @@
 - certificate, sign app for webstart security
 - versioning for jars: find ant task, or write it?
 - versioning for app
-- determine file type by content
-- updatable file signatures list, ability to define own signatures
++- determine file type by content
+- updatable file signatures list
+- ability to define own signatures??
 - remember which files were copied
-- only test files larger than certain size
++- only test files larger than certain size
 - show licenses in about
 - add logo to about
 - add new name for copy, edit directly in the table
 - add name of browser to the file
+- show how many files found/checked
 
 = context menu:
 - select all
