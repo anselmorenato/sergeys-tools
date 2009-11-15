@@ -21,12 +21,15 @@ public class CachedFile extends File {
 		extensionByMimetype = new Hashtable<String, String>();
 		// TODO: any internal audio, video playback?
 		extensionByMimetype.put("video/x-flv", 	"flv");
-		extensionByMimetype.put("audio/mpeg", 	"mp3");	// need more careful detection?
+		extensionByMimetype.put("video/mp4", 	"mp4");
+		
+		extensionByMimetype.put("audio/mpeg", 	"mp3");	// TODO: need more careful detection?
 		
 		// TODO: internal preview?
 		extensionByMimetype.put("image/gif", 	"gif");
 		extensionByMimetype.put("image/jpeg", 	"jpg");
 		extensionByMimetype.put("image/png", 	"png");
+		
 		extensionByMimetype.put("text/html", 	"html");
 	}
 

@@ -23,3 +23,10 @@
 ============
 http://sourceforge.net/projects/mime-util/
 http://www.slf4j.org/index.html
+
+
+
+http://javatrack.blogspot.com/2007/09/playing-flash-video-flv-with-java.html
+http://javatrack.blogspot.com/2009/08/video-in-java-no-more-jmf-please-use.html
+
+http://www.filthyrichclients.org/
