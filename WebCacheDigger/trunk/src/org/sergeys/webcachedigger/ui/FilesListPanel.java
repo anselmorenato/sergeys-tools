@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
@@ -28,23 +29,23 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 
 	private DefaultListSelectionModel foundFilesSelectionModel; // @jve:decl-index=0:
 
-	private CachedFile oldCachedFile;
-	private CachedFile selectedCachedFile; // @jve:decl-index=0:
+//	private CachedFile oldCachedFile;
+//	private CachedFile selectedCachedFile; // @jve:decl-index=0:
 
 	/**
 	 * @return the selectedCachedFile
 	 */
-	public CachedFile getSelectedCachedFile() {
-		return selectedCachedFile;
-	}
+//	public CachedFile getSelectedCachedFile() {
+//		return selectedCachedFile;
+//	}
 
 	/**
 	 * @param selectedCachedFile
 	 *            the selectedCachedFile to set
 	 */
-	public void setSelectedCachedFile(CachedFile selectedCachedFile) {
-		this.selectedCachedFile = selectedCachedFile;
-	}
+//	public void setSelectedCachedFile(CachedFile selectedCachedFile) {
+//		this.selectedCachedFile = selectedCachedFile;
+//	}
 
 	/**
 	 * @return the foundFilesSelectionModel
@@ -175,16 +176,25 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		// TODO: something is wrong. Some events are lost.
-		try {
-			oldCachedFile = getSelectedCachedFile();
-			CachedFile newFile = ((FilesTableModel) getJTableFoundFiles()
-					.getModel()).getCachedFile(e.getFirstIndex());
-			setSelectedCachedFile(newFile);
 
-			firePropertyChange("selectedfile", oldCachedFile, newFile);
-		} catch (ArrayIndexOutOfBoundsException ex) {
-
+		if(!e.getValueIsAdjusting()){
+			try {				
+				//CachedFile oldCachedFile = getSelectedCachedFile();
+				
+				int rowNo = getJTableFoundFiles().getSelectedRow();
+				int modelRowNo = getJTableFoundFiles()
+					.convertRowIndexToModel(rowNo);
+				
+				CachedFile newFile = ((FilesTableModel) getJTableFoundFiles()
+						.getModel()).getCachedFile(modelRowNo);
+				//setSelectedCachedFile(newFile);
+	
+				//firePropertyChange("selectedfile", oldCachedFile, newFile);
+				firePropertyChange("selectedfile", null, newFile);
+				
+			} catch (ArrayIndexOutOfBoundsException ex) {
+	
+			}
 		}
 
 		// TODO: make named constant
