@@ -28,6 +28,7 @@ public class Firefox extends AbstractBrowser {
 		// paths.add("userdir: " + userDir);
 
 		// TODO: Windows specific path
+		// Firefox 3 at XP, Windows 7 OK
 		String profilesDirPath = userHome
 				+ File.separator
 				+ "Local Settings\\Application Data\\Mozilla\\Firefox\\Profiles";

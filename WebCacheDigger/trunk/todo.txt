@@ -13,6 +13,7 @@
 +- only test files larger than certain size
 - show licenses in about
 - add logo to about
+- icon for application
 - add new name for copy, edit directly in the table
 - add name of browser to the file
 - show how many files found/checked
