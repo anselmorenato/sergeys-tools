@@ -85,4 +85,9 @@ public class InternetExplorer extends AbstractBrowser {
 
 		return files;
 	}
+
+	@Override
+	public String getName() {
+		return "Internet Explorer";
+	}
 }

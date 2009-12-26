@@ -1,5 +1,7 @@
+= main window
 - sort by date by default
-- settings panel and dialog
+- indicate progress on search, sorting, copying
+
 - save/load settings logic, take upgrades in account
 - certificate, sign app for webstart security
 - versioning for jars: find ant task, or write it?
@@ -14,6 +16,11 @@
 - add new name for copy, edit directly in the table
 - add name of browser to the file
 - show how many files found/checked
+- move text to resources, support localization
+- determine preferred language from browser settings
+
+- show copying progress
+- ask before overwrite file while copying
 
 = context menu:
 - select all

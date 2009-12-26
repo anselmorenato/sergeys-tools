@@ -1,6 +1,5 @@
 package org.sergeys.webcachedigger.ui;
 
-import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 
 import org.sergeys.webcachedigger.logic.CachedFile;

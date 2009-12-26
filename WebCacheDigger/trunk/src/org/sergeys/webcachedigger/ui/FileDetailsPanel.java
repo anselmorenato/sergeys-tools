@@ -1,5 +1,6 @@
 package org.sergeys.webcachedigger.ui;
 
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.beans.PropertyChangeEvent;
@@ -10,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
+import javax.swing.border.SoftBevelBorder;
 
 public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 
@@ -38,6 +40,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 		gridBagConstraints11.gridx = 1;
 		gridBagConstraints11.gridy = 0;
+		gridBagConstraints11.fill = GridBagConstraints.BOTH; 
 		GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 		gridBagConstraints4.gridx = 0;
 		gridBagConstraints4.gridwidth = 3;
@@ -65,6 +68,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		jLabel1.setText("File name:");
 		this.setSize(217, 114);
 		this.setLayout(new GridBagLayout());
+		this.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
 		this.add(jLabel1, gridBagConstraints);
 		this.add(jLabelFileName, gridBagConstraints1);
 		this.add(jLabel2, gridBagConstraints2);
@@ -88,7 +92,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {		
-		if(evt.getPropertyName() == "selectedfile"){
+		if(evt.getPropertyName() == CachedFile.SELECTED_FILE){
 			CachedFile file = (CachedFile)evt.getNewValue();
 			jLabelFileName.setText(file.getName());
 			jLabelFileSize.setText(String.valueOf(file.length()));
@@ -105,6 +109,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			gridBagConstraints11.gridx = 1;
 			gridBagConstraints11.gridy = 0;
+			gridBagConstraints11.fill = GridBagConstraints.BOTH;
 			this.remove(getJPanelPreview());
 			jPanelPreview = (preview == null) ? new JPanel() : preview; 
 			this.add(getJPanelPreview(), gridBagConstraints11);
@@ -120,9 +125,10 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 	private JPanel getJPanelPreview() {
 		if (jPanelPreview == null) {
 			jPanelPreview = new JPanel();
-			jPanelPreview.setLayout(new GridBagLayout());
+			jPanelPreview.setLayout(new FlowLayout());
 		}
 		return jPanelPreview;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"
+

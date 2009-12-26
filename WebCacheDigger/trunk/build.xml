@@ -1,22 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="jar">
+<project default="all">
 
-	<target name="jar">
-		<mkdir dir="jar" />
-		<jar destfile="jar/webcachedigger1.0.2.jar" basedir="bin">
-			<manifest>
-				<attribute name="Main-Class" value="org.sergeys.webcachedigger.ui.WebCacheDigger" />
-			</manifest>
+	<property name="dist.dir" value="jar"/>
+	<property name="work.dir" value="${dist.dir}/tmp"/>
+	
+	<property name="main-class" value="org.sergeys.webcachedigger.ui.WebCacheDigger"/>
+	
+	<property name="keystore.file" value="${work.dir}/.keystore"/>
+	<property name="keystore.alias" value="sergey.selivanov"/>
+	<property name="keystore.password" value="password"/>
+	
+	<property name="properties.file" value="build.properties"/>
+			
+	
+	<target name="init">
+		<property file="${properties.file}"></property>
+	</target>
+	
+	<target name="all" depends="init, logic, ui">
+	</target>
+	
+	<target name="logic" depends="logic-jar, copy-logic-jar">
+	</target>
+	
+	<target name="ui" depends="ui-jar">
+	</target>
+	
+	<target name="check-logic-jar-changed">		
+		<echo>compare ${dist.dir}/logic.${logic.revision}.jar</echo>
+		<condition property="logic.jar.changed">
+			<not>
+			 <filesmatch file1="${work.dir}/logic.jar" file2="${dist.dir}/logic.${logic.revision}.jar" />
+			</not>
+		</condition>		
+	</target>
+		
+	<target name="copy-logic-jar" if="logic.jar.changed" depends="check-logic-jar-changed">
+		<echo>logic.jar.changed: ${logic.jar.changed}</echo>
+	    <!--				
+		<delete file="${dist.dir}/logic.${logic.revision}.jar"></delete>
+		-->
+		<copy 
+		  file="${work.dir}/logic.jar" 
+		  tofile="${dist.dir}/logic.${logic.revision.next}.jar"
+		  overwrite="true"
+		/>		
+		<echo>updated ${dist.dir}/logic.${logic.revision.next}.jar</echo>
+        <propertyfile file="${properties.file}">
+            <entry key="logic.revision" type="int" default="0" operation="+" /> 
+            <entry key="logic.revision.next" type="int" default="1" operation="+" />
+        </propertyfile>
+		
+	</target>
+	
+	<target name="logic-jar" depends="create-key">
+		<mkdir dir="${work.dir}" />
+		<jar destfile="${work.dir}/logic.unsigned.jar" basedir="bin"
+			includes="org/sergeys/webcachedigger/logic/**/*.class" 			
+			index="true">			
 		</jar>
-		<echo>packed</echo>
-		<!-- signjar>
-		</signjar -->
-		<echo>TODO: signed</echo>
+		<echo>${work.dir}/logic.jar packed</echo>
+		 
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}"
+		    storepass="${keystore.password}"			 
+			jar="${work.dir}/logic.unsigned.jar"
+			signedjar="${work.dir}/logic.jar"
+			verbose="true"
+			>
+		</signjar>
+		<echo>${work.dir}/logic.jar signed</echo>
+		
 	</target>
-<!-- TODO: leave directory
+
+    <target name="ui-jar" >
+        <mkdir dir="${work.dir}" />
+        <jar destfile="${work.dir}/ui.jar" basedir="bin"
+            includes="org/sergeys/webcachedigger/ui/**/*.class"
+        	index="true">
+        	<manifest>
+                <attribute name="Main-Class" value="${main-class}" />
+            </manifest>
+        </jar>
+    </target>
+	
+	<target name="check-key">
+		<available file="${keystore.file}" property="keystore.file.exists"></available>
+	</target>
+	
+	<target name="create-key" depends="check-key" unless="keystore.file.exists">
+		<mkdir dir="${work.dir}" />
+    	<genkey keystore="${keystore.file}" alias="${keystore.alias}"
+    		validity="365"
+    		storepass="${keystore.password}">
+    	  <dname>
+    	    <param name="CN" value="CN"/>
+    	    <param name="OU" value="OU"/>
+    	    <param name="O"  value="O"/>
+    	    <param name="C"  value="UA"/>
+    	  </dname>
+    	</genkey>
+	</target>
+	
 	<target name="clean">
-		<delete dir="jar" />
 	</target>
-	-->
+	
 </project>
 

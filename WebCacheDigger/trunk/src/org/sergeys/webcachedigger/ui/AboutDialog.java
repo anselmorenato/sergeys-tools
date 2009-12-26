@@ -14,6 +14,9 @@ import java.awt.Dimension;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+
+import org.sergeys.webcachedigger.logic.CachedFile;
+
 import java.awt.FlowLayout;
 
 public class AboutDialog extends JDialog {
@@ -138,7 +141,7 @@ public class AboutDialog extends JDialog {
 			gridBagConstraints2.gridx = 0;
 			gridBagConstraints2.gridy = 1;
 			jLabelVersion = new JLabel();
-			jLabelVersion.setText("Nov 14 2009");
+			jLabelVersion.setText("Dec 2 2009: " + CachedFile.junkMessage());
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.gridx = 0;
 			gridBagConstraints1.gridy = 0;

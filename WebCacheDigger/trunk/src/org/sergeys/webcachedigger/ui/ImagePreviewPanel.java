@@ -1,14 +1,15 @@
 package org.sergeys.webcachedigger.ui;
 
-import java.awt.GridBagLayout;
-
-import org.sergeys.webcachedigger.logic.CachedFile;
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import java.awt.GridBagConstraints;
+import javax.swing.SwingConstants;
+
+import org.sergeys.webcachedigger.logic.CachedFile;
 
 public class ImagePreviewPanel extends FilePreviewPanel {
 
@@ -19,11 +20,13 @@ public class ImagePreviewPanel extends FilePreviewPanel {
 	
 	private void initialize() {
 		jLabelImage = new JLabel();
-		jLabelImage.setText("JLabel");
+		jLabelImage.setText("<image>");
+		jLabelImage.setHorizontalTextPosition(SwingConstants.CENTER);
+		jLabelImage.setHorizontalAlignment(SwingConstants.CENTER);
 		this.setLayout(new BorderLayout());
 		this.setSize(300, 200);
-		this.add(jLabelImage, BorderLayout.CENTER);
 		this.add(getJPanelBottom(), BorderLayout.SOUTH);
+		this.add(getJPanelCenter(), BorderLayout.CENTER);
 	}
 	
 	/* (non-Javadoc)
@@ -33,7 +36,14 @@ public class ImagePreviewPanel extends FilePreviewPanel {
 	public void setCachedFile(CachedFile cachedFile) {
 		
 		super.setCachedFile(cachedFile);
-		ImageIcon imageIcon = new ImageIcon(cachedFile.getAbsolutePath()); 
+		ImageIcon imageIcon = new ImageIcon(cachedFile.getAbsolutePath());
+		
+		// TODO: scale down large image. 
+		
+//		int w = imageIcon.getIconWidth();
+//		int h = imageIcon.getIconHeight();						
+//		Image img = imageIcon.getImage();
+		//imageIcon.setImage(img.getScaledInstance(100, 100, Image.SCALE_DEFAULT));
 		jLabelImage.setIcon(imageIcon);
 	}
 
@@ -47,6 +57,7 @@ public class ImagePreviewPanel extends FilePreviewPanel {
 	private JLabel jLabelImageFormat = null;
 	private JLabel jLabel2 = null;
 	private JLabel jLabelImageSize = null;
+	private JPanel jPanelCenter = null;
 	/**
 	 * This method initializes jPanelBottom	
 	 * 	
@@ -79,6 +90,22 @@ public class ImagePreviewPanel extends FilePreviewPanel {
 			jPanelBottom.add(jLabelImageSize, gridBagConstraints2);
 		}
 		return jPanelBottom;
+	}
+
+	/**
+	 * This method initializes jPanelCenter	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanelCenter() {
+		if (jPanelCenter == null) {
+			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+			gridBagConstraints3.fill = GridBagConstraints.BOTH;
+			jPanelCenter = new JPanel();
+			jPanelCenter.setLayout(new GridBagLayout());
+			jPanelCenter.add(jLabelImage, gridBagConstraints3);
+		}
+		return jPanelCenter;
 	}
 
 	

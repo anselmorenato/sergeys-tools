@@ -12,6 +12,11 @@ import eu.medsea.mimeutil.MimeUtil;
 
 public class CachedFile extends File {
 
+	/**
+	 * Property names for PropertyChangeEvent listeners
+	 */
+	public static final String SELECTED_FILE = "SELECTED_FILE";
+	
 	private static Hashtable<String, String> extensionByMimetype;
 
 	static {
@@ -25,12 +30,13 @@ public class CachedFile extends File {
 		
 		extensionByMimetype.put("audio/mpeg", 	"mp3");	// TODO: need more careful detection?
 		
-		// TODO: internal preview?
+		// TODO: internal preview
 		extensionByMimetype.put("image/gif", 	"gif");
 		extensionByMimetype.put("image/jpeg", 	"jpg");
 		extensionByMimetype.put("image/png", 	"png");
 		
-		extensionByMimetype.put("text/html", 	"html");
+		//extensionByMimetype.put("text/html", 	"html");
+		extensionByMimetype.put("application/pdf", 	"pdf");
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -107,4 +113,7 @@ public class CachedFile extends File {
 		return selectedToCopy;
 	}
 
+	public static String junkMessage(){		
+		return "test version 1.";
+	}
 }

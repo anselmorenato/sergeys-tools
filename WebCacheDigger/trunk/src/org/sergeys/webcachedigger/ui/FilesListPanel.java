@@ -1,20 +1,14 @@
 package org.sergeys.webcachedigger.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
@@ -123,51 +117,51 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		getFoundFilesSelectionModel().addListSelectionListener(this);
 	}
 
-	private void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() == 2) {
-			//
-
-			int rowNo = getJTableFoundFiles().getSelectedRow();
-			int modelRowNo = getJTableFoundFiles()
-					.convertRowIndexToModel(rowNo);
-			FilesTableModel model = (FilesTableModel) getJTableFoundFiles()
-					.getModel();
-			CachedFile cf = model.getCachedFile(modelRowNo);
-
-			// MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-			// Collection mt = MimeUtil.getMimeTypes(cf);
-
-			String msg = String
-					.format("%s\n%s", cf.getName(), cf.getFileType());
-			JOptionPane.showMessageDialog(this, msg);
-
-			// if(CachedFile.extensionByMimetype.containsKey(cf.getFileType())){
-			if (cf.guessExtension() != null) {
-				try {
-					// File tmp = File.createTempFile("wcd", "." +
-					// CachedFile.extensionByMimetype.get(cf.getFileType()));
-					File tmp = File.createTempFile("wcd", "."
-							+ cf.guessExtension());
-					CachedFile.copyFile(cf, tmp);
-					Desktop.getDesktop().open(tmp);
-					if (JOptionPane.showConfirmDialog(this, "Delete temp file "
-							+ tmp.getAbsolutePath() + "?") == JOptionPane.YES_OPTION) {
-						tmp.delete();
-					}
-
-				} catch (IOException ex) {
-					JOptionPane.showMessageDialog(this,
-							"Failed to preview file: " + ex.getMessage());
-					ex.printStackTrace();
-				}
-			}
-
-			// copy file
-			// File.createTempFile("wcd", suffix)
-
-			// Desktop.getDesktop().open(cf);
-		}
-	}
+//	private void mouseClicked(MouseEvent e) {
+//		if (e.getClickCount() == 2) {
+//			//
+//
+//			int rowNo = getJTableFoundFiles().getSelectedRow();
+//			int modelRowNo = getJTableFoundFiles()
+//					.convertRowIndexToModel(rowNo);
+//			FilesTableModel model = (FilesTableModel) getJTableFoundFiles()
+//					.getModel();
+//			CachedFile cf = model.getCachedFile(modelRowNo);
+//
+//			// MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
+//			// Collection mt = MimeUtil.getMimeTypes(cf);
+//
+//			String msg = String
+//					.format("%s\n%s", cf.getName(), cf.getFileType());
+//			JOptionPane.showMessageDialog(this, msg);
+//
+//			// if(CachedFile.extensionByMimetype.containsKey(cf.getFileType())){
+//			if (cf.guessExtension() != null) {
+//				try {
+//					// File tmp = File.createTempFile("wcd", "." +
+//					// CachedFile.extensionByMimetype.get(cf.getFileType()));
+//					File tmp = File.createTempFile("wcd", "."
+//							+ cf.guessExtension());
+//					CachedFile.copyFile(cf, tmp);
+//					Desktop.getDesktop().open(tmp);
+//					if (JOptionPane.showConfirmDialog(this, "Delete temp file "
+//							+ tmp.getAbsolutePath() + "?") == JOptionPane.YES_OPTION) {
+//						tmp.delete();
+//					}
+//
+//				} catch (IOException ex) {
+//					JOptionPane.showMessageDialog(this,
+//							"Failed to preview file: " + ex.getMessage());
+//					ex.printStackTrace();
+//				}
+//			}
+//
+//			// copy file
+//			// File.createTempFile("wcd", suffix)
+//
+//			// Desktop.getDesktop().open(cf);
+//		}
+//	}
 
 	public List<CachedFile> getCachedFiles() {
 		return ((FilesTableModel) getJTableFoundFiles().getModel())
@@ -190,24 +184,12 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 				//setSelectedCachedFile(newFile);
 	
 				//firePropertyChange("selectedfile", oldCachedFile, newFile);
-				firePropertyChange("selectedfile", null, newFile);
+				firePropertyChange(CachedFile.SELECTED_FILE, null, newFile);
 				
 			} catch (ArrayIndexOutOfBoundsException ex) {
 	
 			}
 		}
-
-		// TODO: make named constant
-		// SwingUtilities.invokeLater(new Runnable(){
-		//
-		// @Override
-		// public void run() {
-		// FilesListPanel.this.firePropertyChange("selectedfile",
-		// FilesListPanel.this.oldCachedFile,
-		// FilesListPanel.this.getSelectedCachedFile());
-		// }
-		//			
-		// });
 	}
 
 } // @jve:decl-index=0:visual-constraint="10,10"

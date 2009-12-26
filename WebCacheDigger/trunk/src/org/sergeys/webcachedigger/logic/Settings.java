@@ -23,6 +23,11 @@ public class Settings extends Properties {
 	// property keys
 	public static final String SAVE_TO_PATH = "SAVE_TO_PATH";
 	public static final String MIN_FILE_SIZE_BYTES = "MIN_FILE_SIZE_BYTES";
+	public static final String WINDOW_X = "WINDOW_X";
+	public static final String WINDOW_Y = "WINDOW_Y";
+	public static final String WINDOW_W = "WINDOW_W";
+	public static final String WINDOW_H = "WINDOW_H";
+	public static final String SPLITTER_POS = "SPLITTER_POS";
 	
 //	private Hashtable<String, String> settings = new Hashtable<String, String>();
 //	
@@ -83,6 +88,13 @@ public class Settings extends Properties {
 		//return (value == null) ? null : Integer.parseInt(value);				
 		return Integer.parseInt(getProperty(key));
 	}
+
+	public int getIntProperty(String key, int defaultValue){		
+		if(!this.containsKey(key)){
+			this.setIntProperty(key, defaultValue);			
+		}
+		return Integer.parseInt(getProperty(key));
+	}
 	
 	public void setIntProperty(String key, int value){
 		setProperty(key, String.valueOf(value));
@@ -94,3 +106,4 @@ public class Settings extends Properties {
 	}
 	
 }
+

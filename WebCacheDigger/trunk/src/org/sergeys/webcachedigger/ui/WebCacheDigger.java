@@ -120,8 +120,7 @@ public class WebCacheDigger implements ActionListener {
 			jSplitPaneMain.setRightComponent(getJPanelFileDetails());
 			jSplitPaneMain.setLeftComponent(getJPanelFoundFiles());
 			
-			//getFilesListPanel().addPropertyChangeListener("selectedfile", getJPanelFileDetails());
-			getFilesListPanel().addPropertyChangeListener("selectedfile", (PropertyChangeListener)getJPanelFileDetails());
+			getFilesListPanel().addPropertyChangeListener(CachedFile.SELECTED_FILE, (PropertyChangeListener)getJPanelFileDetails());
 		}
 		return jSplitPaneMain;
 	}
@@ -224,15 +223,28 @@ public class WebCacheDigger implements ActionListener {
 				
 				JFrame mainWindow = application.getJFrame(); 
 				
-				// TODO: set size and position of main window here 
-				
+				// set size and position of main window				
 				Dimension desktop = Toolkit.getDefaultToolkit().getScreenSize();
+								
+				int x = (desktop.width - mainWindow.getWidth())/2;
+				int y = (desktop.height - mainWindow.getHeight())/2;
+				int w = mainWindow.getWidth();
+				int h = mainWindow.getHeight();
+				int divpos = application.getJSplitPaneMain().getDividerLocation();
+				try {
+					x = application.getSettings().getIntProperty(Settings.WINDOW_X, x);
+					y = application.getSettings().getIntProperty(Settings.WINDOW_Y, y);
+					w = application.getSettings().getIntProperty(Settings.WINDOW_W, w);
+					h = application.getSettings().getIntProperty(Settings.WINDOW_H, h);
+					divpos = application.getSettings().getIntProperty(Settings.SPLITTER_POS, divpos);
+				} catch (IOException e) {					
+					e.printStackTrace();
+				} 				
 				
-				mainWindow.setLocation((desktop.width-mainWindow.getWidth())/2,
-						(desktop.height-mainWindow.getHeight())/2);				
-				mainWindow.setVisible(true);
-				
-				
+				mainWindow.setLocation(x, y);
+				mainWindow.setSize(w, h);
+				application.getJSplitPaneMain().setDividerLocation(divpos);
+				mainWindow.setVisible(true);								
 			}
 		});
 	}
@@ -337,8 +349,8 @@ public class WebCacheDigger implements ActionListener {
 			exitMenuItem = new JMenuItem();
 			exitMenuItem.setText("Exit");
 			exitMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					System.exit(0);
+				public void actionPerformed(ActionEvent e) {					
+					WebCacheDigger.this.exit();
 				}
 			});
 		}
@@ -494,4 +506,20 @@ public class WebCacheDigger implements ActionListener {
 		return copied;
 	}
 
+	private void exit(){
+		// save window position
+		JFrame mainWindow = getJFrame();
+		try {
+			getSettings().setIntProperty(Settings.WINDOW_X, mainWindow.getX());
+			getSettings().setIntProperty(Settings.WINDOW_Y, mainWindow.getY());
+			getSettings().setIntProperty(Settings.WINDOW_W, mainWindow.getWidth());
+			getSettings().setIntProperty(Settings.WINDOW_H, mainWindow.getHeight());
+			getSettings().setIntProperty(Settings.SPLITTER_POS, getJSplitPaneMain().getDividerLocation());
+			getSettings().save();
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+				
+		System.exit(0);
+	}
 }
