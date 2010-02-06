@@ -3,6 +3,12 @@
   require_once("settings.inc.php");
   require_once("header.inc.php");
 ?>
-Hello there.<br/>
+Hello there.
+<br/>
+<br/>
+<a href="http://baccara.livejournal.com">baccara</a>
+<br/>
+<br/>
 <a href="pinfo.php">php info</a>
+
 <?php require_once("footer.inc.php");?>

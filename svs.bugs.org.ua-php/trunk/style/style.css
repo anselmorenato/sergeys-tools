@@ -1,1 +1,51 @@
 @CHARSET "ISO-8859-1";
+
+html, body{
+    margin: 0px;
+    padding: 0px;
+       	
+}
+
+body{
+    font: 14px;
+    font-family:georgia,serif;
+    border: none;
+}
+
+div#doc{	
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+a#homelogolink{
+    color: white;
+    text-decoration: none;
+    
+    background-color: transparent;
+    font-family:georgia,serif;  		
+}
+
+div#header{
+	text-align: left;
+	background: url("/images/header-bkgr.png");	
+	
+	height: 50px;
+	margin: 0 0px;	
+}
+
+div#homelogo{
+	margin: 10px;
+}
+
+div#main{
+	text-align: left;
+	margin-top: 15px;
+	font-family:georgia,serif;
+}
+
+div#footer{
+	text-align: center;	
+	margin-top: 15px;
+	
+	font-family:georgia,serif;
+}
