@@ -1,8 +1,8 @@
-<?php print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");?>
+<?php print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <title><?php hprint($page_title); ?></title>
+    <title><?php print($page_title); ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="/style/style.css" rel="stylesheet" type="text/css" />
     <!-- 
@@ -29,12 +29,13 @@
     if(window != window.top){
       top.location.href = location.href;
     }
-
+<?php 
       /**
        * Function positions elements on the page
        * by setting width and height of the "content" element.
        * It is called when window.onload and window.onresize fired.
        */
+?>
       function onResize(){
         var content = null;
         var container = false;
