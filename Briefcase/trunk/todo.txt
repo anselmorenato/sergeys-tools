@@ -1,2 +1,3 @@
 - machine-to-machine mode;
 - sync ascii files via google docs, (with encryption?), via other inet storage sites
+- more
