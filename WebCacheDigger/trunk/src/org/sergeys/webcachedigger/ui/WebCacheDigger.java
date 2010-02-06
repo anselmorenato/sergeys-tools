@@ -393,6 +393,9 @@ public class WebCacheDigger implements ActionListener {
 		
 		try {
 			ArrayList<IBrowser> browsers = new ArrayList<IBrowser>();
+			
+			//Class.forName(arg0)
+			
 			browsers.add(new Firefox());
 			browsers.add(new InternetExplorer());
 			FileCollector fileCollector = new FileCollector(browsers);

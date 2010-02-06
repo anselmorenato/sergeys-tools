@@ -1,3 +1,4 @@
+
 = main window
 - sort by date by default
 - indicate progress on search, sorting, copying

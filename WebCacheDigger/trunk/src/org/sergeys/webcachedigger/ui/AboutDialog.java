@@ -1,23 +1,21 @@
 package org.sergeys.webcachedigger.ui;
 
-import javax.swing.JPanel;
-import java.awt.Frame;
 import java.awt.BorderLayout;
-import javax.swing.JDialog;
-import javax.swing.JTabbedPane;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import java.awt.GridBagConstraints;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
-import java.awt.Dimension;
-import javax.swing.JTextArea;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-
-import org.sergeys.webcachedigger.logic.CachedFile;
-
-import java.awt.FlowLayout;
+import javax.swing.JTextArea;
 
 public class AboutDialog extends JDialog {
 
