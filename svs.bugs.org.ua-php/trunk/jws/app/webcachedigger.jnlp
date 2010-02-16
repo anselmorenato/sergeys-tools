@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp codebase="http://svs.bugz.org.ua/jws/app" href="webcachedigger.jnlp">
+	<information>
+		<title>Web Cache Digger</title>
+		<vendor>Sergey Selivanov</vendor>
+		<description>Extracts files from browser cache</description>
+		<!--
+		<icon href="images/icon.gif" />
+		   -->
+	</information>
+	<resources>
+		<j2se version="1.6+" />
+		<jar href="ui.jar" />
+		<jar href="logic.7.jar" />
+		<jar href="mime-util-2.1.2.jar" />
+		<jar href="slf4j-api-1.5.8.jar" />
+		<jar href="slf4j-jdk14-1.5.8.jar" />
+	</resources>
+	<application-desc />
+	<offline-allowed />
+	<update policy="prompt-update" />
+</jnlp>
