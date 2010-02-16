@@ -34,16 +34,26 @@ div#header{
 }
 
 div#homelogo{
-	margin: 10px;
+	width: 100px;
+	margin: 0px;
 }
 
+div#homelink{
+    
+    margin: 10px;
+}
+
+
 div#main{
+	
+	
 	text-align: left;
 	margin-top: 15px;
 	font-family:georgia,serif;
 }
 
 div#footer{
+	
 	text-align: center;	
 	margin-top: 15px;
 	
