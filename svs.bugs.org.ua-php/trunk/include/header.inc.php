@@ -9,25 +9,21 @@
 <head>
 <title><?php print($page_title); ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="/style/style.css" rel="stylesheet" type="text/css" /> 
+<link href="/style/style.css" rel="stylesheet" type="text/css" />  
 <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+<script type="text/javascript" src="/js/common.js"></script>
 </head>
 <body id="body">
-<div id="wrapper">
-	<div id="doc">
+<script language="javascript" type="text/javascript">
+//alert('header');
+</script>
+    <div id="wrapper">     
 		<div id="header">
 <!--		  <div id="homelogo">-->
 <!--		      <img src="/images/omoide.png" />-->
 <!--		  </div>-->
 		  <div id="homelink">		  
-		      <a id="homelogolink" href="http://svs.bugz.org.ua/index.php">svs.bugz.org.ua</a>
+		      <a id="homelogolink" href="/index.php">svs.bugz.org.ua</a>
 		  </div>		  
 		</div>
 		<div id="main">
-<?php /* 		
-		</div><!-- main -->
-		<div id="sidebar"></div>
-		<div id="footer"></div>
-    </div>
-</div>
-*/ ?>
