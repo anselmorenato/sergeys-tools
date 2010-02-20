@@ -3,10 +3,13 @@
   require_once("settings.inc.php");
   require_once("header.inc.php");
 ?>
-Hello there.
+Привет.
 <br/>
 <br/>
 <a href="http://baccara.livejournal.com">baccara</a>
+<br/>
+<br/>
+<a href="useful-software.php">рекомендуемый софт</a>
 <br/>
 <br/>
 <a href="jws/index.php">webstart applications</a>
