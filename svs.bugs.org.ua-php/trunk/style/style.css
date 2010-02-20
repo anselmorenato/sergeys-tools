@@ -1,36 +1,36 @@
 @CHARSET "ISO-8859-1";
 
-html, body{
+/*html, body{*/
+* {
     margin: 0px;
     padding: 0px;
-       	
 }
 
 body{
     font: 14px;
     font-family:georgia,serif;
     border: none;
+    
 }
 
-div#doc{	
-	margin-left: 20px;
-	margin-right: 20px;
+div#wrapper{	
+    width: 100%;
 }
 
 a#homelogolink{
     color: white;
     text-decoration: none;
-    
     background-color: transparent;
     font-family:georgia,serif;  		
 }
 
 div#header{
-	text-align: left;
-	background: url("/images/header-bkgr.png");	
 	
+    top: 0;
+	text-align: left;
+	background: url("/images/header-bkgr.png");		
 	height: 50px;
-	margin: 0 0px;	
+		
 }
 
 div#homelogo{
@@ -39,23 +39,28 @@ div#homelogo{
 }
 
 div#homelink{
-    
-    margin: 10px;
+    margin-left: 20px;        
 }
-
 
 div#main{
-	
-	
+	float: none;
 	text-align: left;
-	margin-top: 15px;
+	/*margin-top: 15px;*/
+	margin-left: 20px;
+    margin-right: 20px;
 	font-family:georgia,serif;
 }
 
-div#footer{
-	
+div#footer{	
 	text-align: center;	
-	margin-top: 15px;
-	
+	/*margin-top: 15px;*/	
 	font-family:georgia,serif;
 }
+/*div#footer p{vertical-align:bottom; padding:2px; margin:0px; color:White;}*/
+
+/* Footer
+div#footer{ min-width:1000px;text-align:center; border-top:solid 2px #2599FF; background-color:Black; line-height:20px; float:none; clear:both;}
+div#footer p{vertical-align:bottom; padding:2px; margin:0px; color:White;}
+div#footer a{color: White; text-decoration: underline;}
+div#footer a:hover{text-decoration: none;}
+ End footer */
