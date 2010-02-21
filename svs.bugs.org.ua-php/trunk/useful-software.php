@@ -7,9 +7,8 @@
 <a href="index.php">home</a>
 <br/>
 <br/>
-<!--<a href="app/webcachedigger.jnlp" onclick="alert('Not yet.'); return false;">WebCacheDigger</a>-->
 
-InfraRecorder
+InfraRecorder, ImgBurn
 <br/>
 BlogBridge
 <br/>
@@ -38,6 +37,10 @@ Firefox, OpenOffice, VLC media player
 Thunderbird + Lightning (Google, Yahoo calendars)
 <br/>
 Gajim (ICQ, Messenger gateways, GoogleTalk)
+<br/>
+Easy Duplicate Finder
+<br/>
+MetarWeather, gismeteo
 <br/>
 
 <?php require_once("footer.inc.php");?>
