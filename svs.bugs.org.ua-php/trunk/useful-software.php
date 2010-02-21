@@ -4,7 +4,7 @@
   $page_title .= " - рекомендуемый софт";
   require_once("header.inc.php");
 ?>
-<a href="../index.php">home</a>
+<a href="index.php">home</a>
 <br/>
 <br/>
 <!--<a href="app/webcachedigger.jnlp" onclick="alert('Not yet.'); return false;">WebCacheDigger</a>-->
@@ -17,7 +17,7 @@ JDiskReport
 <br/>
 CCleaner
 <br/>
-Defraggler
+Defraggler, JkDefrag/MyDefrag
 <br/>
 BOINC
 <br/>
@@ -33,7 +33,11 @@ LastPass
 <br/>
 Privoxy
 <br/>
-Firefox, Thunderbird, OpenOffice, VLC
+Firefox, OpenOffice, VLC media player
+<br/>
+Thunderbird + Lightning (Google, Yahoo calendars)
+<br/>
+Gajim (ICQ, Messenger gateways, GoogleTalk)
 <br/>
 
 <?php require_once("footer.inc.php");?>

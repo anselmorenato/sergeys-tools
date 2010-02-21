@@ -15,10 +15,8 @@
     </div>
     
 <script language="javascript" type="text/javascript">
-//alert('ololo');
-window.onresize = function(){onResize();}; 
-onResize();
-
+  window.onresize = function(){onResize();}; 
+  onResize();
 </script>
     
 </body>

@@ -14,16 +14,21 @@
 <script type="text/javascript" src="/js/common.js"></script>
 </head>
 <body id="body">
+<?php /*
 <script language="javascript" type="text/javascript">
 //alert('header');
 </script>
-    <div id="wrapper">     
+*/?>
+    <div id="wrapper">
+         
 		<div id="header">
 <!--		  <div id="homelogo">-->
 <!--		      <img src="/images/omoide.png" />-->
 <!--		  </div>-->
-		  <div id="homelink">		  
-		      <a id="homelogolink" href="/index.php">svs.bugz.org.ua</a>
-		  </div>		  
+		  		  &nbsp;
 		</div>
+        <div id="homelink">         
+              <a id="homelogolink" href="http://svs.bugz.org.ua/index.php">svs.bugz.org.ua</a>
+        </div>
+		
 		<div id="main">

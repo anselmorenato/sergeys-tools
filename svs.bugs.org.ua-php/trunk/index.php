@@ -6,7 +6,7 @@
 Привет.
 <br/>
 <br/>
-<a href="http://baccara.livejournal.com">baccara</a>
+<img src="images/userinfo.gif"><a href="http://baccara.livejournal.com"></img>baccara</a>
 <br/>
 <br/>
 <a href="useful-software.php">рекомендуемый софт</a>
@@ -20,4 +20,10 @@
 
 <a href="pinfo.php">php info</a>
 */ ?>
+
+<a href="test.php">test</a>
+<br/>
+<br/>
+
+
 <?php require_once("footer.inc.php");?>
