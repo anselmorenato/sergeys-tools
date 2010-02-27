@@ -1,4 +1,4 @@
-package org.sergeys.coverfinder;
+package org.sergeys.coverfinder.ui;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
@@ -17,10 +17,11 @@ import javax.swing.JMenu;
 import javax.swing.JFrame;
 import javax.swing.JDialog;
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
 
 public class CoverFinder {
 
-	private JFrame jFrame = null;
+	private JFrame jFrame = null;  //  @jve:decl-index=0:visual-constraint="10,10"
 	private JPanel jContentPane = null;
 	private JMenuBar jJMenuBar = null;
 	private JMenu fileMenu = null;
@@ -32,14 +33,37 @@ public class CoverFinder {
 	private JMenuItem copyMenuItem = null;
 	private JMenuItem pasteMenuItem = null;
 	private JMenuItem saveMenuItem = null;
-	private JDialog aboutDialog = null;  //  @jve:decl-index=0:visual-constraint="10,220"
-	private JPanel aboutContentPane = null;
-	private JLabel aboutVersionLabel = null;
+	private JPanel jAlbumListPanel = null;
+	private JPanel jActionPanel = null;
+	/**
+	 * This method initializes jAlbumListPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJAlbumListPanel() {
+		if (jAlbumListPanel == null) {
+			jAlbumListPanel = new AlbumListPanel();			
+		}
+		return jAlbumListPanel;
+	}
+
+	/**
+	 * This method initializes jActionPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJActionPanel() {
+		if (jActionPanel == null) {
+			jActionPanel = new ActionPanel();			
+		}
+		return jActionPanel;
+	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				CoverFinder application = new CoverFinder();
@@ -58,9 +82,9 @@ public class CoverFinder {
 			jFrame = new JFrame();
 			jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			jFrame.setJMenuBar(getJJMenuBar());
-			jFrame.setSize(300, 200);
+			jFrame.setSize(468, 245);
 			jFrame.setContentPane(getJContentPane());
-			jFrame.setTitle("Cover Finder");
+			jFrame.setTitle("Application");
 		}
 		return jFrame;
 	}
@@ -74,6 +98,8 @@ public class CoverFinder {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new BorderLayout());
+			jContentPane.add(getJAlbumListPanel(), BorderLayout.CENTER);
+			jContentPane.add(getJActionPanel(), BorderLayout.NORTH);
 		}
 		return jContentPane;
 	}
@@ -165,61 +191,8 @@ public class CoverFinder {
 		if (aboutMenuItem == null) {
 			aboutMenuItem = new JMenuItem();
 			aboutMenuItem.setText("About");
-			aboutMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					JDialog aboutDialog = getAboutDialog();
-					aboutDialog.pack();
-					Point loc = getJFrame().getLocation();
-					loc.translate(20, 20);
-					aboutDialog.setLocation(loc);
-					aboutDialog.setVisible(true);
-				}
-			});
 		}
 		return aboutMenuItem;
-	}
-
-	/**
-	 * This method initializes aboutDialog	
-	 * 	
-	 * @return javax.swing.JDialog
-	 */
-	private JDialog getAboutDialog() {
-		if (aboutDialog == null) {
-			aboutDialog = new JDialog(getJFrame(), true);
-			aboutDialog.setTitle("About");
-			aboutDialog.setSize(new Dimension(212, 79));
-			aboutDialog.setContentPane(getAboutContentPane());
-		}
-		return aboutDialog;
-	}
-
-	/**
-	 * This method initializes aboutContentPane
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getAboutContentPane() {
-		if (aboutContentPane == null) {
-			aboutContentPane = new JPanel();
-			aboutContentPane.setLayout(new BorderLayout());
-			aboutContentPane.add(getAboutVersionLabel(), BorderLayout.CENTER);
-		}
-		return aboutContentPane;
-	}
-
-	/**
-	 * This method initializes aboutVersionLabel	
-	 * 	
-	 * @return javax.swing.JLabel	
-	 */
-	private JLabel getAboutVersionLabel() {
-		if (aboutVersionLabel == null) {
-			aboutVersionLabel = new JLabel();
-			aboutVersionLabel.setText("CoverFinder Version 1.0");
-			aboutVersionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		}
-		return aboutVersionLabel;
 	}
 
 	/**
