@@ -15,7 +15,7 @@
     </div>
     
 <script language="javascript" type="text/javascript">
-  window.onresize = function(){onResize();}; 
+  window.onresize = function(){onResize();};
   onResize();
 </script>
     

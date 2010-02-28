@@ -55,6 +55,35 @@ div#footer{
 	margin-bottom: 5px;	
 	font-family: georgia, serif;
 }
+
+.sectiontitle{ 
+    margin-top: 15px;
+    margin-bottom: 5px; 
+    font: larger;
+    font-size: larger;    
+}
+
+.section{ 
+    margin-top: 15px;
+    margin-bottom: 5px; 
+}
+
+.sectionfooter{ 
+    margin-top: 15px;
+    margin-bottom: 5px; 
+}
+
+.app-thumbnail{
+	width: 200px;
+	margin-left: 15px;
+	margin-right: 15px;		
+	cursor: pointer;
+}
+
+.separator{
+	clear: left;
+}	
+
 /*
 div#footer{ min-width:1000px;text-align:center; border-top:solid 2px #2599FF; background-color:Black; line-height:20px; float:none; clear:both;}
 div#footer p{vertical-align:bottom; padding:2px; margin:0px; color:White;}
