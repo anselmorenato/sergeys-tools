@@ -2,6 +2,11 @@
 /*
  * Based on www.mozilla.com
  */ 
+
+    ini_set("include_path", ini_get("include_path") . (substr($_SERVER["DOCUMENT_ROOT"],0,1) != "/" ? ";" : ":") . $_SERVER["DOCUMENT_ROOT"] . "/include");
+    require_once("statistics.inc.php");
+
+    trackVisitor();
 ?>
 <?php print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

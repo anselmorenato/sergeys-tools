@@ -12,7 +12,9 @@
 <br/>
 <br/>
 */?>
+
 <?php
+/*
     foreach($_COOKIE as $cookie){    	
         print("cookie:<br/>");
         print_r($cookie);
@@ -25,6 +27,7 @@
     	print("referer:<br/>");
     	print_r($_SERVER["HTTP_REFERER"]);
     }
+    */
 ?>
 
 
