@@ -1,3 +1,5 @@
+- use eclipse osgi for OS-browser-specific plugins
+
 
 = main window
 - sort by date by default
