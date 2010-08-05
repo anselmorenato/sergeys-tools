@@ -1,3 +1,4 @@
-- machine-to-machine mode;
+- sync files via flash drive.
 - sync ascii files via google docs, (with encryption?), via other inet storage sites
-- more
+
+- machine-to-machine mode; (?)
