@@ -1,0 +1,1 @@
+- webstart app similar to mweather
