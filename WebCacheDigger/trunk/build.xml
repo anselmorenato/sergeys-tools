@@ -56,7 +56,7 @@
 	<target name="logic-jar" depends="create-key">
 		<mkdir dir="${work.dir}" />
 		<jar destfile="${work.dir}/logic.unsigned.jar" basedir="bin"
-			includes="org/sergeys/webcachedigger/logic/**/*.class" 			
+			includes="org/sergeys/webcachedigger/logic/**/*.class,META-INF/**" 			
 			index="true">			
 		</jar>
 		<echo>${work.dir}/logic.jar packed</echo>

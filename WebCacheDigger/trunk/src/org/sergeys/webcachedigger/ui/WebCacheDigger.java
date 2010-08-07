@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -27,9 +28,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.FileCollector;
-import org.sergeys.webcachedigger.logic.Firefox;
 import org.sergeys.webcachedigger.logic.IBrowser;
-import org.sergeys.webcachedigger.logic.InternetExplorer;
 import org.sergeys.webcachedigger.logic.Settings;
 
 public class WebCacheDigger implements ActionListener {
@@ -396,8 +395,15 @@ public class WebCacheDigger implements ActionListener {
 			
 			//Class.forName(arg0)
 			
-			browsers.add(new Firefox());
-			browsers.add(new InternetExplorer());
+			ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
+			for(IBrowser browser : ldr){
+				browsers.add(browser);
+				System.out.println("found " + browser.getName());
+			}
+			
+			//browsers.add(new Firefox());
+			//browsers.add(new InternetExplorer());						
+			
 			FileCollector fileCollector = new FileCollector(browsers);
 			List<CachedFile> files = fileCollector.collect(getSettings());
 			getFilesListPanel().init(files);
