@@ -1,10 +1,10 @@
 package org.sergeys.coverfinder.ui;
 
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
 import java.awt.FlowLayout;
-import javax.swing.JComboBox;
+
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
 
 public class ActionPanel extends JPanel {
 
