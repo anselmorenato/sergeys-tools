@@ -1,0 +1,10 @@
+option batch on
+#option confirm off
+option confirm on
+
+open svsbugzo@svs.bugz.org.ua
+cd www
+option exclude .*;*.txt;*.cmd;web.config;resources;lleo
+synchronize remote
+close
+exit
