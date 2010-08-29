@@ -14,7 +14,7 @@
 
 <div class="section">
 <p>
-Разный проверенный софт, которым я пользуюсь, доволен и могу рекомендовать для ежедневного употребления.  
+Программы, которыми я пользуюсь и могу рекомендовать.  
 Всё работает на Windows 7 x64.
 </p>
 </div>
@@ -25,7 +25,7 @@
 <div class="section">
 <img src="images/apps/7zip.png" class="app-thumbnail" align="left" onclick="javascript:openPopup('images/apps/7zip.png');"/>
 <p>
-ZIP-совместимый бесплатный архиватор, поддерживает кучу форматов. Есть 64-битный. 
+ZIP-совместимый архиватор, множество других форматов. x64 
 </p>
 </div>
 <div class="sectionfooter"><a href="http://www.7-zip.org/">www.7-zip.org</a></div>
@@ -36,10 +36,10 @@ ZIP-совместимый бесплатный архиватор, поддер
 <div class="section">
 <img src="images/apps/infrarecorder.png" class="app-thumbnail" align="left" onclick="javascript:openPopup('images/apps/infrarecorder.png');"/>
 <p>
-Бесплатный аналог Nero Burning Rom. Есть 64-битный. 
+Бесплатный аналог Nero Burning Rom. x64 
 </p>
 <p>
-Единственный недостаток - не умеет прожигать образы DVD (CD умеет). Как альтернативу можно попробовать 
+Единственный недостаток &ndash; из готовых образов умеет прожигать только CD, не DVD. Как альтернативу можно попробовать 
 <a href="http://www.imgburn.com/">ImgBurn</a>. 
 </p>
 </div>
@@ -62,7 +62,7 @@ RSS-читалка. Java Web Start.
 <div class="section">
 <img src="images/apps/jdiskreport.png" class="app-thumbnail" align="left" onclick="javascript:openPopup('images/apps/jdiskreport.png');"/>
 <p>
-Анализ диска. Java Web Start. 
+Подсчитывает статистику по размерам, датам и типам файлов, крайне полезен при чистке диска. Java Web Start. 
 </p>
 </div>
 <div class="sectionfooter"><a href="http://jgoodies.com/freeware/jdiskreport/">jgoodies.com/freeware/jdiskreport</a></div>
@@ -105,7 +105,7 @@ Gajim (ICQ, Messenger gateways, GoogleTalk)
 <br/>
 Easy Duplicate Finder
 <br/>
-MetarWeather, gismeteo
+MetarWeather, gismeteo rss
 <br/>
 
 <?php require_once("footer.inc.php");?>
