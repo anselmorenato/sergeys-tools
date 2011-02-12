@@ -1,0 +1,14 @@
+#summary WebCacheDigger.
+
+= Introduction =
+
+Here is the test page for WebCacheDigger.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+  * Hyperlink to .jnlp file? Is it possible to add files to the wiki?
