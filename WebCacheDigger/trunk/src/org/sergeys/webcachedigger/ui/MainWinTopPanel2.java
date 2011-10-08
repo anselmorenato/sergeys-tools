@@ -1,16 +1,19 @@
 package org.sergeys.webcachedigger.ui;
 
-import javax.swing.JPanel;
-import javax.swing.BoxLayout;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JCheckBox;
-import javax.swing.JToggleButton;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 
 public class MainWinTopPanel2 extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 
 	/**

@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-//import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.ServiceLoader;
 
@@ -26,14 +25,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.EmptyBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
-import org.sergeys.webcachedigger.logic.Firefox;
 import org.sergeys.webcachedigger.logic.IBrowser;
-import org.sergeys.webcachedigger.logic.InternetExplorer;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
-import javax.swing.border.EmptyBorder;
 
 public class WebCacheDigger 
 implements ActionListener 
@@ -138,12 +135,15 @@ implements ActionListener
 	private JPanel getJPanelTop() {
 		if (jPanelTop == null) {
 			
-//			jPanelTop = new JPanel();
-//			jPanelTop.setLayout(new FlowLayout());
-//			jPanelTop.add(getJButtonSearch(), null);
-			
-			jPanelTop = new MainWinTopPanel2();
+			jPanelTop = new JPanel();
+			jPanelTop.setLayout(new FlowLayout());
 			jPanelTop.setBorder(new EmptyBorder(0, 20, 0, 20));
+			
+			jPanelTop.add(new MainWinTopPanel2());
+			
+			jPanelTop.add(getJButtonSearch(), null);
+						
+			
 		}
 		return jPanelTop;
 	}

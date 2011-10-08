@@ -15,7 +15,7 @@ extends SwingWorker<ArrayList<CachedFile>, Integer>
 //implements IBrowserProgressListener
 {
 	private List<IBrowser> browsers;
-	private int progress = 0;
+//	private int progress = 0;
 	private WebCacheDigger digger;
 
 	public FileCollectorWorker(List<IBrowser> browsers, WebCacheDigger digger) {

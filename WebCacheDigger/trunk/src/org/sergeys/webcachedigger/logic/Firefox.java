@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-
-import javax.xml.stream.util.StreamReaderDelegate;
 
 /**
  * FF 3.5 on Windows XP
@@ -189,7 +186,7 @@ public class Firefox extends AbstractBrowser {
 
 		// 1. count files
 		ArrayList<File> allFiles = new ArrayList<File>();
-		int totalFiles = 0;
+//		int totalFiles = 0;
 		for (String path : getCachePaths()) {
 
 			File directory = new File(path);
@@ -197,7 +194,7 @@ public class Firefox extends AbstractBrowser {
 			if (directory.isDirectory()) {												
 				List<File> dirFiles = listFilesRecursive(directory);
 				allFiles.addAll(dirFiles);
-				totalFiles += dirFiles.size();			
+//				totalFiles += dirFiles.size();			
 			} else {
 				SimpleLogger.logMessage(String.format("'%s' is not a directory", path));
 			}

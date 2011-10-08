@@ -10,6 +10,11 @@ import javax.swing.JToggleButton;
 import javax.swing.JButton;
 
 public class MainWinTopPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public MainWinTopPanel() {
 		setLayout(new BorderLayout(0, 0));
 		
