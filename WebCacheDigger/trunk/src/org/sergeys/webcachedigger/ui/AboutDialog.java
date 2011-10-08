@@ -6,6 +6,12 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.table.AbstractTableModel;
 
 public class AboutDialog extends JDialog {
 
@@ -140,7 +147,8 @@ public class AboutDialog extends JDialog {
 			gridBagConstraints2.gridy = 1;
 			jLabelVersion = new JLabel();
 			//jLabelVersion.setText("Dec 2 2009: " + CachedFile.junkMessage());
-			jLabelVersion.setText("Dec 26 2009");
+			//jLabelVersion.setText("Dec 26 2009");
+			jLabelVersion.setText("Oct 8 2011");
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.gridx = 0;
 			gridBagConstraints1.gridy = 0;
@@ -218,7 +226,61 @@ public class AboutDialog extends JDialog {
 	 */
 	private JTable getJTableSystemProperties() {
 		if (jTableSystemProperties == null) {
-			jTableSystemProperties = new JTable();
+			final String[] columnNames = {
+				"Property",
+				"Value"
+			};
+			
+			Properties props = System.getProperties();
+//			final ArrayList<String> keys = new ArrayList<String>();
+//			for(Entry<Object, Object> key: props.entrySet()){
+//				keys.add(key.getKey().toString());				
+//			}
+			
+			final ArrayList<Entry<Object, Object>> p = new ArrayList<Entry<Object, Object>>(props.entrySet());			
+			Collections.sort(p, new Comparator<Entry<Object, Object>>(){
+
+				@Override
+				public int compare(Entry<Object, Object> o1,
+						Entry<Object, Object> o2) {
+					return o1.getKey().toString().compareTo(o2.getKey().toString());
+				}
+				
+			});
+			
+			AbstractTableModel tm = new AbstractTableModel(){
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public int getRowCount() {
+					return p.size();
+				}
+
+				@Override
+				public int getColumnCount() {
+					return 2;
+				}
+
+				@Override
+				public String getColumnName(int column) {
+					return columnNames[column];
+				};								
+				
+				@Override
+				public Object getValueAt(int rowIndex, int columnIndex) {
+					// TODO Auto-generated method stub
+					return (columnIndex == 0) ? p.get(rowIndex).getKey() : p.get(rowIndex).getValue();
+				}
+				
+			};
+			
+			jTableSystemProperties = new JTable(tm);
+			jTableSystemProperties.getColumnModel().getColumn(0).setPreferredWidth(50);
+			jTableSystemProperties.getColumnModel().getColumn(1).setPreferredWidth(100);
 		}
 		return jTableSystemProperties;
 	}
@@ -231,6 +293,7 @@ public class AboutDialog extends JDialog {
 	private JButton getJButtonSave() {
 		if (jButtonSave == null) {
 			jButtonSave = new JButton();
+			jButtonSave.setEnabled(false);
 			jButtonSave.setText("Save to File...");
 		}
 		return jButtonSave;
@@ -261,6 +324,7 @@ public class AboutDialog extends JDialog {
 	private JButton getJButtonSubmit() {
 		if (jButtonSubmit == null) {
 			jButtonSubmit = new JButton();
+			jButtonSubmit.setEnabled(false);
 			jButtonSubmit.setText("Submit...");
 		}
 		return jButtonSubmit;
