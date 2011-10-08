@@ -3,22 +3,33 @@ package org.sergeys.webcachedigger.logic;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingWorker;
+
+// TODO: unused
+/*
 public class FileCollector {
 
 	private List<IBrowser> browsers;
+	private Settings settings;
+	private ArrayList<CachedFile> cachedFiles;
 
-	public FileCollector(List<IBrowser> browsers) {
+	public FileCollector(List<IBrowser> browsers, Settings settings) {
 		this.browsers = browsers;
+		this.settings = settings;
 	}
 
-	public ArrayList<CachedFile> collect(Settings settings) throws Exception {
+	public ArrayList<CachedFile> cachedFiles(){
+		return cachedFiles;		
+	}
+	
+	private void collect() throws Exception {
 
-		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
+		cachedFiles = new ArrayList<CachedFile>();
 
 		for (IBrowser browser : browsers) {
-			files.addAll(browser.collectCachedFiles(settings));
-		}
-
-		return files;
+			cachedFiles.addAll(browser.collectCachedFiles(settings));
+		}		
 	}
+
 }
+*/

@@ -1,2 +1,3 @@
 org.sergeys.webcachedigger.logic.Firefox
 org.sergeys.webcachedigger.logic.InternetExplorer
+org.sergeys.webcachedigger.logic.Chrome

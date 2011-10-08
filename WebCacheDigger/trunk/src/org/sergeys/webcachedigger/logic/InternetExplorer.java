@@ -7,50 +7,68 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * IE 8 on Windows XP TODO: Windows specific
+ * IE on Windows
  * 
  * @author sergeys
  * 
  */
 public class InternetExplorer extends AbstractBrowser {
 
+	private List<File> listFilesRecursive(File directory){
+		ArrayList<File> allFiles = new ArrayList<File>();
+		
+		
+		if(directory.isDirectory()){
+						
+			// collect regular files
+			List<File> files = Arrays.asList(directory
+					.listFiles(new FileFilter() {
+						public boolean accept(File file) {
+							return (!file.isDirectory() && 
+									!file.getName().toLowerCase().equals("index.dat") && 
+									!file.getName().toLowerCase().equals("desktop.ini"));
+						}
+					}));
+			
+			allFiles.addAll(files);
+			
+			// process subdirs
+			List<File> subdirs = Arrays.asList(directory
+					.listFiles(new FileFilter() {
+						public boolean accept(File file) {
+							return (file.isDirectory() && 
+									!file.getName().toLowerCase().equals("antiphishing"));	// ie9 on win7
+						}
+					}));
+			
+			for(File subdir: subdirs){
+				files = listFilesRecursive(subdir);
+				allFiles.addAll(files);				
+			}
+			
+//			SimpleLogger.logMessage("collected files in " + directory);
+		}
+		
+		return allFiles;
+	}
+
 	@Override
-	protected List<String> collectDefaultCachePaths() throws Exception {
+	protected List<String> collectCachePaths() throws Exception {
 		ArrayList<String> paths = new ArrayList<String>();
 
-		// String userName = System.getProperty("user.name");
-		String userHome = System.getProperty("user.home");
-		// String userDir = System.getProperty("user.dir");
-
-		// paths.add("username: " + userName);
-		// paths.add("userhome: " + userHome);
-		// paths.add("userdir: " + userDir);
-
-		// 
-		String profilesDirPath = userHome + File.separator
-				+ "Local Settings\\Temporary Internet Files\\Content.IE5";
-		File profilesDir = new File(profilesDirPath);
-		// if (!profilesDir.isDirectory()) {
-		// throw new Exception(String.format("'%s' is not a directory.",
-		// profilesDirPath));
-		// }
-
-		List<File> profiles = Arrays.asList(profilesDir
-				.listFiles(new FileFilter() {
-					public boolean accept(File file) {
-						return file.isDirectory();
-					}
-				}));
-		for (File profile : profiles) {
-			// paths.add(String.format("%s\\Cache", profile.getAbsolutePath()));
-			paths.add(profile.getAbsolutePath());
+		// see IE settings for path
+		if(System.getenv("LOCALAPPDATA") != null){
+			String path = System.getenv("LOCALAPPDATA") + File.separator +
+					"Microsoft" + File.separator + "Windows" + File.separator + "Temporary Internet Files";	// win7 ie9
+			
+			paths.add(path);
 		}
 
 		return paths;
 	}
 
 	@Override
-	public List<CachedFile> collectCachedFiles(Settings settings)
+	public List<CachedFile> collectCachedFiles()
 			throws Exception {
 		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
 
@@ -61,14 +79,8 @@ public class InternetExplorer extends AbstractBrowser {
 
 			if (directory.isDirectory()) {
 
-				List<File> dirFiles = Arrays.asList(directory
-						.listFiles(new FileFilter() {
-							public boolean accept(File file) {
-								return (!file.isDirectory() && !file.getName()
-										.equalsIgnoreCase("desktop.ini"));
-							}
-						}));
-
+				List<File> dirFiles = listFilesRecursive(directory);
+				
 				for (File file : dirFiles) {
 					if (file.length() > minFileSize) {
 						files.add(new CachedFile(file.getAbsolutePath()));
@@ -89,5 +101,5 @@ public class InternetExplorer extends AbstractBrowser {
 	@Override
 	public String getName() {
 		return "Internet Explorer";
-	}
+	}	
 }

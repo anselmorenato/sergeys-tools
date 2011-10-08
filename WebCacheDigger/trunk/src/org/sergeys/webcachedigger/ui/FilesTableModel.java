@@ -32,7 +32,7 @@ public class FilesTableModel extends AbstractTableModel {
 	 */
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		return getValueAt(0, columnIndex).getClass();
+		return (cachedFiles.size() == 0) ? Object.class : getValueAt(0, columnIndex).getClass();
 	}
 
 	/*
@@ -73,6 +73,10 @@ public class FilesTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 
+		if(this.cachedFiles.size() == 0){
+			return null;
+		}
+		
 		switch (columnIndex) {
 		case 0:
 			return this.cachedFiles.get(rowIndex).isSelectedToCopy();

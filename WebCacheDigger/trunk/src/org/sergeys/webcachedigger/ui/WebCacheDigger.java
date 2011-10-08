@@ -9,8 +9,8 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+//import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ServiceLoader;
 
 import javax.swing.JButton;
@@ -23,13 +23,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
-import org.sergeys.webcachedigger.logic.FileCollector;
+import org.sergeys.webcachedigger.logic.Firefox;
 import org.sergeys.webcachedigger.logic.IBrowser;
+import org.sergeys.webcachedigger.logic.InternetExplorer;
 import org.sergeys.webcachedigger.logic.Settings;
+import org.sergeys.webcachedigger.logic.SimpleLogger;
 
 public class WebCacheDigger implements ActionListener {
 
@@ -388,25 +391,44 @@ public class WebCacheDigger implements ActionListener {
 		return aboutDialog;
 	}
 	
+	FileSearchProgressDialog progressDialog;
+	
 	private void searchCachedFiles(){					
 		
 		try {
 			ArrayList<IBrowser> browsers = new ArrayList<IBrowser>();
-			
-			//Class.forName(arg0)
-			
+									
 			ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
 			for(IBrowser browser : ldr){
+				browser.setSettings(getSettings());
 				browsers.add(browser);
-				System.out.println("found " + browser.getName());
+				SimpleLogger.logMessage("Can handle " + browser.getName());				
+			}
+						
+			//IBrowser browser = new Firefox();
+			//IBrowser browser = new InternetExplorer();
+			
+//			browser.setSettings(getSettings());			
+//			browsers.add(browser);
+									
+						
+			// collect files while showing progress dialog
+			final SwingWorker<ArrayList<CachedFile>, Integer> worker = new FileCollectorWorker(browsers, this);
+			if(progressDialog == null){
+				progressDialog = new FileSearchProgressDialog(worker);
 			}
 			
-			//browsers.add(new Firefox());
-			//browsers.add(new InternetExplorer());						
+			getFilesListPanel().init(new ArrayList<CachedFile>());
+			//getJContentPane().setEnabled(false);
+			getFilesListPanel().setEnabled(false);
 			
-			FileCollector fileCollector = new FileCollector(browsers);
-			List<CachedFile> files = fileCollector.collect(getSettings());
-			getFilesListPanel().init(files);
+			progressDialog.setVisible(true);
+			worker.addPropertyChangeListener(progressDialog);
+						
+			worker.execute();
+			
+			
+			//getFilesListPanel().init(files);
 			
 			// http://www.medsea.eu/mime-util/detectors.html
 			
@@ -423,6 +445,13 @@ public class WebCacheDigger implements ActionListener {
 					"Error", 
 					JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	public void updateCachedFiles(ArrayList<CachedFile> files){
+		//getJContentPane().setEnabled(true);
+		getFilesListPanel().setEnabled(true);
+		getFilesListPanel().init(files);
+		progressDialog.setVisible(false);
 	}
 	
 	private SettingsDialog settingsDialog;
@@ -496,6 +525,10 @@ public class WebCacheDigger implements ActionListener {
 				}
 				try {
 					CachedFile.copyFile(file.getAbsolutePath(), targetFile);
+					
+					// TODO: java 7
+					//Files.copy(file.getAbsolutePath(), targetFile, );
+					
 					copied++;
 				} catch (IOException e) {
 					String msg = String.format("Failed to copy file from 's' to 's':\n\n%s\n\n" +

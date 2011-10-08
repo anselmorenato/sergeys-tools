@@ -2,7 +2,9 @@ package org.sergeys.webcachedigger.logic;
 
 import java.util.List;
 
-public interface IBrowser {
+public interface IBrowser extends Runnable {
 	public String getName();
-	public List<CachedFile> collectCachedFiles(Settings settings) throws Exception;
+	public void setSettings(Settings settings);
+	public List<CachedFile> collectCachedFiles() throws Exception;
+//	public void addBrowserProgressListener(IBrowserProgressListener listener);
 }

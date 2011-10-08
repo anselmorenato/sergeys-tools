@@ -35,6 +35,7 @@ public class CachedFile extends File {
 		extensionByMimetype.put("image/jpeg", 	"jpg");
 		extensionByMimetype.put("image/png", 	"png");
 		
+		// TODO: select additional file types from available in settings dialog
 		//extensionByMimetype.put("text/html", 	"html");
 		extensionByMimetype.put("application/pdf", 	"pdf");
 	}
@@ -58,14 +59,17 @@ public class CachedFile extends File {
 		return hash;
 	}
 
-	@SuppressWarnings("unchecked")
 	public String getFileType() {
 		if (fileType == null) {
 			// FileDataSource fds = new FileDataSource(this);
 			// fileType = fds.getContentType();
+			@SuppressWarnings("rawtypes")
 			Collection mt = MimeUtil.getMimeTypes(this);
 			if (!mt.isEmpty()) {
 				fileType = mt.toArray()[0].toString();
+			}
+			else{
+				fileType = "unknown";
 			}
 		}
 

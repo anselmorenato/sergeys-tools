@@ -104,6 +104,12 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		return jTableFoundFiles;
 	}
 
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		getJTableFoundFiles().setEnabled(enabled);
+	};
+	
 	public void init(List<CachedFile> files) {
 		FilesTableModel model = new FilesTableModel(files);
 		getJTableFoundFiles().setModel(model);
