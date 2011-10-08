@@ -14,7 +14,7 @@ public class Chrome extends AbstractBrowser {
 
 	@Override
 	public String getName() {
-		return "Google Chrome";
+		return "Google Chrome (not implemented)";
 	}
 
 	@Override

@@ -83,26 +83,28 @@ public class Firefox extends AbstractBrowser {
 										//"Profiles" + File.separator + tokens[tokens.length - 1] + File.separator + "Cache";
 										relPath + File.separator + "Cache";
 								paths.add(path);
-								System.out.println("path to search: " + path);
+								System.out.println("path to search (win): " + path);
 							}
 							
 							// macos
 							path = System.getProperty("user.home") + File.separator + 
 									"Library" + File.separator + "Caches" + File.separator + "Firefox" + File.separator + 
 									relPath + File.separator + "Cache";
+							paths.add(path);
+							System.out.println("path to search (macos): " + path);
 							
-							// *nixrelative to .ini
+							// linux relative to .ini
 							path = profilesIniPath + File.separator + 
 									relPath + File.separator + "Cache";
 							paths.add(path);
-							System.out.println("path to search: " + path);
+							System.out.println("path to search (linux): " + path);
 							
 						}
 						else{
 							// absolute
 							path = path + File.separator + "Cache";
 							paths.add(path);
-							System.out.println("path to search: " + path);
+							System.out.println("path to search (absolute): " + path);
 						}												
 					}
 				}
@@ -118,11 +120,7 @@ public class Firefox extends AbstractBrowser {
 	@Override
 	protected List<String> collectCachePaths() throws Exception {
 
-		ArrayList<String> paths = new ArrayList<String>();
-
-
-		// TODO: read profile paths from %APPDATA%\Mozilla\Firefox\profiles.ini
-		
+		ArrayList<String> paths = new ArrayList<String>();		
 		
 		// http://kb.mozillazine.org/Profile_folder
 		String profilesiniPath = "";
@@ -146,38 +144,12 @@ public class Firefox extends AbstractBrowser {
 		profilesiniPath = System.getProperty("user.home") + File.separator + ".mozilla" + File.separator + "firefox";
 		paths.addAll(possibleCachePaths(profilesiniPath));
 		
-		return paths;
-		
-/*		
-		// TODO: Windows specific path
-		// Firefox 3 at XP, Windows 7 OK
-		String profilesDirPath = userHome
-				+ File.separator
-				+ "Local Settings\\Application Data\\Mozilla\\Firefox\\Profiles";
-		File profilesDir = new File(profilesDirPath);
-		if (!profilesDir.isDirectory()) {
-			throw new Exception(String.format("'%s' is not a directory.",
-					profilesDirPath));
-		}
-
-		List<File> profiles = Arrays.asList(profilesDir
-				.listFiles(new FileFilter() {
-					public boolean accept(File file) {
-						return file.isDirectory();
-					}
-				}));
-		for (File profile : profiles) {
-			paths.add(String.format("%s\\Cache", profile.getAbsolutePath()));
-		}
-
-		return paths;
-*/		
+		return paths;		
 	}
 
 	private List<File> listFilesRecursive(File directory){
 		ArrayList<File> allFiles = new ArrayList<File>();
-		
-		
+				
 		if(directory.isDirectory()){
 						
 			// collect regular files
@@ -222,17 +194,7 @@ public class Firefox extends AbstractBrowser {
 
 			File directory = new File(path);
 
-			if (directory.isDirectory()) {
-								
-//				List<File> dirFiles = Arrays.asList(directory
-//						.listFiles(new FileFilter() {
-//							public boolean accept(File file) {
-//								return (!file.isDirectory())
-//										&& !file.getName().toLowerCase()
-//												.startsWith("_cache_");
-//							}
-//						}));
-				
+			if (directory.isDirectory()) {												
 				List<File> dirFiles = listFilesRecursive(directory);
 				allFiles.addAll(dirFiles);
 				totalFiles += dirFiles.size();			

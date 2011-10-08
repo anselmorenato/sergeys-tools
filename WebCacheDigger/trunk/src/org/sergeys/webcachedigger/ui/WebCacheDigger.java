@@ -33,8 +33,11 @@ import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.InternetExplorer;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
+import javax.swing.border.EmptyBorder;
 
-public class WebCacheDigger implements ActionListener {
+public class WebCacheDigger 
+implements ActionListener 
+{
 
 	private JFrame jFrame = null;  //  @jve:decl-index=0:visual-constraint="10,10"
 	private JPanel jContentPane = null;
@@ -134,9 +137,13 @@ public class WebCacheDigger implements ActionListener {
 	 */
 	private JPanel getJPanelTop() {
 		if (jPanelTop == null) {
-			jPanelTop = new JPanel();
-			jPanelTop.setLayout(new FlowLayout());
-			jPanelTop.add(getJButtonSearch(), null);
+			
+//			jPanelTop = new JPanel();
+//			jPanelTop.setLayout(new FlowLayout());
+//			jPanelTop.add(getJButtonSearch(), null);
+			
+			jPanelTop = new MainWinTopPanel2();
+			jPanelTop.setBorder(new EmptyBorder(0, 20, 0, 20));
 		}
 		return jPanelTop;
 	}
@@ -277,7 +284,8 @@ public class WebCacheDigger implements ActionListener {
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
-			jContentPane.setLayout(new BorderLayout());
+			BorderLayout bl_jContentPane = new BorderLayout();
+			jContentPane.setLayout(bl_jContentPane);
 			jContentPane.add(getJSplitPaneMain(), BorderLayout.CENTER);
 			jContentPane.add(getJPanelTop(), BorderLayout.NORTH);
 		}

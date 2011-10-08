@@ -1,3 +1,4 @@
+- detect which browsers are really present
 - use eclipse osgi for OS-browser-specific plugins
 
 
@@ -41,3 +42,10 @@ http://javatrack.blogspot.com/2007/09/playing-flash-video-flv-with-java.html
 http://javatrack.blogspot.com/2009/08/video-in-java-no-more-jmf-please-use.html
 
 http://www.filthyrichclients.org/
+
+
+icons:
+http://sixrevisions.com/resources/40-beautiful-free-icon-sets/
+http://www.smashingmagazine.com/2008/03/06/35-really-incredible-free-icon-sets/
+http://www.iconfinder.com/free_icons
+http://www.noupe.com/freebie/50-remarkable-free-icon-sets-released-in-2010.html

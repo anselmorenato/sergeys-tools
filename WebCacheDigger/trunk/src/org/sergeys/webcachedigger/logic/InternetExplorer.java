@@ -62,6 +62,7 @@ public class InternetExplorer extends AbstractBrowser {
 					"Microsoft" + File.separator + "Windows" + File.separator + "Temporary Internet Files";	// win7 ie9
 			
 			paths.add(path);
+			System.out.println("path to search (win): " + path);
 		}
 
 		return paths;
