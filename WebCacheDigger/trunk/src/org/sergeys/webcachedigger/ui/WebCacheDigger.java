@@ -268,6 +268,7 @@ implements ActionListener, PropertyChangeListener
 	private JFrame getJFrame() {
 		if (jFrame == null) {
 			jFrame = new JFrame();
+			jFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(WebCacheDigger.class.getResource("/images/icon.png")));
 			jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			jFrame.setPreferredSize(new Dimension(750, 400));
 			jFrame.setJMenuBar(getJJMenuBar());

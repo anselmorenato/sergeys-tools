@@ -28,6 +28,7 @@ import java.awt.FlowLayout;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Toolkit;
 
 public class FileSearchProgressDialog 
 extends JDialog 
@@ -45,7 +46,7 @@ extends JDialog
 	
 	private String[] stageLabel = {
 			"Files found:",
-			"Preprocessed:"
+			"Identified:"
 	};
 	private int stage;
 	
@@ -53,6 +54,7 @@ extends JDialog
 	 * Create the dialog.
 	 */
 	public FileSearchProgressDialog(List<IBrowser> browsers) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(FileSearchProgressDialog.class.getResource("/images/icon.png")));
 		this.browsers = browsers;
 		
 		setTitle("Search files");
@@ -89,14 +91,9 @@ extends JDialog
 		getContentPane().add(panel_2, BorderLayout.WEST);
 		
 		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/search.png")));
 		//lblNewLabel.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/search.png")));
 		panel_2.add(lblNewLabel);
-		
-		JLabel label = new JLabel("");
-		
-		//label.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/Zoom.png")));
-		//label.setPreferredSize(new Dimension(48, 48));
-		panel_2.add(label);
 				
 		
 	}

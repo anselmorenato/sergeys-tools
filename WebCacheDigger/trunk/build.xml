@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="all">
 
-	<property name="revision" value="20111009-2" />
+	<property name="revision" value="20111009-3" />
 	<property name="webstart.url" value="http://192.168.56.1:8080/localweb" />
 	
 	<property name="dist.dir" value="jar/dist" />
@@ -179,8 +179,12 @@
 			<dname>
 				<param name="CN" value="Sergey Selivanov" />
 				<param name="OU" value="OU" />
-				<param name="O" value="O" />
+				<!--
+				<param name="O" value="Sergey Selivanov" />
 				<param name="C" value="UA" />
+				<param name="L" value="Kharkov" />
+				<param name="EmailAddress" value="sergey.selivanov@gmail.com" />
+				-->
 			</dname>
 		</genkey>
 	</target>

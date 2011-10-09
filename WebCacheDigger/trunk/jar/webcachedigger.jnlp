@@ -4,7 +4,7 @@
     <information>
         <title>Web Cache Digger</title>
         <vendor>Sergey Selivanov</vendor>
-        <icon href="%URL%/webstart.png" kind="default"/>
+        <icon href="%URL%/largeicon.png" kind="default"/>
         <shortcut online="true" install="false">
 	      <desktop/>
 	      <menu submenu="Web Cache Digger"/>

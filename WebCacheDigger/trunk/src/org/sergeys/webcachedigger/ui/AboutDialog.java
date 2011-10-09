@@ -33,9 +33,12 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
 
 import org.sergeys.webcachedigger.logic.SimpleLogger;
+import java.awt.Toolkit;
 
 public class AboutDialog extends JDialog {
 
+	private String version = "9 Oct 2011";
+	
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private JTabbedPane jTabbedPaneCenter = null;
@@ -60,6 +63,7 @@ public class AboutDialog extends JDialog {
 	 */
 	public AboutDialog(Frame owner) {
 		super(owner);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AboutDialog.class.getResource("/images/icon.png")));
 		initialize();
 	}
 
@@ -159,7 +163,7 @@ public class AboutDialog extends JDialog {
 			jLabelVersion = new JLabel();
 			//jLabelVersion.setText("Dec 2 2009: " + CachedFile.junkMessage());
 			//jLabelVersion.setText("Dec 26 2009");
-			jLabelVersion.setText("Oct 8 2011");
+			jLabelVersion.setText(version);
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.gridx = 0;
 			gridBagConstraints1.gridy = 0;
