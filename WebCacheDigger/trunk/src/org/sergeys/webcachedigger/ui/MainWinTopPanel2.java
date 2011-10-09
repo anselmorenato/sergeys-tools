@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.ImageIcon;
 
 public class MainWinTopPanel2 extends JPanel {
 	/**
@@ -44,9 +45,11 @@ public class MainWinTopPanel2 extends JPanel {
 		add(panel, gbc_panel);
 		
 		JToggleButton tglbtnFirefox = new JToggleButton("Firefox");
+		
 		panel.add(tglbtnFirefox);
 		
 		JToggleButton tglbtnInternetExplorer = new JToggleButton("Internet Explorer");
+		
 		panel.add(tglbtnInternetExplorer);
 		
 		JLabel lblMedia = new JLabel("Search for:");
@@ -66,15 +69,19 @@ public class MainWinTopPanel2 extends JPanel {
 		add(panel_1, gbc_panel_1);
 		
 		JToggleButton tglbtnImages = new JToggleButton("Images");
+		
 		panel_1.add(tglbtnImages);
 		
 		JToggleButton tglbtnAudio = new JToggleButton("Audio");
+		
 		panel_1.add(tglbtnAudio);
 		
 		JToggleButton tglbtnVideo = new JToggleButton("Video");
+		
 		panel_1.add(tglbtnVideo);
 		
 		JToggleButton tglbtnOther = new JToggleButton("Other");
+		
 		panel_1.add(tglbtnOther);
 		
 		JLabel lblLargeThan = new JLabel("Large than");

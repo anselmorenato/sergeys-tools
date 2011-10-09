@@ -6,8 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map.Entry;
@@ -23,6 +23,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.JTextPane;
 
 public class AboutDialog extends JDialog {
 
@@ -37,12 +40,13 @@ public class AboutDialog extends JDialog {
 	private JLabel jLabelAuthor = null;
 	private JPanel jPanelSystem = null;
 	private JPanel jPanelLibraries = null;
-	private JTextArea jTextAreaLibraries = null;
 	private JScrollPane jScrollPaneSystemProperties = null;
 	private JTable jTableSystemProperties = null;
 	private JButton jButtonSave = null;
 	private JPanel jPanelSystemActions = null;
 	private JButton jButtonSubmit = null;
+	private JTextPane textPaneLibs;
+	private JScrollPane scrollPane;
 
 	/**
 	 * @param owner
@@ -188,22 +192,11 @@ public class AboutDialog extends JDialog {
 		if (jPanelLibraries == null) {
 			jPanelLibraries = new JPanel();
 			jPanelLibraries.setLayout(new BorderLayout());
-			jPanelLibraries.add(getJTextAreaLibraries(), BorderLayout.CENTER);
+			//jPanelLibraries.add(getTextPaneLibs(), BorderLayout.CENTER);
+			jPanelLibraries.add(getScrollPane_1(), BorderLayout.CENTER);
+			//jPanelLibraries.add(getTextPane(), BorderLayout.CENTER);
 		}
 		return jPanelLibraries;
-	}
-
-	/**
-	 * This method initializes jTextAreaLibraries	
-	 * 	
-	 * @return javax.swing.JTextArea	
-	 */
-	private JTextArea getJTextAreaLibraries() {
-		if (jTextAreaLibraries == null) {
-			jTextAreaLibraries = new JTextArea();
-			jTextAreaLibraries.setEditable(false);
-		}
-		return jTextAreaLibraries;
 	}
 
 	/**
@@ -330,4 +323,26 @@ public class AboutDialog extends JDialog {
 		return jButtonSubmit;
 	}
 
+	private JTextPane getTextPaneLibs() {
+		if (textPaneLibs == null) {
+			textPaneLibs = new JTextPane();
+			textPaneLibs.setEditable(false);
+			//new HTMLEditorKit().
+			//textPane.setDocument(new HTMLDocument());
+			try {
+				textPaneLibs.setPage(AboutDialog.class.getResource("/resources/libraries.html"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return textPaneLibs;
+	}
+	
+	private JScrollPane getScrollPane_1() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane(getTextPaneLibs());
+		}
+		return scrollPane;
+	}
 }  //  @jve:decl-index=0:visual-constraint="10,10"

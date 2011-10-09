@@ -430,8 +430,10 @@ implements ActionListener
 			//getJContentPane().setEnabled(false);
 			getFilesListPanel().setEnabled(false);
 			
+			progressDialog.setLocationRelativeTo(getJContentPane());
 			progressDialog.setVisible(true);
-			worker.addPropertyChangeListener(progressDialog);
+			
+			//worker.addPropertyChangeListener(progressDialog);
 						
 			worker.execute();
 			
