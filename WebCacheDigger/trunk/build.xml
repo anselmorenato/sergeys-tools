@@ -1,108 +1,237 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="all">
 
-	<property name="dist.dir" value="jar"/>
-	<property name="work.dir" value="${dist.dir}/tmp"/>
+	<property name="revision" value="20111009-2" />
+	<property name="webstart.url" value="http://192.168.56.1:8080/localweb" />
 	
-	<property name="main-class" value="org.sergeys.webcachedigger.ui.WebCacheDigger"/>
-	
-	<property name="keystore.file" value="${work.dir}/.keystore"/>
-	<property name="keystore.alias" value="sergey.selivanov"/>
-	<property name="keystore.password" value="password"/>
-	
-	<property name="properties.file" value="build.properties"/>
-			
-	
+	<property name="dist.dir" value="jar/dist" />
+	<property name="work.dir" value="jar/tmp" />
+
+	<property name="main-class" value="org.sergeys.webcachedigger.ui.WebCacheDigger" />
+
+	<property name="keystore.file" value="${work.dir}/.keystore" />
+	<property name="keystore.alias" value="sergey.selivanov" />
+	<property name="keystore.password" value="password" />
+
+	<property name="properties.file" value="build.properties" />
+
+	<property name="lib.mimeutil" value="mime-util-2.1.3.jar" />
+	<property name="lib.slf4j-api" value="slf4j-api-1.6.2.jar" />
+	<property name="lib.slf4j-impl" value="slf4j-simple-1.6.2.jar" />
+		
+	<macrodef name="unsignjar">
+		<!-- http://frank.zinepal.com/unsign-a-jar-with-ant -->
+
+		<attribute name="jar" />
+
+		<sequential>
+			<!-- Remove any existing signatures from a JAR file. -->
+			<tempfile prefix="usignjar-" destdir="${java.io.tmpdir}" property="temp.file" />
+			<echo message="Removing signatures from JAR: @{jar}" />
+			<mkdir dir="${temp.file}" />
+
+			<unjar src="@{jar}" dest="${temp.file}">
+				<patternset>
+					<include name="**" />
+					<exclude name="META-INF/*.SF" />
+					<exclude name="META-INF/*.DSA" />
+					<exclude name="META-INF/*.RSA" />
+				</patternset>
+			</unjar>
+
+			<delete file="@{jar}" failonerror="true" />
+
+			<!-- Touch it in case the file didn't have a manifest.
+	             Otherwise the JAR task below will fail if the manifest 
+	             file doesn't exist. -->
+			<mkdir dir="${temp.file}/META-INF" />
+			<touch file="${temp.file}/META-INF/MANIFEST.MF" />
+
+			<jar destfile="@{jar}" basedir="${temp.file}" includes="**" manifest="${temp.file}/META-INF/MANIFEST.MF" />
+
+			<delete dir="${temp.file}" failonerror="true" />
+		</sequential>
+	</macrodef>
+
 	<target name="init">
-		<property file="${properties.file}"></property>
+		<property file="${properties.file}">
+		</property>
 	</target>
-	
-	<target name="all" depends="init, logic, ui">
+
+	<target name="all" depends="init, logic, ui, libs, resources, images, jnlp">
 	</target>
-	
-	<target name="logic" depends="logic-jar, copy-logic-jar">
+
+	<target name="logic" depends="logic-jar">
 	</target>
-	
+
 	<target name="ui" depends="ui-jar">
 	</target>
+
+	<target name="libs" depends="check-libs-changed, copy-libs">
+	</target>
+
+	<target name="logic-jar" depends="create-key">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.dir}/logic.${revision}.jar" 
+			basedir="bin" includes="org/sergeys/webcachedigger/logic/**/*.class,META-INF/**" index="true">
+		</jar>		
+
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/logic.${revision}.jar" verbose="true">
+		</signjar>		
+	</target>
 	
-	<target name="check-logic-jar-changed">		
+	<target name="ui-jar" depends="create-key">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.dir}/ui.${revision}.jar" 
+			basedir="bin" includes="org/sergeys/webcachedigger/ui/**/*.class,META-INF/**" index="true">
+		</jar>		
+
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/ui.${revision}.jar" verbose="true">
+		</signjar>				
+	</target>
+
+	<target name="resources" depends="create-key">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.dir}/resources.${revision}.jar" 
+			basedir="bin" includes="resources/**" index="true">
+		</jar>		
+
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/resources.${revision}.jar" verbose="true">
+		</signjar>				
+	</target>
+
+	<target name="images" depends="create-key">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.dir}/images.${revision}.jar" 
+			basedir="bin" includes="images/**" index="true">
+		</jar>		
+
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/images.${revision}.jar" verbose="true">
+		</signjar>				
+	</target>
+	
+	<target name="jnlp">
+		<mkdir dir="${dist.dir}" />
+		<copy file="jar/webcachedigger.jnlp" tofile="${dist.dir}/wcd.jnlp" overwrite="true"></copy>
+		<!-- replace file="${dist.dir}/wcd.jnlp" token="%REVISION%" value="${revision}"></replace -->
+		<replace file="${dist.dir}/wcd.jnlp">
+			<replacefilter token="%REVISION%" value="${revision}"/>
+			<replacefilter token="%URL%" value="${webstart.url}"/>
+		</replace>
+	</target>
+	
+	<target name="check-logic-jar-changed1">
 		<echo>compare ${dist.dir}/logic.${logic.revision}.jar</echo>
 		<condition property="logic.jar.changed">
 			<not>
-			 <filesmatch file1="${work.dir}/logic.jar" file2="${dist.dir}/logic.${logic.revision}.jar" />
+				<filesmatch file1="${work.dir}/logic.jar" file2="${dist.dir}/logic.${logic.revision}.jar" />
 			</not>
-		</condition>		
-	</target>
-		
-	<target name="copy-logic-jar" if="logic.jar.changed" depends="check-logic-jar-changed">
-		<echo>logic.jar.changed: ${logic.jar.changed}</echo>
-	    <!--				
-		<delete file="${dist.dir}/logic.${logic.revision}.jar"></delete>
-		-->
-		<copy 
-		  file="${work.dir}/logic.jar" 
-		  tofile="${dist.dir}/logic.${logic.revision.next}.jar"
-		  overwrite="true"
-		/>		
-		<echo>updated ${dist.dir}/logic.${logic.revision.next}.jar</echo>
-        <propertyfile file="${properties.file}">
-            <entry key="logic.revision" type="int" default="0" operation="+" /> 
-            <entry key="logic.revision.next" type="int" default="1" operation="+" />
-        </propertyfile>
-		
-	</target>
-	
-	<target name="logic-jar" depends="create-key">
-		<mkdir dir="${work.dir}" />
-		<jar destfile="${work.dir}/logic.unsigned.jar" basedir="bin"
-			includes="org/sergeys/webcachedigger/logic/**/*.class,META-INF/**" 			
-			index="true">			
-		</jar>
-		<echo>${work.dir}/logic.jar packed</echo>
-		 
-		<signjar keystore="${keystore.file}" alias="${keystore.alias}"
-		    storepass="${keystore.password}"			 
-			jar="${work.dir}/logic.unsigned.jar"
-			signedjar="${work.dir}/logic.jar"
-			verbose="true"
-			>
-		</signjar>
-		<echo>${work.dir}/logic.jar signed</echo>
-		
+		</condition>
 	</target>
 
-    <target name="ui-jar" >
-        <mkdir dir="${work.dir}" />
-        <jar destfile="${work.dir}/ui.jar" basedir="bin"
-            includes="org/sergeys/webcachedigger/ui/**/*.class"
-        	index="true">
-        	<manifest>
-                <attribute name="Main-Class" value="${main-class}" />
-            </manifest>
-        </jar>
-    </target>
-	
-	<target name="check-key">
-		<available file="${keystore.file}" property="keystore.file.exists"></available>
+	<target name="copy-logic-jar1" if="logic.jar.changed" depends="check-logic-jar-changed1">
+		<echo>logic.jar.changed: ${logic.jar.changed}</echo>
+		<!--				
+		<delete file="${dist.dir}/logic.${logic.revision}.jar"></delete>
+		-->
+		<copy file="${work.dir}/logic.jar" tofile="${dist.dir}/logic.${logic.revision.next}.jar" overwrite="true" />
+		<echo>updated ${dist.dir}/logic.${logic.revision.next}.jar</echo>
+		<propertyfile file="${properties.file}">
+			<entry key="logic.revision" type="int" default="0" operation="+" />
+			<entry key="logic.revision.next" type="int" default="1" operation="+" />
+		</propertyfile>
+
 	</target>
-	
+
+	<target name="logic-jar1" depends="create-key">
+		<mkdir dir="${work.dir}" />
+		<jar destfile="${work.dir}/logic.unsigned.jar" basedir="bin" includes="org/sergeys/webcachedigger/logic/**/*.class,META-INF/**" index="true">
+		</jar>
+		<echo>${work.dir}/logic.jar packed</echo>
+
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" jar="${work.dir}/logic.unsigned.jar" signedjar="${work.dir}/logic.jar" verbose="true">
+		</signjar>
+		<echo>${work.dir}/logic.jar signed</echo>
+
+	</target>
+
+	<target name="ui-jar1">
+		<mkdir dir="${work.dir}" />
+		<jar destfile="${work.dir}/ui.jar" basedir="bin" includes="org/sergeys/webcachedigger/ui/**/*.class" index="true">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="check-key">
+		<available file="${keystore.file}" property="keystore.file.exists">
+		</available>
+	</target>
+
 	<target name="create-key" depends="check-key" unless="keystore.file.exists">
 		<mkdir dir="${work.dir}" />
-    	<genkey keystore="${keystore.file}" alias="${keystore.alias}"
-    		validity="365"
-    		storepass="${keystore.password}">
-    	  <dname>
-    	    <param name="CN" value="CN"/>
-    	    <param name="OU" value="OU"/>
-    	    <param name="O"  value="O"/>
-    	    <param name="C"  value="UA"/>
-    	  </dname>
-    	</genkey>
+		<genkey keystore="${keystore.file}" alias="${keystore.alias}" validity="365" storepass="${keystore.password}">
+			<dname>
+				<param name="CN" value="Sergey Selivanov" />
+				<param name="OU" value="OU" />
+				<param name="O" value="O" />
+				<param name="C" value="UA" />
+			</dname>
+		</genkey>
 	</target>
-	
+
 	<target name="clean">
 	</target>
-	
+
+	<target name="check-libs-changed">
+		
+		<condition property="libs.changed">
+			<or>
+				<not>
+					<uptodate targetfile="${dist.dir}/${lib.mimeutil}" srcfile="lib/${lib.mimeutil}">
+					</uptodate>
+				</not>
+				<not>
+					<uptodate targetfile="${dist.dir}/${lib.slf4j-api}" srcfile="lib/${lib.slf4j-api}">
+					</uptodate>
+				</not>
+				<not>
+					<uptodate targetfile="${dist.dir}/${lib.slf4j-impl}" srcfile="lib/${lib.slf4j-impl}">
+					</uptodate>
+				</not>
+			</or>
+		</condition>
+	</target>
+
+	<target name="copy-libs" if="libs.changed">
+		<mkdir dir="${dist.dir}" />
+		
+		<copy file="lib/${lib.mimeutil}" todir="${dist.dir}" overwrite="true">
+		</copy>
+		<unsignjar jar="${dist.dir}/${lib.mimeutil}" />
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/${lib.mimeutil}" signedjar="${dist.dir}/${lib.mimeutil}" verbose="true">
+		</signjar>
+
+		<copy file="lib/${lib.slf4j-api}" todir="${dist.dir}" overwrite="true">
+		</copy>
+		<unsignjar jar="${dist.dir}/${lib.slf4j-api}" />
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/${lib.slf4j-api}" signedjar="${dist.dir}/${lib.slf4j-api}" verbose="true">
+		</signjar>
+
+		<copy file="lib/${lib.slf4j-impl}" todir="${dist.dir}" overwrite="true">
+		</copy>
+		<unsignjar jar="${dist.dir}/${lib.slf4j-impl}" />
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/${lib.slf4j-impl}" signedjar="${dist.dir}/${lib.slf4j-impl}" verbose="true">
+		</signjar>
+		
+	</target>
 </project>
 
