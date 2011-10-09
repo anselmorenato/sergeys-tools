@@ -8,59 +8,53 @@ import javax.swing.SwingWorker;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.IBrowser;
+import org.sergeys.webcachedigger.logic.IProgressWatcher;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 
 public class FileCollectorWorker 
-extends SwingWorker<ArrayList<CachedFile>, Integer> 
+extends SwingWorker<ArrayList<CachedFile>, Long> 
+implements IProgressWatcher
 //implements IBrowserProgressListener
 {
 	private List<IBrowser> browsers;
-//	private int progress = 0;
-	private WebCacheDigger digger;
+	private long totalCount = 0;
+	private FileSearchProgressDialog pd;
+	private int stage;
 
-	public FileCollectorWorker(List<IBrowser> browsers, WebCacheDigger digger) {
+	public FileCollectorWorker(List<IBrowser> browsers, FileSearchProgressDialog pd) {
 		this.browsers = browsers;
-		this.digger = digger;
+		this.pd = pd;
 	}
 		
 	@Override
 	protected ArrayList<CachedFile> doInBackground() throws Exception {
 		ArrayList<CachedFile> cachedFiles = new ArrayList<CachedFile>();
 
+		// collect raw files
+		stage = 0;
+		
 		for (IBrowser browser : browsers) {
 //			browser.addBrowserProgressListener(this);
-			cachedFiles.addAll(browser.collectCachedFiles());
+			cachedFiles.addAll(browser.collectCachedFiles(this));
 		}		
+		
+		// determine file types
+		stage = 1;
+		totalCount = 0;
+		for(CachedFile file: cachedFiles){
+			file.getFileType();	// TODO: refactor method
+			totalCount++;
+			publish(totalCount);
+		}
 		
 		return cachedFiles;
 	}
-/*
+	
 	@Override
-	public void fileFound(FileFoundEvent event) {
-		// TODO Auto-generated method stub
-		publish(progress++);
-		//firePropertyChange("progress", 0, progress);
-	}
-
-	@Override
-	public void fileSearchCount(int count) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void fileSearchComplete() {
-		// TODO Auto-generated method stub
-		
-	}
-*/		
-	@Override
-	protected void process(List<Integer> chunks) {
+	protected void process(List<Long> chunks) {
 		// TODO Auto-generated method stub
 		super.process(chunks);
-		
-		int val = chunks.isEmpty() ? 0 : chunks.get(chunks.size() - 1);
-		firePropertyChange("progress", 0, val);
+		pd.updateProgress(chunks.isEmpty() ? 0 : chunks.get(chunks.size() - 1), stage);		
 	}
 	
 	@Override	
@@ -69,13 +63,29 @@ extends SwingWorker<ArrayList<CachedFile>, Integer>
 		super.done();
 		
 		try {
-			digger.updateCachedFiles(get());			
+			pd.searchComplete(get());
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			SimpleLogger.logMessage("cannot update files, interrupted");
+			e.printStackTrace();
 		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
-			SimpleLogger.logMessage("cannot update files: " + e);
-		}		
+			e.printStackTrace();
+		}
+//		try {
+//			digger.updateCachedFiles(get());			
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			SimpleLogger.logMessage("cannot update files, interrupted");
+//		} catch (ExecutionException e) {
+//			// TODO Auto-generated catch block
+//			SimpleLogger.logMessage("cannot update files: " + e);
+//		}		
 	}
+
+	@Override
+	public synchronized void progressStep() {
+		totalCount++;
+		publish(totalCount);		
+	}
+
 }

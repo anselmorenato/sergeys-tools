@@ -69,7 +69,7 @@ public class InternetExplorer extends AbstractBrowser {
 	}
 
 	@Override
-	public List<CachedFile> collectCachedFiles()
+	public List<CachedFile> collectCachedFiles(IProgressWatcher watcher)
 			throws Exception {
 		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
 
@@ -85,6 +85,7 @@ public class InternetExplorer extends AbstractBrowser {
 				for (File file : dirFiles) {
 					if (file.length() > minFileSize) {
 						files.add(new CachedFile(file.getAbsolutePath()));
+						watcher.progressStep();
 					}
 				}
 

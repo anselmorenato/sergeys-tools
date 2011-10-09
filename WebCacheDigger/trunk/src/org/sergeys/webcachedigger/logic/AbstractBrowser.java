@@ -21,14 +21,14 @@ public abstract class AbstractBrowser implements IBrowser {
 		return cachePaths;
 	}	
 
-	@Override	
-	public void run() {		
-		try {
-			collectCachedFiles();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	@Override	
+//	public void run() {		
+//		try {
+//			collectCachedFiles();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 	
 }

@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -16,6 +17,8 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
+import org.sergeys.webcachedigger.logic.IBrowser;
+
 import javax.swing.BoxLayout;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
@@ -34,27 +37,39 @@ extends JDialog
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	SwingWorker<ArrayList<CachedFile>, Integer> worker;
+	FileCollectorWorker worker;
+	List<IBrowser> browsers;
+	
+	JLabel lblCount;
+	JLabel lblFilesFound;
+	
+	private String[] stageLabel = {
+			"Files found:",
+			"Preprocessed:"
+	};
+	private int stage;
 	
 	/**
 	 * Create the dialog.
 	 */
-	public FileSearchProgressDialog(SwingWorker<ArrayList<CachedFile>, Integer> worker) {
+	public FileSearchProgressDialog(List<IBrowser> browsers) {
+		this.browsers = browsers;
+		
 		setTitle("Search files");
 		setModal(true);
 		setBounds(100, 100, 350, 129);
 
-		this.worker = worker;
+		//this.worker = worker;
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new EmptyBorder(0, 50, 0, 0));
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		
-		JLabel lblFilesFound = new JLabel("Files found:");
+		lblFilesFound = new JLabel("Files found:");
 		panel.add(lblFilesFound);
 		
-		JLabel lblCount = new JLabel("0");
+		lblCount = new JLabel("0");
 		lblCount.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCount.setPreferredSize(new Dimension(100, 20));
 		panel.add(lblCount);
@@ -91,4 +106,36 @@ extends JDialog
 		this.setVisible(false);
 	}
 
+	@Override	
+	public void setVisible(boolean visible) {
+		if(visible){
+			stage = -1;
+			updateProgress(0, 0);
+			startWork();
+		}
+		
+		super.setVisible(visible);
+	}
+
+	private void startWork() {
+		// TODO Auto-generated method stub
+		
+		this.worker = new FileCollectorWorker(browsers, this);
+		this.worker.execute();
+		
+	}
+		
+	public void updateProgress(long count, int stage){
+		lblCount.setText(String.valueOf(count));
+		if(stage != this.stage){
+			this.stage = stage;
+			lblFilesFound.setText(stageLabel[this.stage]);
+		}
+	}
+	
+	public void searchComplete(ArrayList<CachedFile> files){
+		this.worker = null;
+		//setVisible(false);
+		firePropertyChange("searchcompleted", null, files);		
+	}
 }

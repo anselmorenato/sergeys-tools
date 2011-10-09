@@ -24,7 +24,7 @@ public class Chrome extends AbstractBrowser {
 	}
 
 	@Override
-	public List<CachedFile> collectCachedFiles() throws Exception {
+	public List<CachedFile> collectCachedFiles(IProgressWatcher watcher) throws Exception {
 		ArrayList<CachedFile> files = new ArrayList<CachedFile>(); 
 		return files;
 	}

@@ -6,10 +6,12 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ServiceLoader;
 
 import javax.swing.JButton;
@@ -33,7 +35,7 @@ import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 
 public class WebCacheDigger 
-implements ActionListener 
+implements ActionListener, PropertyChangeListener
 {
 
 	private JFrame jFrame = null;  //  @jve:decl-index=0:visual-constraint="10,10"
@@ -421,13 +423,13 @@ implements ActionListener
 									
 						
 			// collect files while showing progress dialog
-			final SwingWorker<ArrayList<CachedFile>, Integer> worker = new FileCollectorWorker(browsers, this);
+			//final SwingWorker<ArrayList<CachedFile>, Integer> worker = new FileCollectorWorker(browsers, this);
 			if(progressDialog == null){
-				progressDialog = new FileSearchProgressDialog(worker);
+				progressDialog = new FileSearchProgressDialog(browsers);
+				progressDialog.addPropertyChangeListener(this);
 			}
 			
-			getFilesListPanel().init(new ArrayList<CachedFile>());
-			//getJContentPane().setEnabled(false);
+			//getFilesListPanel().init(new ArrayList<CachedFile>());			
 			getFilesListPanel().setEnabled(false);
 			
 			progressDialog.setLocationRelativeTo(getJContentPane());
@@ -435,7 +437,7 @@ implements ActionListener
 			
 			//worker.addPropertyChangeListener(progressDialog);
 						
-			worker.execute();
+			//worker.execute();
 			
 			
 			//getFilesListPanel().init(files);
@@ -573,5 +575,16 @@ implements ActionListener
 		}
 				
 		System.exit(0);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getPropertyName().equals("searchcompleted")){
+			progressDialog.setVisible(false);
+			getFilesListPanel().setEnabled(true);
+			getFilesListPanel().init((List<CachedFile>) evt.getNewValue());			
+		}
+		
 	}
 }

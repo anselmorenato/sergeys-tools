@@ -1,12 +1,15 @@
 package org.sergeys.webcachedigger.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +29,10 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.JTextPane;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.event.HyperlinkEvent;
+
+import org.sergeys.webcachedigger.logic.SimpleLogger;
 
 public class AboutDialog extends JDialog {
 
@@ -326,19 +333,45 @@ public class AboutDialog extends JDialog {
 	private JTextPane getTextPaneLibs() {
 		if (textPaneLibs == null) {
 			textPaneLibs = new JTextPane();
+			textPaneLibs.addHyperlinkListener(new HyperlinkListener() {
+				public void hyperlinkUpdate(HyperlinkEvent e) {
+					doHyperlinkUpdate(e);
+				}				
+			});
 			textPaneLibs.setEditable(false);
-			//new HTMLEditorKit().
-			//textPane.setDocument(new HTMLDocument());
+
 			try {
 				textPaneLibs.setPage(AboutDialog.class.getResource("/resources/libraries.html"));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
 		return textPaneLibs;
 	}
 	
+	protected void doHyperlinkUpdate(HyperlinkEvent e) {
+		if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED){
+			SimpleLogger.logMessage(e.getURL().toString());
+			
+			if(Desktop.isDesktopSupported()){
+				Desktop dt = Desktop.getDesktop();
+				if(dt.isSupported(Desktop.Action.BROWSE)){
+					try {
+						dt.browse(e.getURL().toURI());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
 	private JScrollPane getScrollPane_1() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane(getTextPaneLibs());

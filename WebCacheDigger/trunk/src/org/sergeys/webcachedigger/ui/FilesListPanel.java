@@ -195,6 +195,9 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 			} catch (ArrayIndexOutOfBoundsException ex) {
 	
 			}
+			catch (IndexOutOfBoundsException ex) {
+				// occurs when model is emptied before next search
+			}
 		}
 	}
 

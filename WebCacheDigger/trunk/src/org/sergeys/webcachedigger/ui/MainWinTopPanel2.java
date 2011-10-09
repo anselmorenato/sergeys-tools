@@ -68,10 +68,6 @@ public class MainWinTopPanel2 extends JPanel {
 		gbc_panel_1.gridy = 1;
 		add(panel_1, gbc_panel_1);
 		
-		JToggleButton tglbtnImages = new JToggleButton("Images");
-		
-		panel_1.add(tglbtnImages);
-		
 		JToggleButton tglbtnAudio = new JToggleButton("Audio");
 		
 		panel_1.add(tglbtnAudio);
@@ -79,6 +75,10 @@ public class MainWinTopPanel2 extends JPanel {
 		JToggleButton tglbtnVideo = new JToggleButton("Video");
 		
 		panel_1.add(tglbtnVideo);
+		
+		JToggleButton tglbtnImages = new JToggleButton("Images");
+		
+		panel_1.add(tglbtnImages);
 		
 		JToggleButton tglbtnOther = new JToggleButton("Other");
 		

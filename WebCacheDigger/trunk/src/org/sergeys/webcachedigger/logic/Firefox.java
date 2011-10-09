@@ -179,7 +179,7 @@ public class Firefox extends AbstractBrowser {
 	}
 	
 	@Override
-	public List<CachedFile> collectCachedFiles() throws Exception {
+	public List<CachedFile> collectCachedFiles(IProgressWatcher watcher) throws Exception {
 
 		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
 		int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
@@ -206,6 +206,7 @@ public class Firefox extends AbstractBrowser {
 		for(File file: allFiles){			
 			if(file.length() > minFileSize){				
 				files.add(new CachedFile(file.getAbsolutePath()));
+				watcher.progressStep();
 			}
 			
 //			notifyListenersOnFileFound(new FileFoundEvent(file));			
