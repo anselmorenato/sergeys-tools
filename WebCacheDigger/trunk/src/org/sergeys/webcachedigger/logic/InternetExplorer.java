@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
 /**
  * IE on Windows
  * 
@@ -53,16 +55,20 @@ public class InternetExplorer extends AbstractBrowser {
 	}
 
 	@Override
-	protected List<String> collectCachePaths() throws Exception {
-		ArrayList<String> paths = new ArrayList<String>();
+	protected List<File> collectExistingCachePaths() throws Exception {
+		List<File> paths = new ArrayList<File>();
 
-		// see IE settings for path
+		// see IE settings for real path. This is default path.
 		if(System.getenv("LOCALAPPDATA") != null){
 			String path = System.getenv("LOCALAPPDATA") + File.separator +
 					"Microsoft" + File.separator + "Windows" + File.separator + "Temporary Internet Files";	// win7 ie9
 			
-			paths.add(path);
-			System.out.println("path to search (win): " + path);
+			File f = new File(path); 
+			if(f.isDirectory()){
+				paths.add(f);
+				System.out.println("Actual path to search (win): " + path);
+			}
+						
 		}
 
 		return paths;
@@ -75,25 +81,16 @@ public class InternetExplorer extends AbstractBrowser {
 
 		int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
 
-		for (String path : this.getCachePaths()) {
-			File directory = new File(path);
-
-			if (directory.isDirectory()) {
-
-				List<File> dirFiles = listFilesRecursive(directory);
-				
-				for (File file : dirFiles) {
-					if (file.length() > minFileSize) {
-						files.add(new CachedFile(file.getAbsolutePath()));
-						watcher.progressStep();
-					}
+		for (File directory : this.getExistingCachePaths()) {			 
+		
+			List<File> dirFiles = listFilesRecursive(directory);
+			
+			for (File file : dirFiles) {
+				if (file.length() > minFileSize) {
+					files.add(new CachedFile(file.getAbsolutePath()));
+					watcher.progressStep();
 				}
-
-			} else {
-				// TODO: log warning
-				throw new Exception(String.format("'%s' is not a directory.",
-						path));
-			}
+			}			
 
 		}
 
@@ -103,5 +100,21 @@ public class InternetExplorer extends AbstractBrowser {
 	@Override
 	public String getName() {
 		return "Internet Explorer";
-	}	
+	}
+	
+	private ImageIcon icon = null;
+	
+	@Override
+	public ImageIcon getIcon() {
+		if(icon == null){
+			icon = new ImageIcon(this.getClass().getResource("/images/ie.png")); 
+		}
+		return icon;
+	}
+
+	@Override
+	public String getScreenName() {
+		return "Internet Explorer";
+	}
+	
 }

@@ -11,6 +11,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -141,7 +143,12 @@ implements ActionListener, PropertyChangeListener
 			jPanelTop.setLayout(new FlowLayout());
 			jPanelTop.setBorder(new EmptyBorder(0, 20, 0, 20));
 			
-			jPanelTop.add(new MainWinTopPanel2());
+			try {
+				jPanelTop.add(new MainWinTopPanel(this));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			jPanelTop.add(getJButtonSearch(), null);
 						
@@ -407,42 +414,18 @@ implements ActionListener, PropertyChangeListener
 	private void searchCachedFiles(){					
 		
 		try {
-			ArrayList<IBrowser> browsers = new ArrayList<IBrowser>();
-									
-			ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
-			for(IBrowser browser : ldr){
-				browser.setSettings(getSettings());
-				browsers.add(browser);
-				SimpleLogger.logMessage("Can handle " + browser.getName());				
-			}
 						
-			//IBrowser browser = new Firefox();
-			//IBrowser browser = new InternetExplorer();
-			
-//			browser.setSettings(getSettings());			
-//			browsers.add(browser);
-									
-						
-			// collect files while showing progress dialog
-			//final SwingWorker<ArrayList<CachedFile>, Integer> worker = new FileCollectorWorker(browsers, this);
 			if(progressDialog == null){
-				progressDialog = new FileSearchProgressDialog(browsers);
+				progressDialog = new FileSearchProgressDialog(getSettings(), getExistingBrowsers());
 				progressDialog.addPropertyChangeListener(this);
 			}
 			
-			//getFilesListPanel().init(new ArrayList<CachedFile>());			
+					
 			getFilesListPanel().setEnabled(false);
 			
 			progressDialog.setLocationRelativeTo(getJContentPane());
 			progressDialog.setVisible(true);
-			
-			//worker.addPropertyChangeListener(progressDialog);
 						
-			//worker.execute();
-			
-			
-			//getFilesListPanel().init(files);
-			
 			// http://www.medsea.eu/mime-util/detectors.html
 			
 //			String msg = String.format("Total files: %d", files.size());
@@ -517,7 +500,8 @@ implements ActionListener, PropertyChangeListener
 		if(e.getActionCommand() == Settings.COMMAND_SAVE_SETTINGS){
 			setSettings(getSettingsDialog().getSettings());
 			try {
-				getSettings().save();
+				//getSettings().save();
+				Settings.save(getSettings());
 			} catch (IOException e1) {
 				JOptionPane.showMessageDialog(getJFrame(), 
 						String.format("Failed to save settings to '%s':\n\n%s", Settings.getSettingsFilePath(), e1.getMessage()), 
@@ -570,7 +554,8 @@ implements ActionListener, PropertyChangeListener
 			getSettings().setIntProperty(Settings.WINDOW_W, mainWindow.getWidth());
 			getSettings().setIntProperty(Settings.WINDOW_H, mainWindow.getHeight());
 			getSettings().setIntProperty(Settings.SPLITTER_POS, getJSplitPaneMain().getDividerLocation());
-			getSettings().save();
+			//getSettings().save();
+			Settings.save(getSettings());
 		} catch (IOException e) {			
 			e.printStackTrace();
 		}
@@ -587,5 +572,32 @@ implements ActionListener, PropertyChangeListener
 			getFilesListPanel().init((List<CachedFile>) evt.getNewValue());			
 		}
 		
+	}
+	
+	private LinkedHashSet<IBrowser> existingBrowsers = null;
+	public synchronized LinkedHashSet<IBrowser> getExistingBrowsers(){
+		if(existingBrowsers == null){
+			existingBrowsers = new LinkedHashSet<IBrowser>();
+			
+			ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
+			for(IBrowser browser : ldr){
+				try {
+					browser.setSettings(getSettings());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				SimpleLogger.logMessage("Can handle " + browser.getName());
+				if(browser.isPresent()){
+					existingBrowsers.add(browser);
+					SimpleLogger.logMessage("Found " + browser.getName());					
+				}
+//				existingBrowsers.add(browser);
+								
+			}
+			
+		}
+		
+		return existingBrowsers;
 	}
 }

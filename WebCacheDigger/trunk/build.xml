@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="all">
 
-	<property name="revision" value="20111009-3" />
+	<property name="revision" value="20111010" />
 	<property name="webstart.url" value="http://192.168.56.1:8080/localweb" />
 	
 	<property name="dist.dir" value="jar/dist" />
@@ -53,12 +53,12 @@
 		</sequential>
 	</macrodef>
 
+	<target name="all" depends="init, logic, ui, libs, resources, images, jnlp">
+	</target>
+	
 	<target name="init">
 		<property file="${properties.file}">
 		</property>
-	</target>
-
-	<target name="all" depends="init, logic, ui, libs, resources, images, jnlp">
 	</target>
 
 	<target name="logic" depends="logic-jar">
@@ -117,7 +117,7 @@
 	<target name="jnlp">
 		<mkdir dir="${dist.dir}" />
 		<copy file="jar/webcachedigger.jnlp" tofile="${dist.dir}/wcd.jnlp" overwrite="true"></copy>
-		<!-- replace file="${dist.dir}/wcd.jnlp" token="%REVISION%" value="${revision}"></replace -->
+		
 		<replace file="${dist.dir}/wcd.jnlp">
 			<replacefilter token="%REVISION%" value="${revision}"/>
 			<replacefilter token="%URL%" value="${webstart.url}"/>

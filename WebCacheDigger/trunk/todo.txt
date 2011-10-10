@@ -31,6 +31,16 @@
 - select all
 - add selection of all of this type
 - clear all checks
+============
+ubuntu 11
+chrome 14 (10 oct 2011) ~/.cache/google-chrome/Default/Cache/*, except files 'index', 'data_*'
+opera 11.51  ~/.opera/cache/anydir/*, except 'revocation', 'sesn' subdirs
+
+macos
+~/Library/Caches/Google/Chrome/Default/Cache/*
+~/Library/Caches/Opera/cache
+
+
 
 ============
 http://sourceforge.net/projects/mime-util/
@@ -43,6 +53,10 @@ http://javatrack.blogspot.com/2009/08/video-in-java-no-more-jmf-please-use.html
 
 http://www.filthyrichclients.org/
 
+
+certificates:
+http://www.ascertia.com/OnlineCA/certspricing.aspx
+https://www.startssl.com/?app=40
 
 icons:
 http://sixrevisions.com/resources/40-beautiful-free-icon-sets/

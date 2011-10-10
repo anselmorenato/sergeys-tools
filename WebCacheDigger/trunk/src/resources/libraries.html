@@ -5,41 +5,27 @@
 <title>Used libraries</title>
 </head>
 <body>
+		
+	<p>Thanks to developers of following included libraries:</p>
+		
+	<h3>Mime Type Detection Utility</h3>
+	Licensed under Apache License 2.0.
+	<p>
+	<a href="http://sourceforge.net/projects/mime-util">home site</a>
+	</p>
+	
+	
+	<h3>Simple Logging Facade for Java</h3>
+	Licensed under MIT License.
+	<p>
+	<a href="http://www.slf4j.org">home site</a>
+	</p>
 
-	mime-util
-	<br>
-	<br>
-	slf4j
-	<br>
-	<br>
-	<a href="http://java.oracle.com">hyperlink</a>
-<br>
-	<br>	
-Extendable/Scalable
-    To maximize the usefulness of this kit, a great deal of effort has gone into making it extendable. These are some of the features.
+<br>	
 
-        The parser is replacable. The default parser is the Hot Java parser which is DTD based. A different DTD can be used, or an entirely different parser can be used. To change the parser, reimplement the getParser method. The default parser is dynamically loaded when first asked for, so the class files will never be loaded if an alternative parser is used. The default parser is in a separate package called parser below this package.
-        The parser drives the ParserCallback, which is provided by HTMLDocument. To change the callback, subclass HTMLDocument and reimplement the createDefaultDocument method to return document that produces a different reader. The reader controls how the document is structured. Although the Document provides HTML support by default, there is nothing preventing support of non-HTML tags that result in alternative element structures.
-        The default view of the models are provided as a hierarchy of View implementations, so one can easily customize how a particular element is displayed or add capabilities for new kinds of elements by providing new View implementations. The default set of views are provided by the HTMLFactory class. This can be easily changed by subclassing or replacing the HTMLFactory and reimplementing the getViewFactory method to return the alternative factory.
-        The View implementations work primarily off of CSS attributes, which are kept in the views. This makes it possible to have multiple views mapped over the same model that appear substantially different. This can be especially useful for printing. For most HTML attributes, the HTML attributes are converted to CSS attributes for display. This helps make the View implementations more general purpose
-<br>
-	<br>	
-Extendable/Scalable
-    To maximize the usefulness of this kit, a great deal of effort has gone into making it extendable. These are some of the features.
-
-        The parser is replacable. The default parser is the Hot Java parser which is DTD based. A different DTD can be used, or an entirely different parser can be used. To change the parser, reimplement the getParser method. The default parser is dynamically loaded when first asked for, so the class files will never be loaded if an alternative parser is used. The default parser is in a separate package called parser below this package.
-        The parser drives the ParserCallback, which is provided by HTMLDocument. To change the callback, subclass HTMLDocument and reimplement the createDefaultDocument method to return document that produces a different reader. The reader controls how the document is structured. Although the Document provides HTML support by default, there is nothing preventing support of non-HTML tags that result in alternative element structures.
-        The default view of the models are provided as a hierarchy of View implementations, so one can easily customize how a particular element is displayed or add capabilities for new kinds of elements by providing new View implementations. The default set of views are provided by the HTMLFactory class. This can be easily changed by subclassing or replacing the HTMLFactory and reimplementing the getViewFactory method to return the alternative factory.
-        The View implementations work primarily off of CSS attributes, which are kept in the views. This makes it possible to have multiple views mapped over the same model that appear substantially different. This can be especially useful for printing. For most HTML attributes, the HTML attributes are converted to CSS attributes for display. This helps make the View implementations more general purpose 	
-<br>
-	<br>	
-Extendable/Scalable
-    To maximize the usefulness of this kit, a great deal of effort has gone into making it extendable. These are some of the features.
-
-        The parser is replacable. The default parser is the Hot Java parser which is DTD based. A different DTD can be used, or an entirely different parser can be used. To change the parser, reimplement the getParser method. The default parser is dynamically loaded when first asked for, so the class files will never be loaded if an alternative parser is used. The default parser is in a separate package called parser below this package.
-        The parser drives the ParserCallback, which is provided by HTMLDocument. To change the callback, subclass HTMLDocument and reimplement the createDefaultDocument method to return document that produces a different reader. The reader controls how the document is structured. Although the Document provides HTML support by default, there is nothing preventing support of non-HTML tags that result in alternative element structures.
-        The default view of the models are provided as a hierarchy of View implementations, so one can easily customize how a particular element is displayed or add capabilities for new kinds of elements by providing new View implementations. The default set of views are provided by the HTMLFactory class. This can be easily changed by subclassing or replacing the HTMLFactory and reimplementing the getViewFactory method to return the alternative factory.
-        The View implementations work primarily off of CSS attributes, which are kept in the views. This makes it possible to have multiple views mapped over the same model that appear substantially different. This can be especially useful for printing. For most HTML attributes, the HTML attributes are converted to CSS attributes for display. This helps make the View implementations more general purpose 	
-         	
+<p>
+Please note that original JAR files are signed with my own certificate to satisfy Java Web Start requirements. 
+</p>
+  	
 </body>
 </html>

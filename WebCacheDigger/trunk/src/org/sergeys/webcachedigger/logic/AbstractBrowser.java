@@ -1,34 +1,75 @@
 package org.sergeys.webcachedigger.logic;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractBrowser implements IBrowser {
 
 	protected Settings settings;
-	protected List<String> cachePaths;
+	protected List<File> cachePaths;
 		
 	public void setSettings(Settings settings) {
 		this.settings = settings;
 	}
+				
+	public boolean isPresent() {
+		boolean present = false;
+						
+		try {
+			getExistingCachePaths();
+			present = (cachePaths != null) ? (getExistingCachePaths().size() > 0) : false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		return present;
+	}
+
+	protected abstract List<File> collectExistingCachePaths() throws Exception;
 	
-	protected abstract List<String> collectCachePaths() throws Exception;
-	
-	protected List<String> getCachePaths() throws Exception{
+	protected List<File> getExistingCachePaths() throws Exception{
 		if(cachePaths == null){
-			cachePaths = collectCachePaths();
+			cachePaths = collectExistingCachePaths();
 		}
 		
 		return cachePaths;
 	}	
-
-//	@Override	
-//	public void run() {		
-//		try {
-//			collectCachedFiles();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
+	
+	protected List<File> listFilesRecursive(File directory, final FileFilter fileFilter, List<File> allFiles){
+						
+		if(directory.isDirectory()){
+						
+			// collect regular files
+			List<File> files = Arrays.asList(directory
+					.listFiles(new FileFilter() {
+						public boolean accept(File file) {
+							return (!file.isDirectory() && fileFilter.accept(file));
+						}
+					}));
+			
+			allFiles.addAll(files);
+			
+			// process subdirs
+			List<File> subdirs = Arrays.asList(directory
+					.listFiles(new FileFilter() {
+						public boolean accept(File file) {
+							return (file.isDirectory());
+						}
+					}));
+			
+			for(File subdir: subdirs){
+				listFilesRecursive(subdir, fileFilter, allFiles);
+				//allFiles.addAll(files);				
+			}
+			
+//			SimpleLogger.logMessage("collected files in " + directory);
+		}
+		
+		return allFiles;
+	}
 	
 }

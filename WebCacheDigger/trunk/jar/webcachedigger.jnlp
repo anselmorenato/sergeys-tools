@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="%URL%/" href="%URL%/wcd.jnlp">
+<jnlp spec="1.0+" codebase="%URL%" href="wcd.jnlp">
 <!-- codebase and href are optional from 1.6_18  -->    
     <information>
         <title>Web Cache Digger</title>
@@ -22,14 +22,14 @@
         <!-- Application Resources -->
         <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
         
-        <jar href="%URL%/ui.%REVISION%.jar" main="true" />
-        <jar href="%URL%/logic.%REVISION%.jar" />
-        <jar href="%URL%/resources.%REVISION%.jar" />
-        <jar href="%URL%/images.%REVISION%.jar" />
+        <jar href="ui.%REVISION%.jar" main="true" />
+        <jar href="logic.%REVISION%.jar" />
+        <jar href="resources.%REVISION%.jar" />
+        <jar href="images.%REVISION%.jar" />
         
-        <jar href="%URL%/mime-util-2.1.3.jar" />
-        <jar href="%URL%/slf4j-api-1.6.2.jar" />
-        <jar href="%URL%/slf4j-simple-1.6.2.jar" />        
+        <jar href="mime-util-2.1.3.jar" />
+        <jar href="slf4j-api-1.6.2.jar" />
+        <jar href="slf4j-simple-1.6.2.jar" />        
     </resources>
     
     <application-desc

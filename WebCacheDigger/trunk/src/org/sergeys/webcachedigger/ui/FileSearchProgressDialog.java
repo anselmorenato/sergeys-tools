@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.Box;
@@ -18,6 +19,7 @@ import javax.swing.SwingWorker;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.IBrowser;
+import org.sergeys.webcachedigger.logic.Settings;
 
 import javax.swing.BoxLayout;
 import java.awt.BorderLayout;
@@ -39,7 +41,8 @@ extends JDialog
 	 */
 	private static final long serialVersionUID = 1L;
 	FileCollectorWorker worker;
-	List<IBrowser> browsers;
+	Settings settings;
+	HashSet<IBrowser> existingBrowsers;
 	
 	JLabel lblCount;
 	JLabel lblFilesFound;
@@ -52,10 +55,13 @@ extends JDialog
 	
 	/**
 	 * Create the dialog.
+	 * @param existingBrowsers 
 	 */
-	public FileSearchProgressDialog(List<IBrowser> browsers) {
+	public FileSearchProgressDialog(Settings settings, HashSet<IBrowser> existingBrowsers) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FileSearchProgressDialog.class.getResource("/images/icon.png")));
-		this.browsers = browsers;
+		//setIconImage(Toolkit.getDefaultToolkit().getImage(FileSearchProgressDialog.class.getResource("/images/progress.gif")));
+		this.settings = settings;
+		this.existingBrowsers = existingBrowsers;
 		
 		setTitle("Search files");
 		setModal(true);
@@ -91,7 +97,7 @@ extends JDialog
 		getContentPane().add(panel_2, BorderLayout.WEST);
 		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/search.png")));
+		lblNewLabel.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/progress.gif")));
 		//lblNewLabel.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/search.png")));
 		panel_2.add(lblNewLabel);
 				
@@ -116,7 +122,12 @@ extends JDialog
 
 	private void startWork() {
 		// TODO Auto-generated method stub
-		
+		ArrayList<IBrowser> browsers = new ArrayList<IBrowser>();
+		for(IBrowser b: existingBrowsers){
+			if(settings.getActiveBrowsers().contains(b.getName())){
+				browsers.add(b);
+			}
+		}
 		this.worker = new FileCollectorWorker(browsers, this);
 		this.worker.execute();
 		

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
 /**
  * FF 3.5 on Windows XP
  * 
@@ -115,9 +117,10 @@ public class Firefox extends AbstractBrowser {
 	}
 
 	@Override
-	protected List<String> collectCachePaths() throws Exception {
+	protected List<File> collectExistingCachePaths() throws Exception {
 
-		ArrayList<String> paths = new ArrayList<String>();		
+		ArrayList<String> possiblePaths = new ArrayList<String>();		
+		List<File> existingPaths = new ArrayList<File>();
 		
 		// http://kb.mozillazine.org/Profile_folder
 		String profilesiniPath = "";
@@ -126,22 +129,30 @@ public class Firefox extends AbstractBrowser {
 		if(System.getenv("APPDATA") != null){
 			profilesiniPath = System.getenv("APPDATA") + File.separator +
 					"Mozilla" + File.separator + "Firefox";
-			paths.addAll(possibleCachePaths(profilesiniPath));
+			possiblePaths.addAll(possibleCachePaths(profilesiniPath));
 		}
 		
 		// macos		
 		profilesiniPath = System.getProperty("user.home") + File.separator + 
 				"Library" + File.separator + "Mozilla" + File.separator + "Firefox";
-		paths.addAll(possibleCachePaths(profilesiniPath));
+		possiblePaths.addAll(possibleCachePaths(profilesiniPath));
 		profilesiniPath = System.getProperty("user.home") + File.separator + 
 				"Library" + File.separator + "Application Support" + File.separator + "Firefox";
-		paths.addAll(possibleCachePaths(profilesiniPath));
+		possiblePaths.addAll(possibleCachePaths(profilesiniPath));
 		
 		// linux
 		profilesiniPath = System.getProperty("user.home") + File.separator + ".mozilla" + File.separator + "firefox";
-		paths.addAll(possibleCachePaths(profilesiniPath));
+		possiblePaths.addAll(possibleCachePaths(profilesiniPath));
 		
-		return paths;		
+		for(String path: possiblePaths){
+			File f = new File(path); 
+			if(f.isDirectory()){
+				existingPaths.add(f);
+				System.out.println("Actual path to search: " + path);
+			}
+		}
+				
+		return existingPaths;		
 	}
 
 	private List<File> listFilesRecursive(File directory){
@@ -187,19 +198,17 @@ public class Firefox extends AbstractBrowser {
 		// 1. count files
 		ArrayList<File> allFiles = new ArrayList<File>();
 //		int totalFiles = 0;
-		for (String path : getCachePaths()) {
-
-			File directory = new File(path);
+		for (File directory : getExistingCachePaths()) {
+			
 
 			if (directory.isDirectory()) {												
 				List<File> dirFiles = listFilesRecursive(directory);
 				allFiles.addAll(dirFiles);
 //				totalFiles += dirFiles.size();			
 			} else {
-				SimpleLogger.logMessage(String.format("'%s' is not a directory", path));
+				SimpleLogger.logMessage(String.format("'%s' is not a directory", directory.getPath()));
 			}
 			
-//			notifyListenersOnFileCount(totalFiles);
 		}		
 		
 		// 2. collect every matching file
@@ -207,18 +216,31 @@ public class Firefox extends AbstractBrowser {
 			if(file.length() > minFileSize){				
 				files.add(new CachedFile(file.getAbsolutePath()));
 				watcher.progressStep();
-			}
-			
-//			notifyListenersOnFileFound(new FileFoundEvent(file));			
+			}						
 		}
 		
-//		notifyListenersOnSearchComplete();
+
 
 		return files;
 	}
 
 	@Override
 	public String getName() {
+		return "Mozilla Firefox";
+	}
+
+	private ImageIcon icon = null;
+	
+	@Override
+	public ImageIcon getIcon() {
+		if(icon == null){
+			icon = new ImageIcon(this.getClass().getResource("/images/firefox.png")); 
+		}
+		return icon;
+	}
+
+	@Override
+	public String getScreenName() {
 		return "Firefox";
 	}
 

@@ -37,7 +37,7 @@ import java.awt.Toolkit;
 
 public class AboutDialog extends JDialog {
 
-	private String version = "9 Oct 2011";
+	private String version = "10 Oct 2011";
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
