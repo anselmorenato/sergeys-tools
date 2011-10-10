@@ -57,7 +57,7 @@ public abstract class AbstractBrowser implements IBrowser {
 			List<File> subdirs = Arrays.asList(directory
 					.listFiles(new FileFilter() {
 						public boolean accept(File file) {
-							return (file.isDirectory());
+							return (file.isDirectory() && fileFilter.accept(file));
 						}
 					}));
 			

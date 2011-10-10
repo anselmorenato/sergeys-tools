@@ -34,6 +34,7 @@ public class Chrome extends AbstractBrowser {
 					"Google" + File.separator + "Chrome" + File.separator + "User Data" + File.separator +
 					"Default" + File.separator + "Cache" + File.separator;
 			
+			System.out.println("chrome path to search: " + path);
 			f = new File(path); 
 			if(f.isDirectory()){
 				existingPaths.add(f);
@@ -44,6 +45,8 @@ public class Chrome extends AbstractBrowser {
 		path = System.getProperty("user.home") + File.separator + 
 				"Library" + File.separator + "Caches" + File.separator + "Google" + File.separator + 
 				"Chrome" + File.separator + "Default" + File.separator + "Cache";
+		
+		System.out.println("chrome path to search: " + path);
 		f = new File(path);
 		if(f.isDirectory()){
 			existingPaths.add(f);
@@ -52,6 +55,7 @@ public class Chrome extends AbstractBrowser {
 		// linux
 		path = System.getProperty("user.home") + File.separator + 
 				".cache" + File.separator + "google-chrome" + File.separator + "Default" + File.separator + "Cache";
+		System.out.println("chrome path to search: " + path);
 		f = new File(path);
 		if(f.isDirectory()){
 			existingPaths.add(f);
