@@ -95,7 +95,7 @@ public class Opera extends AbstractBrowser {
 		// linux
 		path = System.getProperty("user.home") + File.separator + 
 				".opera" + File.separator + "cache";
-		System.out.println("chrome path to search: " + path);
+		System.out.println("opera path to search: " + path);
 		f = new File(path);
 		if(f.isDirectory()){
 			existingPaths.add(f);

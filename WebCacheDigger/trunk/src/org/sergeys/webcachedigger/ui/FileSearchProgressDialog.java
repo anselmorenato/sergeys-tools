@@ -1,41 +1,34 @@
 package org.sergeys.webcachedigger.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
-import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingWorker;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.Settings;
-
-import javax.swing.BoxLayout;
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
-import java.awt.FlowLayout;
-import javax.swing.border.EmptyBorder;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Toolkit;
+import java.awt.Component;
 
 public class FileSearchProgressDialog 
 extends JDialog 
 {
 
+	// property names 
+	public static final String SEARCH_COMPLETE = "SEARCH_COMPLETE";
+	
 	/**
 	 * 
 	 */
@@ -49,7 +42,11 @@ extends JDialog
 	
 	private String[] stageLabel = {
 			"Files found:",
-			"Identified:"
+			"Analyzed:"
+			// http://www.grammarist.com/spelling/analyse-analyze/
+			// Analyse is the preferred spelling in British and Australian English, 
+			// while analyze is preferred in American and Canadian English
+			
 	};
 	private int stage;
 	
@@ -59,15 +56,13 @@ extends JDialog
 	 */
 	public FileSearchProgressDialog(Settings settings, HashSet<IBrowser> existingBrowsers) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FileSearchProgressDialog.class.getResource("/images/icon.png")));
-		//setIconImage(Toolkit.getDefaultToolkit().getImage(FileSearchProgressDialog.class.getResource("/images/progress.gif")));
+
 		this.settings = settings;
 		this.existingBrowsers = existingBrowsers;
 		
 		setTitle("Search files");
 		setModal(true);
 		setBounds(100, 100, 350, 129);
-
-		//this.worker = worker;
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new EmptyBorder(0, 50, 0, 0));
@@ -77,7 +72,11 @@ extends JDialog
 		lblFilesFound = new JLabel("Files found:");
 		panel.add(lblFilesFound);
 		
+		JLabel lblSpace = new JLabel(" ");
+		panel.add(lblSpace);
+		
 		lblCount = new JLabel("0");
+		lblFilesFound.setLabelFor(lblCount);
 		lblCount.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCount.setPreferredSize(new Dimension(100, 20));
 		panel.add(lblCount);
@@ -96,16 +95,14 @@ extends JDialog
 		JPanel panel_2 = new JPanel();
 		getContentPane().add(panel_2, BorderLayout.WEST);
 		
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/progress.gif")));
-		//lblNewLabel.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/search.png")));
-		panel_2.add(lblNewLabel);
-				
-		
+		JLabel lblProgressGif = new JLabel("");
+		lblProgressGif.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/progress.gif")));
+
+		panel_2.add(lblProgressGif);
+						
 	}
 
 	protected void doCancel() {
-		// TODO Auto-generated method stub
 		this.setVisible(false);
 	}
 
@@ -128,7 +125,7 @@ extends JDialog
 				browsers.add(b);
 			}
 		}
-		this.worker = new FileCollectorWorker(browsers, this);
+		this.worker = new FileCollectorWorker(browsers, this, settings);
 		this.worker.execute();
 		
 	}
@@ -143,7 +140,7 @@ extends JDialog
 	
 	public void searchComplete(ArrayList<CachedFile> files){
 		this.worker = null;
-		//setVisible(false);
-		firePropertyChange("searchcompleted", null, files);		
+
+		firePropertyChange(FileSearchProgressDialog.SEARCH_COMPLETE, null, files);		
 	}
 }

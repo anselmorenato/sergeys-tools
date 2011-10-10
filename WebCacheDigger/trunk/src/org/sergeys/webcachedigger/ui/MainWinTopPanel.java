@@ -11,12 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.ImageIcon;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.Settings;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 
 public class MainWinTopPanel extends JPanel {
 	/**
@@ -71,6 +70,8 @@ public class MainWinTopPanel extends JPanel {
 //		lblSingleBrowser1.setIcon(new ImageIcon(MainWinTopPanel.class.getResource("/images/firefox.png")));
 //		panelBrowsers.add(lblSingleBrowser1);
 				
+		// browsers
+		
 		LinkedHashSet<IBrowser> browsers = wcd.getExistingBrowsers(); 
 				
 		if(browsers.size() == 1){
@@ -89,7 +90,7 @@ public class MainWinTopPanel extends JPanel {
 				toggle.setName(browser.getName());
 				toggle.addChangeListener(new ChangeListener() {
 					public void stateChanged(ChangeEvent e) {
-						doToggleStateChanged(e);
+						doToggleBrowser(e);
 					}
 				});
 				toggle.setIcon(browser.getIcon());
@@ -118,22 +119,48 @@ public class MainWinTopPanel extends JPanel {
 		gbc_panel_1.gridy = 1;
 		add(panel_1, gbc_panel_1);
 		
-		JToggleButton tglbtnAudio = new JToggleButton("Audio");
+		// file types
 		
+		JToggleButton tglbtnAudio = new JToggleButton("Audio");
+		tglbtnAudio.setName(Settings.FileType.Audio.name());
+		tglbtnAudio.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				doToggleMedia(e);
+			}
+		});
+		tglbtnAudio.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Audio));
 		panel_1.add(tglbtnAudio);
 		
 		JToggleButton tglbtnVideo = new JToggleButton("Video");
-		
+		tglbtnVideo.setName(Settings.FileType.Video.name());
+		tglbtnVideo.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				doToggleMedia(e);
+			}
+		});
+		tglbtnVideo.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Video));
 		panel_1.add(tglbtnVideo);
 		
 		JToggleButton tglbtnImages = new JToggleButton("Images");
-		
+		tglbtnImages.setName(Settings.FileType.Image.name());
+		tglbtnImages.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				doToggleMedia(e);
+			}
+		});
+		tglbtnImages.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Image));
 		panel_1.add(tglbtnImages);
 		
 		JToggleButton tglbtnOther = new JToggleButton("Other");
-		
+		tglbtnOther.setName(Settings.FileType.Other.name());
+		tglbtnOther.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				doToggleMedia(e);
+			}
+		});
+		tglbtnOther.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Other));
 		panel_1.add(tglbtnOther);
-		
+				
 		JLabel lblLargeThan = new JLabel("Large than");
 		GridBagConstraints gbc_lblLargeThan = new GridBagConstraints();
 		gbc_lblLargeThan.anchor = GridBagConstraints.EAST;
@@ -159,7 +186,25 @@ public class MainWinTopPanel extends JPanel {
 
 	}
 
-	protected void doToggleStateChanged(ChangeEvent e) {
+	protected void doToggleMedia(ChangeEvent e) {
+		JToggleButton btn = (JToggleButton)e.getSource();
+		String name = btn.getName();	// browser name
+		Settings.FileType type = Enum.valueOf(Settings.FileType.class, name);
+		try {
+			if(btn.isSelected()){				
+				wcd.getSettings().getActiveFileTypes().add(type);				
+			}
+			else{
+				wcd.getSettings().getActiveFileTypes().remove(type);				
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	}
+
+	protected void doToggleBrowser(ChangeEvent e) {
 		JToggleButton btn = (JToggleButton)e.getSource();
 		String name = btn.getName();	// browser name
 		try {

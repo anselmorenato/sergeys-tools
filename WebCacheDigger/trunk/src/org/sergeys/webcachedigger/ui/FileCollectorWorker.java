@@ -9,7 +9,7 @@ import javax.swing.SwingWorker;
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.IProgressWatcher;
-import org.sergeys.webcachedigger.logic.SimpleLogger;
+import org.sergeys.webcachedigger.logic.Settings;
 
 public class FileCollectorWorker 
 extends SwingWorker<ArrayList<CachedFile>, Long> 
@@ -20,34 +20,59 @@ implements IProgressWatcher
 	private long totalCount = 0;
 	private FileSearchProgressDialog pd;
 	private int stage;
+	private Settings settings;
 
-	public FileCollectorWorker(List<IBrowser> browsers, FileSearchProgressDialog pd) {
+	public FileCollectorWorker(List<IBrowser> browsers, FileSearchProgressDialog pd, Settings settings) {
 		this.browsers = browsers;
 		this.pd = pd;
+		this.settings = settings;
 	}
 		
 	@Override
 	protected ArrayList<CachedFile> doInBackground() throws Exception {
 		ArrayList<CachedFile> cachedFiles = new ArrayList<CachedFile>();
+		ArrayList<CachedFile> filteredFiles = new ArrayList<CachedFile>();
 
 		// collect raw files
 		stage = 0;
 		
 		for (IBrowser browser : browsers) {
-//			browser.addBrowserProgressListener(this);
 			cachedFiles.addAll(browser.collectCachedFiles(this));
 		}		
 		
-		// determine file types
+		// determine file types, filter out by type
 		stage = 1;
 		totalCount = 0;
 		for(CachedFile file: cachedFiles){
-			file.getFileType();	// TODO: refactor method
+			// mime type examination
+			String type = file.getFileType();
+			
+			if(type.startsWith("audio/")){
+				if(settings.getActiveFileTypes().contains(Settings.FileType.Audio)){
+					filteredFiles.add(file);
+				}
+			}
+			else if(type.startsWith("video/")){
+				if(settings.getActiveFileTypes().contains(Settings.FileType.Video)){
+					filteredFiles.add(file);
+				}
+			}
+			else if(type.startsWith("image/")){
+				if(settings.getActiveFileTypes().contains(Settings.FileType.Image)){
+					filteredFiles.add(file);
+				}
+			}
+			else{
+				if(settings.getActiveFileTypes().contains(Settings.FileType.Other)){
+					filteredFiles.add(file);
+				}
+			}
+						
 			totalCount++;
 			publish(totalCount);
-		}
+		}		
 		
-		return cachedFiles;
+		return filteredFiles;
 	}
 	
 	@Override
@@ -71,15 +96,6 @@ implements IProgressWatcher
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		try {
-//			digger.updateCachedFiles(get());			
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			SimpleLogger.logMessage("cannot update files, interrupted");
-//		} catch (ExecutionException e) {
-//			// TODO Auto-generated catch block
-//			SimpleLogger.logMessage("cannot update files: " + e);
-//		}		
 	}
 
 	@Override

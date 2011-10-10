@@ -11,7 +11,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -26,7 +25,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
@@ -101,8 +99,9 @@ implements ActionListener, PropertyChangeListener
 			jButtonCopySelectedFiles.setText("Copy Checked Files");
 			jButtonCopySelectedFiles.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					int count = WebCacheDigger.this.copyFiles();
-					String msg = String.format("Copied %d file(s).", count);
+					String targetDir = settings.getProperty(Settings.SAVE_TO_PATH);
+					int count = WebCacheDigger.this.copyFiles(targetDir);
+					String msg = String.format("Copied %d file(s) to %s.", count, targetDir);
 					
 					JOptionPane.showMessageDialog(getJFrame(), 					 
 							msg,
@@ -511,9 +510,9 @@ implements ActionListener, PropertyChangeListener
 		}
 	}	
 	
-	private int copyFiles(){
+	private int copyFiles(String targetDir){
 		int copied = 0;
-		String targetDir = settings.getProperty(Settings.SAVE_TO_PATH);
+		
 		for(CachedFile file: getFilesListPanel().getCachedFiles()){
 			if(file.isSelectedToCopy()){
 				String targetFile = targetDir + File.separator + file.getName();
@@ -566,7 +565,7 @@ implements ActionListener, PropertyChangeListener
 	@SuppressWarnings("unchecked")
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if(evt.getPropertyName().equals("searchcompleted")){
+		if(evt.getPropertyName().equals(FileSearchProgressDialog.SEARCH_COMPLETE)){
 			progressDialog.setVisible(false);
 			getFilesListPanel().setEnabled(true);
 			getFilesListPanel().init((List<CachedFile>) evt.getNewValue());			

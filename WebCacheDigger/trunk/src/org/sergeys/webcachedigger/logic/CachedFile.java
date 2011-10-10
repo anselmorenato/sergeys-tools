@@ -59,18 +59,20 @@ public class CachedFile extends File {
 		return hash;
 	}
 
+	public void detectFileType(){
+		@SuppressWarnings("rawtypes")
+		Collection mt = MimeUtil.getMimeTypes(this);
+		if (!mt.isEmpty()) {
+			fileType = mt.toArray()[0].toString();
+		}
+		else{
+			fileType = "unknown";
+		}
+	}
+	
 	public String getFileType() {
 		if (fileType == null) {
-			// FileDataSource fds = new FileDataSource(this);
-			// fileType = fds.getContentType();
-			@SuppressWarnings("rawtypes")
-			Collection mt = MimeUtil.getMimeTypes(this);
-			if (!mt.isEmpty()) {
-				fileType = mt.toArray()[0].toString();
-			}
-			else{
-				fileType = "unknown";
-			}
+			detectFileType();
 		}
 
 		return fileType;

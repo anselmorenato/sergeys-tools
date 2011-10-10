@@ -7,14 +7,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Properties;
 
 public class Settings 
 extends Properties 
 {
+	public enum FileType { Image, Audio, Video, Other };
+	
 	/**
 	 * 
 	 */
@@ -36,21 +37,13 @@ extends Properties
 	public static final String WINDOW_W = "WINDOW_W";
 	public static final String WINDOW_H = "WINDOW_H";
 	public static final String SPLITTER_POS = "SPLITTER_POS";
-	
-//	private Hashtable<String, String> settings = new Hashtable<String, String>();
-//	
-//	public String getValue(String key){
-//		return settings.get(key);
-//	}
-//	
-//	public void setValue(String key, String value){
-//		settings.put(key, value);
-//	}
-	
+		
 	private static String settingsDirPath;
 	private static String settingsFilePath; 	
 
 	private HashSet<String> activeBrowsers = new HashSet<String>();
+	
+	private EnumSet<FileType> activeFileTypes = EnumSet.noneOf(FileType.class); 
 	
 	static{
 		settingsDirPath = System.getProperty("user.home") + File.separator 
@@ -165,6 +158,14 @@ extends Properties
 
 	public synchronized void setActiveBrowsers(HashSet<String> activeBrowsers) {
 		this.activeBrowsers = activeBrowsers;
+	}
+
+	public synchronized EnumSet<FileType> getActiveFileTypes() {
+		return activeFileTypes;
+	}
+
+	public synchronized void setActiveFileTypes(EnumSet<FileType> activeFileTypes) {
+		this.activeFileTypes = activeFileTypes;
 	}
 	
 }
