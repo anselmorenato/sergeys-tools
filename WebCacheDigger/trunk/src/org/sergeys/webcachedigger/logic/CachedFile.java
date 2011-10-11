@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.Properties;
 
 import eu.medsea.mimeutil.MimeUtil;
 
@@ -17,11 +18,12 @@ public class CachedFile extends File {
 	 */
 	public static final String SELECTED_FILE = "SELECTED_FILE";
 	
-	private static Hashtable<String, String> extensionByMimetype;
+	//private static Hashtable<String, String> extensionByMimetype;
+	private static Properties extensionByMimetype;
 
 	static {
 		MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-
+/*
 		// TODO: load from resources, or from webstart
 		extensionByMimetype = new Hashtable<String, String>();
 		// TODO: any internal audio, video playback?
@@ -38,6 +40,15 @@ public class CachedFile extends File {
 		// TODO: select additional file types from available in settings dialog
 		//extensionByMimetype.put("text/html", 	"html");
 		extensionByMimetype.put("application/pdf", 	"pdf");
+*/		
+		extensionByMimetype = new Properties();
+		try {			
+			InputStream is = CachedFile.class.getResourceAsStream("/resources/extensionByMime.properties");
+			extensionByMimetype.load(is);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -102,7 +113,8 @@ public class CachedFile extends File {
 	}
 	
 	public String guessExtension(){
-		return extensionByMimetype.get(getFileType());
+		//return extensionByMimetype.get(getFileType());
+		return extensionByMimetype.getProperty(getFileType());
 	}
 	
 	/**
