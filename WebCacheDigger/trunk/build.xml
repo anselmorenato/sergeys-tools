@@ -18,6 +18,7 @@
 	<property name="lib.mimeutil" value="mime-util-2.1.3.jar" />
 	<property name="lib.slf4j-api" value="slf4j-api-1.6.2.jar" />
 	<property name="lib.slf4j-impl" value="slf4j-simple-1.6.2.jar" />
+	<property name="lib.mp3agic" value="mp3agic-0.6.9.jar" />
 		
 	<macrodef name="unsignjar">
 		<!-- http://frank.zinepal.com/unsign-a-jar-with-ant -->
@@ -178,7 +179,7 @@
 		<genkey keystore="${keystore.file}" alias="${keystore.alias}" validity="365" storepass="${keystore.password}">
 			<dname>
 				<param name="CN" value="Sergey Selivanov" />
-				<param name="OU" value="OU" />
+				<param name="OU" value="Home" />
 				<!--
 				<param name="O" value="Sergey Selivanov" />
 				<param name="C" value="UA" />
@@ -208,6 +209,10 @@
 					<uptodate targetfile="${dist.dir}/${lib.slf4j-impl}" srcfile="lib/${lib.slf4j-impl}">
 					</uptodate>
 				</not>
+				<not>
+					<uptodate targetfile="${dist.dir}/${lib.mp3agic}" srcfile="lib/${lib.mp3agic}">
+					</uptodate>
+				</not>
 			</or>
 		</condition>
 	</target>
@@ -234,6 +239,13 @@
 		<unsignjar jar="${dist.dir}/${lib.slf4j-impl}" />
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
 			jar="${dist.dir}/${lib.slf4j-impl}" signedjar="${dist.dir}/${lib.slf4j-impl}" verbose="true">
+		</signjar>
+
+		<copy file="lib/${lib.mp3agic}" todir="${dist.dir}" overwrite="true">
+		</copy>
+		<unsignjar jar="${dist.dir}/${lib.mp3agic}" />
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/${lib.mp3agic}" signedjar="${dist.dir}/${lib.mp3agic}" verbose="true">
 		</signjar>
 		
 	</target>

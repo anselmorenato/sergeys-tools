@@ -7,7 +7,7 @@ import java.awt.GridBagLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 
@@ -19,77 +19,68 @@ public class ImagePreviewPanel extends FilePreviewPanel {
 	}
 	
 	private void initialize() {
-		jLabelImage = new JLabel();
-		jLabelImage.setText("<image>");
-		jLabelImage.setHorizontalTextPosition(SwingConstants.CENTER);
-		jLabelImage.setHorizontalAlignment(SwingConstants.CENTER);
 		this.setLayout(new BorderLayout());
 		this.setSize(300, 200);
-		this.add(getJPanelBottom(), BorderLayout.SOUTH);
+		this.add(getJPanelTop(), BorderLayout.NORTH);
 		this.add(getJPanelCenter(), BorderLayout.CENTER);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.sergeys.webcachedigger.ui.FilePreviewPanel#setCachedFile(org.sergeys.webcachedigger.logic.CachedFile)
-	 */
+	ScaledImage scaledImage = new ScaledImage(null);
+	
 	@Override
 	public void setCachedFile(CachedFile cachedFile) {
 		
 		super.setCachedFile(cachedFile);
+		
 		ImageIcon imageIcon = new ImageIcon(cachedFile.getAbsolutePath());
 		
-		// TODO: scale down large image. 
+		lblImageSize.setText(imageIcon.getIconWidth() + " x " + imageIcon.getIconHeight());
 		
-//		int w = imageIcon.getIconWidth();
-//		int h = imageIcon.getIconHeight();						
-//		Image img = imageIcon.getImage();
-		//imageIcon.setImage(img.getScaledInstance(100, 100, Image.SCALE_DEFAULT));
-		jLabelImage.setIcon(imageIcon);
+		getJPanelCenter().remove(scaledImage);
+		scaledImage = new ScaledImage(imageIcon.getImage());
+		getJPanelCenter().add(scaledImage);
+		invalidate();		
 	}
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JLabel jLabelImage = null;
-	private JPanel jPanelBottom = null;
-	private JLabel jLabel1 = null;
-	private JLabel jLabelImageFormat = null;
+	
+	private JPanel jPanelTop = null;
+	
 	private JLabel jLabel2 = null;
-	private JLabel jLabelImageSize = null;
+	
+	private JLabel lblImageSize;
 	private JPanel jPanelCenter = null;
+	
 	/**
 	 * This method initializes jPanelBottom	
 	 * 	
 	 * @return javax.swing.JPanel	
 	 */
-	private JPanel getJPanelBottom() {
-		if (jPanelBottom == null) {
-			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-			gridBagConstraints2.gridx = 1;
-			gridBagConstraints2.gridy = 1;
-			jLabelImageSize = new JLabel();
-			jLabelImageSize.setText("<unknown>");
+	private JPanel getJPanelTop() {
+		if (jPanelTop == null) {
+			GridBagConstraints gbc_lblImageSize = new GridBagConstraints();
+			gbc_lblImageSize.anchor = GridBagConstraints.WEST;
+			gbc_lblImageSize.gridx = 1;
+			gbc_lblImageSize.gridy = 0;
+			lblImageSize = new JLabel();
+			lblImageSize.setText("<unknown>");
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			gridBagConstraints1.ipady = 5;
+			gridBagConstraints1.ipadx = 5;
+			gridBagConstraints1.anchor = GridBagConstraints.EAST;
 			gridBagConstraints1.gridx = 0;
-			gridBagConstraints1.gridy = 1;
+			gridBagConstraints1.gridy = 0;
 			jLabel2 = new JLabel();
-			jLabel2.setText("Size:");
-			GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			gridBagConstraints.gridx = 1;
-			gridBagConstraints.gridy = 0;
-			jLabelImageFormat = new JLabel();
-			jLabelImageFormat.setText("<unknown>");
-			jLabel1 = new JLabel();
-			jLabel1.setText("Image format:");
-			jPanelBottom = new JPanel();
-			jPanelBottom.setLayout(new GridBagLayout());
-			jPanelBottom.add(jLabel1, new GridBagConstraints());
-			jPanelBottom.add(jLabelImageFormat, gridBagConstraints);
-			jPanelBottom.add(jLabel2, gridBagConstraints1);
-			jPanelBottom.add(jLabelImageSize, gridBagConstraints2);
+			jLabel2.setText("Dimensions:");
+			jPanelTop = new JPanel();
+			jPanelTop.setLayout(new GridBagLayout());
+			jPanelTop.add(jLabel2, gridBagConstraints1);
+			jPanelTop.add(lblImageSize, gbc_lblImageSize);
 		}
-		return jPanelBottom;
+		return jPanelTop;
 	}
 
 	/**
@@ -99,11 +90,9 @@ public class ImagePreviewPanel extends FilePreviewPanel {
 	 */
 	private JPanel getJPanelCenter() {
 		if (jPanelCenter == null) {
-			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			gridBagConstraints3.fill = GridBagConstraints.BOTH;
 			jPanelCenter = new JPanel();
-			jPanelCenter.setLayout(new GridBagLayout());
-			jPanelCenter.add(jLabelImage, gridBagConstraints3);
+			jPanelCenter.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+			jPanelCenter.setLayout(new BorderLayout(0, 0));
 		}
 		return jPanelCenter;
 	}

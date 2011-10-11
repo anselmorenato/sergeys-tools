@@ -3,7 +3,6 @@ package org.sergeys.webcachedigger.ui;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 

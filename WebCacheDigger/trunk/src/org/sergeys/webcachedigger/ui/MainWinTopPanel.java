@@ -9,7 +9,6 @@ import java.util.LinkedHashSet;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -22,7 +21,6 @@ public class MainWinTopPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField textField;		
 
 	private WebCacheDigger wcd;
 	
@@ -164,29 +162,6 @@ public class MainWinTopPanel extends JPanel {
 		});
 		tglbtnOther.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Other));
 		panel_1.add(tglbtnOther);
-				
-		JLabel lblLargeThan = new JLabel("Large than");
-		GridBagConstraints gbc_lblLargeThan = new GridBagConstraints();
-		gbc_lblLargeThan.anchor = GridBagConstraints.EAST;
-		gbc_lblLargeThan.insets = new Insets(0, 0, 0, 5);
-		gbc_lblLargeThan.gridx = 0;
-		gbc_lblLargeThan.gridy = 2;
-		add(lblLargeThan, gbc_lblLargeThan);
-		
-		JPanel panel_2 = new JPanel();
-		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
-		gbc_panel_2.anchor = GridBagConstraints.WEST;
-		gbc_panel_2.gridx = 1;
-		gbc_panel_2.gridy = 2;
-		add(panel_2, gbc_panel_2);
-		
-		textField = new JTextField();
-		textField.setText("100000");
-		panel_2.add(textField);
-		textField.setColumns(10);
-		
-		JLabel lblBytes = new JLabel("bytes");
-		panel_2.add(lblBytes);
 
 	}
 

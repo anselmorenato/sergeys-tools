@@ -30,6 +30,7 @@
         <jar href="mime-util-2.1.3.jar" />
         <jar href="slf4j-api-1.6.2.jar" />
         <jar href="slf4j-simple-1.6.2.jar" />        
+        <jar href="mp3agic-0.6.9.jar" />
     </resources>
     
     <application-desc
