@@ -74,7 +74,11 @@ public class MainWinTopPanel extends JPanel {
 		
 		LinkedHashSet<IBrowser> browsers = wcd.getExistingBrowsers(); 
 				
-		if(browsers.size() == 1){
+		if(browsers.size() == 0){
+			JLabel lblNoBrowsers = new JLabel("No browsers detected");
+			panelBrowsers.add(lblNoBrowsers);
+		}
+		else if(browsers.size() == 1){
 			// do not offer any choice
 			IBrowser b = browsers.iterator().next();
 			JLabel lblSingleBrowser = new JLabel(b.getScreenName());
@@ -82,7 +86,7 @@ public class MainWinTopPanel extends JPanel {
 			panelBrowsers.add(lblSingleBrowser);
 			wcd.getSettings().getActiveBrowsers().clear();
 			wcd.getSettings().getActiveBrowsers().add(b.getName());
-		}
+		}		
 		else{
 			// add buttons for existing browsers
 			for(IBrowser browser: browsers){

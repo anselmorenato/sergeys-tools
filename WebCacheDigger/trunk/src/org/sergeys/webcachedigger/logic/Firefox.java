@@ -75,11 +75,20 @@ public class Firefox extends AbstractBrowser {
 //							//tokens = path.split(File.separator);	// TODO: fails!
 //							tokens = relPath.split(regexp);
 							
+							// windows
 							if(System.getenv("LOCALAPPDATA") != null){	
-								// windows
+								// 7
 								path = System.getenv("LOCALAPPDATA") + File.separator +
-										"Mozilla" + File.separator + "Firefox" + File.separator + 
-										//"Profiles" + File.separator + tokens[tokens.length - 1] + File.separator + "Cache";
+										"Mozilla" + File.separator + "Firefox" + File.separator + 										
+										relPath + File.separator + "Cache";
+								paths.add(path);
+								System.out.println("path to search (win): " + path);
+							}
+							else if(System.getenv("USERPROFILE") != null){	
+								// xp
+								path = System.getenv("USERPROFILE") + File.separator +
+										"Local Settings" + File.separator + "Application Data" + File.separator +
+										"Mozilla" + File.separator + "Firefox" + File.separator + 										
 										relPath + File.separator + "Cache";
 								paths.add(path);
 								System.out.println("path to search (win): " + path);

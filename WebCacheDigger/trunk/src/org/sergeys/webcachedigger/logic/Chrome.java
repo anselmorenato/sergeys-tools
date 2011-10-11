@@ -30,7 +30,21 @@ public class Chrome extends AbstractBrowser {
 		
 		// windows
 		if(System.getenv("LOCALAPPDATA") != null){
+			// 7
 			path = System.getenv("LOCALAPPDATA") + File.separator +
+					"Google" + File.separator + "Chrome" + File.separator + "User Data" + File.separator +
+					"Default" + File.separator + "Cache" + File.separator;
+			
+			System.out.println("chrome path to search: " + path);
+			f = new File(path); 
+			if(f.isDirectory()){
+				existingPaths.add(f);
+			}
+		}
+		else if(System.getenv("USERPROFILE") != null){
+			// xp
+			path = System.getenv("USERPROFILE") + File.separator +
+					"Local Settings" + File.separator + "Application Data" + File.separator + 
 					"Google" + File.separator + "Chrome" + File.separator + "User Data" + File.separator +
 					"Default" + File.separator + "Cache" + File.separator;
 			

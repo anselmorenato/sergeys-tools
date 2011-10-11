@@ -69,18 +69,32 @@ public class Opera extends AbstractBrowser {
 		String path;
 		File f;
 		
-//		// windows
-//		if(System.getenv("LOCALAPPDATA") != null){
-//			path = System.getenv("LOCALAPPDATA") + File.separator +
-//					"Google" + File.separator + "Chrome" + File.separator + "User Data" + File.separator +
-//					"Default" + File.separator + "Cache" + File.separator;
-//			
-//			System.out.println("chrome path to search: " + path);
-//			f = new File(path); 
-//			if(f.isDirectory()){
-//				existingPaths.add(f);
-//			}
-//		}
+		// windows
+		if(System.getenv("LOCALAPPDATA") != null){	
+			// 7
+			path = System.getenv("LOCALAPPDATA") + File.separator +					
+					"Opera" + File.separator + "Opera" + File.separator +	// yes opera twice 										
+					"cache";
+			
+			System.out.println("opera path to search: " + path);
+			f = new File(path);
+			if(f.isDirectory()){
+				existingPaths.add(f);
+			}
+		}
+		else if(System.getenv("USERPROFILE") != null){	
+			// xp
+			path = System.getenv("USERPROFILE") + File.separator +
+					"Local Settings" + File.separator + "Application Data" + File.separator +
+					"Opera" + File.separator + "Opera" + File.separator +	// yes opera twice 										
+					"cache";
+			
+			System.out.println("opera path to search: " + path);
+			f = new File(path);
+			if(f.isDirectory()){
+				existingPaths.add(f);
+			}
+		}
 		
 		// macos		
 		path = System.getProperty("user.home") + File.separator + 

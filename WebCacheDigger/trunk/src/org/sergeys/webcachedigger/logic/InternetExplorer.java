@@ -59,7 +59,9 @@ public class InternetExplorer extends AbstractBrowser {
 		List<File> paths = new ArrayList<File>();
 
 		// see IE settings for real path. This is default path.
+		
 		if(System.getenv("LOCALAPPDATA") != null){
+			// vista/7
 			String path = System.getenv("LOCALAPPDATA") + File.separator +
 					"Microsoft" + File.separator + "Windows" + File.separator + "Temporary Internet Files";	// win7 ie9
 			
@@ -69,8 +71,19 @@ public class InternetExplorer extends AbstractBrowser {
 				System.out.println("Actual path to search (win): " + path);
 			}
 						
+		}				
+		else if(System.getenv("USERPROFILE") != null){
+			// 2000/xp %USERPROFILE%\Local Settings\Temporary Internet Files
+			String path = System.getenv("USERPROFILE") + File.separator +
+					"Local Settings" + File.separator + "Temporary Internet Files";	// winxp ie6
+			
+			File f = new File(path); 
+			if(f.isDirectory()){
+				paths.add(f);
+				System.out.println("Actual path to search (win): " + path);
+			}						
 		}
-
+		
 		return paths;
 	}
 
