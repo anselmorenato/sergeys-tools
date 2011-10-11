@@ -43,7 +43,7 @@ public class CachedFile extends File {
 	private static final long serialVersionUID = 1L;
 
 	private String hash;
-	private String fileType = null;
+	private String mimeType = null;
 	
 	private boolean selectedToCopy = false;
 
@@ -63,23 +63,23 @@ public class CachedFile extends File {
 		@SuppressWarnings("rawtypes")
 		Collection mt = MimeUtil.getMimeTypes(this);
 		if (!mt.isEmpty()) {
-			fileType = mt.toArray()[0].toString();
+			mimeType = mt.toArray()[0].toString();
 		}
 		else{
-			fileType = "unknown";
+			mimeType = "unknown";
 		}
 	}
 	
 	public String getFileType() {
-		if (fileType == null) {
+		if (mimeType == null) {
 			detectFileType();
 		}
 
-		return fileType;
+		return mimeType;
 	}
 
 	// http://www.rgagnon.com/javadetails/java-0064.html
-	// note limit of 64MB
+	// TODO: note limit of 64MB
 	public static void copyFile(File in, File out) throws IOException {
 		copyFile(in.getAbsolutePath(), out.getAbsolutePath());
 	}
@@ -118,8 +118,5 @@ public class CachedFile extends File {
 	public boolean isSelectedToCopy() {
 		return selectedToCopy;
 	}
-
-	public static String junkMessage(){		
-		return "test version 1.";
-	}
+	
 }

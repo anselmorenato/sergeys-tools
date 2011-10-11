@@ -3,10 +3,14 @@ package org.sergeys.webcachedigger.ui;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 
-public class FilesTableModel extends AbstractTableModel {
+public class FilesTableModel 
+extends AbstractTableModel 
+//extends DefaultTableModel
+{
 
 	/*
 	 * (non-Javadoc)
@@ -23,6 +27,8 @@ public class FilesTableModel extends AbstractTableModel {
 		else{
 			super.setValueAt(value, rowIndex, columnIndex);
 		}
+		
+		fireTableCellUpdated(rowIndex, columnIndex);
 	}
 
 	/*
@@ -67,7 +73,7 @@ public class FilesTableModel extends AbstractTableModel {
 	@Override
 	public int getRowCount() {
 
-		return cachedFiles.size();
+		return (cachedFiles == null) ? 0 : cachedFiles.size();
 	}
 
 	@Override
@@ -100,4 +106,23 @@ public class FilesTableModel extends AbstractTableModel {
 		return this.cachedFiles.get(rowIndex);
 	}
 	
+	public void checkAll(boolean checked){		
+		for(CachedFile f: cachedFiles){
+			f.setSelectedToCopy(checked);					
+		}
+		
+		fireTableDataChanged();				
+	}		
+	
+	public void checkByType(String mimeType, boolean checked){
+		int i = 0;
+		for(CachedFile f: cachedFiles){
+			if(f.getFileType().equals(mimeType)){
+				f.setSelectedToCopy(checked);
+				fireTableCellUpdated(i, 0);
+			}
+			i++;
+		}										
+	}
+		
 }

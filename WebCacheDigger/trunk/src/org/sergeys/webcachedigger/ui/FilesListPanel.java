@@ -11,36 +11,37 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.TableRowSorter;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
+import javax.swing.JPopupMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+// Uncomment line in initialize() to get panel components in ui designer
 
 public class FilesListPanel extends JPanel implements ListSelectionListener {
-
+	
 	private static final long serialVersionUID = 1L;
 	private JScrollPane jScrollPane = null;
 	private JTable jTableFoundFiles = null;
 
-	private DefaultListSelectionModel foundFilesSelectionModel; // @jve:decl-index=0:
-
-//	private CachedFile oldCachedFile;
-//	private CachedFile selectedCachedFile; // @jve:decl-index=0:
-
-	/**
-	 * @return the selectedCachedFile
-	 */
-//	public CachedFile getSelectedCachedFile() {
-//		return selectedCachedFile;
-//	}
-
-	/**
-	 * @param selectedCachedFile
-	 *            the selectedCachedFile to set
-	 */
-//	public void setSelectedCachedFile(CachedFile selectedCachedFile) {
-//		this.selectedCachedFile = selectedCachedFile;
-//	}
-
+	private DefaultListSelectionModel foundFilesSelectionModel;
+	
+	private JPopupMenu popupMenu = new JPopupMenu();
+	
+	private static final String CHECK_ALL = "CHECK_ALL";
+	private static final String UNCHECK_ALL = "UNCHECK_ALL";
+	private static final String CHECK_ALL_TYPE = "CHECK_ALL_TYPE";
+	private static final String UNCHECK_ALL_TYPE = "UNCHECK_ALL_TYPE";
+	
+	
 	/**
 	 * @return the foundFilesSelectionModel
 	 */
@@ -69,6 +70,69 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(600, 300));
 		this.add(getJScrollPane(), BorderLayout.CENTER);
+		
+		
+		// TODO: uncomment this line to get panel components in ui designer,
+		// comment for production.		
+		//add(popupMenu, BorderLayout.EAST);
+		
+		
+		JMenuItem mntmCheckAllOf = new JMenuItem("Check all of type");
+		mntmCheckAllOf.setName(CHECK_ALL_TYPE);
+		mntmCheckAllOf.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doPopupMenuItemSelected(e);
+			}
+		});
+		popupMenu.add(mntmCheckAllOf);
+		
+		JMenuItem mntmUncheckAllOf = new JMenuItem("Uncheck all of type");
+		mntmUncheckAllOf.setName(UNCHECK_ALL_TYPE);
+		mntmUncheckAllOf.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doPopupMenuItemSelected(e);
+			}
+		});
+		popupMenu.add(mntmUncheckAllOf);
+		
+		JSeparator separator = new JSeparator();
+		popupMenu.add(separator);
+		
+		JMenuItem mntmCheckAll = new JMenuItem("Check all");
+		mntmCheckAll.setName(CHECK_ALL);
+		mntmCheckAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doPopupMenuItemSelected(e);
+			}
+		});
+		popupMenu.add(mntmCheckAll);
+		
+		JMenuItem mntmUncheckAll = new JMenuItem("Uncheck all");
+		mntmUncheckAll.setName(UNCHECK_ALL);
+		mntmUncheckAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doPopupMenuItemSelected(e);
+			}
+		});
+		popupMenu.add(mntmUncheckAll);
+								
+	}
+
+	protected void doPopupMenuItemSelected(ActionEvent e) {		
+		if(((JMenuItem)e.getSource()).getName().equals(CHECK_ALL)){
+			((FilesTableModel)jTableFoundFiles.getModel()).checkAll(true);
+		}
+		else if(((JMenuItem)e.getSource()).getName().equals(UNCHECK_ALL)){
+			((FilesTableModel)jTableFoundFiles.getModel()).checkAll(false);
+		}
+		else if(((JMenuItem)e.getSource()).getName().equals(CHECK_ALL_TYPE)){
+			String mimeType = (String) jTableFoundFiles.getValueAt(jTableFoundFiles.getSelectedRow(), 2);
+			((FilesTableModel)jTableFoundFiles.getModel()).checkByType(mimeType, true);						
+		}
+		else if(((JMenuItem)e.getSource()).getName().equals(UNCHECK_ALL_TYPE)){
+			String mimeType = (String) jTableFoundFiles.getValueAt(jTableFoundFiles.getSelectedRow(), 2);
+			((FilesTableModel)jTableFoundFiles.getModel()).checkByType(mimeType, false);						
+		}
 	}
 
 	/**
@@ -92,16 +156,38 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 	private JTable getJTableFoundFiles() {
 		if (jTableFoundFiles == null) {
 			jTableFoundFiles = new JTable();
+			jTableFoundFiles.addMouseListener(new MouseAdapter() {
+				
+				// handle both pressed and released for popup
+				
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					doPopupMenu(e);
+				}
+				@Override
+				public void mousePressed(MouseEvent e) {
+					doPopupMenu(e);
+				}
+			});
+
 			jTableFoundFiles
 					.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			// jTableFoundFiles.addMouseListener(new
-			// java.awt.event.MouseAdapter() {
-			// public void mouseClicked(java.awt.event.MouseEvent e) {
-			// FilesListPanel.this.mouseClicked(e);
-			// }
-			// });
 		}
 		return jTableFoundFiles;
+	}
+
+	protected void doPopupMenu(MouseEvent e) {
+		if(e.isPopupTrigger()){
+			JTable source = (JTable)e.getSource();
+            int row = source.rowAtPoint( e.getPoint() );
+            int column = source.columnAtPoint( e.getPoint() );
+
+            if (! source.isRowSelected(row)){
+                source.changeSelection(row, column, false, false);
+            }
+
+            popupMenu.show(e.getComponent(), e.getX(), e.getY());
+		}		
 	}
 
 	@Override
@@ -116,58 +202,10 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		getJTableFoundFiles().setColumnModel(FilesListUtils.getColumnModel());
 		getJTableFoundFiles().setRowSorter(
 				new TableRowSorter<FilesTableModel>(model));
-		// getJTableFoundFiles().setSelectionModel(new
-		// FilesTableSelectionModel());
 		getJTableFoundFiles().setSelectionModel(getFoundFilesSelectionModel());
 
 		getFoundFilesSelectionModel().addListSelectionListener(this);
 	}
-
-//	private void mouseClicked(MouseEvent e) {
-//		if (e.getClickCount() == 2) {
-//			//
-//
-//			int rowNo = getJTableFoundFiles().getSelectedRow();
-//			int modelRowNo = getJTableFoundFiles()
-//					.convertRowIndexToModel(rowNo);
-//			FilesTableModel model = (FilesTableModel) getJTableFoundFiles()
-//					.getModel();
-//			CachedFile cf = model.getCachedFile(modelRowNo);
-//
-//			// MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-//			// Collection mt = MimeUtil.getMimeTypes(cf);
-//
-//			String msg = String
-//					.format("%s\n%s", cf.getName(), cf.getFileType());
-//			JOptionPane.showMessageDialog(this, msg);
-//
-//			// if(CachedFile.extensionByMimetype.containsKey(cf.getFileType())){
-//			if (cf.guessExtension() != null) {
-//				try {
-//					// File tmp = File.createTempFile("wcd", "." +
-//					// CachedFile.extensionByMimetype.get(cf.getFileType()));
-//					File tmp = File.createTempFile("wcd", "."
-//							+ cf.guessExtension());
-//					CachedFile.copyFile(cf, tmp);
-//					Desktop.getDesktop().open(tmp);
-//					if (JOptionPane.showConfirmDialog(this, "Delete temp file "
-//							+ tmp.getAbsolutePath() + "?") == JOptionPane.YES_OPTION) {
-//						tmp.delete();
-//					}
-//
-//				} catch (IOException ex) {
-//					JOptionPane.showMessageDialog(this,
-//							"Failed to preview file: " + ex.getMessage());
-//					ex.printStackTrace();
-//				}
-//			}
-//
-//			// copy file
-//			// File.createTempFile("wcd", suffix)
-//
-//			// Desktop.getDesktop().open(cf);
-//		}
-//	}
 
 	public List<CachedFile> getCachedFiles() {
 		return ((FilesTableModel) getJTableFoundFiles().getModel())
@@ -179,7 +217,6 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 
 		if(!e.getValueIsAdjusting()){
 			try {				
-				//CachedFile oldCachedFile = getSelectedCachedFile();
 				
 				int rowNo = getJTableFoundFiles().getSelectedRow();
 				int modelRowNo = getJTableFoundFiles()
@@ -187,9 +224,6 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 				
 				CachedFile newFile = ((FilesTableModel) getJTableFoundFiles()
 						.getModel()).getCachedFile(modelRowNo);
-				//setSelectedCachedFile(newFile);
-	
-				//firePropertyChange("selectedfile", oldCachedFile, newFile);
 				firePropertyChange(CachedFile.SELECTED_FILE, null, newFile);
 				
 			} catch (ArrayIndexOutOfBoundsException ex) {
@@ -201,4 +235,4 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		}
 	}
 
-} // @jve:decl-index=0:visual-constraint="10,10"
+}

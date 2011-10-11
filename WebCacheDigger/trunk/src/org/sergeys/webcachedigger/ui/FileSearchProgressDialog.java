@@ -20,7 +20,6 @@ import javax.swing.border.EmptyBorder;
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.Settings;
-import java.awt.Component;
 
 public class FileSearchProgressDialog 
 extends JDialog 
@@ -118,7 +117,7 @@ extends JDialog
 	}
 
 	private void startWork() {
-		// TODO Auto-generated method stub
+		
 		ArrayList<IBrowser> browsers = new ArrayList<IBrowser>();
 		for(IBrowser b: existingBrowsers){
 			if(settings.getActiveBrowsers().contains(b.getName())){
