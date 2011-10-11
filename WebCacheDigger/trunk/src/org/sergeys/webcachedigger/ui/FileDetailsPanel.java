@@ -17,11 +17,6 @@ import org.sergeys.webcachedigger.logic.CachedFile;
 public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 
 	private static final long serialVersionUID = 1L;
-//	private JLabel jLabel1 = null;
-//	private JLabel jLabelFileName = null;
-//	private JLabel jLabel2 = null;
-//	private JLabel jLabelFileSize = null;
-
 	
 	JLabel lblFileName;
 	JLabel lblFileSize;
@@ -93,6 +88,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		panelTop.add(lblFiletype, gbc_lblFiletype);
 		
 		panelPreview = new JPanel();
+		panelPreview.setBorder(new EmptyBorder(5, 5, 5, 5));
 		add(panelPreview, BorderLayout.CENTER);
 		
 		initialize();
@@ -118,7 +114,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 			
 			remove(panelPreview);
 			
-			FilePreviewPanel preview = FilePreviewPanel.createFilePreviewPanel(file.getFileType());
+			AbstractFilePreviewPanel preview = AbstractFilePreviewPanel.createFilePreviewPanel(file.getFileType());
 			if(preview != null){
 				preview.setCachedFile(file);											
 				panelPreview = preview;				
@@ -127,6 +123,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 				panelPreview = new JPanel();	// empty panel
 			}
 
+			panelPreview.setBorder(new EmptyBorder(5, 5, 5, 5));
 			add(panelPreview, BorderLayout.CENTER);
 			invalidate();
 		}		

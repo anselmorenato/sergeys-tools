@@ -21,7 +21,7 @@ extends JComponent
 		super.paintComponent(g);
 		
 		if(img != null){
-			// TODO: keep aspect ratio
+
 			int sw = img.getWidth(this);
 			int sh = img.getHeight(this);
 			int dw = this.getSize().width;
@@ -35,24 +35,11 @@ extends JComponent
 			float scale = 0;
 			if(saspect > daspect){
 				// landscape
-//				if(sw > dw){
-//					// shrink
-//					scale = dw / sw;
-//					dx1 = 0;					
-//					dy1 = (int)((dh - (sh * scale)) / 2);
-//					dx2 = dw - 1;
-//					dy2 = dy1 + (int)(dh - (sh * scale));					
-//				}
-//				else{
-//					// enlarge
-//				}
 				scale = (float)dw / sw;
 				dx1 = 0;					
 				dy1 = (int)((dh - (sh * scale)) / 2);
-				//dy1 = 0;
 				dx2 = dw - 1;
 				dy2 = dy1 + (int)(sh * scale);
-				//dy2 = (int)(sh * scale);
 				
 			}
 			else{

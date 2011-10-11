@@ -11,7 +11,7 @@ import javax.swing.border.EtchedBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 
-public class ImagePreviewPanel extends FilePreviewPanel {
+public class ImagePreviewPanel extends AbstractFilePreviewPanel {
 
 	public ImagePreviewPanel() {
 		super();

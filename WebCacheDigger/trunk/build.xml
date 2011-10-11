@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="all">
 
-	<property name="revision" value="2011-10-11-1" />
+	<property name="revision" value="2011-10-11-2" />
 	<property name="webstart.url" value="http://192.168.56.1:8080/localweb" />
 	
 	<property name="dist.dir" value="jar/dist" />

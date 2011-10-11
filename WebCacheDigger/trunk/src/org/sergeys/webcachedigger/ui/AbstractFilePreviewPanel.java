@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 
-public abstract class FilePreviewPanel extends JPanel {
+public abstract class AbstractFilePreviewPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -13,20 +13,10 @@ public abstract class FilePreviewPanel extends JPanel {
 	/**
 	 * This is the default constructor
 	 */
-	public FilePreviewPanel() {
-		super();
-		initialize();
-	}
+//	public AbstractFilePreviewPanel() {
+//		super();
+//	}
 
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
-		//this.setSize(300, 200);
-		//this.setLayout(new GridBagLayout());
-	}
 
 	/**
 	 * @param cachedFile the cachedFile to set
@@ -42,10 +32,13 @@ public abstract class FilePreviewPanel extends JPanel {
 		return cachedFile;
 	}
 
-	public static FilePreviewPanel createFilePreviewPanel(String mimeType){
-		FilePreviewPanel panel = null;
+	public static AbstractFilePreviewPanel createFilePreviewPanel(String mimeType){
+		AbstractFilePreviewPanel panel = null;
 		if(mimeType.startsWith("image/")){
 			panel = new ImagePreviewPanel();
+		}
+		else if(mimeType.startsWith("audio/")){
+			panel = new AudioPreviewPanel();
 		}
 		
 		return panel;
