@@ -62,10 +62,7 @@ public abstract class AbstractBrowser implements IBrowser {
 			
 			for(File subdir: subdirs){
 				listFilesRecursive(subdir, fileFilter, allFiles);
-				//allFiles.addAll(files);				
-			}
-			
-//			SimpleLogger.logMessage("collected files in " + directory);
+			}			
 		}
 		
 		return allFiles;

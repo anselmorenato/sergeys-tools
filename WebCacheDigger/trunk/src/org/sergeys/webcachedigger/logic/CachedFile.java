@@ -18,7 +18,6 @@ public class CachedFile extends File {
 	 */
 	public static final String SELECTED_FILE = "SELECTED_FILE";
 	
-	//private static Hashtable<String, String> extensionByMimetype;
 	private static Properties extensionByMimetype;
 
 	static {
@@ -46,6 +45,7 @@ public class CachedFile extends File {
 
 	public String getHash() {
 		if (hash == null) {
+			//hash = String.valueOf(this.hashCode());	// TODO: change
 			hash = "";
 		}
 

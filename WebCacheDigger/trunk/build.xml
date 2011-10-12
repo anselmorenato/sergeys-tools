@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="all">
 
-	<property name="revision" value="2011-10-11-2" />
-	<property name="webstart.url" value="http://192.168.56.1:8080/localweb" />
+	<property name="properties.file" value="build.properties" />
 	
+	<!--
+	<property name="revision" value="2011-10-11-3" />
+	<property name="webstart.url" value="http://192.168.56.1:8080/localweb" />
+	<property name="deploy.dir" value="d:\\tomcat\\webapps\\localweb" />
+	-->
+
 	<property name="dist.dir" value="jar/dist" />
 	<property name="work.dir" value="jar/tmp" />
 
@@ -12,14 +17,12 @@
 	<property name="keystore.file" value="${work.dir}/.keystore" />
 	<property name="keystore.alias" value="sergey.selivanov" />
 	<property name="keystore.password" value="password" />
-
-	<property name="properties.file" value="build.properties" />
-
+	
 	<property name="lib.mimeutil" value="mime-util-2.1.3.jar" />
 	<property name="lib.slf4j-api" value="slf4j-api-1.6.2.jar" />
 	<property name="lib.slf4j-impl" value="slf4j-simple-1.6.2.jar" />
 	<property name="lib.mp3agic" value="mp3agic-0.6.9.jar" />
-		
+
 	<macrodef name="unsignjar">
 		<!-- http://frank.zinepal.com/unsign-a-jar-with-ant -->
 
@@ -54,15 +57,15 @@
 		</sequential>
 	</macrodef>
 
-	<target name="all" depends="init, logic, ui, libs, resources, images, jnlp">
+	<target name="all" depends="init, logic, ui, libs, resources, images, jnlp, deploy-local">
 	</target>
-	
+
 	<target name="init">
 		<property file="${properties.file}">
 		</property>
 	</target>
 
-	<target name="logic" depends="logic-jar">
+	<target name="logic" depends="logic-changed, logic-jar">
 	</target>
 
 	<target name="ui" depends="ui-jar">
@@ -71,60 +74,86 @@
 	<target name="libs" depends="check-libs-changed, copy-libs">
 	</target>
 
-	<target name="logic-jar" depends="create-key">
+	<target name="logic-changed">		
+		<uptodate property="logic.unchanged" targetfile="${dist.dir}/logic.${revision}.jar">			
+			<srcfiles dir="bin" includes="org/sergeys/webcachedigger/logic/**/*.class, META-INF/services/*"></srcfiles>			
+		</uptodate>
+	</target>
+	
+	<target name="logic-jar" unless="logic.unchanged" depends="logic-changed, create-key">
+		
 		<mkdir dir="${dist.dir}" />
 		<jar destfile="${dist.dir}/logic.${revision}.jar" 
 			basedir="bin" includes="org/sergeys/webcachedigger/logic/**/*.class,META-INF/**" index="true">
-		</jar>		
+		</jar>
 
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
 			jar="${dist.dir}/logic.${revision}.jar" verbose="true">
-		</signjar>		
+		</signjar>
+	</target>
+
+	<target name="ui-changed">		
+		<uptodate property="ui.unchanged" targetfile="${dist.dir}/ui.${revision}.jar">			
+			<srcfiles dir="bin" includes="org/sergeys/webcachedigger/ui/**/*.class, META-INF/services/*"></srcfiles>			
+		</uptodate>
 	</target>
 	
-	<target name="ui-jar" depends="create-key">
+	<target name="ui-jar" unless="ui.unchanged" depends="ui-changed, create-key">
 		<mkdir dir="${dist.dir}" />
 		<jar destfile="${dist.dir}/ui.${revision}.jar" 
 			basedir="bin" includes="org/sergeys/webcachedigger/ui/**/*.class,META-INF/**" index="true">
-		</jar>		
+		</jar>
 
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
 			jar="${dist.dir}/ui.${revision}.jar" verbose="true">
-		</signjar>				
+		</signjar>
 	</target>
 
-	<target name="resources" depends="create-key">
+	<target name="res-changed">		
+		<uptodate property="res.unchanged" targetfile="${dist.dir}/resources.${revision}.jar">			
+			<srcfiles dir="bin" includes="resources/**"></srcfiles>			
+		</uptodate>
+	</target>
+	
+	<target name="resources" unless="res.unchanged" depends="res-changed, create-key">
 		<mkdir dir="${dist.dir}" />
 		<jar destfile="${dist.dir}/resources.${revision}.jar" 
 			basedir="bin" includes="resources/**" index="true">
-		</jar>		
+		</jar>
 
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
 			jar="${dist.dir}/resources.${revision}.jar" verbose="true">
-		</signjar>				
+		</signjar>
 	</target>
 
-	<target name="images" depends="create-key">
+	<target name="images-changed">		
+		<uptodate property="images.unchanged" targetfile="${dist.dir}/images.${revision}.jar">			
+			<srcfiles dir="bin" includes="images/**"></srcfiles>			
+		</uptodate>
+	</target>
+	
+	<target name="images" unless="images.unchanged" depends="images-changed, create-key">
 		<mkdir dir="${dist.dir}" />
 		<jar destfile="${dist.dir}/images.${revision}.jar" 
 			basedir="bin" includes="images/**" index="true">
-		</jar>		
+		</jar>
 
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
 			jar="${dist.dir}/images.${revision}.jar" verbose="true">
-		</signjar>				
+		</signjar>
 	</target>
-	
+
 	<target name="jnlp">
 		<mkdir dir="${dist.dir}" />
-		<copy file="jar/webcachedigger.jnlp" tofile="${dist.dir}/wcd.jnlp" overwrite="true"></copy>
-		
+		<copy file="jar/webcachedigger.jnlp" tofile="${dist.dir}/wcd.jnlp" overwrite="true">
+		</copy>
+
 		<replace file="${dist.dir}/wcd.jnlp">
 			<replacefilter token="%REVISION%" value="${revision}"/>
 			<replacefilter token="%URL%" value="${webstart.url}"/>
 		</replace>
 	</target>
-	
+
 	<target name="check-logic-jar-changed1">
 		<echo>compare ${dist.dir}/logic.${logic.revision}.jar</echo>
 		<condition property="logic.jar.changed">
@@ -175,15 +204,16 @@
 	</target>
 
 	<target name="create-key" depends="check-key" unless="keystore.file.exists">
+		<echo>Create key</echo>
 		<mkdir dir="${work.dir}" />
 		<genkey keystore="${keystore.file}" alias="${keystore.alias}" validity="365" storepass="${keystore.password}">
 			<dname>
 				<param name="CN" value="Sergey Selivanov" />
 				<param name="OU" value="Home" />
-				<!--
 				<param name="O" value="Sergey Selivanov" />
 				<param name="C" value="UA" />
 				<param name="L" value="Kharkov" />
+				<!--
 				<param name="EmailAddress" value="sergey.selivanov@gmail.com" />
 				-->
 			</dname>
@@ -194,32 +224,36 @@
 	</target>
 
 	<target name="check-libs-changed">
-		
+
 		<condition property="libs.changed">
 			<or>
 				<not>
 					<uptodate targetfile="${dist.dir}/${lib.mimeutil}" srcfile="lib/${lib.mimeutil}">
 					</uptodate>
 				</not>
+
 				<not>
 					<uptodate targetfile="${dist.dir}/${lib.slf4j-api}" srcfile="lib/${lib.slf4j-api}">
 					</uptodate>
 				</not>
+
 				<not>
 					<uptodate targetfile="${dist.dir}/${lib.slf4j-impl}" srcfile="lib/${lib.slf4j-impl}">
 					</uptodate>
 				</not>
+
 				<not>
 					<uptodate targetfile="${dist.dir}/${lib.mp3agic}" srcfile="lib/${lib.mp3agic}">
 					</uptodate>
 				</not>
+
 			</or>
 		</condition>
 	</target>
 
-	<target name="copy-libs" if="libs.changed">
+	<target name="copy-libs" if="libs.changed" depends="create-key">
 		<mkdir dir="${dist.dir}" />
-		
+
 		<copy file="lib/${lib.mimeutil}" todir="${dist.dir}" overwrite="true">
 		</copy>
 		<unsignjar jar="${dist.dir}/${lib.mimeutil}" />
@@ -247,7 +281,18 @@
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
 			jar="${dist.dir}/${lib.mp3agic}" signedjar="${dist.dir}/${lib.mp3agic}" verbose="true">
 		</signjar>
-		
+
+	</target>
+
+	<target name="deploy-local">
+		<delete>
+			<fileset dir="${deploy.dir}" includes="*.jar, *.jnlp">
+			</fileset>
+		</delete>
+		<copy todir="${deploy.dir}">
+			<fileset dir="${dist.dir}">
+			</fileset>
+		</copy>
 	</target>
 </project>
 
