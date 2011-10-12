@@ -23,11 +23,17 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 	JLabel lblFiletype;
 	JPanel panelPreview;
 	
+	private PropertyChangeListener listener;
+	
 	/**
 	 * This is the default constructor
+	 * @param webCacheDigger 
 	 */
-	public FileDetailsPanel() {
+	public FileDetailsPanel(PropertyChangeListener listener) {
 		super();
+		
+		this.listener = listener;
+		
 		setLayout(new BorderLayout(30, 0));
 		
 		JPanel panelTop = new JPanel();
@@ -113,8 +119,8 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 			lblFiletype.setText(file.getFileType());
 			
 			remove(panelPreview);
-			
-			AbstractFilePreviewPanel preview = AbstractFilePreviewPanel.createFilePreviewPanel(file.getFileType());
+						
+			AbstractFilePreviewPanel preview = AbstractFilePreviewPanel.createFilePreviewPanel(file.getFileType(), listener);
 			if(preview != null){
 				preview.setCachedFile(file);											
 				panelPreview = preview;				

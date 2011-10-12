@@ -96,7 +96,8 @@ public class Chrome extends AbstractBrowser {
 		}
 		
 		// 2. filter
-		int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
+		//int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
+		long minFileSize = settings.getMinFileSizeBytes();
 		for(File file: allFiles){			
 			if(file.length() > minFileSize){				
 				files.add(new CachedFile(file.getAbsolutePath()));

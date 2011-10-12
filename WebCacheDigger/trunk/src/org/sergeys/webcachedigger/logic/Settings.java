@@ -29,18 +29,30 @@ extends Properties
 	// action names for events
 	public static final String COMMAND_SAVE_SETTINGS = "COMMAND_SAVE_SETTINGS"; 
 	
-	// property keys
-	public static final String SAVE_TO_PATH = "SAVE_TO_PATH";
-	public static final String MIN_FILE_SIZE_BYTES = "MIN_FILE_SIZE_BYTES";
+	
+	/**
+	 * Placeholder for absolute file path for external player command line
+	 */
+	public static final String EXT_PLAYER_FILEPATH = "%f";
+	
+	// property keys: various internal values
+	//public static final String SAVE_TO_PATH = "SAVE_TO_PATH";
+	//public static final String MIN_FILE_SIZE_BYTES = "MIN_FILE_SIZE_BYTES";
 	public static final String WINDOW_X = "WINDOW_X";
 	public static final String WINDOW_Y = "WINDOW_Y";
 	public static final String WINDOW_W = "WINDOW_W";
 	public static final String WINDOW_H = "WINDOW_H";
 	public static final String SPLITTER_POS = "SPLITTER_POS";
+	//public static final String EXTERNAL_PLAYER_COMMAND = "EXTERNAL_PLAYER_COMMAND";
 		
 	private static String settingsDirPath;
 	private static String settingsFilePath; 	
 
+	// Settings edited by user, as get/set
+	private String saveToPath;
+	private long minFileSizeBytes;
+	private String externalPlayerCommand;
+	
 	private HashSet<String> activeBrowsers = new HashSet<String>();
 	
 	private EnumSet<FileType> activeFileTypes = EnumSet.noneOf(FileType.class); 
@@ -166,6 +178,30 @@ extends Properties
 
 	public synchronized void setActiveFileTypes(EnumSet<FileType> activeFileTypes) {
 		this.activeFileTypes = activeFileTypes;
+	}
+
+	public String getSaveToPath() {
+		return saveToPath;
+	}
+
+	public void setSaveToPath(String saveToPath) {
+		this.saveToPath = saveToPath;
+	}
+
+	public long getMinFileSizeBytes() {
+		return minFileSizeBytes;
+	}
+
+	public void setMinFileSizeBytes(long minFileSizeBytes) {
+		this.minFileSizeBytes = minFileSizeBytes;
+	}
+
+	public String getExternalPlayerCommand() {
+		return externalPlayerCommand;
+	}
+
+	public void setExternalPlayerCommand(String externalPlayerCommand) {
+		this.externalPlayerCommand = externalPlayerCommand;
 	}
 	
 }

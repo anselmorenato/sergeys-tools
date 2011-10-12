@@ -99,7 +99,7 @@ implements ActionListener, PropertyChangeListener
 			jButtonCopySelectedFiles.setText("Copy Checked Files");
 			jButtonCopySelectedFiles.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					String targetDir = settings.getProperty(Settings.SAVE_TO_PATH);
+					String targetDir = settings.getSaveToPath();
 					int count = WebCacheDigger.this.copyFiles(targetDir);
 					String msg = String.format("Copied %d file(s) to %s.", count, targetDir);
 					
@@ -193,7 +193,7 @@ implements ActionListener, PropertyChangeListener
 	 */
 	private JPanel getJPanelFileDetails() {
 		if (jPanelFileDetails == null) {
-			jPanelFileDetails = new FileDetailsPanel();
+			jPanelFileDetails = new FileDetailsPanel(this);
 			
 		}
 		return jPanelFileDetails;
@@ -453,6 +453,7 @@ implements ActionListener, PropertyChangeListener
 	private SettingsDialog getSettingsDialog(){
 		if(settingsDialog == null){
 			settingsDialog = new SettingsDialog(this.getJFrame());
+			//settingsDialog.pack();
 			settingsDialog.addSaveActionListener(this);
 		}
 		settingsDialog.setLocationRelativeTo(getJContentPane());
@@ -569,6 +570,27 @@ implements ActionListener, PropertyChangeListener
 			progressDialog.setVisible(false);
 			getFilesListPanel().setEnabled(true);
 			getFilesListPanel().init((List<CachedFile>) evt.getNewValue());			
+		}
+		else if(evt.getPropertyName().equals(AudioPreviewPanel.PROPERTY_FILE_TO_PLAY)
+				|| evt.getPropertyName().equals(VideoPreviewPanel.PROPERTY_FILE_TO_PLAY)){
+			
+			CachedFile f = (CachedFile)evt.getNewValue();
+
+			// TODO: run in background
+			String cmdLine;
+			try {
+				cmdLine = getSettings().getExternalPlayerCommand();
+				String fmt = cmdLine.replaceAll(Settings.EXT_PLAYER_FILEPATH, "%s");
+				cmdLine = String.format(fmt, f.getAbsolutePath());
+				
+				SimpleLogger.logMessage(cmdLine);
+			    @SuppressWarnings("unused")
+				Process process = Runtime.getRuntime().exec(cmdLine);        
+			    //process.waitFor();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
 		}
 		
 	}

@@ -1,4 +1,4 @@
-- detect which browsers are really present
++- detect which browsers are really present
 - use eclipse osgi for OS-browser-specific plugins
 
 
@@ -7,19 +7,18 @@
 - indicate progress on search, sorting, copying
 
 - save/load settings logic, take upgrades in account
-- certificate, sign app for webstart security
-- versioning for jars: find ant task, or write it?
-- versioning for app
++- certificate, sign app for webstart security
+
 +- determine file type by content
 - updatable file signatures list
 - ability to define own signatures??
 - remember which files were copied
 +- only test files larger than certain size
-- show licenses in about
+
 - add logo to about
-- icon for application
+
 - add new name for copy, edit directly in the table
-- add name of browser to the file
+
 - show how many files found/checked
 - move text to resources, support localization
 - determine preferred language from browser settings
@@ -27,10 +26,7 @@
 - show copying progress
 - ask before overwrite file while copying
 
-= context menu:
-- select all
-- add selection of all of this type
-- clear all checks
+
 ============
 ubuntu 11
 chrome 14 (10 oct 2011) ~/.cache/google-chrome/Default/Cache/*, except files 'index', 'data_*'

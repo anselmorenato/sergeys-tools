@@ -4,11 +4,14 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -26,6 +29,9 @@ import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 
 public class AudioPreviewPanel extends AbstractFilePreviewPanel {
+	
+	// for property listeners
+	public static final String PROPERTY_FILE_TO_PLAY = "AudioPreviewPanel_PROPERTY_FILE_TO_PLAY"; 
 	
 	// http://download.oracle.com/javase/6/docs/technotes/guides/intl/encoding.doc.html
 	private static Charset charset8859_1 = null;
@@ -49,7 +55,10 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 	
 	JPanel panelProperties;
 	
+	
+	
 	public AudioPreviewPanel() {
+						
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new BorderLayout(0, 0));
 		
@@ -58,7 +67,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		GridBagLayout gbl_panelProperties = new GridBagLayout();
 		//gbl_panelProperties.columnWidths = new int[]{1, 3, 0};
 		gbl_panelProperties.rowHeights = new int[]{0, 0};
-		gbl_panelProperties.columnWeights = new double[]{1.0, 3.0, Double.MIN_VALUE};
+		gbl_panelProperties.columnWeights = new double[]{1.0, 3.0};
 		gbl_panelProperties.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 				
 		panelProperties.setLayout(gbl_panelProperties);
@@ -98,6 +107,28 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		
 		panelProperties.add(txtpnValue, gbc_txtpnValue);
 		
+		JPanel panelControl = new JPanel();
+		add(panelControl, BorderLayout.CENTER);
+		
+		JButton btnPlay = new JButton("Play");
+		btnPlay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doPlay(e);
+			}
+		});
+		panelControl.add(btnPlay);
+		
+		
+	}
+
+	protected void doPlay(ActionEvent e) {
+		
+		firePropertyChange(PROPERTY_FILE_TO_PLAY, null, getCachedFile());
+		
+//		String cmdLine =  
+//				String.format("", getCachedFile().getAbsolutePath()); 
+//        Process process = Runtime.getRuntime().exec(cmdLine);        
+//        process.waitFor();
 	}
 
 	private static String decode(String src){		

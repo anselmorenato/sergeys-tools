@@ -202,7 +202,8 @@ public class Firefox extends AbstractBrowser {
 	public List<CachedFile> collectCachedFiles(IProgressWatcher watcher) throws Exception {
 
 		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
-		int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
+		//int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
+		long minFileSize = settings.getMinFileSizeBytes();
 
 		// 1. count files
 		ArrayList<File> allFiles = new ArrayList<File>();

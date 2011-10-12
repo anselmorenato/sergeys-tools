@@ -115,7 +115,8 @@ public class InternetExplorer extends AbstractBrowser {
 			throws Exception {
 		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
 
-		int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
+		//int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
+		long minFileSize = settings.getMinFileSizeBytes();
 
 		for (File directory : this.getExistingCachePaths()) {			 
 		
