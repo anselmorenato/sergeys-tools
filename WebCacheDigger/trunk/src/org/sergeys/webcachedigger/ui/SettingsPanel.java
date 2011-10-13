@@ -21,6 +21,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
+import javax.swing.JCheckBox;
 
 public class SettingsPanel extends JPanel {
 
@@ -48,6 +49,7 @@ public class SettingsPanel extends JPanel {
 	private JTextField txtPlayerCommand;
 	private JButton buttonPlayer;
 	private JButton buttonPlayerHelp;
+	private JCheckBox chckbxRenameMpFiles;
 
 	/**
 	 * This is the default constructor
@@ -94,26 +96,32 @@ public class SettingsPanel extends JPanel {
 		jLabel1.setText(Messages.getString("SettingsPanel.saveTo")); //$NON-NLS-1$
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
-		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 1.0};
+		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 1.0, 0.0};
 		gridBagLayout.columnWeights = new double[]{0.0, 3.0};
 		this.setLayout(gridBagLayout);
 		//this.setSize(450, 120);
-		this.setPreferredSize(new Dimension(477, 153));
+		this.setPreferredSize(new Dimension(477, 218));
 		this.add(jLabel1, gridBagConstraints2);
 		this.add(getJPanelSavePath(), gridBagConstraints3);
 		this.add(jLabel2, gridBagConstraints);
 		this.add(getJPanel1(), gridBagConstraints1);
 		GridBagConstraints gbc_lblExternalMediaPlayer = new GridBagConstraints();
 		gbc_lblExternalMediaPlayer.anchor = GridBagConstraints.EAST;
-		gbc_lblExternalMediaPlayer.insets = new Insets(0, 0, 0, 5);
+		gbc_lblExternalMediaPlayer.insets = new Insets(0, 0, 5, 5);
 		gbc_lblExternalMediaPlayer.gridx = 0;
 		gbc_lblExternalMediaPlayer.gridy = 2;
 		add(getLblExternalMediaPlayer(), gbc_lblExternalMediaPlayer);
 		GridBagConstraints gbc_panelPlayer = new GridBagConstraints();
+		gbc_panelPlayer.insets = new Insets(0, 0, 5, 0);
 		gbc_panelPlayer.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelPlayer.gridx = 1;
 		gbc_panelPlayer.gridy = 2;
 		add(getPanelPlayer(), gbc_panelPlayer);
+		GridBagConstraints gbc_chckbxRenameMpFiles = new GridBagConstraints();
+		gbc_chckbxRenameMpFiles.fill = GridBagConstraints.HORIZONTAL;
+		gbc_chckbxRenameMpFiles.gridx = 1;
+		gbc_chckbxRenameMpFiles.gridy = 3;
+		add(getChckbxRenameMpFiles(), gbc_chckbxRenameMpFiles);
 	}
 
 	public void setSettings(Settings settings) {
@@ -123,6 +131,7 @@ public class SettingsPanel extends JPanel {
 		getJTextFieldMinFileSizeBytes().setText(String.valueOf(settings.getMinFileSizeBytes()));
 		
 		getTxtPlayerCommand().setText(settings.getExternalPlayerCommand());
+		getChckbxRenameMpFiles().setSelected(settings.isRenameMp3byTags());
 
 	}
 
@@ -131,6 +140,7 @@ public class SettingsPanel extends JPanel {
 		settings.setSaveToPath(getJTextFieldSavePath().getText());
 		settings.setMinFileSizeBytes(Long.parseLong(getJTextFieldMinFileSizeBytes().getText()));
 		settings.setExternalPlayerCommand(getTxtPlayerCommand().getText());
+		settings.setRenameMp3byTags(getChckbxRenameMpFiles().isSelected()); 
 
 		return settings;
 	}
@@ -314,5 +324,11 @@ public class SettingsPanel extends JPanel {
 		// TODO Auto-generated method stub
 		JOptionPane.showMessageDialog(this, Messages.getString("SettingsPanel.cmdLineHelp")); //$NON-NLS-1$
 		
+	}
+	private JCheckBox getChckbxRenameMpFiles() {
+		if (chckbxRenameMpFiles == null) {
+			chckbxRenameMpFiles = new JCheckBox(Messages.getString("SettingsPanel.chckbxRenameMpFiles.text")); //$NON-NLS-1$
+		}
+		return chckbxRenameMpFiles;
 	}
 } 

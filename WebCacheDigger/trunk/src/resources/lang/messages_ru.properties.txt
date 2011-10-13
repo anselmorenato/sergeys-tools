@@ -73,5 +73,5 @@ SettingsPanel.searchLargeThan=Искать файлы больше чем:
 SettingsPanel.programs=Программы
 VideoPreviewPanel.play=Играть
 VideoPreviewPanel.videoFile=Видео
-
+SettingsPanel.chckbxRenameMpFiles.text=Переименовывать файлы MP3, если возможно
 

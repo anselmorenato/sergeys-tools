@@ -62,7 +62,7 @@ implements ActionListener, PropertyChangeListener
 	private JPanel jPanelTop = null;
 	private JButton jButtonSearch = null;
 	private FilesListPanel filesListPanel = null;
-	private JPanel jPanelFileDetails = null;
+	private FileDetailsPanel jPanelFileDetails = null;
 	private JMenuItem jMenuItemSettings = null;
 	
 	private Settings settings;  
@@ -109,12 +109,15 @@ implements ActionListener, PropertyChangeListener
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					String targetDir = settings.getSaveToPath();
 					int count = WebCacheDigger.this.copyFiles(targetDir);
-					String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), count, targetDir); //$NON-NLS-1$
 					
-					JOptionPane.showMessageDialog(getJFrame(), 					 
-							msg,
-							Messages.getString("WebCacheDigger.Message"),  //$NON-NLS-1$
-							JOptionPane.INFORMATION_MESSAGE);
+					if(count > 0){
+						String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), count, targetDir); //$NON-NLS-1$
+						
+						JOptionPane.showMessageDialog(getJFrame(), 					 
+								msg,
+								Messages.getString("WebCacheDigger.Message"),  //$NON-NLS-1$
+								JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 			});
 		}
@@ -175,7 +178,7 @@ implements ActionListener, PropertyChangeListener
 			jButtonSearch.setText(Messages.getString("WebCacheDigger.Search")); //$NON-NLS-1$
 			jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					WebCacheDigger.this.searchCachedFiles();
+					WebCacheDigger.this.doSearchFiles();
 				}
 			});
 		}
@@ -199,10 +202,9 @@ implements ActionListener, PropertyChangeListener
 	 * 	
 	 * @return javax.swing.JPanel	
 	 */
-	private JPanel getJPanelFileDetails() {
+	private FileDetailsPanel getJPanelFileDetails() {
 		if (jPanelFileDetails == null) {
-			jPanelFileDetails = new FileDetailsPanel(this, getSettings());
-			
+			jPanelFileDetails = new FileDetailsPanel(this, getSettings());						
 		}
 		return jPanelFileDetails;
 	}
@@ -424,7 +426,7 @@ implements ActionListener, PropertyChangeListener
 	
 	FileSearchProgressDialog progressDialog;
 	
-	private void searchCachedFiles(){					
+	private void doSearchFiles(){					
 		
 		try {
 						
@@ -435,6 +437,8 @@ implements ActionListener, PropertyChangeListener
 			
 					
 			getFilesListPanel().setEnabled(false);
+			getJPanelFileDetails().setFile(null);
+			getJPanelFileDetails().setEnabled(false);
 			
 			progressDialog.setLocationRelativeTo(getJContentPane());
 			progressDialog.setVisible(true);
@@ -525,7 +529,8 @@ implements ActionListener, PropertyChangeListener
 		
 		for(CachedFile file: getFilesListPanel().getCachedFiles()){
 			if(file.isSelectedToCopy()){
-				String targetFile = targetDir + File.separator + file.getName();
+				//String targetFile = targetDir + File.separator + file.getName();
+				String targetFile = targetDir + File.separator + file.getProposedName();
 				if(file.guessExtension() != null){
 					targetFile = targetFile + "." + file.guessExtension();  //$NON-NLS-1$
 				}
@@ -537,6 +542,7 @@ implements ActionListener, PropertyChangeListener
 					
 					copied++;
 				} catch (IOException e) {
+					
 					String msg = String.format(Messages.getString("WebCacheDigger.FailedToCopyFileContinue"), e.getMessage());  //$NON-NLS-1$
 					if(JOptionPane.NO_OPTION ==
 					JOptionPane.showConfirmDialog(getJFrame(), 

@@ -56,6 +56,7 @@ extends Properties
 	private long minFileSizeBytes;
 	private String externalPlayerCommand;
 	private String language; // language code for Locale class
+	private boolean renameMp3byTags;
 	
 	private HashSet<String> activeBrowsers = new HashSet<String>();	// browser names
 	
@@ -159,6 +160,7 @@ extends Properties
 		minFileSizeBytes = 500000;		
 		language = Locale.getDefault().getLanguage();
 		activeFileTypes = EnumSet.allOf(FileType.class);
+		renameMp3byTags = true;
 		
 		for(IBrowser b: getSupportedBrowsers()){
 			activeBrowsers.add(b.getName());
@@ -280,6 +282,14 @@ extends Properties
 		}					
 		
 		return existingBrowsers;
+	}
+
+	public boolean isRenameMp3byTags() {
+		return renameMp3byTags;
+	}
+
+	public void setRenameMp3byTags(boolean renameMp3byTags) {
+		this.renameMp3byTags = renameMp3byTags;
 	}
 
 }

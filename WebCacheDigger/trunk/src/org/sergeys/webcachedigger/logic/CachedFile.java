@@ -36,6 +36,7 @@ public class CachedFile extends File {
 
 	private String hash;
 	private String mimeType = null;
+	private String proposedName = null;
 	
 	private boolean selectedToCopy = false;
 
@@ -111,6 +112,18 @@ public class CachedFile extends File {
 	 */
 	public boolean isSelectedToCopy() {
 		return selectedToCopy;
+	}
+
+	public String getProposedName() {
+		if(proposedName == null){
+			return getName();
+		}
+		
+		return proposedName;
+	}
+
+	public void setProposedName(String proposedName) {
+		this.proposedName = proposedName;
 	}
 	
 }

@@ -119,19 +119,19 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		this.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
 	}
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {		
-		if(evt.getPropertyName() == CachedFile.SELECTED_FILE){
-			
+	public void setFile(CachedFile file){
+		
+		panelPreview.setVisible(false);
+		remove(panelPreview);
+		
+		if(file != null){
+		
 			panelTop.setVisible(true);
-			
-			CachedFile file = (CachedFile)evt.getNewValue();
+														
 			lblFileName.setText(file.getName());
 			lblFileSize.setText(String.valueOf(file.length()));
 			lblFiletype.setText(file.getFileType());
-			
-			remove(panelPreview);
-						
+														
 			AbstractFilePreviewPanel preview = AbstractFilePreviewPanel.createFilePreviewPanel(file.getFileType(), listener, settings);
 			if(preview != null){
 				preview.setCachedFile(file);											
@@ -143,7 +143,21 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 
 			panelPreview.setBorder(new EmptyBorder(5, 5, 5, 5));
 			add(panelPreview, BorderLayout.CENTER);
-			invalidate();
+		
+		}
+		else{
+			panelTop.setVisible(false);			
+		}
+		
+		invalidate();
+		
+	}
+	
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {		
+		if(evt.getPropertyName() == CachedFile.SELECTED_FILE){
+			CachedFile file = (CachedFile)evt.getNewValue();
+			setFile(file);
 		}		
 	}
 

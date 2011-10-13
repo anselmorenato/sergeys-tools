@@ -3,13 +3,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,6 +24,7 @@ import javax.swing.border.EtchedBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.Messages;
+import org.sergeys.webcachedigger.logic.Mp3Utils;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 
@@ -34,30 +38,10 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 	
 	// for property listeners
 	public static final String PROPERTY_FILE_TO_PLAY = "AudioPreviewPanel_PROPERTY_FILE_TO_PLAY";  //$NON-NLS-1$
-	
-	// http://download.oracle.com/javase/6/docs/technotes/guides/intl/encoding.doc.html
-	private static Charset charset8859_1 = null;
-	private static Charset charsetFixed = null;
-	
-	static{
-		try{
-			charset8859_1 = Charset.forName("ISO-8859-1"); //$NON-NLS-1$
-		}
-		catch(Exception ex){
-			SimpleLogger.logMessage("Cannot instantiate Charset for ISO-8859-1");			 //$NON-NLS-1$
-		}
 		
-		try{
-			charsetFixed = Charset.forName("windows-1251"); //$NON-NLS-1$
-		}
-		catch(Exception ex){
-			SimpleLogger.logMessage("Cannot instantiate Charset for windows-1251");			 //$NON-NLS-1$
-		}
-	}
-	
 	JPanel panelProperties;
-	
-	
+	JPanel panelArtwork;
+		
 	
 	public AudioPreviewPanel(Settings settings) {
 		
@@ -128,6 +112,10 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		btnPlay.setEnabled(getSettings().isExternalPlayerConfigured());
 		panelControl.add(btnPlay);
 		
+		panelArtwork = new JPanel();
+		add(panelArtwork, BorderLayout.CENTER);
+		panelArtwork.setLayout(new BorderLayout(0, 0));
+		
 		
 		
 	}
@@ -136,13 +124,6 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		firePropertyChange(PROPERTY_FILE_TO_PLAY, null, getCachedFile());
 	}
 
-	private static String decode(String src){		
-
-		ByteBuffer bb = AudioPreviewPanel.charset8859_1.encode(src);
-		String res = AudioPreviewPanel.charsetFixed.decode(bb).toString();	// TODO: see EncodedText, seems trailing zero can occur
-		
-		return res;
-	}
 	
 	/**
 	 * 
@@ -156,7 +137,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		if(value != null && !value.isEmpty()){
 		//if(value != null){
 
-			value = decode(value);
+			value = Mp3Utils.decode(value);
 			
 			JLabel lblKey = new JLabel(label);
 			lblKey.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -202,6 +183,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		super.setCachedFile(cachedFile);
 	
 		panelProperties.removeAll();
+		panelArtwork.removeAll();
 		
 		int row = 0;
 		
@@ -232,11 +214,22 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 				
 				row = addRow(Messages.getString("AudioPreviewPanel.url"), id3v2.getUrl(), row); //$NON-NLS-1$
 				//row = addRow("Version:", id3v2.getVersion(), row);
+				
+				byte[] bytes = id3v2.getAlbumImage();
+				
+				if(bytes != null){
+					Image img = ImageIO.read(new ByteArrayInputStream(bytes));
+					if(img != null){
+						ScaledImage artwork = new ScaledImage(img);
+						panelArtwork.add(artwork);
+					}
+				}
+							 
 												
 			}
 			else if(mp3.hasId3v1Tag()){
-				ID3v1 id3v1 = mp3.getId3v1Tag();
-
+				ID3v1 id3v1 = mp3.getId3v1Tag();				
+				
 				row = addRow("", id3v1.getArtist(), row); //$NON-NLS-1$
 				row = addRow("", id3v1.getTitle(), row); //$NON-NLS-1$
 				if(row > 0){

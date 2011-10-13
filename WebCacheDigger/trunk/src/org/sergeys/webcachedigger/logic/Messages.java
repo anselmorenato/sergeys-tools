@@ -13,10 +13,10 @@ public class Messages {
 	private Messages() {
 	}
 	
-	private static String currentLang = "?";
+	//private static String currentLang = "?";
 	
 	public static void setLocale(Locale l){
-		currentLang = l.getLanguage();
+		//currentLang = l.getLanguage();
 		RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, l);		
 	}
 

@@ -9,6 +9,7 @@ import javax.swing.SwingWorker;
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.IProgressWatcher;
+import org.sergeys.webcachedigger.logic.Mp3Utils;
 import org.sergeys.webcachedigger.logic.Settings;
 
 public class FileCollectorWorker 
@@ -50,6 +51,10 @@ implements IProgressWatcher
 			if(type.startsWith("audio/")){
 				if(settings.getActiveFileTypes().contains(Settings.FileType.Audio)){
 					filteredFiles.add(file);
+					
+					if(settings.isRenameMp3byTags() && type.equals("audio/mpeg")){
+						file.setProposedName(Mp3Utils.proposeName(file));
+					}
 				}
 			}
 			else if(type.startsWith("video/")){
