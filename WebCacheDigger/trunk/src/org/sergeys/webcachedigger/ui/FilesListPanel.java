@@ -18,14 +18,20 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableRowSorter;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.Messages;
+import javax.swing.JLabel;
+import java.awt.FlowLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 // Uncomment line in initialize() to get panel components in ui designer
 
-public class FilesListPanel extends JPanel implements ListSelectionListener {
+public class FilesListPanel extends JPanel implements ListSelectionListener, TableModelListener {
 	
 	private static final long serialVersionUID = 1L;
 	private JScrollPane jScrollPane = null;
@@ -40,6 +46,8 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 	private static final String CHECK_ALL_TYPE = "CHECK_ALL_TYPE"; //$NON-NLS-1$
 	private static final String UNCHECK_ALL_TYPE = "UNCHECK_ALL_TYPE"; //$NON-NLS-1$
 	
+	JLabel lblTotal;
+	JLabel lblChecked;
 	
 	/**
 	 * @return the foundFilesSelectionModel
@@ -67,13 +75,13 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 	private void initialize() {
 		this.setSize(578, 187);
 		this.setLayout(new BorderLayout());
-		this.setPreferredSize(new Dimension(600, 300));
+		this.setPreferredSize(new Dimension(432, 300));
 		this.add(getJScrollPane(), BorderLayout.CENTER);
 		
 		
 		// TODO: uncomment this line to get panel components in ui designer,
 		// comment for production.		
-		//add(popupMenu, BorderLayout.EAST);
+//		add(popupMenu, BorderLayout.EAST);
 		
 		
 		JMenuItem mntmCheckAllOf = new JMenuItem(Messages.getString("FilesListPanel.checkAllType")); //$NON-NLS-1$
@@ -114,7 +122,26 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 			}
 		});
 		popupMenu.add(mntmUncheckAll);
+		
+		JPanel panelSummary = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panelSummary.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		add(panelSummary, BorderLayout.SOUTH);
+		
+		JLabel lblTotalLabel = new JLabel(Messages.getString("FilesListPanel.lblTotal.text")); //$NON-NLS-1$
+		panelSummary.add(lblTotalLabel);
+		
+		lblTotal = new JLabel("total"); 
+		panelSummary.add(lblTotal);
+		
+		JLabel lblCheckedLabel = new JLabel(Messages.getString("FilesListPanel.lblCheckedToCopy.text")); //$NON-NLS-1$
+		panelSummary.add(lblCheckedLabel);
+		
+		lblChecked = new JLabel("checked"); 
+		panelSummary.add(lblChecked);
 								
+		lblTotal.setText("0"); //$NON-NLS-1$
+		lblChecked.setText("0"); //$NON-NLS-1$
 	}
 
 	protected void doPopupMenuItemSelected(ActionEvent e) {		
@@ -204,6 +231,10 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		getJTableFoundFiles().setSelectionModel(getFoundFilesSelectionModel());
 
 		getFoundFilesSelectionModel().addListSelectionListener(this);
+		getJTableFoundFiles().getModel().addTableModelListener(this);
+		
+		lblTotal.setText(String.valueOf(files.size()));
+		lblChecked.setText("0"); //$NON-NLS-1$
 	}
 
 	public List<CachedFile> getCachedFiles() {
@@ -231,6 +262,18 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 			catch (IndexOutOfBoundsException ex) {
 				// occurs when model is emptied before next search
 			}
+		}
+	}
+
+	@Override
+	public void tableChanged(TableModelEvent e) {
+
+		if(e.getColumn() == 0 || e.getColumn() == TableModelEvent.ALL_COLUMNS){
+			// file checked/unchecked
+			lblChecked.setText(String.valueOf(
+					((FilesTableModel)getJTableFoundFiles().getModel()).getCheckedCount()
+					)
+			);
 		}
 	}
 

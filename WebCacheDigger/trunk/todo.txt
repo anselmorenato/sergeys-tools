@@ -20,8 +20,7 @@
 - add new name for copy, edit directly in the table
 
 - show how many files found/checked
-- move text to resources, support localization
-- determine preferred language from browser settings
+
 
 - show copying progress
 - ask before overwrite file while copying

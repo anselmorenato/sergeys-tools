@@ -74,4 +74,5 @@ SettingsPanel.programs=Программы
 VideoPreviewPanel.play=Играть
 VideoPreviewPanel.videoFile=Видео
 SettingsPanel.chckbxRenameMpFiles.text=Переименовывать файлы MP3, если возможно
-
+FilesListPanel.lblTotal.text=Всего:
+FilesListPanel.lblCheckedToCopy.text= Выбрано для копирования:

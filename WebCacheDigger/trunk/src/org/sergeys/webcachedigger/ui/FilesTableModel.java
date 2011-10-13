@@ -11,6 +11,8 @@ extends AbstractTableModel
 //extends DefaultTableModel
 {
 
+	private int checkedCount;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -22,6 +24,7 @@ extends AbstractTableModel
 
 		if(columnIndex == 0){
 			cachedFiles.get(rowIndex).setSelectedToCopy((Boolean)value);
+			checkedCount = (Boolean)value ? checkedCount + 1 : checkedCount - 1; 
 		}
 		else{
 			super.setValueAt(value, rowIndex, columnIndex);
@@ -62,6 +65,7 @@ extends AbstractTableModel
 
 	public FilesTableModel(List<CachedFile> files) {
 		this.cachedFiles = files;
+		setCheckedCount(0);
 	}
 
 	@Override
@@ -110,6 +114,8 @@ extends AbstractTableModel
 			f.setSelectedToCopy(checked);					
 		}
 		
+		checkedCount = checked ? cachedFiles.size() : 0;
+		
 		fireTableDataChanged();				
 	}		
 	
@@ -117,11 +123,24 @@ extends AbstractTableModel
 		int i = 0;
 		for(CachedFile f: cachedFiles){
 			if(f.getFileType().equals(mimeType)){
-				f.setSelectedToCopy(checked);
-				fireTableCellUpdated(i, 0);
+				
+				if(f.isSelectedToCopy() != checked){
+					checkedCount = checked ? checkedCount + 1 : checkedCount - 1;
+					f.setSelectedToCopy(checked);
+					fireTableCellUpdated(i, 0);					
+				}
+								
 			}
 			i++;
 		}										
+	}
+
+	public int getCheckedCount() {
+		return checkedCount;
+	}
+
+	public void setCheckedCount(int checkedCount) {
+		this.checkedCount = checkedCount;
 	}
 		
 }

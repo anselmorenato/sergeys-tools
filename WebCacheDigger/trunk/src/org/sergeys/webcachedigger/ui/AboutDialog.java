@@ -8,13 +8,10 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -27,17 +24,14 @@ import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.table.AbstractTableModel;
 
 import org.sergeys.library.swing.SystemPropertiesTable;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class AboutDialog extends JDialog {
 
-	private String version = "13 Oct 2011"; //$NON-NLS-1$
+	private String version = "14 Oct 2011"; //$NON-NLS-1$
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
