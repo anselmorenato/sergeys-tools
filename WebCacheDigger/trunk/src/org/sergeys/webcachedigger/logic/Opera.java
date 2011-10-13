@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import org.sergeys.library.FileUtils;
+
 public class Opera extends AbstractBrowser {
 
 	@Override
@@ -38,7 +40,7 @@ public class Opera extends AbstractBrowser {
 		ArrayList<File> allFiles = new ArrayList<File>();
 		
 		for(File cacheDir: getExistingCachePaths()){
-			listFilesRecursive(cacheDir, new FileFilter(){
+			FileUtils.listFilesRecursive(cacheDir, new FileFilter(){
 
 				@Override
 				public boolean accept(File pathname) {

@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 
+import org.sergeys.library.swing.ScaledImage;
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Mp3Utils;

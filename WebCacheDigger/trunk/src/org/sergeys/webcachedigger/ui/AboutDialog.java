@@ -29,6 +29,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.table.AbstractTableModel;
 
+import org.sergeys.library.swing.SystemPropertiesTable;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 import java.awt.event.ActionListener;
@@ -227,62 +228,8 @@ public class AboutDialog extends JDialog {
 	 * @return javax.swing.JTable	
 	 */
 	private JTable getJTableSystemProperties() {
-		if (jTableSystemProperties == null) {
-			final String[] columnNames = {
-				Messages.getString("AboutDialog.Property"), //$NON-NLS-1$
-				Messages.getString("AboutDialog.Value") //$NON-NLS-1$
-			};
-			
-			Properties props = System.getProperties();
-//			final ArrayList<String> keys = new ArrayList<String>();
-//			for(Entry<Object, Object> key: props.entrySet()){
-//				keys.add(key.getKey().toString());				
-//			}
-			
-			final ArrayList<Entry<Object, Object>> p = new ArrayList<Entry<Object, Object>>(props.entrySet());			
-			Collections.sort(p, new Comparator<Entry<Object, Object>>(){
-
-				@Override
-				public int compare(Entry<Object, Object> o1,
-						Entry<Object, Object> o2) {
-					return o1.getKey().toString().compareTo(o2.getKey().toString());
-				}
-				
-			});
-			
-			AbstractTableModel tm = new AbstractTableModel(){
-
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public int getRowCount() {
-					return p.size();
-				}
-
-				@Override
-				public int getColumnCount() {
-					return 2;
-				}
-
-				@Override
-				public String getColumnName(int column) {
-					return columnNames[column];
-				};								
-				
-				@Override
-				public Object getValueAt(int rowIndex, int columnIndex) {
-					// TODO Auto-generated method stub
-					return (columnIndex == 0) ? p.get(rowIndex).getKey() : p.get(rowIndex).getValue();
-				}
-				
-			};
-			
-			jTableSystemProperties = new JTable(tm);
-			jTableSystemProperties.getColumnModel().getColumn(0).setPreferredWidth(50);
-			jTableSystemProperties.getColumnModel().getColumn(1).setPreferredWidth(100);
+		if (jTableSystemProperties == null) {			
+			jTableSystemProperties = new SystemPropertiesTable(Messages.getString("AboutDialog.Property"), Messages.getString("AboutDialog.Value")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return jTableSystemProperties;
 	}

@@ -36,6 +36,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
+import org.sergeys.library.FileUtils;
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.Messages;
@@ -535,7 +536,8 @@ implements ActionListener, PropertyChangeListener
 					targetFile = targetFile + "." + file.guessExtension();  //$NON-NLS-1$
 				}
 				try {
-					CachedFile.copyFile(file.getAbsolutePath(), targetFile);
+					//CachedFile.copyFile(file.getAbsolutePath(), targetFile);
+					FileUtils.copyFile(file.getAbsolutePath(), targetFile);
 					
 					// TODO: java 7
 					//Files.copy(file.getAbsolutePath(), targetFile, );

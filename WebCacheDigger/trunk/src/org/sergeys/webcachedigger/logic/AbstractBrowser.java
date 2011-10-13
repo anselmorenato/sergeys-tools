@@ -1,8 +1,6 @@
 package org.sergeys.webcachedigger.logic;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractBrowser implements IBrowser {
@@ -38,34 +36,34 @@ public abstract class AbstractBrowser implements IBrowser {
 		return cachePaths;
 	}	
 	
-	protected List<File> listFilesRecursive(File directory, final FileFilter fileFilter, List<File> allFiles){
-						
-		if(directory.isDirectory()){
-						
-			// collect regular files
-			List<File> files = Arrays.asList(directory
-					.listFiles(new FileFilter() {
-						public boolean accept(File file) {
-							return (!file.isDirectory() && fileFilter.accept(file));
-						}
-					}));
-			
-			allFiles.addAll(files);
-			
-			// process subdirs
-			List<File> subdirs = Arrays.asList(directory
-					.listFiles(new FileFilter() {
-						public boolean accept(File file) {
-							return (file.isDirectory() && fileFilter.accept(file));
-						}
-					}));
-			
-			for(File subdir: subdirs){
-				listFilesRecursive(subdir, fileFilter, allFiles);
-			}			
-		}
-		
-		return allFiles;
-	}
+//	protected List<File> listFilesRecursive(File directory, final FileFilter fileFilter, List<File> allFiles){
+//						
+//		if(directory.isDirectory()){
+//						
+//			// collect regular files
+//			List<File> files = Arrays.asList(directory
+//					.listFiles(new FileFilter() {
+//						public boolean accept(File file) {
+//							return (!file.isDirectory() && fileFilter.accept(file));
+//						}
+//					}));
+//			
+//			allFiles.addAll(files);
+//			
+//			// process subdirs
+//			List<File> subdirs = Arrays.asList(directory
+//					.listFiles(new FileFilter() {
+//						public boolean accept(File file) {
+//							return (file.isDirectory() && fileFilter.accept(file));
+//						}
+//					}));
+//			
+//			for(File subdir: subdirs){
+//				listFilesRecursive(subdir, fileFilter, allFiles);
+//			}			
+//		}
+//		
+//		return allFiles;
+//	}
 	
 }

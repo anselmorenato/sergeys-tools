@@ -71,7 +71,7 @@
 	<target name="ui" depends="ui-jar">
 	</target>
 
-	<target name="libs" depends="check-libs-changed, copy-libs">
+	<target name="libs" depends="library, copy-libs">
 	</target>
 
 	<target name="logic-changed">		
@@ -228,6 +228,7 @@
 
 		<condition property="libs.changed">
 			<or>
+
 				<not>
 					<uptodate targetfile="${dist.dir}/${lib.mimeutil}" srcfile="lib/${lib.mimeutil}">
 					</uptodate>
@@ -252,9 +253,9 @@
 		</condition>
 	</target>
 
-	<target name="copy-libs" if="libs.changed" depends="create-key">
+	<target name="copy-libs" if="libs.changed" depends="create-key, check-libs-changed">
 		<mkdir dir="${dist.dir}" />
-
+				
 		<copy file="lib/${lib.mimeutil}" todir="${dist.dir}" overwrite="true">
 		</copy>
 		<unsignjar jar="${dist.dir}/${lib.mimeutil}" />
@@ -285,6 +286,23 @@
 
 	</target>
 
+	<target name="library-changed">
+		<uptodate property="library.unchanged" targetfile="${dist.dir}/library.${revision}.jar">			
+			<srcfiles dir="${library.dir}" includes="bin/**"></srcfiles>			
+		</uptodate>
+	</target>
+	
+	<target name="library" unless="library.unchanged" depends="library-changed, create-key">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.dir}/library.${revision}.jar" 
+			basedir="${library.dir}/bin" includes="**" index="true">
+		</jar>
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/library.${revision}.jar" verbose="true">
+		</signjar>
+	</target>
+	
+	
 	<target name="deploy-local">
 		<delete>
 			<fileset dir="${deploy.dir}" includes="*.jar, *.jnlp">

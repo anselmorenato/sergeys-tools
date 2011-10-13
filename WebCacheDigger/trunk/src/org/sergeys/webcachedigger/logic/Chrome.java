@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import org.sergeys.library.FileUtils;
+
 /**
  * Google Chrome Windows
  * 
@@ -85,8 +87,8 @@ public class Chrome extends AbstractBrowser {
 		// 1. count files
 		ArrayList<File> allFiles = new ArrayList<File>();
 		
-		for(File cacheDir: getExistingCachePaths()){
-			listFilesRecursive(cacheDir, new FileFilter(){
+		for(File cacheDir: getExistingCachePaths()){			
+			FileUtils.listFilesRecursive(cacheDir, new FileFilter(){
 
 				@Override
 				public boolean accept(File pathname) {
