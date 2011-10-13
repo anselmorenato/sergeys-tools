@@ -169,16 +169,11 @@ public class MainWinTopPanel extends JPanel {
 		JToggleButton btn = (JToggleButton)e.getSource();
 		String name = btn.getName();	// browser name
 		Settings.FileType type = Enum.valueOf(Settings.FileType.class, name);
-		try {
-			if(btn.isSelected()){				
-				wcd.getSettings().getActiveFileTypes().add(type);				
-			}
-			else{
-				wcd.getSettings().getActiveFileTypes().remove(type);				
-			}
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		if(btn.isSelected()){				
+			wcd.getSettings().getActiveFileTypes().add(type);				
+		}
+		else{
+			wcd.getSettings().getActiveFileTypes().remove(type);				
 		}
 		
 	}
@@ -186,16 +181,11 @@ public class MainWinTopPanel extends JPanel {
 	protected void doToggleBrowser(ChangeEvent e) {
 		JToggleButton btn = (JToggleButton)e.getSource();
 		String name = btn.getName();	// browser name
-		try {
-			if(btn.isSelected()){				
-				wcd.getSettings().getActiveBrowsers().add(name);				
-			}
-			else{
-				wcd.getSettings().getActiveBrowsers().remove(name);
-			}
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		if(btn.isSelected()){				
+			wcd.getSettings().getActiveBrowsers().add(name);				
+		}
+		else{
+			wcd.getSettings().getActiveBrowsers().remove(name);
 		}				
 	}
 

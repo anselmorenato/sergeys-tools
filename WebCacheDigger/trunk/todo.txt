@@ -74,6 +74,10 @@ http://java.dzone.com/news/video-getting-started-with-jav
 http://www.filthyrichclients.org/
 
 
+
+http://skipy.ru/technics/localization.html
+
+
 certificates:
 http://www.ascertia.com/OnlineCA/certspricing.aspx
 https://www.startssl.com/?app=40

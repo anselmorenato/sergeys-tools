@@ -18,6 +18,8 @@ import org.sergeys.webcachedigger.logic.Settings;
 import java.awt.Insets;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -267,9 +269,31 @@ public class SettingsPanel extends JPanel {
 		JFileChooser fc = new JFileChooser();
 		
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		if(Settings.isOSWindows()){
+			fc.addChoosableFileFilter(new FileFilter(){
+	
+				@Override
+				public boolean accept(File f) {				
+					return f.isDirectory() || f.getName().toLowerCase().endsWith(".exe");
+				}
+	
+				@Override
+				public String getDescription() {				
+					return "Programs (*.exe)";
+				}
+				
+			});
+		}
 		
 		if (fc.showOpenDialog(this.getParent()) == JFileChooser.APPROVE_OPTION) {			
-			getTxtPlayerCommand().setText(fc.getSelectedFile().getAbsolutePath());
+			String path = fc.getSelectedFile().getAbsolutePath();
+			if(path.contains(" ")){
+				path = "\"" + path + "\"";
+			}
+			
+			path = path + " " + Settings.EXT_PLAYER_FILEPATH;
+			
+			getTxtPlayerCommand().setText(path);
 		}
 
 		

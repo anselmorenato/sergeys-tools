@@ -36,7 +36,7 @@ public class SettingsDialog extends JDialog {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(521, 197);
+		this.setSize(535, 197);
 		this.setModal(true);
 		this.setTitle("Settings");
 		this.setContentPane(getJContentPane());

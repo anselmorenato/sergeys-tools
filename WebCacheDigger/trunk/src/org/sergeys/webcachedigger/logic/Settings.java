@@ -204,5 +204,13 @@ extends Properties
 		this.externalPlayerCommand = externalPlayerCommand;
 	}
 	
+	public boolean isExternalPlayerConfigured(){
+		boolean result = (getExternalPlayerCommand() != null && !getExternalPlayerCommand().isEmpty()); 
+		return result;
+	}
+	
+	public static boolean isOSWindows(){
+		return System.getenv("OS") != null && System.getenv("OS").equals("Windows_NT");
+	}
 }
 

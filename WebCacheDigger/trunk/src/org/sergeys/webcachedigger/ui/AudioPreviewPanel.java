@@ -20,6 +20,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
+import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 
 import com.mpatric.mp3agic.ID3v1;
@@ -57,7 +58,9 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 	
 	
 	
-	public AudioPreviewPanel() {
+	public AudioPreviewPanel(Settings settings) {
+		
+		setSettings(settings);
 						
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new BorderLayout(0, 0));
@@ -108,7 +111,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		panelProperties.add(txtpnValue, gbc_txtpnValue);
 		
 		JPanel panelControl = new JPanel();
-		add(panelControl, BorderLayout.CENTER);
+		add(panelControl, BorderLayout.SOUTH);
 		
 		JButton btnPlay = new JButton("Play");
 		btnPlay.addActionListener(new ActionListener() {
@@ -116,19 +119,14 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 				doPlay(e);
 			}
 		});
+		btnPlay.setEnabled(getSettings().isExternalPlayerConfigured());
 		panelControl.add(btnPlay);
 		
 		
 	}
 
-	protected void doPlay(ActionEvent e) {
-		
+	protected void doPlay(ActionEvent e) {		
 		firePropertyChange(PROPERTY_FILE_TO_PLAY, null, getCachedFile());
-		
-//		String cmdLine =  
-//				String.format("", getCachedFile().getAbsolutePath()); 
-//        Process process = Runtime.getRuntime().exec(cmdLine);        
-//        process.waitFor();
 	}
 
 	private static String decode(String src){		

@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -25,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
@@ -42,7 +46,7 @@ implements ActionListener, PropertyChangeListener
 	private JPanel jContentPane = null;
 	private JMenuBar jJMenuBar = null;
 	private JMenu fileMenu = null;
-	private JMenu editMenu = null;
+	private JMenu settingsMenu = null;
 	private JMenu helpMenu = null;
 	private JMenuItem exitMenuItem = null;
 	private JMenuItem aboutMenuItem = null;
@@ -193,7 +197,7 @@ implements ActionListener, PropertyChangeListener
 	 */
 	private JPanel getJPanelFileDetails() {
 		if (jPanelFileDetails == null) {
-			jPanelFileDetails = new FileDetailsPanel(this);
+			jPanelFileDetails = new FileDetailsPanel(this, getSettings());
 			
 		}
 		return jPanelFileDetails;
@@ -248,15 +252,11 @@ implements ActionListener, PropertyChangeListener
 				int w = mainWindow.getWidth();
 				int h = mainWindow.getHeight();
 				int divpos = application.getJSplitPaneMain().getDividerLocation();
-				try {
-					x = application.getSettings().getIntProperty(Settings.WINDOW_X, x);
-					y = application.getSettings().getIntProperty(Settings.WINDOW_Y, y);
-					w = application.getSettings().getIntProperty(Settings.WINDOW_W, w);
-					h = application.getSettings().getIntProperty(Settings.WINDOW_H, h);
-					divpos = application.getSettings().getIntProperty(Settings.SPLITTER_POS, divpos);
-				} catch (IOException e) {					
-					e.printStackTrace();
-				} 				
+				x = application.getSettings().getIntProperty(Settings.WINDOW_X, x);
+				y = application.getSettings().getIntProperty(Settings.WINDOW_Y, y);
+				w = application.getSettings().getIntProperty(Settings.WINDOW_W, w);
+				h = application.getSettings().getIntProperty(Settings.WINDOW_H, h);
+				divpos = application.getSettings().getIntProperty(Settings.SPLITTER_POS, divpos); 				
 				
 				mainWindow.setLocation(x, y);
 				mainWindow.setSize(w, h);
@@ -310,7 +310,7 @@ implements ActionListener, PropertyChangeListener
 		if (jJMenuBar == null) {
 			jJMenuBar = new JMenuBar();
 			jJMenuBar.add(getFileMenu());
-			jJMenuBar.add(getEditMenu());
+			jJMenuBar.add(getSettingsMenu());
 			jJMenuBar.add(getHelpMenu());
 		}
 		return jJMenuBar;
@@ -335,13 +335,14 @@ implements ActionListener, PropertyChangeListener
 	 * 	
 	 * @return javax.swing.JMenu	
 	 */
-	private JMenu getEditMenu() {
-		if (editMenu == null) {
-			editMenu = new JMenu();
-			editMenu.setText("Edit");
-			editMenu.add(getJMenuItemSettings());
+	private JMenu getSettingsMenu() {
+		if (settingsMenu == null) {
+			settingsMenu = new JMenu();
+			settingsMenu.setText("Settings");
+			settingsMenu.add(getMnLanguage());
+			settingsMenu.add(getJMenuItemSettings());
 		}
-		return editMenu;
+		return settingsMenu;
 	}
 
 	/**
@@ -462,17 +463,7 @@ implements ActionListener, PropertyChangeListener
 	
 	private void editSettings(){
 		SettingsDialog dlg = getSettingsDialog();
-		try {
-			dlg.setSettings(getSettings());
-		} catch (IOException e) {
-
-			JOptionPane.showMessageDialog(getJFrame(), 
-					String.format("Failed to load settings from '%s':\n\n%s", 
-							Settings.getSettingsFilePath(), e.getMessage()), 
-					"", 
-					JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+		dlg.setSettings(getSettings());
 		dlg.setVisible(true);
 	}
 
@@ -480,7 +471,7 @@ implements ActionListener, PropertyChangeListener
 	 * @return the settings
 	 * @throws IOException 
 	 */
-	public Settings getSettings() throws IOException {
+	public Settings getSettings() {
 		if(settings == null){
 			settings = Settings.load();
 		}
@@ -576,38 +567,125 @@ implements ActionListener, PropertyChangeListener
 			
 			CachedFile f = (CachedFile)evt.getNewValue();
 
-			// TODO: run in background
-			String cmdLine;
-			try {
-				cmdLine = getSettings().getExternalPlayerCommand();
-				String fmt = cmdLine.replaceAll(Settings.EXT_PLAYER_FILEPATH, "%s");
-				cmdLine = String.format(fmt, f.getAbsolutePath());
-				
-				SimpleLogger.logMessage(cmdLine);
-			    @SuppressWarnings("unused")
-				Process process = Runtime.getRuntime().exec(cmdLine);        
-			    //process.waitFor();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
+			doExternalPlayer(f);			
 		}
 		
 	}
 	
+	private void doExternalPlayer(final CachedFile f) {		
+		// TODO: run in background
+		if(getSettings().isExternalPlayerConfigured()){
+			SwingWorker<Void, Void> w = new SwingWorker<Void, Void>(){
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					final String cmdLine = getSettings().getExternalPlayerCommand();
+					
+//final String cmdLine = "\"c:\\tmp\\sub dir\\runq.cmd\" %f";
+//cmdLine = "f:\\bin32\\vlc\\flc.exe %f";
+					
+					// http://www.regexplanet.com/simple/index.html
+					Pattern p = Pattern.compile("\"[^\"]+\"|[^\"\\s]+");					
+					Matcher m = p.matcher(cmdLine);
+					ArrayList<String> tokens = new ArrayList<String>();
+					while(m.find()){
+						tokens.add(m.group());
+					}
+					
+					if(tokens.size() == 0){
+						SwingUtilities.invokeLater(new Runnable(){
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								JOptionPane.showMessageDialog(WebCacheDigger.this.getJContentPane(),
+										String.format("Failed to parse command line definition:\n\n%s", cmdLine)
+										);								
+							}});
+
+						return null;
+					}
+					
+					String[] args = new String[tokens.size()];
+					for(int i = 0; i<tokens.size(); i++){
+						if(tokens.get(i).startsWith("\"")){
+							args[i] = tokens.get(i).substring(1, tokens.get(i).length()-1);
+							//args[i] = tokens.get(i);
+						}
+						else if(tokens.get(i).equals(Settings.EXT_PLAYER_FILEPATH)){
+							args[i] = f.getAbsolutePath();
+//args[i] = "\"c:\\tmp\\sub dir\\1.mp3\""; 							
+						}
+						else{
+							args[i] = tokens.get(i);
+						}
+					}
+					
+					try{
+						Process process = Runtime.getRuntime().exec(args);
+						
+						final int exitCode = process.waitFor();
+						if(exitCode != 0){
+							SwingUtilities.invokeLater(new Runnable(){
+
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									JOptionPane.showMessageDialog(WebCacheDigger.this.getJContentPane(), 
+											String.format("External player failed with exit code %d", exitCode));
+									
+								}});
+						}
+						
+					}
+					catch(final Exception ex){
+						SwingUtilities.invokeLater(new Runnable(){
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								JOptionPane.showMessageDialog(WebCacheDigger.this.getJContentPane(), 
+										String.format("External player failed:\n\n%s", ex.getMessage()));
+								
+							}});						
+					}
+					
+					
+					return null;
+				}
+				
+			};
+			
+			w.execute();
+		}
+		
+//		String cmdLine;
+//		try {
+//			
+//			String fmt = cmdLine.replaceAll(Settings.EXT_PLAYER_FILEPATH, "%s");
+//			cmdLine = String.format(fmt, f.getAbsolutePath());
+//			
+//			SimpleLogger.logMessage(cmdLine);
+//		    @SuppressWarnings("unused")
+//			Process process = Runtime.getRuntime().exec(cmdLine);        
+//		    //process.waitFor();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}			
+
+	}
+
 	private LinkedHashSet<IBrowser> existingBrowsers = null;
+	private JMenu mnLanguage;
+	private JMenuItem mntmEnglish;
 	public synchronized LinkedHashSet<IBrowser> getExistingBrowsers(){
 		if(existingBrowsers == null){
 			existingBrowsers = new LinkedHashSet<IBrowser>();
 			
 			ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
 			for(IBrowser browser : ldr){
-				try {
-					browser.setSettings(getSettings());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				browser.setSettings(getSettings());
 				SimpleLogger.logMessage("Can handle " + browser.getName());
 				if(browser.isPresent()){
 					existingBrowsers.add(browser);
@@ -620,5 +698,28 @@ implements ActionListener, PropertyChangeListener
 		}
 		
 		return existingBrowsers;
+	}
+	private JMenu getMnLanguage() {
+		if (mnLanguage == null) {
+			mnLanguage = new JMenu("Language");
+			mnLanguage.add(getMntmEnglish());
+		}
+		return mnLanguage;
+	}
+	private JMenuItem getMntmEnglish() {
+		if (mntmEnglish == null) {
+			mntmEnglish = new JMenuItem("English");
+			mntmEnglish.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					doLanguageSelected(e);
+				}
+			});
+		}
+		return mntmEnglish;
+	}
+
+	protected void doLanguageSelected(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

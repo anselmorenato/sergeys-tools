@@ -6,25 +6,39 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import org.sergeys.webcachedigger.logic.Settings;
+import javax.swing.JPanel;
+
 public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// for property listeners
 	public static final String PROPERTY_FILE_TO_PLAY = "VideoPreviewPanel_PROPERTY_FILE_TO_PLAY"; 
 	
-	public VideoPreviewPanel() {
+	public VideoPreviewPanel(Settings settings) {
+		
+		setSettings(settings);
+		
 		setLayout(new BorderLayout(0, 0));
 		
+		JLabel lblVideoFile = new JLabel("Video File");
+		lblVideoFile.setHorizontalAlignment(SwingConstants.CENTER);
+		add(lblVideoFile, BorderLayout.CENTER);
+		
+		JPanel panel = new JPanel();
+		add(panel, BorderLayout.SOUTH);
+		
 		JButton btnPlay = new JButton("Play");
+		panel.add(btnPlay);
+		btnPlay.setEnabled(getSettings().isExternalPlayerConfigured());
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doPlay(e);
 			}
 		});
-		add(btnPlay, BorderLayout.SOUTH);
-		
-		JLabel lblVideoFile = new JLabel("Video File");
-		lblVideoFile.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblVideoFile, BorderLayout.CENTER);
 	}
 
 	protected void doPlay(ActionEvent e) {

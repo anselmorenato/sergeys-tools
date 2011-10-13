@@ -30,10 +30,12 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.sergeys.webcachedigger.logic.SimpleLogger;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class AboutDialog extends JDialog {
 
-	private String version = "12 Oct 2011";
+	private String version = "13 Oct 2011";
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
@@ -50,7 +52,6 @@ public class AboutDialog extends JDialog {
 	private JTable jTableSystemProperties = null;
 	private JButton jButtonSave = null;
 	private JPanel jPanelSystemActions = null;
-	private JButton jButtonSubmit = null;
 	private JTextPane textPaneLibs;
 	private JScrollPane scrollPane;
 
@@ -293,10 +294,19 @@ public class AboutDialog extends JDialog {
 	private JButton getJButtonSave() {
 		if (jButtonSave == null) {
 			jButtonSave = new JButton();
-			jButtonSave.setEnabled(false);
+			jButtonSave.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					doSaveSystemPropsToFile(e);
+				}
+			});
 			jButtonSave.setText("Save to File...");
 		}
 		return jButtonSave;
+	}
+
+	protected void doSaveSystemPropsToFile(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -311,23 +321,8 @@ public class AboutDialog extends JDialog {
 			jPanelSystemActions = new JPanel();
 			jPanelSystemActions.setLayout(flowLayout1);
 			jPanelSystemActions.add(getJButtonSave(), null);
-			jPanelSystemActions.add(getJButtonSubmit(), null);
 		}
 		return jPanelSystemActions;
-	}
-
-	/**
-	 * This method initializes jButtonSubmit	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-	private JButton getJButtonSubmit() {
-		if (jButtonSubmit == null) {
-			jButtonSubmit = new JButton();
-			jButtonSubmit.setEnabled(false);
-			jButtonSubmit.setText("Submit...");
-		}
-		return jButtonSubmit;
 	}
 
 	private JTextPane getTextPaneLibs() {
