@@ -20,6 +20,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
+import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 
@@ -32,7 +33,7 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 	
 	// for property listeners
-	public static final String PROPERTY_FILE_TO_PLAY = "AudioPreviewPanel_PROPERTY_FILE_TO_PLAY"; 
+	public static final String PROPERTY_FILE_TO_PLAY = "AudioPreviewPanel_PROPERTY_FILE_TO_PLAY";  //$NON-NLS-1$
 	
 	// http://download.oracle.com/javase/6/docs/technotes/guides/intl/encoding.doc.html
 	private static Charset charset8859_1 = null;
@@ -40,17 +41,17 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 	
 	static{
 		try{
-			charset8859_1 = Charset.forName("ISO-8859-1");
+			charset8859_1 = Charset.forName("ISO-8859-1"); //$NON-NLS-1$
 		}
 		catch(Exception ex){
-			SimpleLogger.logMessage("Cannot instantiate Charset for ISO-8859-1");			
+			SimpleLogger.logMessage("Cannot instantiate Charset for ISO-8859-1");			 //$NON-NLS-1$
 		}
 		
 		try{
-			charsetFixed = Charset.forName("windows-1251");
+			charsetFixed = Charset.forName("windows-1251"); //$NON-NLS-1$
 		}
 		catch(Exception ex){
-			SimpleLogger.logMessage("Cannot instantiate Charset for windows-1251");			
+			SimpleLogger.logMessage("Cannot instantiate Charset for windows-1251");			 //$NON-NLS-1$
 		}
 	}
 	
@@ -67,6 +68,11 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		
 		panelProperties = new JPanel();
 		add(panelProperties, BorderLayout.NORTH);
+		
+//		JScrollPane scrollPane = new JScrollPane(panelProperties);
+//		add(scrollPane, BorderLayout.CENTER);
+
+		
 		GridBagLayout gbl_panelProperties = new GridBagLayout();
 		//gbl_panelProperties.columnWidths = new int[]{1, 3, 0};
 		gbl_panelProperties.rowHeights = new int[]{0, 0};
@@ -77,7 +83,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		
 		// eclipse designer
 		
-		JLabel lblKey = new JLabel("key");
+		JLabel lblKey = new JLabel("key"); //$NON-NLS-1$
 		lblKey.setHorizontalAlignment(SwingConstants.TRAILING);
 		GridBagConstraints gbc_lblKey = new GridBagConstraints();
 		gbc_lblKey.anchor = GridBagConstraints.NORTHEAST;
@@ -89,11 +95,11 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		panelProperties.add(lblKey, gbc_lblKey);
 		
 		JTextPane txtpnValue = new JTextPane();
-		txtpnValue.setText("value long long value value long long value value long long value value long long value value long long value " +
-				"value long long value value long long value value long long value value long long value value long long value ");
+		txtpnValue.setText("value long long value value long long value value long long value value long long value value long long value " + //$NON-NLS-1$
+				"value long long value value long long value value long long value value long long value value long long value "); //$NON-NLS-1$
 		txtpnValue.setEditable(false);
 		
-		txtpnValue.setFont(UIManager.getFont("Label.font"));
+		txtpnValue.setFont(UIManager.getFont("Label.font")); //$NON-NLS-1$
 		// bug here http://stackoverflow.com/questions/613603/java-nimbus-laf-with-transparent-text-fields
 		txtpnValue.setOpaque(false);
 		txtpnValue.setBorder(BorderFactory.createEmptyBorder());
@@ -113,7 +119,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		JPanel panelControl = new JPanel();
 		add(panelControl, BorderLayout.SOUTH);
 		
-		JButton btnPlay = new JButton("Play");
+		JButton btnPlay = new JButton(Messages.getString("AudioPreviewPanel.Play")); //$NON-NLS-1$
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doPlay(e);
@@ -121,6 +127,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		});
 		btnPlay.setEnabled(getSettings().isExternalPlayerConfigured());
 		panelControl.add(btnPlay);
+		
 		
 		
 	}
@@ -164,7 +171,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 			JTextPane txtpnValue = new JTextPane();
 			txtpnValue.setText(value);
 			txtpnValue.setEditable(false);			
-			txtpnValue.setFont(UIManager.getFont("Label.font"));
+			txtpnValue.setFont(UIManager.getFont("Label.font")); //$NON-NLS-1$
 			
 			// bug here http://stackoverflow.com/questions/613603/java-nimbus-laf-with-transparent-text-fields
 			txtpnValue.setOpaque(false);
@@ -204,44 +211,44 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 			if(mp3.hasId3v2Tag()){
 				ID3v2 id3v2 = mp3.getId3v2Tag();
 			
-				row = addRow("", id3v2.getArtist(), row);
-				row = addRow("", id3v2.getTitle(), row);
+				row = addRow("", id3v2.getArtist(), row); //$NON-NLS-1$
+				row = addRow("", id3v2.getTitle(), row); //$NON-NLS-1$
 				
 				if(row > 0){
-					row = addRow(" ", " ", row);
+					row = addRow(" ", " ", row); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
-				row = addRow("Album:", id3v2.getAlbum(), row);
-				row = addRow("Track:", id3v2.getTrack(), row);
-				row = addRow("Year:", id3v2.getYear(), row);
-				row = addRow("Genre:", id3v2.getGenreDescription(), row);
-				row = addRow("Original Artist:", id3v2.getOriginalArtist(), row);
+				row = addRow(Messages.getString("AudioPreviewPanel.album"), id3v2.getAlbum(), row); //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.track"), id3v2.getTrack(), row); //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.year"), id3v2.getYear(), row); //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.genre"), id3v2.getGenreDescription(), row); //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.originalArtist"), id3v2.getOriginalArtist(), row); //$NON-NLS-1$
 								
-				row = addRow("Composer:", id3v2.getComposer(), row);
-				row = addRow("Copyright:", id3v2.getCopyright(), row);
-				row = addRow("Encoder:", id3v2.getEncoder(), row);
-				row = addRow("Comment:", id3v2.getComment(), row);				
-				row = addRow("iTunes comment:", id3v2.getItunesComment(), row);								
+				row = addRow(Messages.getString("AudioPreviewPanel.composer"), id3v2.getComposer(), row); //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.copyright"), id3v2.getCopyright(), row); //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.encoder"), id3v2.getEncoder(), row); //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.comment"), id3v2.getComment(), row);				 //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.iTunesComment"), id3v2.getItunesComment(), row);								 //$NON-NLS-1$
 				
-				row = addRow("URL:", id3v2.getUrl(), row);
+				row = addRow(Messages.getString("AudioPreviewPanel.url"), id3v2.getUrl(), row); //$NON-NLS-1$
 				//row = addRow("Version:", id3v2.getVersion(), row);
 												
 			}
 			else if(mp3.hasId3v1Tag()){
 				ID3v1 id3v1 = mp3.getId3v1Tag();
 
-				row = addRow("", id3v1.getArtist(), row);
-				row = addRow("", id3v1.getTitle(), row);
+				row = addRow("", id3v1.getArtist(), row); //$NON-NLS-1$
+				row = addRow("", id3v1.getTitle(), row); //$NON-NLS-1$
 				if(row > 0){
-					row = addRow(" ", " ", row);
+					row = addRow(" ", " ", row); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
-				row = addRow("Album:", id3v1.getAlbum(), row);
-				row = addRow("Track:", id3v1.getTrack(), row);
-				row = addRow("Year:", id3v1.getYear(), row);
-				row = addRow("Genre:", id3v1.getGenreDescription(), row);
+				row = addRow(Messages.getString("AudioPreviewPanel.album"), id3v1.getAlbum(), row); //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.track"), id3v1.getTrack(), row); //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.year"), id3v1.getYear(), row); //$NON-NLS-1$
+				row = addRow(Messages.getString("AudioPreviewPanel.genre"), id3v1.getGenreDescription(), row); //$NON-NLS-1$
 				
-				row = addRow("Comment:", id3v1.getComment(), row);
+				row = addRow(Messages.getString("AudioPreviewPanel.comment"), id3v1.getComment(), row); //$NON-NLS-1$
 												
 				//row = addRow(":", id3v1.getVersion(), row);								
 			}						

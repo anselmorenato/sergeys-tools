@@ -4,30 +4,29 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.print.attribute.standard.JobMessageFromOperator;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import org.sergeys.webcachedigger.logic.Settings;
-import java.awt.Insets;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import org.sergeys.webcachedigger.logic.Messages;
+import org.sergeys.webcachedigger.logic.Settings;
 
 public class SettingsPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private Settings settings; // @jve:decl-index=0:
+	private Settings settings;
 
 	private JLabel jLabel1 = null;
 
@@ -89,10 +88,10 @@ public class SettingsPanel extends JPanel {
 		gridBagConstraints3.gridy = 0;
 		jLabel2 = new JLabel();
 		jLabel2.setHorizontalAlignment(SwingConstants.RIGHT);
-		jLabel2.setText("Search for files larger than:");
+		jLabel2.setText(Messages.getString("SettingsPanel.searchLargeThan")); //$NON-NLS-1$
 		jLabel1 = new JLabel();
 		jLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
-		jLabel1.setText("Save files to:");
+		jLabel1.setText(Messages.getString("SettingsPanel.saveTo")); //$NON-NLS-1$
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
 		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 1.0};
@@ -174,7 +173,7 @@ public class SettingsPanel extends JPanel {
 	private JButton getJButtonSavePath() {
 		if (jButtonSavePath == null) {
 			jButtonSavePath = new JButton();
-			jButtonSavePath.setText("...");
+			jButtonSavePath.setText("..."); //$NON-NLS-1$
 			jButtonSavePath
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -204,7 +203,7 @@ public class SettingsPanel extends JPanel {
 	private JPanel getJPanel1() {
 		if (jPanel1 == null) {
 			jLabel3 = new JLabel();
-			jLabel3.setText("bytes");
+			jLabel3.setText(Messages.getString("SettingsPanel.bytes")); //$NON-NLS-1$
 			jPanel1 = new JPanel();
 			FlowLayout fl_jPanel1 = new FlowLayout();
 			fl_jPanel1.setAlignment(FlowLayout.LEFT);
@@ -230,7 +229,7 @@ public class SettingsPanel extends JPanel {
 
 	private JLabel getLblExternalMediaPlayer() {
 		if (lblExternalMediaPlayer == null) {
-			lblExternalMediaPlayer = new JLabel("External player command line:");
+			lblExternalMediaPlayer = new JLabel(Messages.getString("SettingsPanel.playerCmdLine")); //$NON-NLS-1$
 			lblExternalMediaPlayer.setHorizontalAlignment(SwingConstants.RIGHT);
 		}
 		return lblExternalMediaPlayer;
@@ -255,7 +254,7 @@ public class SettingsPanel extends JPanel {
 	}
 	private JButton getButtonPlayer() {
 		if (buttonPlayer == null) {
-			buttonPlayer = new JButton("...");
+			buttonPlayer = new JButton("..."); //$NON-NLS-1$
 			buttonPlayer.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					doChoosePlayer(e);
@@ -274,12 +273,12 @@ public class SettingsPanel extends JPanel {
 	
 				@Override
 				public boolean accept(File f) {				
-					return f.isDirectory() || f.getName().toLowerCase().endsWith(".exe");
+					return f.isDirectory() || f.getName().toLowerCase().endsWith(".exe"); //$NON-NLS-1$
 				}
 	
 				@Override
 				public String getDescription() {				
-					return "Programs (*.exe)";
+					return Messages.getString("SettingsPanel.programs") + " (*.exe)"; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
 			});
@@ -287,11 +286,11 @@ public class SettingsPanel extends JPanel {
 		
 		if (fc.showOpenDialog(this.getParent()) == JFileChooser.APPROVE_OPTION) {			
 			String path = fc.getSelectedFile().getAbsolutePath();
-			if(path.contains(" ")){
-				path = "\"" + path + "\"";
+			if(path.contains(" ")){ //$NON-NLS-1$
+				path = "\"" + path + "\""; //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			
-			path = path + " " + Settings.EXT_PLAYER_FILEPATH;
+			path = path + " " + Settings.EXT_PLAYER_FILEPATH; //$NON-NLS-1$
 			
 			getTxtPlayerCommand().setText(path);
 		}
@@ -301,7 +300,7 @@ public class SettingsPanel extends JPanel {
 
 	private JButton getButtonPlayerHelp() {
 		if (buttonPlayerHelp == null) {
-			buttonPlayerHelp = new JButton("?");
+			buttonPlayerHelp = new JButton("?"); //$NON-NLS-1$
 			buttonPlayerHelp.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					doHelpChoosePlayer(e);
@@ -313,7 +312,7 @@ public class SettingsPanel extends JPanel {
 
 	protected void doHelpChoosePlayer(ActionEvent e) {
 		// TODO Auto-generated method stub
-		JOptionPane.showMessageDialog(this, "Put %f in command line for the file placeholder");
+		JOptionPane.showMessageDialog(this, Messages.getString("SettingsPanel.cmdLineHelp")); //$NON-NLS-1$
 		
 	}
-} // @jve:decl-index=0:visual-constraint="10,10"
+} 

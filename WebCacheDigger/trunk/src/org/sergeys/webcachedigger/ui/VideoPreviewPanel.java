@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 import javax.swing.JPanel;
 
@@ -16,7 +17,7 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	// for property listeners
-	public static final String PROPERTY_FILE_TO_PLAY = "VideoPreviewPanel_PROPERTY_FILE_TO_PLAY"; 
+	public static final String PROPERTY_FILE_TO_PLAY = "VideoPreviewPanel_PROPERTY_FILE_TO_PLAY";  //$NON-NLS-1$
 	
 	public VideoPreviewPanel(Settings settings) {
 		
@@ -24,14 +25,14 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 		
 		setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblVideoFile = new JLabel("Video File");
+		JLabel lblVideoFile = new JLabel(Messages.getString("VideoPreviewPanel.videoFile")); //$NON-NLS-1$
 		lblVideoFile.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblVideoFile, BorderLayout.CENTER);
 		
 		JPanel panel = new JPanel();
 		add(panel, BorderLayout.SOUTH);
 		
-		JButton btnPlay = new JButton("Play");
+		JButton btnPlay = new JButton(Messages.getString("VideoPreviewPanel.play")); //$NON-NLS-1$
 		panel.add(btnPlay);
 		btnPlay.setEnabled(getSettings().isExternalPlayerConfigured());
 		btnPlay.addActionListener(new ActionListener() {

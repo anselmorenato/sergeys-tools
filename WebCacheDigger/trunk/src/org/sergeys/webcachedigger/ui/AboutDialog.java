@@ -29,13 +29,14 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.table.AbstractTableModel;
 
+import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class AboutDialog extends JDialog {
 
-	private String version = "13 Oct 2011";
+	private String version = "13 Oct 2011"; //$NON-NLS-1$
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
@@ -60,7 +61,7 @@ public class AboutDialog extends JDialog {
 	 */
 	public AboutDialog(Frame owner) {
 		super(owner);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(AboutDialog.class.getResource("/images/icon.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AboutDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
 		initialize();
 	}
 
@@ -72,7 +73,7 @@ public class AboutDialog extends JDialog {
 	private void initialize() {
 		this.setSize(500, 300);
 		this.setPreferredSize(new Dimension(500, 300));
-		this.setTitle("About");
+		this.setTitle(Messages.getString("AboutDialog.About")); //$NON-NLS-1$
 		this.setContentPane(getJContentPane());
 	}
 
@@ -99,9 +100,9 @@ public class AboutDialog extends JDialog {
 	private JTabbedPane getJTabbedPaneCenter() {
 		if (jTabbedPaneCenter == null) {
 			jTabbedPaneCenter = new JTabbedPane();
-			jTabbedPaneCenter.addTab("About", null, getJPanelAbout(), null);
-			jTabbedPaneCenter.addTab("System", null, getJPanelSystem(), null);
-			jTabbedPaneCenter.addTab("Libraries", null, getJPanelLibraries(), null);
+			jTabbedPaneCenter.addTab(Messages.getString("AboutDialog.About"), null, getJPanelAbout(), null); //$NON-NLS-1$
+			jTabbedPaneCenter.addTab(Messages.getString("AboutDialog.System"), null, getJPanelSystem(), null); //$NON-NLS-1$
+			jTabbedPaneCenter.addTab(Messages.getString("AboutDialog.Libraries"), null, getJPanelLibraries(), null); //$NON-NLS-1$
 		}
 		return jTabbedPaneCenter;
 	}
@@ -132,7 +133,7 @@ public class AboutDialog extends JDialog {
 	private JButton getJButtonOK() {
 		if (jButtonOK == null) {
 			jButtonOK = new JButton();
-			jButtonOK.setText("OK");
+			jButtonOK.setText(Messages.getString("AboutDialog.OK")); //$NON-NLS-1$
 			jButtonOK.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					setVisible(false);
@@ -153,7 +154,7 @@ public class AboutDialog extends JDialog {
 			gridBagConstraints3.gridx = 0;
 			gridBagConstraints3.gridy = 2;
 			jLabelAuthor = new JLabel();
-			jLabelAuthor.setText("Sergey Selivanov");
+			jLabelAuthor.setText(Messages.getString("AboutDialog.SergeySelivanov")); //$NON-NLS-1$
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			gridBagConstraints2.gridx = 0;
 			gridBagConstraints2.gridy = 1;
@@ -165,7 +166,7 @@ public class AboutDialog extends JDialog {
 			gridBagConstraints1.gridx = 0;
 			gridBagConstraints1.gridy = 0;
 			jLabelTitle = new JLabel();
-			jLabelTitle.setText("Web Cache Digger");
+			jLabelTitle.setText("Web Cache Digger"); //$NON-NLS-1$
 			jPanelAbout = new JPanel();
 			jPanelAbout.setLayout(new GridBagLayout());
 			jPanelAbout.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -228,8 +229,8 @@ public class AboutDialog extends JDialog {
 	private JTable getJTableSystemProperties() {
 		if (jTableSystemProperties == null) {
 			final String[] columnNames = {
-				"Property",
-				"Value"
+				Messages.getString("AboutDialog.Property"), //$NON-NLS-1$
+				Messages.getString("AboutDialog.Value") //$NON-NLS-1$
 			};
 			
 			Properties props = System.getProperties();
@@ -294,12 +295,13 @@ public class AboutDialog extends JDialog {
 	private JButton getJButtonSave() {
 		if (jButtonSave == null) {
 			jButtonSave = new JButton();
+			jButtonSave.setEnabled(false);
 			jButtonSave.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					doSaveSystemPropsToFile(e);
 				}
 			});
-			jButtonSave.setText("Save to File...");
+			jButtonSave.setText(Messages.getString("AboutDialog.SaveToFile") + "...");  //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return jButtonSave;
 	}
@@ -336,7 +338,7 @@ public class AboutDialog extends JDialog {
 			textPaneLibs.setEditable(false);
 
 			try {
-				textPaneLibs.setPage(AboutDialog.class.getResource("/resources/libraries.html"));
+				textPaneLibs.setPage(AboutDialog.class.getResource("/resources/libraries.html")); //$NON-NLS-1$
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

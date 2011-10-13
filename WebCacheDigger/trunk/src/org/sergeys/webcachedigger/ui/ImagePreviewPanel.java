@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
+import org.sergeys.webcachedigger.logic.Messages;
 
 public class ImagePreviewPanel extends AbstractFilePreviewPanel {
 
@@ -34,7 +35,7 @@ public class ImagePreviewPanel extends AbstractFilePreviewPanel {
 		
 		ImageIcon imageIcon = new ImageIcon(cachedFile.getAbsolutePath());
 		
-		lblImageSize.setText(imageIcon.getIconWidth() + " x " + imageIcon.getIconHeight());
+		lblImageSize.setText(imageIcon.getIconWidth() + " x " + imageIcon.getIconHeight()); //$NON-NLS-1$
 		
 		getJPanelCenter().remove(scaledImage);
 		scaledImage = new ScaledImage(imageIcon.getImage());
@@ -66,7 +67,7 @@ public class ImagePreviewPanel extends AbstractFilePreviewPanel {
 			gbc_lblImageSize.gridx = 1;
 			gbc_lblImageSize.gridy = 0;
 			lblImageSize = new JLabel();
-			lblImageSize.setText("<unknown>");
+			lblImageSize.setText("<unknown>"); //$NON-NLS-1$
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.ipady = 5;
 			gridBagConstraints1.ipadx = 5;
@@ -74,7 +75,7 @@ public class ImagePreviewPanel extends AbstractFilePreviewPanel {
 			gridBagConstraints1.gridx = 0;
 			gridBagConstraints1.gridy = 0;
 			jLabel2 = new JLabel();
-			jLabel2.setText("Dimensions:");
+			jLabel2.setText(Messages.getString("ImagePreviewPanel.dimensions")); //$NON-NLS-1$
 			jPanelTop = new JPanel();
 			jPanelTop.setLayout(new GridBagLayout());
 			jPanelTop.add(jLabel2, gridBagConstraints1);

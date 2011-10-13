@@ -14,6 +14,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.sergeys.webcachedigger.logic.IBrowser;
+import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 
 public class MainWinTopPanel extends JPanel {
@@ -39,7 +40,7 @@ public class MainWinTopPanel extends JPanel {
 		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
-		JLabel lblBrowsers = new JLabel("Search in:");
+		JLabel lblBrowsers = new JLabel(Messages.getString("MainWinTopPanel.SearchIn")); //$NON-NLS-1$
 		GridBagConstraints gbc_lblBrowsers = new GridBagConstraints();
 		gbc_lblBrowsers.anchor = GridBagConstraints.EAST;
 		gbc_lblBrowsers.insets = new Insets(0, 0, 5, 5);
@@ -73,7 +74,7 @@ public class MainWinTopPanel extends JPanel {
 		LinkedHashSet<IBrowser> browsers = wcd.getExistingBrowsers(); 
 				
 		if(browsers.size() == 0){
-			JLabel lblNoBrowsers = new JLabel("No browsers detected");
+			JLabel lblNoBrowsers = new JLabel(Messages.getString("MainWinTopPanel.NoBrowsersDetected")); //$NON-NLS-1$
 			panelBrowsers.add(lblNoBrowsers);
 		}
 		else if(browsers.size() == 1){
@@ -105,7 +106,7 @@ public class MainWinTopPanel extends JPanel {
 			}
 		}
 		
-		JLabel lblMedia = new JLabel("Search for:");
+		JLabel lblMedia = new JLabel(Messages.getString("MainWinTopPanel.SearchFor")); //$NON-NLS-1$
 		GridBagConstraints gbc_lblMedia = new GridBagConstraints();
 		gbc_lblMedia.anchor = GridBagConstraints.EAST;
 		gbc_lblMedia.insets = new Insets(0, 0, 5, 5);
@@ -123,7 +124,7 @@ public class MainWinTopPanel extends JPanel {
 		
 		// file types
 		
-		JToggleButton tglbtnAudio = new JToggleButton("Audio");
+		JToggleButton tglbtnAudio = new JToggleButton(Messages.getString("MainWinTopPanel.Audio")); //$NON-NLS-1$
 		tglbtnAudio.setName(Settings.FileType.Audio.name());
 		tglbtnAudio.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -133,7 +134,7 @@ public class MainWinTopPanel extends JPanel {
 		tglbtnAudio.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Audio));
 		panel_1.add(tglbtnAudio);
 		
-		JToggleButton tglbtnVideo = new JToggleButton("Video");
+		JToggleButton tglbtnVideo = new JToggleButton(Messages.getString("MainWinTopPanel.Video")); //$NON-NLS-1$
 		tglbtnVideo.setName(Settings.FileType.Video.name());
 		tglbtnVideo.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -143,7 +144,7 @@ public class MainWinTopPanel extends JPanel {
 		tglbtnVideo.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Video));
 		panel_1.add(tglbtnVideo);
 		
-		JToggleButton tglbtnImages = new JToggleButton("Images");
+		JToggleButton tglbtnImages = new JToggleButton(Messages.getString("MainWinTopPanel.Images")); //$NON-NLS-1$
 		tglbtnImages.setName(Settings.FileType.Image.name());
 		tglbtnImages.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -153,7 +154,7 @@ public class MainWinTopPanel extends JPanel {
 		tglbtnImages.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Image));
 		panel_1.add(tglbtnImages);
 		
-		JToggleButton tglbtnOther = new JToggleButton("Other");
+		JToggleButton tglbtnOther = new JToggleButton(Messages.getString("MainWinTopPanel.Other")); //$NON-NLS-1$
 		tglbtnOther.setName(Settings.FileType.Other.name());
 		tglbtnOther.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {

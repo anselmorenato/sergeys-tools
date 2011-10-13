@@ -21,6 +21,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
+import org.sergeys.webcachedigger.logic.Messages;
 
 // Uncomment line in initialize() to get panel components in ui designer
 
@@ -34,10 +35,10 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 	
 	private JPopupMenu popupMenu = new JPopupMenu();
 	
-	private static final String CHECK_ALL = "CHECK_ALL";
-	private static final String UNCHECK_ALL = "UNCHECK_ALL";
-	private static final String CHECK_ALL_TYPE = "CHECK_ALL_TYPE";
-	private static final String UNCHECK_ALL_TYPE = "UNCHECK_ALL_TYPE";
+	private static final String CHECK_ALL = "CHECK_ALL"; //$NON-NLS-1$
+	private static final String UNCHECK_ALL = "UNCHECK_ALL"; //$NON-NLS-1$
+	private static final String CHECK_ALL_TYPE = "CHECK_ALL_TYPE"; //$NON-NLS-1$
+	private static final String UNCHECK_ALL_TYPE = "UNCHECK_ALL_TYPE"; //$NON-NLS-1$
 	
 	
 	/**
@@ -75,7 +76,7 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		//add(popupMenu, BorderLayout.EAST);
 		
 		
-		JMenuItem mntmCheckAllOf = new JMenuItem("Check all of type");
+		JMenuItem mntmCheckAllOf = new JMenuItem(Messages.getString("FilesListPanel.checkAllType")); //$NON-NLS-1$
 		mntmCheckAllOf.setName(CHECK_ALL_TYPE);
 		mntmCheckAllOf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -84,7 +85,7 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		});
 		popupMenu.add(mntmCheckAllOf);
 		
-		JMenuItem mntmUncheckAllOf = new JMenuItem("Uncheck all of type");
+		JMenuItem mntmUncheckAllOf = new JMenuItem(Messages.getString("FilesListPanel.uncheckAllType")); //$NON-NLS-1$
 		mntmUncheckAllOf.setName(UNCHECK_ALL_TYPE);
 		mntmUncheckAllOf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -96,7 +97,7 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		JSeparator separator = new JSeparator();
 		popupMenu.add(separator);
 		
-		JMenuItem mntmCheckAll = new JMenuItem("Check all");
+		JMenuItem mntmCheckAll = new JMenuItem(Messages.getString("FilesListPanel.checkAll")); //$NON-NLS-1$
 		mntmCheckAll.setName(CHECK_ALL);
 		mntmCheckAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -105,7 +106,7 @@ public class FilesListPanel extends JPanel implements ListSelectionListener {
 		});
 		popupMenu.add(mntmCheckAll);
 		
-		JMenuItem mntmUncheckAll = new JMenuItem("Uncheck all");
+		JMenuItem mntmUncheckAll = new JMenuItem(Messages.getString("FilesListPanel.uncheckAll")); //$NON-NLS-1$
 		mntmUncheckAll.setName(UNCHECK_ALL);
 		mntmUncheckAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

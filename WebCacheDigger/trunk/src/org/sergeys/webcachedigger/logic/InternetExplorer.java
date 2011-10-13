@@ -88,7 +88,7 @@ public class InternetExplorer extends AbstractBrowser {
 			}						
 		}
 
-		if(paths.size() == 0 && System.getenv("OS") != null && System.getenv("OS").equals("Windows_NT")){
+		if(paths.size() == 0 && Settings.isOSWindows()){
 			// not found at default location, get relocated actual path from registry
 			// http://www.winxptutor.com/movetif.htm
 			// http://stackoverflow.com/questions/62289/read-write-to-windows-registry-using-java

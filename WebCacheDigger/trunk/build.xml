@@ -113,10 +113,11 @@
 		<uptodate property="res.unchanged" targetfile="${dist.dir}/resources.${revision}.jar">			
 			<srcfiles dir="bin" includes="resources/**"></srcfiles>			
 		</uptodate>
-	</target>
+	</target>		
 	
 	<target name="resources" unless="res.unchanged" depends="res-changed, create-key">
 		<mkdir dir="${dist.dir}" />
+						
 		<jar destfile="${dist.dir}/resources.${revision}.jar" 
 			basedir="bin" includes="resources/**" index="true">
 		</jar>
@@ -294,5 +295,7 @@
 			</fileset>
 		</copy>
 	</target>
+	
+	
 </project>
 

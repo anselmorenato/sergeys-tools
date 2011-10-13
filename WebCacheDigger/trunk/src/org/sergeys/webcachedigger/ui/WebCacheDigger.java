@@ -13,11 +13,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -26,6 +28,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -35,6 +38,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.IBrowser;
+import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 
@@ -42,7 +46,7 @@ public class WebCacheDigger
 implements ActionListener, PropertyChangeListener
 {
 
-	private JFrame jFrame = null;  //  @jve:decl-index=0:visual-constraint="10,10"
+	private JFrame jFrame = null; 
 	private JPanel jContentPane = null;
 	private JMenuBar jJMenuBar = null;
 	private JMenu fileMenu = null;
@@ -61,7 +65,7 @@ implements ActionListener, PropertyChangeListener
 	private JPanel jPanelFileDetails = null;
 	private JMenuItem jMenuItemSettings = null;
 	
-	private Settings settings;  //  @jve:decl-index=0:
+	private Settings settings;  
 	
 	/**
 	 * This method initializes jPanelFoundFiles	
@@ -100,16 +104,16 @@ implements ActionListener, PropertyChangeListener
 	private JButton getJButtonCopySelectedFiles() {
 		if (jButtonCopySelectedFiles == null) {
 			jButtonCopySelectedFiles = new JButton();
-			jButtonCopySelectedFiles.setText("Copy Checked Files");
+			jButtonCopySelectedFiles.setText(Messages.getString("WebCacheDigger.CopyCheckedFiles")); //$NON-NLS-1$
 			jButtonCopySelectedFiles.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					String targetDir = settings.getSaveToPath();
 					int count = WebCacheDigger.this.copyFiles(targetDir);
-					String msg = String.format("Copied %d file(s) to %s.", count, targetDir);
+					String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), count, targetDir); //$NON-NLS-1$
 					
 					JOptionPane.showMessageDialog(getJFrame(), 					 
 							msg,
-							"Message", 
+							Messages.getString("WebCacheDigger.Message"),  //$NON-NLS-1$
 							JOptionPane.INFORMATION_MESSAGE);
 				}
 			});
@@ -168,7 +172,7 @@ implements ActionListener, PropertyChangeListener
 	private JButton getJButtonSearch() {
 		if (jButtonSearch == null) {
 			jButtonSearch = new JButton();
-			jButtonSearch.setText("Search");
+			jButtonSearch.setText(Messages.getString("WebCacheDigger.Search")); //$NON-NLS-1$
 			jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					WebCacheDigger.this.searchCachedFiles();
@@ -211,10 +215,10 @@ implements ActionListener, PropertyChangeListener
 	private JMenuItem getJMenuItemSettings() {
 		if (jMenuItemSettings == null) {
 			jMenuItemSettings = new JMenuItem();
-			jMenuItemSettings.setText("Settings ...");
+			jMenuItemSettings.setText(Messages.getString("WebCacheDigger.Settings") + " ...");  //$NON-NLS-1$ //$NON-NLS-2$
 			jMenuItemSettings.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					WebCacheDigger.this.editSettings();
+					WebCacheDigger.this.editSettings(false);
 				}
 			});
 		}
@@ -229,7 +233,7 @@ implements ActionListener, PropertyChangeListener
 			public void run() {
 
 				try {
-					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				} catch (InstantiationException e) {
@@ -239,8 +243,10 @@ implements ActionListener, PropertyChangeListener
 				} catch (UnsupportedLookAndFeelException e) {
 					e.printStackTrace();
 				}
-
-				WebCacheDigger application = new WebCacheDigger();
+												
+				final WebCacheDigger application = new WebCacheDigger();
+				Locale l = new Locale(application.getSettings().getLanguage());
+				Messages.setLocale(l);
 				
 				JFrame mainWindow = application.getJFrame(); 
 				
@@ -261,7 +267,14 @@ implements ActionListener, PropertyChangeListener
 				mainWindow.setLocation(x, y);
 				mainWindow.setSize(w, h);
 				application.getJSplitPaneMain().setDividerLocation(divpos);
-				mainWindow.setVisible(true);								
+				mainWindow.setVisible(true);
+				
+				if(application.getSettings().isFirstRun()){
+					// add some defaults
+//					application.getSettings().setMinFileSizeBytes(500000);
+//					application.getSettings().setExternalPlayerCommand("vlc " + Settings.EXT_PLAYER_FILEPATH); 
+					application.editSettings(true);
+				}
 			}
 		});
 	}
@@ -274,13 +287,13 @@ implements ActionListener, PropertyChangeListener
 	private JFrame getJFrame() {
 		if (jFrame == null) {
 			jFrame = new JFrame();
-			jFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(WebCacheDigger.class.getResource("/images/icon.png")));
+			jFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(WebCacheDigger.class.getResource("/images/icon.png"))); //$NON-NLS-1$
 			jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			jFrame.setPreferredSize(new Dimension(750, 400));
 			jFrame.setJMenuBar(getJJMenuBar());
 			jFrame.setSize(750, 400);
 			jFrame.setContentPane(getJContentPane());
-			jFrame.setTitle("Web Cache Digger");
+			jFrame.setTitle("Web Cache Digger"); //$NON-NLS-1$
 		}
 		return jFrame;
 	}
@@ -324,7 +337,7 @@ implements ActionListener, PropertyChangeListener
 	private JMenu getFileMenu() {
 		if (fileMenu == null) {
 			fileMenu = new JMenu();
-			fileMenu.setText("File");
+			fileMenu.setText(Messages.getString("WebCacheDigger.File")); //$NON-NLS-1$
 			fileMenu.add(getExitMenuItem());
 		}
 		return fileMenu;
@@ -338,7 +351,7 @@ implements ActionListener, PropertyChangeListener
 	private JMenu getSettingsMenu() {
 		if (settingsMenu == null) {
 			settingsMenu = new JMenu();
-			settingsMenu.setText("Settings");
+			settingsMenu.setText(Messages.getString("WebCacheDigger.Settings")); //$NON-NLS-1$
 			settingsMenu.add(getMnLanguage());
 			settingsMenu.add(getJMenuItemSettings());
 		}
@@ -353,7 +366,7 @@ implements ActionListener, PropertyChangeListener
 	private JMenu getHelpMenu() {
 		if (helpMenu == null) {
 			helpMenu = new JMenu();
-			helpMenu.setText("Help");
+			helpMenu.setText(Messages.getString("WebCacheDigger.Help")); //$NON-NLS-1$
 			helpMenu.add(getAboutMenuItem());
 		}
 		return helpMenu;
@@ -367,7 +380,7 @@ implements ActionListener, PropertyChangeListener
 	private JMenuItem getExitMenuItem() {
 		if (exitMenuItem == null) {
 			exitMenuItem = new JMenuItem();
-			exitMenuItem.setText("Exit");
+			exitMenuItem.setText(Messages.getString("WebCacheDigger.Exit")); //$NON-NLS-1$
 			exitMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {					
 					WebCacheDigger.this.exit();
@@ -385,7 +398,7 @@ implements ActionListener, PropertyChangeListener
 	private JMenuItem getAboutMenuItem() {
 		if (aboutMenuItem == null) {
 			aboutMenuItem = new JMenuItem();
-			aboutMenuItem.setText("About ...");
+			aboutMenuItem.setText(Messages.getString("WebCacheDigger.About") + " ...");  //$NON-NLS-1$ //$NON-NLS-2$
 			aboutMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					JDialog aboutDialog = getAboutDialog();
@@ -437,8 +450,8 @@ implements ActionListener, PropertyChangeListener
 			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(getJFrame(), 
-					String.format("Failed to collect files: %s", e.getMessage()),
-					"Error", 
+					String.format(Messages.getString("WebCacheDigger.FailedToCollectFiles"), e.getMessage()), //$NON-NLS-1$
+					Messages.getString("WebCacheDigger.Error"),  //$NON-NLS-1$
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -461,7 +474,12 @@ implements ActionListener, PropertyChangeListener
 		return settingsDialog;
 	}
 	
-	private void editSettings(){
+	private void editSettings(boolean firstTime){
+		
+		if(firstTime){
+			JOptionPane.showMessageDialog(getJContentPane(), Messages.getString("WebCacheDigger.PleaseChooseDestFolder")); //$NON-NLS-1$
+		}
+		
 		SettingsDialog dlg = getSettingsDialog();
 		dlg.setSettings(getSettings());
 		dlg.setVisible(true);
@@ -495,8 +513,8 @@ implements ActionListener, PropertyChangeListener
 				Settings.save(getSettings());
 			} catch (IOException e1) {
 				JOptionPane.showMessageDialog(getJFrame(), 
-						String.format("Failed to save settings to '%s':\n\n%s", Settings.getSettingsFilePath(), e1.getMessage()), 
-						"", 
+						String.format(Messages.getString("WebCacheDigger.FailedToSaveSettings"), Settings.getSettingsFilePath(), e1.getMessage()),  //$NON-NLS-1$
+						"",  //$NON-NLS-1$
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -509,7 +527,7 @@ implements ActionListener, PropertyChangeListener
 			if(file.isSelectedToCopy()){
 				String targetFile = targetDir + File.separator + file.getName();
 				if(file.guessExtension() != null){
-					targetFile = targetFile + "." + file.guessExtension(); 
+					targetFile = targetFile + "." + file.guessExtension();  //$NON-NLS-1$
 				}
 				try {
 					CachedFile.copyFile(file.getAbsolutePath(), targetFile);
@@ -519,12 +537,11 @@ implements ActionListener, PropertyChangeListener
 					
 					copied++;
 				} catch (IOException e) {
-					String msg = String.format("Failed to copy file from 's' to 's':\n\n%s\n\n" +
-							"Continue to copy other selected files, if present?", e.getMessage());
+					String msg = String.format(Messages.getString("WebCacheDigger.FailedToCopyFileContinue"), e.getMessage());  //$NON-NLS-1$
 					if(JOptionPane.NO_OPTION ==
 					JOptionPane.showConfirmDialog(getJFrame(), 
 							msg, 
-							"Failed to copy", 
+							Messages.getString("WebCacheDigger.FailedToCopy"),  //$NON-NLS-1$
 							JOptionPane.YES_NO_OPTION, 
 							JOptionPane.ERROR_MESSAGE)){
 						break;
@@ -585,7 +602,7 @@ implements ActionListener, PropertyChangeListener
 //cmdLine = "f:\\bin32\\vlc\\flc.exe %f";
 					
 					// http://www.regexplanet.com/simple/index.html
-					Pattern p = Pattern.compile("\"[^\"]+\"|[^\"\\s]+");					
+					Pattern p = Pattern.compile("\"[^\"]+\"|[^\"\\s]+");					 //$NON-NLS-1$
 					Matcher m = p.matcher(cmdLine);
 					ArrayList<String> tokens = new ArrayList<String>();
 					while(m.find()){
@@ -599,7 +616,7 @@ implements ActionListener, PropertyChangeListener
 							public void run() {
 								// TODO Auto-generated method stub
 								JOptionPane.showMessageDialog(WebCacheDigger.this.getJContentPane(),
-										String.format("Failed to parse command line definition:\n\n%s", cmdLine)
+										String.format(Messages.getString("WebCacheDigger.FailedParseCmdLine"), cmdLine) //$NON-NLS-1$
 										);								
 							}});
 
@@ -608,7 +625,7 @@ implements ActionListener, PropertyChangeListener
 					
 					String[] args = new String[tokens.size()];
 					for(int i = 0; i<tokens.size(); i++){
-						if(tokens.get(i).startsWith("\"")){
+						if(tokens.get(i).startsWith("\"")){   //$NON-NLS-1$
 							args[i] = tokens.get(i).substring(1, tokens.get(i).length()-1);
 							//args[i] = tokens.get(i);
 						}
@@ -632,7 +649,7 @@ implements ActionListener, PropertyChangeListener
 								public void run() {
 									// TODO Auto-generated method stub
 									JOptionPane.showMessageDialog(WebCacheDigger.this.getJContentPane(), 
-											String.format("External player failed with exit code %d", exitCode));
+											String.format(Messages.getString("WebCacheDigger.ExtPlayerFailed"), exitCode)); //$NON-NLS-1$
 									
 								}});
 						}
@@ -645,7 +662,7 @@ implements ActionListener, PropertyChangeListener
 							public void run() {
 								// TODO Auto-generated method stub
 								JOptionPane.showMessageDialog(WebCacheDigger.this.getJContentPane(), 
-										String.format("External player failed:\n\n%s", ex.getMessage()));
+										String.format(Messages.getString("WebCacheDigger.ExtPlayerFailed1"), ex.getMessage())); //$NON-NLS-1$
 								
 							}});						
 					}
@@ -678,7 +695,9 @@ implements ActionListener, PropertyChangeListener
 
 	private LinkedHashSet<IBrowser> existingBrowsers = null;
 	private JMenu mnLanguage;
+	@SuppressWarnings("unused")
 	private JMenuItem mntmEnglish;
+	
 	public synchronized LinkedHashSet<IBrowser> getExistingBrowsers(){
 		if(existingBrowsers == null){
 			existingBrowsers = new LinkedHashSet<IBrowser>();
@@ -686,40 +705,70 @@ implements ActionListener, PropertyChangeListener
 			ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
 			for(IBrowser browser : ldr){
 				browser.setSettings(getSettings());
-				SimpleLogger.logMessage("Can handle " + browser.getName());
+				//SimpleLogger.logMessage("Can handle " + browser.getName());   
 				if(browser.isPresent()){
 					existingBrowsers.add(browser);
-					SimpleLogger.logMessage("Found " + browser.getName());					
+					SimpleLogger.logMessage("Found " + browser.getName());					   //$NON-NLS-1$
 				}
-//				existingBrowsers.add(browser);
-								
-			}
-			
+			}			
 		}
 		
 		return existingBrowsers;
 	}
-	private JMenu getMnLanguage() {
-		if (mnLanguage == null) {
-			mnLanguage = new JMenu("Language");
-			mnLanguage.add(getMntmEnglish());
+	
+	private void createLanguagesMenu(JMenu parent){
+		
+		Properties p = new Properties();
+		try {
+			p.load(getClass().getResourceAsStream("/resources/lang/supportedLanguages.properties")); //$NON-NLS-1$
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		return mnLanguage;
-	}
-	private JMenuItem getMntmEnglish() {
-		if (mntmEnglish == null) {
-			mntmEnglish = new JMenuItem("English");
-			mntmEnglish.addActionListener(new ActionListener() {
+				
+		String supported = p.getProperty("supported", "en"); //$NON-NLS-1$ //$NON-NLS-2$
+		String[] lang = supported.split(","); //$NON-NLS-1$
+		
+		ButtonGroup group = new ButtonGroup();
+		
+		for(int i = 0; i<lang.length; i++){
+			Locale loc = new Locale(lang[i]);
+			JRadioButtonMenuItem mi = new JRadioButtonMenuItem(loc.getDisplayLanguage());
+			String s = getSettings().getLanguage();
+			
+			if(s.equals(loc.getLanguage())){
+				mi.setSelected(true);
+			}
+			mi.setActionCommand(loc.getLanguage());
+			mi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					doLanguageSelected(e);
 				}
 			});
+			
+			group.add(mi);
+			
+			parent.add(mi);
 		}
-		return mntmEnglish;
 	}
+	
+	private JMenu getMnLanguage() {
+		if (mnLanguage == null) {
+			mnLanguage = new JMenu(Messages.getString("WebCacheDigger.Language")); //$NON-NLS-1$
+			//mnLanguage.add(getMntmEnglish());
+			
+			createLanguagesMenu(mnLanguage);
+		}
+		return mnLanguage;
+	}
+	
+
 
 	protected void doLanguageSelected(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		getSettings().setLanguage(e.getActionCommand());
+		Locale l = new Locale(getSettings().getLanguage());
+		Messages.setLocale(l);
+		JOptionPane.showMessageDialog(this.getJContentPane(), Messages.getString("WebCacheDigger.RestartAppForNewLanguage")); //$NON-NLS-1$
 	}
 }
+

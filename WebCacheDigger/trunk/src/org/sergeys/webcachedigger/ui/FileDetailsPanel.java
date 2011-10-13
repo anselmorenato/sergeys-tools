@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.SoftBevelBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
+import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 
 public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
@@ -27,6 +28,8 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 	private PropertyChangeListener listener;
 	private Settings settings;
 	
+	JPanel panelTop;
+	
 	/**
 	 * This is the default constructor
 	 * @param webCacheDigger 
@@ -39,7 +42,10 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		
 		setLayout(new BorderLayout(30, 0));
 		
-		JPanel panelTop = new JPanel();
+		panelTop = new JPanel();
+		
+		panelTop.setVisible(false);
+		
 		panelTop.setBorder(new EmptyBorder(10, 10, 10, 10));
 		add(panelTop, BorderLayout.NORTH);
 		GridBagLayout gbl_panelTop = new GridBagLayout();
@@ -49,7 +55,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		gbl_panelTop.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panelTop.setLayout(gbl_panelTop);
 		
-		JLabel lblFname = new JLabel("Name:");
+		JLabel lblFname = new JLabel(Messages.getString("FileDetailsPanel.name")); //$NON-NLS-1$
 		GridBagConstraints gbc_lblFname = new GridBagConstraints();
 		gbc_lblFname.anchor = GridBagConstraints.EAST;
 		gbc_lblFname.insets = new Insets(0, 0, 5, 5);
@@ -57,7 +63,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		gbc_lblFname.gridy = 0;
 		panelTop.add(lblFname, gbc_lblFname);
 		
-		lblFileName = new JLabel("filename");
+		lblFileName = new JLabel("filename"); //$NON-NLS-1$
 		GridBagConstraints gbc_lblFileName = new GridBagConstraints();
 		gbc_lblFileName.anchor = GridBagConstraints.WEST;
 		gbc_lblFileName.insets = new Insets(0, 0, 5, 0);
@@ -65,7 +71,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		gbc_lblFileName.gridy = 0;
 		panelTop.add(lblFileName, gbc_lblFileName);
 		
-		JLabel lblFsize = new JLabel("Size:");
+		JLabel lblFsize = new JLabel(Messages.getString("FileDetailsPanel.size")); //$NON-NLS-1$
 		GridBagConstraints gbc_lblFsize = new GridBagConstraints();
 		gbc_lblFsize.anchor = GridBagConstraints.EAST;
 		gbc_lblFsize.insets = new Insets(0, 0, 5, 5);
@@ -73,7 +79,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		gbc_lblFsize.gridy = 2;
 		panelTop.add(lblFsize, gbc_lblFsize);
 		
-		lblFileSize = new JLabel("filesize");
+		lblFileSize = new JLabel("filesize"); //$NON-NLS-1$
 		GridBagConstraints gbc_lblFilesize = new GridBagConstraints();
 		gbc_lblFilesize.anchor = GridBagConstraints.WEST;
 		gbc_lblFilesize.insets = new Insets(0, 0, 5, 0);
@@ -81,7 +87,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		gbc_lblFilesize.gridy = 2;
 		panelTop.add(lblFileSize, gbc_lblFilesize);
 		
-		JLabel lblType = new JLabel("Type:");
+		JLabel lblType = new JLabel(Messages.getString("FileDetailsPanel.type")); //$NON-NLS-1$
 		GridBagConstraints gbc_lblType = new GridBagConstraints();
 		gbc_lblType.anchor = GridBagConstraints.EAST;
 		gbc_lblType.insets = new Insets(0, 0, 0, 5);
@@ -89,7 +95,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 		gbc_lblType.gridy = 3;
 		panelTop.add(lblType, gbc_lblType);
 		
-		lblFiletype = new JLabel("filetype");
+		lblFiletype = new JLabel("filetype"); //$NON-NLS-1$
 		GridBagConstraints gbc_lblFiletype = new GridBagConstraints();
 		gbc_lblFiletype.anchor = GridBagConstraints.WEST;
 		gbc_lblFiletype.gridx = 1;
@@ -116,6 +122,9 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {		
 		if(evt.getPropertyName() == CachedFile.SELECTED_FILE){
+			
+			panelTop.setVisible(true);
+			
 			CachedFile file = (CachedFile)evt.getNewValue();
 			lblFileName.setText(file.getName());
 			lblFileSize.setText(String.valueOf(file.length()));

@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 
 public class SettingsDialog extends JDialog {
@@ -20,7 +21,7 @@ public class SettingsDialog extends JDialog {
 	private JButton jButtonCancel = null;
 	private SettingsPanel jPanelSettings = null;
 
-	private Settings settings;  //  @jve:decl-index=0:
+	private Settings settings; 
 	
 	/**
 	 * @param owner
@@ -38,7 +39,7 @@ public class SettingsDialog extends JDialog {
 	private void initialize() {
 		this.setSize(535, 197);
 		this.setModal(true);
-		this.setTitle("Settings");
+		this.setTitle(Messages.getString("SettingsDialog.settings")); //$NON-NLS-1$
 		this.setContentPane(getJContentPane());
 	}
 
@@ -89,7 +90,7 @@ public class SettingsDialog extends JDialog {
 	private JButton getJButtonSave() {
 		if (jButtonSave == null) {
 			jButtonSave = new JButton();
-			jButtonSave.setText("Save");
+			jButtonSave.setText(Messages.getString("SettingsDialog.save")); //$NON-NLS-1$
 			jButtonSave.setActionCommand(Settings.COMMAND_SAVE_SETTINGS);			
 			jButtonSave.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -108,7 +109,7 @@ public class SettingsDialog extends JDialog {
 	private JButton getJButtonCancel() {
 		if (jButtonCancel == null) {
 			jButtonCancel = new JButton();
-			jButtonCancel.setText("Cancel");
+			jButtonCancel.setText(Messages.getString("SettingsDialog.cancel")); //$NON-NLS-1$
 			jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					setVisible(false);
@@ -132,9 +133,6 @@ public class SettingsDialog extends JDialog {
 		return jPanelSettings;
 	}
 	
-//	private void doSave(){		
-//		setVisible(false);
-//	}
 	
 	public void addSaveActionListener(ActionListener l){
 		getJButtonSave().addActionListener(l);
@@ -155,4 +153,4 @@ public class SettingsDialog extends JDialog {
 		settings = getJPanelSettings().getSettings();
 		return settings;
 	}
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}  

@@ -9,7 +9,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.ServiceLoader;
 
 public class Settings 
 extends Properties 
@@ -52,10 +55,13 @@ extends Properties
 	private String saveToPath;
 	private long minFileSizeBytes;
 	private String externalPlayerCommand;
+	private String language; // language code for Locale class
 	
-	private HashSet<String> activeBrowsers = new HashSet<String>();
+	private HashSet<String> activeBrowsers = new HashSet<String>();	// browser names
 	
 	private EnumSet<FileType> activeFileTypes = EnumSet.noneOf(FileType.class); 
+	
+	private boolean firstRun = true;
 	
 	static{
 		settingsDirPath = System.getProperty("user.home") + File.separator 
@@ -132,14 +138,47 @@ extends Properties
 			XMLDecoder decoder = new XMLDecoder(os);
 			settings = (Settings)decoder.readObject();
 			decoder.close(); 
+			
+			settings.firstRun = false;
+			return settings;
+			
 		} catch (FileNotFoundException e) {
 			// no file, use default settings			
 		}
 		catch(Exception ex){
 			
 		}
+		
+		// on errors, set some defauls
+		settings.setDefaults();
 				
 		return settings;		
+	}
+	
+	public void setDefaults(){
+		minFileSizeBytes = 500000;		
+		language = Locale.getDefault().getLanguage();
+		activeFileTypes = EnumSet.allOf(FileType.class);
+		
+		for(IBrowser b: getSupportedBrowsers()){
+			activeBrowsers.add(b.getName());
+		}
+		
+		if(isOSWindows()){
+			externalPlayerCommand = "\"" + System.getenv("ProgramFiles") +
+					File.separator + "Windows Media Player" + File.separator +"wmplayer.exe\" " + Settings.EXT_PLAYER_FILEPATH;
+		}		
+		else if(isOSMacOSX()){
+			// TODO: somehow launch itunes on macos?
+			externalPlayerCommand = "";
+		}
+		else{
+			externalPlayerCommand = "vlc " + Settings.EXT_PLAYER_FILEPATH;
+		}		
+	}
+	
+	public boolean isFirstRun(){
+		return firstRun;
 	}
 	
 	public int getIntProperty(String key){		
@@ -212,5 +251,36 @@ extends Properties
 	public static boolean isOSWindows(){
 		return System.getenv("OS") != null && System.getenv("OS").equals("Windows_NT");
 	}
+
+	public static boolean isOSMacOSX(){
+		//return System.getenv("OSTYPE") != null && System.getenv("OSTYPE").startsWith("darwin");
+		return new File("/Applications/System preferences.app").exists();
+	}
+	
+	public String getLanguage() {
+		if(language == null){
+			language = Locale.getDefault().getLanguage();
+		}
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+	
+	
+	public static synchronized LinkedHashSet<IBrowser> getSupportedBrowsers(){
+		
+		LinkedHashSet<IBrowser> existingBrowsers = new LinkedHashSet<IBrowser>();
+		
+		ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
+		for(IBrowser browser : ldr){
+			SimpleLogger.logMessage("Can handle " + browser.getName());  			
+			existingBrowsers.add(browser);							
+		}					
+		
+		return existingBrowsers;
+	}
+
 }
 

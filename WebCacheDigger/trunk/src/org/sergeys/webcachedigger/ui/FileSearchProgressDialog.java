@@ -19,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.IBrowser;
+import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 
 public class FileSearchProgressDialog 
@@ -26,7 +27,7 @@ extends JDialog
 {
 
 	// property names 
-	public static final String SEARCH_COMPLETE = "SEARCH_COMPLETE";
+	public static final String SEARCH_COMPLETE = "SEARCH_COMPLETE"; //$NON-NLS-1$
 	
 	/**
 	 * 
@@ -40,8 +41,8 @@ extends JDialog
 	JLabel lblFilesFound;
 	
 	private String[] stageLabel = {
-			"Files found:",
-			"Analyzed:"
+			Messages.getString("FileSearchProgressDialog.filesFound"), //$NON-NLS-1$
+			Messages.getString("FileSearchProgressDialog.analyzed") //$NON-NLS-1$
 			// http://www.grammarist.com/spelling/analyse-analyze/
 			// Analyse is the preferred spelling in British and Australian English, 
 			// while analyze is preferred in American and Canadian English
@@ -54,12 +55,12 @@ extends JDialog
 	 * @param existingBrowsers 
 	 */
 	public FileSearchProgressDialog(Settings settings, HashSet<IBrowser> existingBrowsers) {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(FileSearchProgressDialog.class.getResource("/images/icon.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(FileSearchProgressDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
 
 		this.settings = settings;
 		this.existingBrowsers = existingBrowsers;
 		
-		setTitle("Search files");
+		setTitle(Messages.getString("FileSearchProgressDialog.searchFiles")); //$NON-NLS-1$
 		setModal(true);
 		setBounds(100, 100, 350, 129);
 		
@@ -68,13 +69,13 @@ extends JDialog
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		
-		lblFilesFound = new JLabel("Files found:");
+		lblFilesFound = new JLabel("Files found:"); //$NON-NLS-1$
 		panel.add(lblFilesFound);
 		
-		JLabel lblSpace = new JLabel(" ");
+		JLabel lblSpace = new JLabel(" "); //$NON-NLS-1$
 		panel.add(lblSpace);
 		
-		lblCount = new JLabel("0");
+		lblCount = new JLabel("0"); //$NON-NLS-1$
 		lblFilesFound.setLabelFor(lblCount);
 		lblCount.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCount.setPreferredSize(new Dimension(100, 20));
@@ -83,7 +84,7 @@ extends JDialog
 		JPanel panel_1 = new JPanel();
 		getContentPane().add(panel_1, BorderLayout.SOUTH);
 		
-		JButton btnCancel = new JButton("Cancel");
+		JButton btnCancel = new JButton(Messages.getString("FileSearchProgressDialog.cancel")); //$NON-NLS-1$
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doCancel();
@@ -94,8 +95,8 @@ extends JDialog
 		JPanel panel_2 = new JPanel();
 		getContentPane().add(panel_2, BorderLayout.WEST);
 		
-		JLabel lblProgressGif = new JLabel("");
-		lblProgressGif.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/progress.gif")));
+		JLabel lblProgressGif = new JLabel(""); //$NON-NLS-1$
+		lblProgressGif.setIcon(new ImageIcon(FileSearchProgressDialog.class.getResource("/images/progress.gif"))); //$NON-NLS-1$
 
 		panel_2.add(lblProgressGif);
 						
