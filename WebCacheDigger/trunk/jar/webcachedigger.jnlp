@@ -22,7 +22,7 @@
         <!-- Application Resources -->
         <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
         
-        <jar href="ui.%REVISION%.jar" main="true" />
+        <jar href="ui.%REVISION%.jar" main="true" version="%REVISION%"/>
         <jar href="logic.%REVISION%.jar" />
         <jar href="resources.%REVISION%.jar" />
         <jar href="images.%REVISION%.jar" />
@@ -33,6 +33,9 @@
         <jar href="slf4j-api-1.6.2.jar" />
         <jar href="slf4j-simple-1.6.2.jar" />        
         <jar href="mp3agic-0.6.9.jar" />
+        
+        <!--  property name="jnlp.versionEnabled" value="true"/ -->
+        <property name="org.svs.test" value="true"/>
     </resources>
     
     <application-desc
@@ -43,4 +46,5 @@
      </application-desc>
      
      <update check="timeout" policy="always"/>
+     <!--  update check='background'/ -->
 </jnlp>

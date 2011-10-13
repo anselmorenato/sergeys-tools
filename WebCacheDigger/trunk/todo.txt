@@ -1,26 +1,17 @@
-+- detect which browsers are really present
-- use eclipse osgi for OS-browser-specific plugins
-
 
 = main window
 - sort by date by default
 - indicate progress on search, sorting, copying
 
 - save/load settings logic, take upgrades in account
-+- certificate, sign app for webstart security
 
-+- determine file type by content
 - updatable file signatures list
 - ability to define own signatures??
 - remember which files were copied
-+- only test files larger than certain size
 
 - add logo to about
 
 - add new name for copy, edit directly in the table
-
-- show how many files found/checked
-
 
 - show copying progress
 - ask before overwrite file while copying
