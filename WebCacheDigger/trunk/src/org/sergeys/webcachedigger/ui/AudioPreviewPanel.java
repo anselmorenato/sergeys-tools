@@ -9,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -26,7 +24,6 @@ import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Mp3Utils;
 import org.sergeys.webcachedigger.logic.Settings;
-import org.sergeys.webcachedigger.logic.SimpleLogger;
 
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
@@ -220,7 +217,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 				if(bytes != null){
 					Image img = ImageIO.read(new ByteArrayInputStream(bytes));
 					if(img != null){
-						ScaledImage artwork = new ScaledImage(img);
+						ScaledImage artwork = new ScaledImage(img, false);
 						panelArtwork.add(artwork);
 					}
 				}

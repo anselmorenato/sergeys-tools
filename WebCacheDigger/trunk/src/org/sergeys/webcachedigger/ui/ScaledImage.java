@@ -10,9 +10,11 @@ extends JComponent
 {
 
 	Image img;
+	boolean enlarge;
 	
-	public ScaledImage(Image img){
+	public ScaledImage(Image img, boolean enlarge){
 		this.img = img;
+		this.enlarge = enlarge;
 	}
 	
 	@Override
@@ -35,20 +37,36 @@ extends JComponent
 			float scale = 0;
 			if(saspect > daspect){
 				// landscape
-				scale = (float)dw / sw;
-				dx1 = 0;					
-				dy1 = (int)((dh - (sh * scale)) / 2);
-				dx2 = dw - 1;
-				dy2 = dy1 + (int)(sh * scale);
+				if(sw < dw && !enlarge){
+					dx1 = (dw - sw) / 2;
+					dy1 = (dh - sh) / 2;
+					dx2 = dx1 + sw;
+					dy2 = dy1 + sh;
+				}
+				else{
+					scale = (float)dw / sw;
+					dx1 = 0;					
+					dy1 = (int)((dh - (sh * scale)) / 2);
+					dx2 = dw - 1;
+					dy2 = dy1 + (int)(sh * scale);
+				}
 				
 			}
 			else{
 				// portrait
-				scale = (float)dh / sh;
-				dx1 = (int)((dw - (sw * scale)) / 2);
-				dy1 = 0;
-				dx2 = dx1 + (int)(sw * scale);
-				dy2 = dh - 1;				
+				if(sh < dh && !enlarge){
+					dx1 = (dw - sw) / 2;
+					dy1 = (dh - sh) / 2;
+					dx2 = dx1 + sw;
+					dy2 = dy1 + sh;					
+				}
+				else{
+					scale = (float)dh / sh;
+					dx1 = (int)((dw - (sw * scale)) / 2);
+					dy1 = 0;
+					dx2 = dx1 + (int)(sw * scale);
+					dy2 = dh - 1;									
+				}
 			}
 			
 			g.drawImage(img, 

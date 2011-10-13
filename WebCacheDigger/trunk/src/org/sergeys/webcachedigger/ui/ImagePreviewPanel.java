@@ -26,7 +26,7 @@ public class ImagePreviewPanel extends AbstractFilePreviewPanel {
 		this.add(getJPanelCenter(), BorderLayout.CENTER);
 	}
 	
-	ScaledImage scaledImage = new ScaledImage(null);
+	ScaledImage scaledImage = new ScaledImage(null, false);
 	
 	@Override
 	public void setCachedFile(CachedFile cachedFile) {
@@ -38,7 +38,7 @@ public class ImagePreviewPanel extends AbstractFilePreviewPanel {
 		lblImageSize.setText(imageIcon.getIconWidth() + " x " + imageIcon.getIconHeight()); //$NON-NLS-1$
 		
 		getJPanelCenter().remove(scaledImage);
-		scaledImage = new ScaledImage(imageIcon.getImage());
+		scaledImage = new ScaledImage(imageIcon.getImage(), false);
 		getJPanelCenter().add(scaledImage);
 		invalidate();		
 	}
