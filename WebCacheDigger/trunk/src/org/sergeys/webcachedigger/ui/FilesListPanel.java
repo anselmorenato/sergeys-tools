@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListSelectionModel;
@@ -18,6 +19,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
+import javax.swing.RowSorter.SortKey;
+import javax.swing.SortOrder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -230,6 +234,10 @@ public class FilesListPanel extends JPanel implements ListSelectionListener, Tab
 
 		getFoundFilesSelectionModel().addListSelectionListener(this);
 		getJTableFoundFiles().getModel().addTableModelListener(this);
+		
+		ArrayList<RowSorter.SortKey> sort = new ArrayList<RowSorter.SortKey>();
+		sort.add(new SortKey(4, SortOrder.DESCENDING));
+		getJTableFoundFiles().getRowSorter().setSortKeys(sort);
 		
 		lblTotal.setText(String.valueOf(files.size()));
 		lblChecked.setText("0"); //$NON-NLS-1$
