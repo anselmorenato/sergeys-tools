@@ -22,6 +22,7 @@
 	<property name="lib.slf4j-api" value="slf4j-api-1.6.2.jar" />
 	<property name="lib.slf4j-impl" value="slf4j-simple-1.6.2.jar" />
 	<property name="lib.mp3agic" value="mp3agic-0.6.9.jar" />
+	<property name="lib.h2" value="h2-1.3.160.jar" />
 
 	<macrodef name="unsignjar">
 		<!-- http://frank.zinepal.com/unsign-a-jar-with-ant -->
@@ -228,6 +229,10 @@
 
 		<condition property="libs.changed">
 			<or>
+				<not>
+					<uptodate targetfile="${dist.dir}/${lib.h2}" srcfile="lib/${lib.h2}">
+					</uptodate>
+				</not>
 
 				<not>
 					<uptodate targetfile="${dist.dir}/${lib.mimeutil}" srcfile="lib/${lib.mimeutil}">
@@ -282,6 +287,13 @@
 		<unsignjar jar="${dist.dir}/${lib.mp3agic}" />
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
 			jar="${dist.dir}/${lib.mp3agic}" signedjar="${dist.dir}/${lib.mp3agic}" verbose="true">
+		</signjar>
+
+		<copy file="lib/${lib.h2}" todir="${dist.dir}" overwrite="true">
+		</copy>
+		<unsignjar jar="${dist.dir}/${lib.h2}" />
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/${lib.h2}" signedjar="${dist.dir}/${lib.h2}" verbose="true">
 		</signjar>
 
 	</target>

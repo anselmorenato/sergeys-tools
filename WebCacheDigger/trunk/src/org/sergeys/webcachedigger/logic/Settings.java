@@ -57,6 +57,7 @@ extends Properties
 	private String externalPlayerCommand;
 	private String language; // language code for Locale class
 	private boolean renameMp3byTags;
+	private boolean excludeAlreadySaved;
 	
 	private HashSet<String> activeBrowsers = new HashSet<String>();	// browser names
 	
@@ -161,6 +162,7 @@ extends Properties
 		language = Locale.getDefault().getLanguage();
 		activeFileTypes = EnumSet.allOf(FileType.class);
 		renameMp3byTags = true;
+		excludeAlreadySaved = true;
 		
 		for(IBrowser b: getSupportedBrowsers()){
 			activeBrowsers.add(b.getName());
@@ -290,6 +292,14 @@ extends Properties
 
 	public void setRenameMp3byTags(boolean renameMp3byTags) {
 		this.renameMp3byTags = renameMp3byTags;
+	}
+
+	public boolean isExcludeAlreadySaved() {
+		return excludeAlreadySaved;
+	}
+
+	public void setExcludeAlreadySaved(boolean excludeAlreadySaved) {
+		this.excludeAlreadySaved = excludeAlreadySaved;
 	}
 
 }

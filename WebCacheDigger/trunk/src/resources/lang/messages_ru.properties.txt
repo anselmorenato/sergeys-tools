@@ -76,3 +76,5 @@ VideoPreviewPanel.videoFile=Видео
 SettingsPanel.chckbxRenameMpFiles.text=Переименовывать файлы MP3, если возможно
 FilesListPanel.lblTotal.text=Всего:
 FilesListPanel.lblCheckedToCopy.text= Выбрано для копирования:
+SettingsPanel.chckbxDoNotShow.text=Запоминать и не показывать файлы, которые уже копировались
+SettingsPanel.btnForget.text=Очистить
