@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -19,6 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
+import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 import javax.swing.JCheckBox;
@@ -132,6 +134,18 @@ public class SettingsPanel extends JPanel {
 		add(getPanelPlayer(), gbc_panelPlayer);
 	}
 
+	private void setButtonForgetEnabled(){
+		boolean hasSaved = false;
+		try {
+			hasSaved = (Database.getInstance().countSaved() > 0);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		getBtnForget().setEnabled(getChckbxExcludeSaved().isSelected() && hasSaved);
+	}
+	
 	public void setSettings(Settings settings) {
 		this.settings = settings;
 
@@ -141,8 +155,9 @@ public class SettingsPanel extends JPanel {
 		getTxtPlayerCommand().setText(settings.getExternalPlayerCommand());
 		getChckbxRenameMpFiles().setSelected(settings.isRenameMp3byTags());
 
-		getChckbxExcludeSaved().setSelected(false);
-		getBtnForget().setEnabled(getChckbxExcludeSaved().isSelected());
+		getChckbxExcludeSaved().setSelected(settings.isExcludeAlreadySaved());
+		//getBtnForget().setEnabled(getChckbxExcludeSaved().isSelected());
+		setButtonForgetEnabled();
 	}
 
 	public Settings getSettings() {
@@ -150,7 +165,8 @@ public class SettingsPanel extends JPanel {
 		settings.setSaveToPath(getJTextFieldSavePath().getText());
 		settings.setMinFileSizeBytes(Long.parseLong(getJTextFieldMinFileSizeBytes().getText()));
 		settings.setExternalPlayerCommand(getTxtPlayerCommand().getText());
-		settings.setRenameMp3byTags(getChckbxRenameMpFiles().isSelected()); 
+		settings.setRenameMp3byTags(getChckbxRenameMpFiles().isSelected());
+		settings.setExcludeAlreadySaved(getChckbxExcludeSaved().isSelected());
 
 		return settings;
 	}
@@ -373,16 +389,29 @@ public class SettingsPanel extends JPanel {
 		return chckbxExcludeSaved;
 	}
 	
-	protected void doExcludeChanged(ChangeEvent e) {
-		getBtnForget().setEnabled(
-				((JCheckBox)e.getSource()).isSelected()
-				);		
+	protected void doExcludeChanged(ChangeEvent e) {		
+		setButtonForgetEnabled();
 	}
 
 	private JButton getBtnForget() {
 		if (btnForget == null) {
 			btnForget = new JButton(Messages.getString("SettingsPanel.btnForget.text")); //$NON-NLS-1$
+			btnForget.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					doForgetSavedFiles(e);
+				}
+			});
 		}
 		return btnForget;
+	}
+
+	protected void doForgetSavedFiles(ActionEvent e) {
+		try {
+			Database.getInstance().clear();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}		
+		setButtonForgetEnabled();
 	}
 } 

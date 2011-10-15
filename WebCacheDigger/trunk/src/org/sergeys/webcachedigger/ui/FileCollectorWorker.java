@@ -1,5 +1,8 @@
 package org.sergeys.webcachedigger.ui;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -7,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
+import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.IProgressWatcher;
 import org.sergeys.webcachedigger.logic.Mp3Utils;
@@ -29,6 +33,10 @@ implements IProgressWatcher
 		this.settings = settings;
 	}
 		
+	private boolean checkAgainstDatabase(CachedFile file) throws SQLException, NoSuchAlgorithmException, IOException{
+		return settings.isExcludeAlreadySaved() ? (! Database.getInstance().isSaved(file)) : true;
+	}
+	
 	@Override
 	protected ArrayList<CachedFile> doInBackground() throws Exception {
 		ArrayList<CachedFile> cachedFiles = new ArrayList<CachedFile>();
@@ -50,26 +58,34 @@ implements IProgressWatcher
 			
 			if(type.startsWith("audio/")){
 				if(settings.getActiveFileTypes().contains(Settings.FileType.Audio)){
-					filteredFiles.add(file);
-					
-					if(settings.isRenameMp3byTags() && type.equals("audio/mpeg")){
-						file.setProposedName(Mp3Utils.proposeName(file));
+					if(checkAgainstDatabase(file)){
+						filteredFiles.add(file);
+						
+						if(settings.isRenameMp3byTags() && type.equals("audio/mpeg")){
+							file.setProposedName(Mp3Utils.proposeName(file));
+						}
 					}
 				}
 			}
 			else if(type.startsWith("video/")){
 				if(settings.getActiveFileTypes().contains(Settings.FileType.Video)){
-					filteredFiles.add(file);
+					if(checkAgainstDatabase(file)){
+						filteredFiles.add(file);
+					}
 				}
 			}
 			else if(type.startsWith("image/")){
 				if(settings.getActiveFileTypes().contains(Settings.FileType.Image)){
-					filteredFiles.add(file);
+					if(checkAgainstDatabase(file)){
+						filteredFiles.add(file);
+					}
 				}
 			}
 			else{
 				if(settings.getActiveFileTypes().contains(Settings.FileType.Other)){
-					filteredFiles.add(file);
+					if(checkAgainstDatabase(file)){
+						filteredFiles.add(file);
+					}
 				}
 			}
 						

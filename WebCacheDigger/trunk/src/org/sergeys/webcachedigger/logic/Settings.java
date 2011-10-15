@@ -39,14 +39,11 @@ extends Properties
 	public static final String EXT_PLAYER_FILEPATH = "%f";
 	
 	// property keys: various internal values
-	//public static final String SAVE_TO_PATH = "SAVE_TO_PATH";
-	//public static final String MIN_FILE_SIZE_BYTES = "MIN_FILE_SIZE_BYTES";
 	public static final String WINDOW_X = "WINDOW_X";
 	public static final String WINDOW_Y = "WINDOW_Y";
 	public static final String WINDOW_W = "WINDOW_W";
 	public static final String WINDOW_H = "WINDOW_H";
 	public static final String SPLITTER_POS = "SPLITTER_POS";
-	//public static final String EXTERNAL_PLAYER_COMMAND = "EXTERNAL_PLAYER_COMMAND";
 		
 	private static String settingsDirPath;
 	private static String settingsFilePath; 	
@@ -66,10 +63,8 @@ extends Properties
 	private boolean firstRun = true;
 	
 	static{
-		settingsDirPath = System.getProperty("user.home") + File.separator 
-			+ SETTINGS_PATH;
+		settingsDirPath = System.getProperty("user.home") + File.separator + SETTINGS_PATH;
 		settingsFilePath = settingsDirPath + File.separator + SETTINGS_FILE;
-
 	}
 	
 	/**
@@ -79,6 +74,10 @@ extends Properties
 		return settingsFilePath;
 	}
 
+	public static String getSettingsDirPath() {
+		return settingsDirPath;
+	}
+	
 	// public constructor for XML serialization
 	public Settings(){		
 	}
@@ -162,7 +161,7 @@ extends Properties
 		language = Locale.getDefault().getLanguage();
 		activeFileTypes = EnumSet.allOf(FileType.class);
 		renameMp3byTags = true;
-		excludeAlreadySaved = true;
+		excludeAlreadySaved = false;
 		
 		for(IBrowser b: getSupportedBrowsers()){
 			activeBrowsers.add(b.getName());

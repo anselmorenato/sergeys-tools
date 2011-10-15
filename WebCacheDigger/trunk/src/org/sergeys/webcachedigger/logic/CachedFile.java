@@ -3,8 +3,11 @@ package org.sergeys.webcachedigger.logic;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Properties;
+
+import org.sergeys.library.FileUtils;
 
 import eu.medsea.mimeutil.MimeUtil;
 
@@ -41,10 +44,10 @@ public class CachedFile extends File {
 		super(pathname);
 	}
 
-	public String getHash() {
-		if (hash == null) {
-			//hash = String.valueOf(this.hashCode());	// TODO: change
-			hash = "";
+	public String getHash() throws NoSuchAlgorithmException, IOException {
+		if (hash == null) {			
+SimpleLogger.logMessage("calculating md5 for " + this.getName());			
+			hash = FileUtils.md5hash(this);
 		}
 
 		return hash;

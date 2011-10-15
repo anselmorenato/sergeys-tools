@@ -10,6 +10,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -38,6 +40,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.sergeys.library.FileUtils;
 import org.sergeys.webcachedigger.logic.CachedFile;
+import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
@@ -528,6 +531,8 @@ implements ActionListener, PropertyChangeListener
 	private int copyFiles(String targetDir){
 		int copied = 0;
 		
+		ArrayList<CachedFile> markAsSaved = new ArrayList<CachedFile>();
+		
 		for(CachedFile file: getFilesListPanel().getCachedFiles()){
 			if(file.isSelectedToCopy()){
 				//String targetFile = targetDir + File.separator + file.getName();
@@ -538,6 +543,16 @@ implements ActionListener, PropertyChangeListener
 				try {
 					//CachedFile.copyFile(file.getAbsolutePath(), targetFile);
 					FileUtils.copyFile(file.getAbsolutePath(), targetFile);
+		
+					if(getSettings().isExcludeAlreadySaved()){
+						try {
+							file.getHash();	// calculate hash here to indicate smooth progress
+						} catch (NoSuchAlgorithmException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} 
+						markAsSaved.add(file);
+					}
 					
 					// TODO: java 7
 					//Files.copy(file.getAbsolutePath(), targetFile, );
@@ -555,6 +570,21 @@ implements ActionListener, PropertyChangeListener
 						break;
 					}
 				}
+			}
+		}
+		
+		if(getSettings().isExcludeAlreadySaved()){
+			try {
+				Database.getInstance().setSaved(markAsSaved);
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
