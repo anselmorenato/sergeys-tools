@@ -1,253 +1,179 @@
 package org.sergeys.coverfinder.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Event;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.EventQueue;
+import java.awt.Image;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.xml.rpc.ServiceException;
+
+import org.apache.axis.types.UnsignedInt;
+import org.sergeys.library.swing.ScaledImage;
+
+import com.microsoft.schemas.LiveSearch._2008._03.Search.BingPortType;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.BingServiceLocator;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.ImageRequest;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.ImageResult;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchOption;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchRequest;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchRequestType1;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchResponse;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchResponseType0;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.SourceType;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.WebSearchOption;
+
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 
 public class CoverFinder {
 
-	private JFrame jFrame = null;  //  @jve:decl-index=0:visual-constraint="10,10"
-	private JPanel jContentPane = null;
-	private JMenuBar jJMenuBar = null;
-	private JMenu fileMenu = null;
-	private JMenu editMenu = null;
-	private JMenu helpMenu = null;
-	private JMenuItem exitMenuItem = null;
-	private JMenuItem aboutMenuItem = null;
-	private JMenuItem cutMenuItem = null;
-	private JMenuItem copyMenuItem = null;
-	private JMenuItem pasteMenuItem = null;
-	private JMenuItem saveMenuItem = null;
-	private JPanel jAlbumListPanel = null;
-	private JPanel jActionPanel = null;
-	/**
-	 * This method initializes jAlbumListPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getJAlbumListPanel() {
-		if (jAlbumListPanel == null) {
-			jAlbumListPanel = new AlbumListPanel();			
-		}
-		return jAlbumListPanel;
-	}
+	// get wsdl from http://api.bing.net/search.wsdl?AppID=3835365F7AE679189D6105256B8EFE900B846E6A&Version=2.2 
+	
+	private static final String APP_ID = "3835365F7AE679189D6105256B8EFE900B846E6A";
+	
+	private JFrame frame;
+	private JTextField txtQuery;
 
 	/**
-	 * This method initializes jActionPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getJActionPanel() {
-		if (jActionPanel == null) {
-			jActionPanel = new ActionPanel();			
-		}
-		return jActionPanel;
-	}
-
-	/**
-	 * @param args
+	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		SwingUtilities.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				CoverFinder application = new CoverFinder();
-				application.getJFrame().setVisible(true);
+				try {
+					CoverFinder window = new CoverFinder();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 	}
 
 	/**
-	 * This method initializes jFrame
-	 * 
-	 * @return javax.swing.JFrame
+	 * Create the application.
 	 */
-	private JFrame getJFrame() {
-		if (jFrame == null) {
-			jFrame = new JFrame();
-			jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			jFrame.setJMenuBar(getJJMenuBar());
-			jFrame.setSize(468, 245);
-			jFrame.setContentPane(getJContentPane());
-			jFrame.setTitle("Application");
-		}
-		return jFrame;
+	public CoverFinder() {
+		initialize();
 	}
 
+	JPanel panelCenter;
+	private JLabel label;
+	
 	/**
-	 * This method initializes jContentPane
-	 * 
-	 * @return javax.swing.JPanel
+	 * Initialize the contents of the frame.
 	 */
-	private JPanel getJContentPane() {
-		if (jContentPane == null) {
-			jContentPane = new JPanel();
-			jContentPane.setLayout(new BorderLayout());
-			jContentPane.add(getJAlbumListPanel(), BorderLayout.CENTER);
-			jContentPane.add(getJActionPanel(), BorderLayout.NORTH);
-		}
-		return jContentPane;
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JPanel panel = new JPanel();
+		frame.getContentPane().add(panel, BorderLayout.NORTH);
+		
+		txtQuery = new JTextField();
+		txtQuery.setText("cinquetti");
+		panel.add(txtQuery);
+		txtQuery.setColumns(30);
+		
+		JButton btnSearch = new JButton("Search");
+		btnSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doSearch(e);
+			}
+		});
+		panel.add(btnSearch);
+		
+		panelCenter = new JPanel();
+		panelCenter.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
+		panelCenter.setLayout(new BorderLayout(0, 0));
+		
+		label = new JLabel("New label");
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		panelCenter.add(label);
 	}
 
-	/**
-	 * This method initializes jJMenuBar	
-	 * 	
-	 * @return javax.swing.JMenuBar	
-	 */
-	private JMenuBar getJJMenuBar() {
-		if (jJMenuBar == null) {
-			jJMenuBar = new JMenuBar();
-			jJMenuBar.add(getFileMenu());
-			jJMenuBar.add(getEditMenu());
-			jJMenuBar.add(getHelpMenu());
+	protected void doSearch(ActionEvent e) {
+		
+		String query = txtQuery.getText();
+		
+		if(query.isEmpty()){
+			return;
 		}
-		return jJMenuBar;
-	}
-
-	/**
-	 * This method initializes jMenu	
-	 * 	
-	 * @return javax.swing.JMenu	
-	 */
-	private JMenu getFileMenu() {
-		if (fileMenu == null) {
-			fileMenu = new JMenu();
-			fileMenu.setText("File");
-			fileMenu.add(getSaveMenuItem());
-			fileMenu.add(getExitMenuItem());
-		}
-		return fileMenu;
-	}
-
-	/**
-	 * This method initializes jMenu	
-	 * 	
-	 * @return javax.swing.JMenu	
-	 */
-	private JMenu getEditMenu() {
-		if (editMenu == null) {
-			editMenu = new JMenu();
-			editMenu.setText("Edit");
-			editMenu.add(getCutMenuItem());
-			editMenu.add(getCopyMenuItem());
-			editMenu.add(getPasteMenuItem());
-		}
-		return editMenu;
-	}
-
-	/**
-	 * This method initializes jMenu	
-	 * 	
-	 * @return javax.swing.JMenu	
-	 */
-	private JMenu getHelpMenu() {
-		if (helpMenu == null) {
-			helpMenu = new JMenu();
-			helpMenu.setText("Help");
-			helpMenu.add(getAboutMenuItem());
-		}
-		return helpMenu;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getExitMenuItem() {
-		if (exitMenuItem == null) {
-			exitMenuItem = new JMenuItem();
-			exitMenuItem.setText("Exit");
-			exitMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					System.exit(0);
+		
+		SearchRequest req = new SearchRequest();
+		req.setAppId(APP_ID);
+		req.setSources(new SourceType[]{ SourceType.Image });
+		req.setQuery(query);
+		//req.setOptions(new SearchOption[]{ new SearchOption("") });
+		
+		ImageRequest ir = new ImageRequest(new UnsignedInt(5), new UnsignedInt(5), null);
+		//ir.setCount(new UnsignedInt(5));
+		//ir.setOffset(new UnsignedInt(5));
+		//ir.setFilters(new String[]{ "Size:Small", "Aspect:Tall" });	// http://msdn.microsoft.com/en-us/library/dd560913.aspx
+		req.setImage(ir);
+		
+		BingServiceLocator loc = new BingServiceLocator();
+		try {
+			BingPortType portType = loc.getBingPort();
+			SearchRequestType1 reqType = new SearchRequestType1(req);			
+			SearchResponseType0 respType = portType.search(reqType);
+			SearchResponse resp = respType.getParameters();
+			
+			ImageResult[] images = resp.getImage().getResults();
+			if(images.length > 0){
+				
+				System.out.println(images.length + " results");
+				
+				boolean found = false;
+				int i = 1;
+				Image img = null;
+				while(!found){
+					ImageResult imgResult = images[i]; 
+					
+					String url = imgResult.getMediaUrl();
+					
+					try{
+						img = ImageIO.read(new URL(url));
+						found = true;
+						System.out.println(url + " found");
+					}
+					catch(Exception ex){
+						System.out.println(url + " " + ex.getMessage());
+						i++;
+					}
+					
 				}
-			});
-		}
-		return exitMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getAboutMenuItem() {
-		if (aboutMenuItem == null) {
-			aboutMenuItem = new JMenuItem();
-			aboutMenuItem.setText("About");
-		}
-		return aboutMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getCutMenuItem() {
-		if (cutMenuItem == null) {
-			cutMenuItem = new JMenuItem();
-			cutMenuItem.setText("Cut");
-			cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-					Event.CTRL_MASK, true));
-		}
-		return cutMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getCopyMenuItem() {
-		if (copyMenuItem == null) {
-			copyMenuItem = new JMenuItem();
-			copyMenuItem.setText("Copy");
-			copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-					Event.CTRL_MASK, true));
-		}
-		return copyMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getPasteMenuItem() {
-		if (pasteMenuItem == null) {
-			pasteMenuItem = new JMenuItem();
-			pasteMenuItem.setText("Paste");
-			pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-					Event.CTRL_MASK, true));
-		}
-		return pasteMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getSaveMenuItem() {
-		if (saveMenuItem == null) {
-			saveMenuItem = new JMenuItem();
-			saveMenuItem.setText("Save");
-			saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-					Event.CTRL_MASK, true));
-		}
-		return saveMenuItem;
+								
+				ScaledImage scaledImage = new ScaledImage(img, false);
+				
+				panelCenter.removeAll();
+				panelCenter.add(scaledImage);
+				scaledImage.invalidate();
+				panelCenter.invalidate();
+				panelCenter.repaint();
+			}
+			
+		} catch (RemoteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ServiceException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
 	}
 
 }
