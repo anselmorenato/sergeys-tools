@@ -16,7 +16,8 @@ create table savedfiles(
 		
 );
 
-create unique index uq_savedfiles on savedfiles(filesize, md5hash);
+-- create unique index uq_savedfiles on savedfiles(filesize, md5hash);
+create unique index uq_savedfiles on savedfiles(md5hash);
 create index idx_savedfiles1 on savedfiles(filesize);
 
 insert into properties (property, val) values ('version', '1');

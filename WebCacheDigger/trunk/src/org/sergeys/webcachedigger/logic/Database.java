@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
+import java.util.Collection;
 
 import org.h2.tools.RunScript;
 
@@ -116,8 +116,9 @@ public class Database {
 		return result;		
 	}		
 	
-	public void setSaved(List<CachedFile> files) throws SQLException, NoSuchAlgorithmException, IOException{
+	public void setSaved(Collection<CachedFile> files) throws SQLException, NoSuchAlgorithmException, IOException{
 		
+
 		getConnection().setAutoCommit(false);
 		
 		PreparedStatement pst = getConnection().prepareStatement(
@@ -127,6 +128,9 @@ public class Database {
 			pst.setString(1, file.getName());
 			pst.setLong(2, file.length());
 			pst.setString(3, file.getHash());
+			
+//			SimpleLogger.logMessage(String.format(": %s %d %s", file.getName(), file.length(), file.getHash()));
+			
 			pst.addBatch();
 		}
 		

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -68,7 +68,7 @@ extends SwingWorker<Integer, Integer>
 		
 		publish(copied);
 		
-		ArrayList<CachedFile> markAsSaved = new ArrayList<CachedFile>();
+		Hashtable<String, CachedFile> markAsSaved = new Hashtable<String, CachedFile>();
 		
 		for(final CachedFile file: files){
 			
@@ -78,9 +78,20 @@ extends SwingWorker<Integer, Integer>
 			
 			if(file.isSelectedToCopy()){
 				
+				if(settings.isExcludeAlreadySaved()){
+					// check for duplicates
+					if(markAsSaved.containsKey(file.getHash())){						
+						SimpleLogger.logMessage(String.format("Duplicate file skipped: %s", file.getName()));
+						continue;											
+					}
+				}
+				
+				// TODO: we may rename different files with same name but I see no sense in that.
+				
 				String targetFile = targetDir + File.separator + file.getProposedName();
-				if(file.guessExtension() != null){
-					targetFile = targetFile + "." + file.guessExtension();  //$NON-NLS-1$
+				String possibleExtension = file.guessExtension(); 
+				if(possibleExtension != null && !targetFile.toLowerCase().endsWith(possibleExtension.toLowerCase())){
+					targetFile = targetFile + "." + possibleExtension;  //$NON-NLS-1$
 				}
 				final String targetFile1 = targetFile; 
 				try {
@@ -88,13 +99,7 @@ extends SwingWorker<Integer, Integer>
 					FileUtils.copyFile(file.getAbsolutePath(), targetFile);
 		
 					if(settings.isExcludeAlreadySaved()){
-						try {
-							file.getHash();	// calculate hash here to indicate smooth progress
-						} catch (NoSuchAlgorithmException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} 
-						markAsSaved.add(file);
+						markAsSaved.put(file.getHash(), file);
 					}
 					
 					// TODO: java 7
@@ -123,7 +128,7 @@ extends SwingWorker<Integer, Integer>
 		
 		if(settings.isExcludeAlreadySaved()){
 			try {
-				Database.getInstance().setSaved(markAsSaved);
+				Database.getInstance().setSaved(markAsSaved.values());
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
