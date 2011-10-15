@@ -8,10 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -38,13 +35,12 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
-import org.sergeys.library.FileUtils;
 import org.sergeys.webcachedigger.logic.CachedFile;
-import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
+import org.sergeys.webcachedigger.ui.ProgressDialog.WorkType;
 
 public class WebCacheDigger 
 implements ActionListener, PropertyChangeListener
@@ -112,7 +108,7 @@ implements ActionListener, PropertyChangeListener
 			jButtonCopySelectedFiles.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					String targetDir = settings.getSaveToPath();
-					int count = WebCacheDigger.this.copyFiles(targetDir);
+					int count = WebCacheDigger.this.doCopyFiles(targetDir);
 					
 					if(count > 0){
 						String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), count, targetDir); //$NON-NLS-1$
@@ -428,17 +424,18 @@ implements ActionListener, PropertyChangeListener
 		return aboutDialog;
 	}
 	
-	FileSearchProgressDialog progressDialog;
+	ProgressDialog progressDialog;
 	
 	private void doSearchFiles(){					
 		
 		try {
 						
 			if(progressDialog == null){
-				progressDialog = new FileSearchProgressDialog(getSettings(), getExistingBrowsers());
+				progressDialog = new ProgressDialog(getSettings(), getExistingBrowsers());
 				progressDialog.addPropertyChangeListener(this);
 			}
 			
+			progressDialog.setWorkType(WorkType.CollectFiles);
 					
 			getFilesListPanel().setEnabled(false);
 			getJPanelFileDetails().setFile(null);
@@ -528,67 +525,95 @@ implements ActionListener, PropertyChangeListener
 		}
 	}	
 	
-	private int copyFiles(String targetDir){
+	private int doCopyFiles(String targetDir){
+		
 		int copied = 0;
 		
-		ArrayList<CachedFile> markAsSaved = new ArrayList<CachedFile>();
-		
-		for(CachedFile file: getFilesListPanel().getCachedFiles()){
-			if(file.isSelectedToCopy()){
-				//String targetFile = targetDir + File.separator + file.getName();
-				String targetFile = targetDir + File.separator + file.getProposedName();
-				if(file.guessExtension() != null){
-					targetFile = targetFile + "." + file.guessExtension();  //$NON-NLS-1$
-				}
-				try {
-					//CachedFile.copyFile(file.getAbsolutePath(), targetFile);
-					FileUtils.copyFile(file.getAbsolutePath(), targetFile);
-		
-					if(getSettings().isExcludeAlreadySaved()){
-						try {
-							file.getHash();	// calculate hash here to indicate smooth progress
-						} catch (NoSuchAlgorithmException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} 
-						markAsSaved.add(file);
-					}
-					
-					// TODO: java 7
-					//Files.copy(file.getAbsolutePath(), targetFile, );
-					
-					copied++;
-				} catch (IOException e) {
-					
-					String msg = String.format(Messages.getString("WebCacheDigger.FailedToCopyFileContinue"), e.getMessage());  //$NON-NLS-1$
-					if(JOptionPane.NO_OPTION ==
-					JOptionPane.showConfirmDialog(getJFrame(), 
-							msg, 
-							Messages.getString("WebCacheDigger.FailedToCopy"),  //$NON-NLS-1$
-							JOptionPane.YES_NO_OPTION, 
-							JOptionPane.ERROR_MESSAGE)){
-						break;
-					}
-				}
+		try {
+			
+			if(progressDialog == null){
+				progressDialog = new ProgressDialog(getSettings(), getExistingBrowsers());
+				progressDialog.addPropertyChangeListener(this);
 			}
-		}
-		
-		if(getSettings().isExcludeAlreadySaved()){
-			try {
-				Database.getInstance().setSaved(markAsSaved);
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+								
+			progressDialog.setWorkType(WorkType.CopyFiles);
+			progressDialog.setFilesToCopy(getFilesListPanel().getCachedFiles());
+			progressDialog.setTargetDir(targetDir);
+			
+			progressDialog.setLocationRelativeTo(getJContentPane());
+			progressDialog.setVisible(true);
+						
+			
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(getJFrame(), 
+					String.format(Messages.getString("WebCacheDigger.FailedToCopyFiles"), e.getMessage()), //$NON-NLS-1$
+					Messages.getString("WebCacheDigger.Error"),   //$NON-NLS-1$
+					JOptionPane.ERROR_MESSAGE);
 		}
 		
 		return copied;
+		
+		
+//		int copied = 0;
+//		
+//		ArrayList<CachedFile> markAsSaved = new ArrayList<CachedFile>();
+//		
+//		for(CachedFile file: getFilesListPanel().getCachedFiles()){
+//			if(file.isSelectedToCopy()){
+//				//String targetFile = targetDir + File.separator + file.getName();
+//				String targetFile = targetDir + File.separator + file.getProposedName();
+//				if(file.guessExtension() != null){
+//					targetFile = targetFile + "." + file.guessExtension();  //$NON-NLS-1$
+//				}
+//				try {
+//					//CachedFile.copyFile(file.getAbsolutePath(), targetFile);
+//					FileUtils.copyFile(file.getAbsolutePath(), targetFile);
+//		
+//					if(getSettings().isExcludeAlreadySaved()){
+//						try {
+//							file.getHash();	// calculate hash here to indicate smooth progress
+//						} catch (NoSuchAlgorithmException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						} 
+//						markAsSaved.add(file);
+//					}
+//					
+//					// TODO: java 7
+//					//Files.copy(file.getAbsolutePath(), targetFile, );
+//					
+//					copied++;
+//				} catch (IOException e) {
+//					
+//					String msg = String.format("Failed to copy file from 's' to 's':\n\n%s\n\nContinue to copy other selected files, if present?", e.getMessage());  
+//					if(JOptionPane.NO_OPTION ==
+//					JOptionPane.showConfirmDialog(getJFrame(), 
+//							msg, 
+//							"Failed to copy",  
+//							JOptionPane.YES_NO_OPTION, 
+//							JOptionPane.ERROR_MESSAGE)){
+//						break;
+//					}
+//				}
+//			}
+//		}
+//		
+//		if(getSettings().isExcludeAlreadySaved()){
+//			try {
+//				Database.getInstance().setSaved(markAsSaved);
+//			} catch (NoSuchAlgorithmException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		return copied;
 	}
 
 	private void exit(){
@@ -612,10 +637,29 @@ implements ActionListener, PropertyChangeListener
 	@SuppressWarnings("unchecked")
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if(evt.getPropertyName().equals(FileSearchProgressDialog.SEARCH_COMPLETE)){
+		if(evt.getPropertyName().equals(ProgressDialog.SEARCH_COMPLETE)){
 			progressDialog.setVisible(false);
-			getFilesListPanel().setEnabled(true);
-			getFilesListPanel().init((List<CachedFile>) evt.getNewValue());			
+			
+			if(evt.getNewValue() != null){
+				List<CachedFile> files = (List<CachedFile>) evt.getNewValue();
+				
+				getFilesListPanel().setEnabled(true);
+				getFilesListPanel().init(files);
+			}
+		}
+		else if(evt.getPropertyName().equals(ProgressDialog.COPY_COMPLETE)){
+			progressDialog.setVisible(false);
+			
+			int count = (Integer)evt.getNewValue();
+			
+			if(count > 0){
+				String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), count, settings.getSaveToPath()); //$NON-NLS-1$
+				
+				JOptionPane.showMessageDialog(getJFrame(), 					 
+						msg,
+						Messages.getString("WebCacheDigger.Message"),  //$NON-NLS-1$
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 		}
 		else if(evt.getPropertyName().equals(AudioPreviewPanel.PROPERTY_FILE_TO_PLAY)
 				|| evt.getPropertyName().equals(VideoPreviewPanel.PROPERTY_FILE_TO_PLAY)){
@@ -623,8 +667,7 @@ implements ActionListener, PropertyChangeListener
 			CachedFile f = (CachedFile)evt.getNewValue();
 
 			doExternalPlayer(f);			
-		}
-		
+		}		
 	}
 	
 	private void doExternalPlayer(final CachedFile f) {		
