@@ -1,20 +1,9 @@
+- include/exclude custom mime types filter
 
-= main window
+- rename copied file if destination exists
+- refresh file list after copy without new scan
 
-- indicate progress on search, sorting, copying
 
-- save/load settings logic, take upgrades in account
-
-- updatable file signatures list
-- ability to define own signatures??
-- remember which files were copied
-
-- add logo to about
-
-- add new name for copy, edit directly in the table
-
-- show copying progress
-- ask before overwrite file while copying
 
 =========
 http://vkontakte.ru/page-4506623_27619435

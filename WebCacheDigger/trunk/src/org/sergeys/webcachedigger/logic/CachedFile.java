@@ -47,7 +47,7 @@ public class CachedFile extends File {
 	public String getHash() throws NoSuchAlgorithmException, IOException {
 		if (hash == null) {			
 SimpleLogger.logMessage("calculating md5 for " + this.getName());			
-			hash = FileUtils.md5hash(this);
+			hash = FileUtils.md5hash(this, 1024 * 1024);
 		}
 
 		return hash;
