@@ -112,7 +112,7 @@
 
 	<target name="res-changed">		
 		<uptodate property="res.unchanged" targetfile="${dist.dir}/resources.${revision}.jar">			
-			<srcfiles dir="bin" includes="resources/**"></srcfiles>			
+			<srcfiles dir="bin" includes="magic.mime, resources/**"></srcfiles>						
 		</uptodate>
 	</target>		
 	
@@ -120,7 +120,7 @@
 		<mkdir dir="${dist.dir}" />
 						
 		<jar destfile="${dist.dir}/resources.${revision}.jar" 
-			basedir="bin" includes="resources/**" index="true">
+			basedir="bin" includes="magic.mime, resources/**" index="true">
 		</jar>
 
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
