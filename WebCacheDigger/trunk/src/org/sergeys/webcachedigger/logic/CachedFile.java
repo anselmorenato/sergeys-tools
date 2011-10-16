@@ -156,20 +156,23 @@ public class CachedFile extends File {
 		ArrayList<CachedFile> matched = new ArrayList<CachedFile>();
 				
 		for(CachedFile file: files){
-			if(file.getMimeType().startsWith("audio/") &&
-					settings.getActiveFileTypes().contains(FileType.Audio))
+			if(file.getMimeType().startsWith("audio/"))
 			{
-				matched.add(file);
+				if(settings.getActiveFileTypes().contains(FileType.Audio)){
+					matched.add(file);
+				}
 			}
-			else if(file.getMimeType().startsWith("video/") &&
-					settings.getActiveFileTypes().contains(FileType.Video))
+			else if(file.getMimeType().startsWith("video/"))
 			{
-				matched.add(file);
+				if(settings.getActiveFileTypes().contains(FileType.Video)){
+					matched.add(file);
+				}
 			}
-			else if(file.getMimeType().startsWith("image/") &&
-					settings.getActiveFileTypes().contains(FileType.Image))
+			else if(file.getMimeType().startsWith("image/"))
 			{
-				matched.add(file);
+				if(settings.getActiveFileTypes().contains(FileType.Image)){
+					matched.add(file);
+				}
 			}
 			else if(settings.getActiveFileTypes().contains(FileType.Other))
 			{
