@@ -84,3 +84,4 @@ ProgressDialog.SearchFiles=Поиск
 ProgressDialog.Copied=Скопировано:
 ProgressDialog.AnalyzingTypes=Обработано:
 ProgressDialog.CheckIfSaved=Сохранялся ли:
+WebCacheDigger.NothingFound=Ничего не найдено.

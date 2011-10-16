@@ -105,6 +105,7 @@ implements ActionListener, PropertyChangeListener
 		if (jButtonCopySelectedFiles == null) {
 			jButtonCopySelectedFiles = new JButton();
 			jButtonCopySelectedFiles.setText(Messages.getString("WebCacheDigger.CopyCheckedFiles")); //$NON-NLS-1$
+			jButtonCopySelectedFiles.setEnabled(false);
 			jButtonCopySelectedFiles.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					String targetDir = settings.getSaveToPath();
@@ -645,6 +646,16 @@ implements ActionListener, PropertyChangeListener
 				
 				getFilesListPanel().setEnabled(true);
 				getFilesListPanel().init(files);
+				
+				if(files.size() == 0){
+					JOptionPane.showMessageDialog(getJFrame(), 					 
+							Messages.getString("WebCacheDigger.NothingFound"), //$NON-NLS-1$
+							"",   //$NON-NLS-1$
+							JOptionPane.INFORMATION_MESSAGE);
+					
+				}
+				
+				getJButtonCopySelectedFiles().setEnabled(files.size() > 0);
 			}
 		}
 		else if(evt.getPropertyName().equals(ProgressDialog.COPY_COMPLETE)){

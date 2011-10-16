@@ -1,8 +1,5 @@
 - include/exclude custom mime types filter
 
-- rename copied file if destination exists
-- refresh file list after copy without new scan
-- notify when nothing found
 
 - logging
 
