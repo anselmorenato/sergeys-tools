@@ -71,6 +71,7 @@ extends JDialog
 	// vars for file copying
 	private List<CachedFile> filesToCopy;
 	private String targetDir;
+	private List<CachedFile> succesfullyCopied;
 	
 	/**
 	 * Create the dialog.
@@ -186,10 +187,11 @@ extends JDialog
 		firePropertyChange(ProgressDialog.SEARCH_COMPLETE, null, files);		
 	}
 	
-	public void copyingComplete(Integer total){
+	public void copyingComplete(List<CachedFile> list){
 		this.worker = null;
 		lblMessage.setText(""); //$NON-NLS-1$
-		firePropertyChange(ProgressDialog.COPY_COMPLETE, null, total);				
+		this.succesfullyCopied = list;
+		firePropertyChange(ProgressDialog.COPY_COMPLETE, null, list);				
 	}
 
 	public WorkType getWorkType() {
@@ -217,6 +219,10 @@ extends JDialog
 		this.filesToCopy = filesToCopy;
 	}
 
+	public List<CachedFile> getSuccesfullyCopied() {
+		return succesfullyCopied;
+	}
+	
 	public String getTargetDir() {
 		return targetDir;
 	}

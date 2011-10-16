@@ -650,10 +650,14 @@ implements ActionListener, PropertyChangeListener
 		else if(evt.getPropertyName().equals(ProgressDialog.COPY_COMPLETE)){
 			progressDialog.setVisible(false);
 			
-			int count = (Integer)evt.getNewValue();
+			List<CachedFile> copied = (List<CachedFile>) evt.getNewValue();
 			
-			if(count > 0){
-				String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), count, settings.getSaveToPath()); //$NON-NLS-1$
+			if(copied.size() > 0){
+				List<CachedFile> current = getFilesListPanel().getCachedFiles();
+				current.removeAll(copied);
+				getFilesListPanel().filesListChanged();
+				
+				String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), copied.size(), settings.getSaveToPath()); //$NON-NLS-1$
 				
 				JOptionPane.showMessageDialog(getJFrame(), 					 
 						msg,

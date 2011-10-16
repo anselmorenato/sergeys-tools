@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -22,7 +23,7 @@ import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 
 public class FileCopyWorker
-extends SwingWorker<Integer, Integer>
+extends SwingWorker<List<CachedFile>, Integer>
 {
 
 	private List<CachedFile> files;
@@ -63,11 +64,13 @@ extends SwingWorker<Integer, Integer>
 	}
 
 	@Override
-	protected Integer doInBackground() throws Exception {
+	protected List<CachedFile> doInBackground() throws Exception {
 		
-		int copied = 0;
+		ArrayList<CachedFile> copied = new ArrayList<CachedFile>(); 
 		
-		publish(copied);
+		int copiedCount = 0;
+		
+		publish(copiedCount);
 		
 		Hashtable<String, CachedFile> markAsSaved = new Hashtable<String, CachedFile>();
 		
@@ -107,12 +110,10 @@ extends SwingWorker<Integer, Integer>
 						markAsSaved.put(file.getHash(), file);
 					}
 					
-					// TODO: java 7
-					//Files.copy(file.getAbsolutePath(), targetFile, );
+					copied.add(file);										
+					copiedCount++;
 					
-					copied++;
-					
-					publish(copied);
+					publish(copiedCount);
 					
 				} catch (final IOException e) {
 					//throw e;
@@ -146,7 +147,7 @@ extends SwingWorker<Integer, Integer>
 			}
 		}
 		
-		return copied;						
+		return copied;
 	}
 
 }

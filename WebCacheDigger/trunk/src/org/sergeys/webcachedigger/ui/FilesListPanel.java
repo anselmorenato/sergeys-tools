@@ -243,6 +243,10 @@ public class FilesListPanel extends JPanel implements ListSelectionListener, Tab
 		lblChecked.setText("0"); //$NON-NLS-1$
 	}
 
+	public void filesListChanged(){
+		((FilesTableModel) getJTableFoundFiles().getModel()).fireTableDataChanged();
+	}
+	
 	public List<CachedFile> getCachedFiles() {
 		return ((FilesTableModel) getJTableFoundFiles().getModel())
 				.getCachedFiles();
