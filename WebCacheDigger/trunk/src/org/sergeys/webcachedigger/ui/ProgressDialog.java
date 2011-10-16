@@ -52,13 +52,15 @@ extends JDialog
 	
 	// collector
 	public static final int STAGE_COLLECT = 0;
-	public static final int STAGE_ANALYZE = 1;
+	public static final int STAGE_FILTER_TYPE = 1;
+	public static final int STAGE_FILTER_HASH = 2;
 	// copier
-	public static final int STAGE_COPY = 2;
+	public static final int STAGE_COPY = 3;
 	
 	private String[] stageLabel = {
 			Messages.getString("FileSearchProgressDialog.filesFound"), //$NON-NLS-1$
-			Messages.getString("FileSearchProgressDialog.analyzed"), //$NON-NLS-1$
+			Messages.getString("ProgressDialog.AnalyzingTypes"), //$NON-NLS-1$
+			Messages.getString("ProgressDialog.CheckIfSaved"), //$NON-NLS-1$
 			// http://www.grammarist.com/spelling/analyse-analyze/
 			// Analyse is the preferred spelling in British and Australian English, 
 			// while analyze is preferred in American and Canadian English

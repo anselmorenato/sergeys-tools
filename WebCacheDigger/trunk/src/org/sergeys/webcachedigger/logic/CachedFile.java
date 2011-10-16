@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
 import org.sergeys.library.FileUtils;
+import org.sergeys.webcachedigger.logic.Settings.FileType;
 
 import eu.medsea.mimeutil.MimeUtil;
 
@@ -44,16 +46,25 @@ public class CachedFile extends File {
 		super(pathname);
 	}
 
-	public String getHash() throws NoSuchAlgorithmException, IOException {
-		if (hash == null) {			
-SimpleLogger.logMessage("calculating md5 for " + this.getName());			
-			hash = FileUtils.md5hash(this, 1024 * 1024);
-		}
+	public void detectHash() throws NoSuchAlgorithmException, IOException{
+		SimpleLogger.logMessage("calculating md5 for " + this.getName());			
+		//hash = FileUtils.md5hash(this, 1024 * 1024); // not too smooth		
+		hash = FileUtils.md5hash(this, 512 * 512);
+	}
+	
+	public String getHash() {
+//		if (hash == null) {			
+//
+//		}
 
 		return hash;
 	}
 
-	public void detectFileType(){
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+	
+	public void detectMimeType(){
 		@SuppressWarnings("rawtypes")
 		Collection mt = MimeUtil.getMimeTypes(this);
 		if (!mt.isEmpty()) {
@@ -64,40 +75,20 @@ SimpleLogger.logMessage("calculating md5 for " + this.getName());
 		}
 	}
 	
-	public String getFileType() {
-		if (mimeType == null) {
-			detectFileType();
-		}
+	public String getMimeType() {
+//		if (mimeType == null) {
+//			detectFileType();
+//		}
 
 		return mimeType;
 	}
-
-	// http://www.rgagnon.com/javadetails/java-0064.html
-	// TODO: note limit of 64MB
-//	public static void copyFile(File in, File out) throws IOException {
-//		copyFile(in.getAbsolutePath(), out.getAbsolutePath());
-//	}
-//
-//	public static void copyFile(String in, String out) throws IOException {
-//		FileChannel inChannel = new FileInputStream(in).getChannel();
-//		FileChannel outChannel = new FileOutputStream(out).getChannel();
-//		try {
-//			inChannel.transferTo(0, inChannel.size(), outChannel);
-//		} catch (IOException e) {
-//			throw e;
-//		} finally {
-//			if (inChannel != null){
-//				inChannel.close();
-//			}
-//			if (outChannel != null){
-//				outChannel.close();
-//			}
-//		}
-//	}
+	
+	public void setMimeType(String mimeType){
+		this.mimeType = mimeType;
+	}
 	
 	public String guessExtension(){
-		//return extensionByMimetype.get(getFileType());
-		return extensionByMimetype.getProperty(getFileType());
+		return extensionByMimetype.getProperty(getMimeType());
 	}
 	
 	/**
@@ -125,5 +116,69 @@ SimpleLogger.logMessage("calculating md5 for " + this.getName());
 	public void setProposedName(String proposedName) {
 		this.proposedName = proposedName;
 	}
+
+	public static void detectMimeTypes(ArrayList<CachedFile> files, IProgressWatcher watcher){
+		for(CachedFile file: files){
+			if(!watcher.isAllowedToContinue()){
+				return;
+			}
+			file.detectMimeType();
+			watcher.progressStep();
+		}
+	}
+
+	public static void detectHashes(ArrayList<CachedFile> files, IProgressWatcher watcher) 
+			throws NoSuchAlgorithmException, IOException{
+		for(CachedFile file: files){
+			
+			if(!watcher.isAllowedToContinue()){
+				return;
+			}
+			
+			file.detectHash();
+			watcher.progressStep();
+		}
+	}
 	
+	/**
+	 * Filters files by mime type
+	 * 
+	 * @param files
+	 * @param settings
+	 * @param skipped
+	 */
+	public static ArrayList<CachedFile> filter(ArrayList<CachedFile> files, Settings settings, ArrayList<CachedFile> skipped){
+		
+		ArrayList<CachedFile> matched = new ArrayList<CachedFile>();
+				
+		for(CachedFile file: files){
+			if(file.getMimeType().startsWith("audio/") &&
+					settings.getActiveFileTypes().contains(FileType.Audio))
+			{
+				matched.add(file);
+			}
+			else if(file.getMimeType().startsWith("video/") &&
+					settings.getActiveFileTypes().contains(FileType.Video))
+			{
+				matched.add(file);
+			}
+			else if(file.getMimeType().startsWith("image/") &&
+					settings.getActiveFileTypes().contains(FileType.Image))
+			{
+				matched.add(file);
+			}
+			else if(settings.getActiveFileTypes().contains(FileType.Other))
+			{
+				matched.add(file);
+			}
+			else{
+				if(skipped != null){
+					skipped.add(file);
+				}
+			}
+		}
+		
+		return matched;
+	}
+
 }

@@ -1,8 +1,5 @@
 package org.sergeys.webcachedigger.ui;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -17,7 +14,6 @@ import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.IProgressWatcher;
 import org.sergeys.webcachedigger.logic.Messages;
-import org.sergeys.webcachedigger.logic.Mp3Utils;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 
@@ -37,77 +33,83 @@ implements IProgressWatcher
 		this.settings = settings;
 	}
 		
-	private boolean checkAgainstDatabase(CachedFile file) throws SQLException, NoSuchAlgorithmException, IOException{
-		return settings.isExcludeAlreadySaved() ? (! Database.getInstance().isSaved(file)) : true;
-	}
+//	private boolean checkAgainstDatabase(CachedFile file) throws SQLException, NoSuchAlgorithmException, IOException{
+//		return settings.isExcludeAlreadySaved() ? (! Database.getInstance().isSaved(file)) : true;
+//	}
+	
 	
 	@Override
 	protected ArrayList<CachedFile> doInBackground() throws Exception {
-		ArrayList<CachedFile> cachedFiles = new ArrayList<CachedFile>();
-		ArrayList<CachedFile> filteredFiles = new ArrayList<CachedFile>();
+		ArrayList<CachedFile> cacheFiles = new ArrayList<CachedFile>();
+		
 
 		// collect raw files
 		stage = ProgressDialog.STAGE_COLLECT;
+		totalCount = 0;
+		publish(totalCount);
 		
 		for (IBrowser browser : browsers) {
-			cachedFiles.addAll(browser.collectCachedFiles(this));
+			cacheFiles.addAll(browser.collectCachedFiles(this));
+			if(isCancelled()){
+				return null;
+			}				
 		}		
 		
-		SimpleLogger.logMessage("collected files: " + cachedFiles.size()); //$NON-NLS-1$
+		SimpleLogger.logMessage("collected files: " + cacheFiles.size()); //$NON-NLS-1$
 		
-		// determine file types, filter out by type
-		stage = ProgressDialog.STAGE_ANALYZE;
+		if(settings.isExcludeAlreadySaved()){
+			// exclude saved files with same absolute path and timestamp
+			cacheFiles = Database.getInstance().filterSavedByFilesystem(cacheFiles);
+			SimpleLogger.logMessage("not saved files to process: " + cacheFiles.size());
+		}				
+		
+		stage = ProgressDialog.STAGE_FILTER_TYPE;
 		totalCount = 0;
-		for(CachedFile file: cachedFiles){
+		publish(totalCount);
+		
+		ArrayList<CachedFile> knownFiles = new ArrayList<CachedFile>();
+		Database.getInstance().preloadMetadata(cacheFiles, knownFiles);	// mime set, hash possibly set
+		
+		// filter by mime
+		CachedFile.detectMimeTypes(cacheFiles, this);
+		if(isCancelled()){
+			return null;
+		}
+		Database.getInstance().insertUpdateMimeTypes(cacheFiles);
+						
+		cacheFiles = CachedFile.filter(cacheFiles, settings, null);
+		knownFiles = CachedFile.filter(knownFiles, settings, null);
+		
+		
+		if(settings.isExcludeAlreadySaved()){
+			stage = ProgressDialog.STAGE_FILTER_HASH;
+			totalCount = 0;
+			publish(totalCount);
 			
-			// watch for cancellation inside loop
+			ArrayList<CachedFile> hasHash = new ArrayList<CachedFile>();
+			
+			for(CachedFile f: knownFiles){
+				if(f.getHash() != null){
+					hasHash.add(f);
+				}
+				else{
+					cacheFiles.add(f);
+				}
+			}
+			CachedFile.detectHashes(cacheFiles, this);
 			if(isCancelled()){
 				return null;
 			}
+			Database.getInstance().insertUpdateHashes(cacheFiles);
 			
-			// mime type examination
-			String type = file.getFileType();
-			
-			if(type.startsWith("audio/")){ //$NON-NLS-1$
-				if(settings.getActiveFileTypes().contains(Settings.FileType.Audio)){
-					if(checkAgainstDatabase(file)){
-						filteredFiles.add(file);
-						
-						if(settings.isRenameMp3byTags() && type.equals("audio/mpeg")){ //$NON-NLS-1$
-							file.setProposedName(Mp3Utils.proposeName(file));
-						}
-					}
-				}
-			}
-			else if(type.startsWith("video/")){ //$NON-NLS-1$
-				if(settings.getActiveFileTypes().contains(Settings.FileType.Video)){
-					if(checkAgainstDatabase(file)){
-						filteredFiles.add(file);
-					}
-				}
-			}
-			else if(type.startsWith("image/")){ //$NON-NLS-1$
-				if(settings.getActiveFileTypes().contains(Settings.FileType.Image)){
-					if(checkAgainstDatabase(file)){
-						filteredFiles.add(file);
-					}
-				}
-			}
-			else{
-				if(settings.getActiveFileTypes().contains(Settings.FileType.Other)){
-					if(checkAgainstDatabase(file)){
-						filteredFiles.add(file);
-					}
-				}
-			}
-						
-			totalCount++;
-			publish(totalCount);
-		}		
+			cacheFiles.addAll(hasHash);			
+			cacheFiles = Database.getInstance().filterSavedByHash(cacheFiles); 
+		}
+		else{
+			cacheFiles.addAll(knownFiles);			
+		}
 		
-		SimpleLogger.logMessage("processed files: " + totalCount); //$NON-NLS-1$
-		
-		return filteredFiles;
+		return cacheFiles;
 	}
 	
 	@Override
@@ -146,6 +148,11 @@ implements IProgressWatcher
 	public synchronized void progressStep() {
 		totalCount++;
 		publish(totalCount);		
+	}
+
+	@Override
+	public boolean isAllowedToContinue() {		
+		return !isCancelled();
 	}
 
 }

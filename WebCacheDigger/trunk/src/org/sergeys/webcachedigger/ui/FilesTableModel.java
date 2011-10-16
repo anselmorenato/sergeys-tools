@@ -92,7 +92,7 @@ extends AbstractTableModel
 		case 1:
 			return this.cachedFiles.get(rowIndex).getName();
 		case 2:
-			return this.cachedFiles.get(rowIndex).getFileType();
+			return this.cachedFiles.get(rowIndex).getMimeType();
 		case 3:
 			return this.cachedFiles.get(rowIndex).length();
 		case 4:
@@ -122,7 +122,7 @@ extends AbstractTableModel
 	public void checkByType(String mimeType, boolean checked){
 		int i = 0;
 		for(CachedFile f: cachedFiles){
-			if(f.getFileType().equals(mimeType)){
+			if(f.getMimeType().equals(mimeType)){
 				
 				if(f.isSelectedToCopy() != checked){
 					checkedCount = checked ? checkedCount + 1 : checkedCount - 1;

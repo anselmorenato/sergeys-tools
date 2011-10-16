@@ -123,6 +123,11 @@ public class InternetExplorer extends AbstractBrowser {
 			List<File> dirFiles = listFilesRecursive(directory);
 			
 			for (File file : dirFiles) {
+				
+				if(!watcher.isAllowedToContinue()){
+					return files;
+				}
+				
 				if (file.length() > minFileSize) {
 					files.add(new CachedFile(file.getAbsolutePath()));
 					watcher.progressStep();

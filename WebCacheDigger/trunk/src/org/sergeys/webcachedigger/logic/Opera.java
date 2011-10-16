@@ -56,6 +56,11 @@ public class Opera extends AbstractBrowser {
 		//int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
 		long minFileSize = settings.getMinFileSizeBytes();
 		for(File file: allFiles){			
+			
+			if(!watcher.isAllowedToContinue()){
+				return files;
+			}
+			
 			if(file.length() > minFileSize){				
 				files.add(new CachedFile(file.getAbsolutePath()));
 				watcher.progressStep();

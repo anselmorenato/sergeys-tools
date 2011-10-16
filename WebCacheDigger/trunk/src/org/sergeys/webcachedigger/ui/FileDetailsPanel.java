@@ -130,9 +130,9 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 														
 			lblFileName.setText(file.getName());
 			lblFileSize.setText(String.valueOf(file.length()));
-			lblFiletype.setText(file.getFileType());
+			lblFiletype.setText(file.getMimeType());
 														
-			AbstractFilePreviewPanel preview = AbstractFilePreviewPanel.createFilePreviewPanel(file.getFileType(), listener, settings);
+			AbstractFilePreviewPanel preview = AbstractFilePreviewPanel.createFilePreviewPanel(file.getMimeType(), listener, settings);
 			if(preview != null){
 				preview.setCachedFile(file);											
 				panelPreview = preview;				

@@ -1,5 +1,5 @@
 drop table if exists properties;
-drop table if exists savedfiles;
+drop table if exists files;
 
 create table properties(
 	property varchar(32) not null
@@ -8,17 +8,23 @@ create table properties(
 
 create unique index uq_properties on properties(property);
 
-create table savedfiles(
+create table files(
 	id identity
-	,filename varchar(256) not null	-- short source name, not absolute
-	,filesize bigint not null		-- File.length is Long
-	,md5hash varchar(32) not null	-- 16 bytes
+--	, filename varchar(256) not null	-- short source name, not absolute
+	, absolutepath varchar(4096) not null
+	, lastmodified bigint null	-- File.lastModified is Long
+	, filesize bigint not null		-- File.length is Long
+	, mimetype varchar(128) not null
+	, hash varchar(32) -- md5 16 bytes
+	, issaved boolean not null default false
 		
 );
 
--- create unique index uq_savedfiles on savedfiles(filesize, md5hash);
-create unique index uq_savedfiles on savedfiles(md5hash);
-create index idx_savedfiles1 on savedfiles(filesize);
+--create unique index uq_files on files(hash);
+create index idx_files1 on files(filesize);
+create unique index uq_files2 on files(absolutepath);
+create index idx_files3 on files(hash);
+
 
 insert into properties (property, val) values ('version', '1');
 

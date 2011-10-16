@@ -87,7 +87,12 @@ public class Chrome extends AbstractBrowser {
 		// 1. count files
 		ArrayList<File> allFiles = new ArrayList<File>();
 		
-		for(File cacheDir: getExistingCachePaths()){			
+		for(File cacheDir: getExistingCachePaths()){
+			
+			if(!watcher.isAllowedToContinue()){
+				return files;
+			}
+			
 			FileUtils.listFilesRecursive(cacheDir, new FileFilter(){
 
 				@Override
@@ -100,7 +105,12 @@ public class Chrome extends AbstractBrowser {
 		// 2. filter
 		//int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
 		long minFileSize = settings.getMinFileSizeBytes();
-		for(File file: allFiles){			
+		for(File file: allFiles){
+			
+			if(!watcher.isAllowedToContinue()){
+				return files;
+			}
+			
 			if(file.length() > minFileSize){				
 				files.add(new CachedFile(file.getAbsolutePath()));
 				watcher.progressStep();

@@ -407,7 +407,7 @@ public class SettingsPanel extends JPanel {
 
 	protected void doForgetSavedFiles(ActionEvent e) {
 		try {
-			Database.getInstance().clear();
+			Database.getInstance().clearSaved();
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

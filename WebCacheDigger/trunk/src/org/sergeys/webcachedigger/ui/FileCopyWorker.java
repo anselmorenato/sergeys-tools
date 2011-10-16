@@ -17,6 +17,7 @@ import org.sergeys.library.FileUtils;
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.Messages;
+import org.sergeys.webcachedigger.logic.Mp3Utils;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 
@@ -86,6 +87,10 @@ extends SwingWorker<Integer, Integer>
 					}
 				}
 				
+				if(file.getMimeType().equals("audio/mpeg") && settings.isRenameMp3byTags()){					
+					file.setProposedName(Mp3Utils.proposeName(file));					
+				}
+				
 				// TODO: we may rename different files with same name but I see no sense in that.
 				
 				String targetFile = targetDir + File.separator + file.getProposedName();
@@ -128,7 +133,7 @@ extends SwingWorker<Integer, Integer>
 		
 		if(settings.isExcludeAlreadySaved()){
 			try {
-				Database.getInstance().setSaved(markAsSaved.values());
+				Database.getInstance().updateSaved(markAsSaved.values());
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

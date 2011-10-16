@@ -202,19 +202,20 @@ public class Firefox extends AbstractBrowser {
 	public List<CachedFile> collectCachedFiles(IProgressWatcher watcher) throws Exception {
 
 		ArrayList<CachedFile> files = new ArrayList<CachedFile>();
-		//int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
 		long minFileSize = settings.getMinFileSizeBytes();
 
 		// 1. count files
 		ArrayList<File> allFiles = new ArrayList<File>();
-//		int totalFiles = 0;
+
 		for (File directory : getExistingCachePaths()) {
-			
+
+			if(!watcher.isAllowedToContinue()){
+				return files;
+			}				
 
 			if (directory.isDirectory()) {												
 				List<File> dirFiles = listFilesRecursive(directory);
-				allFiles.addAll(dirFiles);
-//				totalFiles += dirFiles.size();			
+				allFiles.addAll(dirFiles);			
 			} else {
 				SimpleLogger.logMessage(String.format("'%s' is not a directory", directory.getPath()));
 			}
@@ -222,14 +223,17 @@ public class Firefox extends AbstractBrowser {
 		}		
 		
 		// 2. collect every matching file
-		for(File file: allFiles){			
+		for(File file: allFiles){
+			
+			if(!watcher.isAllowedToContinue()){
+				return files;
+			}				
+			
 			if(file.length() > minFileSize){				
 				files.add(new CachedFile(file.getAbsolutePath()));
 				watcher.progressStep();
 			}						
-		}
-		
-
+		}		
 
 		return files;
 	}
