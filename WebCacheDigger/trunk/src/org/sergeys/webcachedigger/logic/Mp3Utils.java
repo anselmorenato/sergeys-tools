@@ -101,7 +101,11 @@ public class Mp3Utils {
 				newName = decode(newName);				
 			}
 			else if(mp3.hasId3v1Tag()){
-				ID3v1 id3v1 = mp3.getId3v2Tag();
+				ID3v1 id3v1 = mp3.getId3v1Tag();
+				
+//				if(id3v1.getTitle() != null){
+//					SimpleLogger.logMessage("id3v1 title: " + id3v1.getTitle());
+//				}
 				
 				if(id3v1.getTitle() != null && !id3v1.getTitle().trim().isEmpty()){
 					newName = id3v1.getTitle().trim(); 					
@@ -126,6 +130,9 @@ public class Mp3Utils {
 				newName = newName.replace(File.separatorChar, '.');
 				newName = newName.replace('/', '.');
 				newName = decode(newName);
+			}
+			else{
+				newName = file.getName();
 			}
 		} catch (UnsupportedTagException e) {
 			// TODO Auto-generated catch block

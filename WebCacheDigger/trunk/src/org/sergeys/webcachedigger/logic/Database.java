@@ -83,7 +83,7 @@ public class Database {
 		long result = 0;
 		
 		Statement st = getConnection().createStatement();
-		ResultSet rs = st.executeQuery("select count(id) from files");
+		ResultSet rs = st.executeQuery("select count(id) from files where issaved = true");
 		if(rs.next()){
 			result = rs.getLong(1);
 		}
@@ -210,9 +210,10 @@ public class Database {
 
 	public void insertUpdateMimeTypes(ArrayList<CachedFile> cacheFiles) throws SQLException {
 		PreparedStatement psSelect = getConnection().prepareStatement(
-				"select id from files where absolutepath = ? and lastmodified = ?");
+				//"select id from files where absolutepath = ? and lastmodified = ?");	// got unique violation during insert
+				"select id from files where absolutepath = ?");
 		PreparedStatement psUpdate = getConnection().prepareStatement(
-				"update files set mimetype = ? where id = ?");
+				"update files set mimetype = ?, lastmodified = ? where id = ?");
 		PreparedStatement psInsert = getConnection().prepareStatement(
 				"insert into files (absolutepath, lastmodified, filesize, mimetype)" +
 				" values (?, ?, ?, ?)");
@@ -221,12 +222,13 @@ public class Database {
 		
 		for(CachedFile file: cacheFiles){
 			psSelect.setString(1, file.getAbsolutePath());			
-			psSelect.setLong(2, file.lastModified());
+			//psSelect.setLong(2, file.lastModified());
 			//psSelect.setLong(3, file.length());
 			ResultSet rs = psSelect.executeQuery();
 			if(rs.next()){
 				psUpdate.setString(1, file.getMimeType());
-				psUpdate.setLong(2, rs.getLong("id"));
+				psUpdate.setLong(2, file.lastModified());
+				psUpdate.setLong(3, rs.getLong("id"));
 				
 				psUpdate.addBatch();
 			}
@@ -254,9 +256,10 @@ public class Database {
 	public void insertUpdateHashes(ArrayList<CachedFile> cacheFiles) throws SQLException {
 				
 		PreparedStatement psSelect = getConnection().prepareStatement(
-				"select id from files where absolutepath = ? and lastmodified = ?");
+				//"select id from files where absolutepath = ? and lastmodified = ?");
+				"select id from files where absolutepath = ?");
 		PreparedStatement psUpdate = getConnection().prepareStatement(
-				"update files set hash = ? where id = ?");
+				"update files set hash = ?, lastmodified = ? where id = ?");
 		PreparedStatement psInsert = getConnection().prepareStatement(
 				"insert into files (absolutepath, lastmodified, filesize, mimetype, hash)" +
 				" values (?, ?, ?, ?, ?)");
@@ -271,12 +274,13 @@ public class Database {
 			}
 			
 			psSelect.setString(1, file.getAbsolutePath());
-			psSelect.setLong(2, file.lastModified());
+			//psSelect.setLong(2, file.lastModified());
 			ResultSet rs = psSelect.executeQuery();
 			if(rs.next()){
 												
 				psUpdate.setString(1, file.getHash());
-				psUpdate.setLong(2, rs.getLong("id"));
+				psUpdate.setLong(2, file.lastModified());
+				psUpdate.setLong(3, rs.getLong("id"));
 				
 				psUpdate.addBatch();
 			}

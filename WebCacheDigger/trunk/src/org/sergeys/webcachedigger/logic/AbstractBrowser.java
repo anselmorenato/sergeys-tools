@@ -34,36 +34,5 @@ public abstract class AbstractBrowser implements IBrowser {
 		}
 		
 		return cachePaths;
-	}	
-	
-//	protected List<File> listFilesRecursive(File directory, final FileFilter fileFilter, List<File> allFiles){
-//						
-//		if(directory.isDirectory()){
-//						
-//			// collect regular files
-//			List<File> files = Arrays.asList(directory
-//					.listFiles(new FileFilter() {
-//						public boolean accept(File file) {
-//							return (!file.isDirectory() && fileFilter.accept(file));
-//						}
-//					}));
-//			
-//			allFiles.addAll(files);
-//			
-//			// process subdirs
-//			List<File> subdirs = Arrays.asList(directory
-//					.listFiles(new FileFilter() {
-//						public boolean accept(File file) {
-//							return (file.isDirectory() && fileFilter.accept(file));
-//						}
-//					}));
-//			
-//			for(File subdir: subdirs){
-//				listFilesRecursive(subdir, fileFilter, allFiles);
-//			}			
-//		}
-//		
-//		return allFiles;
-//	}
-	
+	}		
 }

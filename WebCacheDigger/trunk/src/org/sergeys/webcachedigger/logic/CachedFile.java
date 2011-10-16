@@ -44,8 +44,12 @@ public class CachedFile extends File {
 
 	public CachedFile(String pathname) {
 		super(pathname);
-	}
+	}		
 
+	public CachedFile(File file) {
+		super(file.getAbsolutePath());
+	}		
+	
 	public void detectHash() throws NoSuchAlgorithmException, IOException{
 		SimpleLogger.logMessage("calculating md5 for " + this.getName());			
 		//hash = FileUtils.md5hash(this, 1024 * 1024); // not too smooth		
