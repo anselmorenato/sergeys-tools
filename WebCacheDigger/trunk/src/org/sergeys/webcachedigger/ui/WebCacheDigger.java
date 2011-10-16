@@ -278,6 +278,9 @@ implements ActionListener, PropertyChangeListener
 //					application.getSettings().setExternalPlayerCommand("vlc " + Settings.EXT_PLAYER_FILEPATH); 
 					application.editSettings(true);
 				}
+				
+				DatabaseCleanerWorker dbcleaner = new DatabaseCleanerWorker();
+				dbcleaner.execute();
 			}
 		});
 	}

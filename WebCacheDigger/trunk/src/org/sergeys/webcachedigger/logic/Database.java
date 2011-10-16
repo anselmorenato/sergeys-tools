@@ -1,5 +1,6 @@
 package org.sergeys.webcachedigger.logic;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.h2.tools.RunScript;
 
@@ -332,4 +334,49 @@ public class Database {
 		getConnection().setAutoCommit(true);
 	}
 	
+	public ArrayList<File> getNotSavedFiles() throws SQLException{
+		ArrayList<File> files = new ArrayList<File>();
+		
+		Statement st = getConnection().createStatement();
+		ResultSet rs = st.executeQuery("select absolutepath from files where issaved = false");
+		while(rs.next()){
+			files.add(new File(rs.getString("absolutepath")));
+		}
+		
+		return files;
+	}
+
+	public void removeByName(List<File> files) {
+//		if(files == null){
+//			return;
+//		}
+		
+		try {
+			
+			getConnection().setAutoCommit(false);
+			
+			PreparedStatement pst = getConnection().prepareStatement("delete from files where absolutepath = ?");
+			for(File file: files){
+				pst.setString(1, file.getAbsolutePath());
+				pst.addBatch();
+			}
+			
+			int[] count = pst.executeBatch();
+			getConnection().commit();
+			
+			pst.close();
+			
+			int total = 0;
+			for(int i = 0; i < count.length; i++){
+				total += count[i];
+			}
+			SimpleLogger.logMessage("removed nonexistent files: " + total);
+			
+			getConnection().setAutoCommit(true);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }
