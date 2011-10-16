@@ -116,7 +116,7 @@ public class Database {
 				ResultSet rs = pst.executeQuery();				
 				if(rs.next()){
 					// has this file
-					SimpleLogger.logMessage("already has saved " + file.getAbsolutePath());
+//					SimpleLogger.logMessage("already has saved " + file.getAbsolutePath());
 				}
 				else{
 					filtered.add(file);
@@ -190,7 +190,7 @@ public class Database {
 				ResultSet rs = pst.executeQuery();				
 				if(rs.next()){
 					// has this file
-					SimpleLogger.logMessage("already has saved by hash " + file.getAbsolutePath());
+//					SimpleLogger.logMessage("already has saved by hash " + file.getAbsolutePath());
 				}
 				else{
 					filtered.add(file);

@@ -60,7 +60,7 @@ implements IProgressWatcher
 		if(settings.isExcludeAlreadySaved()){
 			// exclude saved files with same absolute path and timestamp
 			cacheFiles = Database.getInstance().filterSavedByFilesystem(cacheFiles);
-			SimpleLogger.logMessage("not saved files to process: " + cacheFiles.size());
+			SimpleLogger.logMessage("not yet copied files: " + cacheFiles.size());
 		}				
 		
 		stage = ProgressDialog.STAGE_FILTER_TYPE;
