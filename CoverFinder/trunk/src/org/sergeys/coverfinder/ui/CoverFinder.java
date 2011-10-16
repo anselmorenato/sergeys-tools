@@ -34,6 +34,8 @@ import com.microsoft.schemas.LiveSearch._2008._03.Search.SourceType;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.Thumbnail;
 
 import java.awt.FlowLayout;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class CoverFinder {
 
@@ -68,8 +70,8 @@ public class CoverFinder {
 	}
 
 	JPanel panelCenter;
-	private JLabel lblPlaceholder;
-	private JLabel lblPh;
+	private JScrollPane scrollPane;
+	private JTable table;
 	
 	/**
 	 * Initialize the contents of the frame.
@@ -79,12 +81,12 @@ public class CoverFinder {
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JPanel panel = new JPanel();
-		frame.getContentPane().add(panel, BorderLayout.NORTH);
+		JPanel panelTop = new JPanel();
+		frame.getContentPane().add(panelTop, BorderLayout.NORTH);
 		
 		txtQuery = new JTextField();
 		txtQuery.setText("led zeppelin physical graffiti");
-		panel.add(txtQuery);
+		panelTop.add(txtQuery);
 		txtQuery.setColumns(30);
 		
 		JButton btnSearch = new JButton("Search");
@@ -93,18 +95,17 @@ public class CoverFinder {
 				doSearch(e);
 			}
 		});
-		panel.add(btnSearch);
+		panelTop.add(btnSearch);
 		
 		panelCenter = new JPanel();
-		panelCenter.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
-		panelCenter.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		panelCenter.setLayout(new BorderLayout(0, 0));
 		
-		lblPlaceholder = new JLabel("placeholder");
-		panelCenter.add(lblPlaceholder);
+		scrollPane = new JScrollPane();
+		panelCenter.add(scrollPane, BorderLayout.CENTER);
 		
-		lblPh = new JLabel("ph2");
-		panelCenter.add(lblPh);
+		table = new JTable();
+		scrollPane.setViewportView(table);
 	}
 
 	protected void doSearch(ActionEvent e) {
@@ -151,6 +152,7 @@ public class CoverFinder {
 					
 					String url = imgResult.getMediaUrl();
 					Thumbnail th = imgResult.getThumbnail();
+					String mime = imgResult.getContentType();
 					
 					try{
 						//img = ImageIO.read(new URL(url));
