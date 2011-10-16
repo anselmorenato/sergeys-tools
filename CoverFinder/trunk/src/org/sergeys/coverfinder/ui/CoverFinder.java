@@ -36,6 +36,7 @@ import com.microsoft.schemas.LiveSearch._2008._03.Search.Thumbnail;
 import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JMenuBar;
 
 public class CoverFinder {
 
@@ -71,7 +72,8 @@ public class CoverFinder {
 
 	JPanel panelCenter;
 	private JScrollPane scrollPane;
-	private JTable table;
+	private JMenuBar menuBar;
+	private JPanel panelJunk;
 	
 	/**
 	 * Initialize the contents of the frame.
@@ -104,8 +106,11 @@ public class CoverFinder {
 		scrollPane = new JScrollPane();
 		panelCenter.add(scrollPane, BorderLayout.CENTER);
 		
-		table = new JTable();
-		scrollPane.setViewportView(table);
+		panelJunk = new JPanel();
+		scrollPane.setViewportView(panelJunk);
+		
+		menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
 	}
 
 	protected void doSearch(ActionEvent e) {
@@ -141,7 +146,7 @@ public class CoverFinder {
 				
 				System.out.println(images.length + " results");
 				
-				panelCenter.removeAll();
+				panelJunk.removeAll();
 				
 				boolean found = false;
 				//int i = 0;
@@ -167,10 +172,10 @@ public class CoverFinder {
 						scaledImage.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 						
 						
-						panelCenter.add(scaledImage);
+						panelJunk.add(scaledImage);
 						scaledImage.invalidate();
-						panelCenter.invalidate();
-						panelCenter.repaint();
+						//panelCenter.invalidate();
+						//panelCenter.repaint();
 					}
 					catch(Exception ex){
 						System.out.println(url + " " + ex.getMessage());						
