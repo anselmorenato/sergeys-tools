@@ -1,14 +1,22 @@
 package org.sergeys.coverfinder.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URL;
+import java.rmi.RemoteException;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.types.UnsignedInt;
@@ -18,24 +26,14 @@ import com.microsoft.schemas.LiveSearch._2008._03.Search.BingPortType;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.BingServiceLocator;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.ImageRequest;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.ImageResult;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchOption;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchRequest;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchRequestType1;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchResponse;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchResponseType0;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.SourceType;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.WebSearchOption;
+import com.microsoft.schemas.LiveSearch._2008._03.Search.Thumbnail;
 
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.RemoteException;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EtchedBorder;
+import java.awt.FlowLayout;
 
 public class CoverFinder {
 
@@ -70,7 +68,8 @@ public class CoverFinder {
 	}
 
 	JPanel panelCenter;
-	private JLabel label;
+	private JLabel lblPlaceholder;
+	private JLabel lblPh;
 	
 	/**
 	 * Initialize the contents of the frame.
@@ -84,7 +83,7 @@ public class CoverFinder {
 		frame.getContentPane().add(panel, BorderLayout.NORTH);
 		
 		txtQuery = new JTextField();
-		txtQuery.setText("cinquetti");
+		txtQuery.setText("led zeppelin physical graffiti");
 		panel.add(txtQuery);
 		txtQuery.setColumns(30);
 		
@@ -99,11 +98,13 @@ public class CoverFinder {
 		panelCenter = new JPanel();
 		panelCenter.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
-		panelCenter.setLayout(new BorderLayout(0, 0));
+		panelCenter.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		label = new JLabel("New label");
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		panelCenter.add(label);
+		lblPlaceholder = new JLabel("placeholder");
+		panelCenter.add(lblPlaceholder);
+		
+		lblPh = new JLabel("ph2");
+		panelCenter.add(lblPh);
 	}
 
 	protected void doSearch(ActionEvent e) {
@@ -116,14 +117,15 @@ public class CoverFinder {
 		
 		SearchRequest req = new SearchRequest();
 		req.setAppId(APP_ID);
+		
 		req.setSources(new SourceType[]{ SourceType.Image });
 		req.setQuery(query);
 		//req.setOptions(new SearchOption[]{ new SearchOption("") });
 		
-		ImageRequest ir = new ImageRequest(new UnsignedInt(5), new UnsignedInt(5), null);
-		//ir.setCount(new UnsignedInt(5));
-		//ir.setOffset(new UnsignedInt(5));
-		//ir.setFilters(new String[]{ "Size:Small", "Aspect:Tall" });	// http://msdn.microsoft.com/en-us/library/dd560913.aspx
+		ImageRequest ir = new ImageRequest();
+		//ir.setCount(new UnsignedInt(15));
+		ir.setOffset(new UnsignedInt(0));
+		ir.setFilters(new String[]{ "Size:Medium", "Aspect:Square" });	// http://msdn.microsoft.com/en-us/library/dd560913.aspx
 		req.setImage(ir);
 		
 		BingServiceLocator loc = new BingServiceLocator();
@@ -138,33 +140,43 @@ public class CoverFinder {
 				
 				System.out.println(images.length + " results");
 				
+				panelCenter.removeAll();
+				
 				boolean found = false;
-				int i = 1;
+				//int i = 0;
 				Image img = null;
-				while(!found){
+				//while(!found){
+				for(int i = 0; i < images.length; i++){
 					ImageResult imgResult = images[i]; 
 					
 					String url = imgResult.getMediaUrl();
+					Thumbnail th = imgResult.getThumbnail();
 					
 					try{
-						img = ImageIO.read(new URL(url));
+						//img = ImageIO.read(new URL(url));
+						img = ImageIO.read(new URL(th.getUrl()));
+						
 						found = true;
 						System.out.println(url + " found");
+						
+						ScaledImage scaledImage = new ScaledImage(img, false);
+						
+						scaledImage.setPreferredSize(new Dimension(100, 100));
+						scaledImage.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+						
+						
+						panelCenter.add(scaledImage);
+						scaledImage.invalidate();
+						panelCenter.invalidate();
+						panelCenter.repaint();
 					}
 					catch(Exception ex){
-						System.out.println(url + " " + ex.getMessage());
-						i++;
+						System.out.println(url + " " + ex.getMessage());						
 					}
 					
 				}
 								
-				ScaledImage scaledImage = new ScaledImage(img, false);
 				
-				panelCenter.removeAll();
-				panelCenter.add(scaledImage);
-				scaledImage.invalidate();
-				panelCenter.invalidate();
-				panelCenter.repaint();
 			}
 			
 		} catch (RemoteException e1) {
