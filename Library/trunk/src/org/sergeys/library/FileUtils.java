@@ -21,6 +21,14 @@ public abstract class FileUtils {
 //		
 //	}
 	
+	/**
+	 * Appends found files to the allFiles
+	 * 
+	 * @param directory
+	 * @param fileFilter
+	 * @param allFiles
+	 * @return
+	 */
 	public static List<File> listFilesRecursive(File directory, final FileFilter fileFilter, List<File> allFiles){
 		
 		if(directory.isDirectory()){
@@ -29,7 +37,9 @@ public abstract class FileUtils {
 			List<File> files = Arrays.asList(directory
 					.listFiles(new FileFilter() {
 						public boolean accept(File file) {
-							return (!file.isDirectory() && fileFilter.accept(file));
+							return (fileFilter == null) ? 
+									!file.isDirectory() :
+									(!file.isDirectory() && fileFilter.accept(file));
 						}
 					}));
 			
@@ -39,7 +49,9 @@ public abstract class FileUtils {
 			List<File> subdirs = Arrays.asList(directory
 					.listFiles(new FileFilter() {
 						public boolean accept(File file) {
-							return (file.isDirectory() && fileFilter.accept(file));
+							return (fileFilter == null) ?
+									file.isDirectory() :
+									(file.isDirectory() && fileFilter.accept(file));
 						}
 					}));
 			
@@ -58,6 +70,10 @@ public abstract class FileUtils {
 	}
 
 	public static void copyFile(String in, String out) throws IOException {
+		
+		// TODO: java 7
+		//Files.copy(file.getAbsolutePath(), targetFile, );
+		
 		FileChannel inChannel = new FileInputStream(in).getChannel();
 		FileChannel outChannel = new FileOutputStream(out).getChannel();
 		try {
