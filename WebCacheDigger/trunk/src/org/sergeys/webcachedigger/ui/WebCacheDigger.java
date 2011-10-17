@@ -523,7 +523,8 @@ implements ActionListener, PropertyChangeListener
 				//Settings.save(getSettings());
 				
 				getSettingsDialog().updateSettings();
-				Settings.getInstance().save();
+				//Settings.getInstance();
+				Settings.save();
 				
 			} catch (IOException e1) {
 				JOptionPane.showMessageDialog(getJFrame(), 
@@ -635,7 +636,8 @@ implements ActionListener, PropertyChangeListener
 			Settings.getInstance().setIntProperty(Settings.WINDOW_H, mainWindow.getHeight());
 			Settings.getInstance().setIntProperty(Settings.SPLITTER_POS, getJSplitPaneMain().getDividerLocation());
 
-			Settings.getInstance().save();
+			//Settings.getInstance().save();
+			Settings.save();
 		} catch (IOException e) {			
 			e.printStackTrace();
 		}
@@ -870,8 +872,8 @@ implements ActionListener, PropertyChangeListener
 
 	protected void doLanguageSelected(ActionEvent e) {
 		Settings.getInstance().setLanguage(e.getActionCommand());
-		Locale l = new Locale(Settings.getInstance().getLanguage());
-		Messages.setLocale(l);
+		//Locale l = new Locale(Settings.getInstance().getLanguage());
+		//Messages.setLocale(l);
 		JOptionPane.showMessageDialog(this.getJContentPane(), Messages.getString("WebCacheDigger.RestartAppForNewLanguage")); //$NON-NLS-1$
 	}
 }

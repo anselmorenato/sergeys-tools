@@ -98,21 +98,27 @@ extends Properties
 	// http://java.sys-con.com/node/37550
 	// http://www.java2s.com/Code/Java/JDK-6/MarshalJavaobjecttoxmlandoutputtoconsole.htm
 	
-	public void save() throws FileNotFoundException{
+	//public void save() throws FileNotFoundException{	// fails to save lang??
+	public static void save() throws FileNotFoundException{	
 		
+		
+//System.out.println("saving lang " + instance.getLanguage());
+
 		File dir = new File(settingsDirPath);
 		if(!dir.exists()){
 			dir.mkdirs();
 		}
 		
 		XMLEncoder e;
+				
+		synchronized (instance) {
+			e = new XMLEncoder(
+			        new BufferedOutputStream(
+			            new FileOutputStream(settingsFilePath)));
+			e.writeObject(instance);
+			e.close();			
+		}
 		
-		e = new XMLEncoder(
-		        new BufferedOutputStream(
-		            new FileOutputStream(settingsFilePath)));
-		
-		e.writeObject(this);
-		e.close();		
 	}
 	
 	public static void load() {
@@ -133,6 +139,8 @@ extends Properties
 			decoder.close(); 
 			
 			instance.firstRun = false;					
+			
+//System.out.println("read lang " + instance.getLanguage());			
 		}
 		else{			
 			instance.setDefaults();				
@@ -145,6 +153,7 @@ extends Properties
 		activeFileTypes = EnumSet.allOf(FileType.class);
 		renameMp3byTags = true;
 		excludeAlreadySaved = false;
+		language = Locale.getDefault().getLanguage();
 		
 		for(IBrowser b: getSupportedBrowsers()){
 			activeBrowsers.add(b.getName());
@@ -244,13 +253,17 @@ extends Properties
 	}
 	
 	public String getLanguage() {
-		if(language == null){
-			language = Locale.getDefault().getLanguage();
-		}
+//		if(language == null){	// causes XMLEncoder to skip this value??
+//			language = Locale.getDefault().getLanguage();
+//		}
+		
+//System.out.println("gettings lang " + language);		
+		
 		return language;
 	}
 
 	public void setLanguage(String language) {
+//System.out.println("settings lang " + language);		
 		this.language = language;
 	}
 	
@@ -293,4 +306,5 @@ extends Properties
 	}
 
 }
+
 
