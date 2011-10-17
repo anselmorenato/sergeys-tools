@@ -55,6 +55,7 @@ extends Properties
 	private String language; // language code for Locale class
 	private boolean renameMp3byTags;
 	private boolean excludeAlreadySaved;
+	private String mp3tagsLanguage;
 	
 	private HashSet<String> activeBrowsers = new HashSet<String>();	// browser names
 	
@@ -65,6 +66,8 @@ extends Properties
 	static{
 		settingsDirPath = System.getProperty("user.home") + File.separator + SETTINGS_PATH;
 		settingsFilePath = settingsDirPath + File.separator + SETTINGS_FILE;
+		
+		load();
 	}
 	
 	/**
@@ -78,42 +81,24 @@ extends Properties
 		return settingsDirPath;
 	}
 	
-	// public constructor for XML serialization
+	
+	
+	private static Settings instance;
+	
+	// singleton
+	// public constructor required for XML serialization, do not use it
 	public Settings(){		
 	}
-
-	// private constructor for Properties
-//	private Settings(){		
-//	}
 	
-//	public void save() throws IOException{
-//		
-//		File dir = new File(settingsDirPath);
-//		if(!dir.exists()){
-//			dir.mkdirs();
-//		}
-//		
-//		FileOutputStream fos = new FileOutputStream(settingsFilePath);
-//		this.store(fos, null);
-//	}
-//	
-//	public static Settings load() throws IOException{
-//		Settings settings = new Settings();
-//		
-//		try {
-//			settings.load(new FileInputStream(settingsFilePath));
-//		} catch (FileNotFoundException e) {
-//			// no file, OK
-//			//e.printStackTrace();
-//		}
-//		
-//		return settings;
-//	}
+	public static synchronized Settings getInstance(){
+		return instance;
+	}
+
 
 	// http://java.sys-con.com/node/37550
 	// http://www.java2s.com/Code/Java/JDK-6/MarshalJavaobjecttoxmlandoutputtoconsole.htm
 	
-	public static void save(Settings s) throws FileNotFoundException{
+	public void save() throws FileNotFoundException{
 		
 		File dir = new File(settingsDirPath);
 		if(!dir.exists()){
@@ -126,37 +111,35 @@ extends Properties
 		        new BufferedOutputStream(
 		            new FileOutputStream(settingsFilePath)));
 		
-		e.writeObject(s);
+		e.writeObject(this);
 		e.close();		
 	}
 	
-	public static Settings load() {
-		Settings settings = new Settings();
+	public static void load() {
+		instance = new Settings();
+					
+		if(new File(settingsFilePath).exists()){
 		
-		FileInputStream os;
-		try {
-			os = new FileInputStream(settingsFilePath);
-			XMLDecoder decoder = new XMLDecoder(os);
-			settings = (Settings)decoder.readObject();
+			FileInputStream is = null;
+			try {
+				is = new FileInputStream(settingsFilePath);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			XMLDecoder decoder = new XMLDecoder(is);
+			instance = (Settings)decoder.readObject();
 			decoder.close(); 
 			
-			settings.firstRun = false;
-			return settings;
-			
-		} catch (FileNotFoundException e) {
-			// no file, use default settings			
+			instance.firstRun = false;					
 		}
-		catch(Exception ex){
-			
+		else{			
+			instance.setDefaults();				
 		}
-		
-		// on errors, set some defauls
-		settings.setDefaults();
-				
-		return settings;		
 	}
 	
-	public void setDefaults(){
+	private void setDefaults(){
 		minFileSizeBytes = 500000;		
 		language = Locale.getDefault().getLanguage();
 		activeFileTypes = EnumSet.allOf(FileType.class);
@@ -299,6 +282,14 @@ extends Properties
 
 	public void setExcludeAlreadySaved(boolean excludeAlreadySaved) {
 		this.excludeAlreadySaved = excludeAlreadySaved;
+	}
+
+	public String getMp3tagsLanguage() {
+		return mp3tagsLanguage;
+	}
+
+	public void setMp3tagsLanguage(String mp3tagsLanguage) {
+		this.mp3tagsLanguage = mp3tagsLanguage;
 	}
 
 }

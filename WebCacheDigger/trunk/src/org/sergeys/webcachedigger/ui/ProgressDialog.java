@@ -44,7 +44,7 @@ extends JDialog
 	//FileCollectorWorker worker;
 	@SuppressWarnings("rawtypes")
 	SwingWorker worker;
-	Settings settings;
+	//Settings settings;
 	HashSet<IBrowser> existingBrowsers;
 	
 	JLabel lblCount;
@@ -77,10 +77,10 @@ extends JDialog
 	 * Create the dialog.
 	 * @param existingBrowsers 
 	 */
-	public ProgressDialog(Settings settings, HashSet<IBrowser> existingBrowsers) {
+	public ProgressDialog(HashSet<IBrowser> existingBrowsers) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ProgressDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
 
-		this.settings = settings;
+		//this.settings = settings;
 		this.existingBrowsers = existingBrowsers;
 		
 		setTitle(Messages.getString("FileSearchProgressDialog.searchFiles")); //$NON-NLS-1$
@@ -154,16 +154,16 @@ extends JDialog
 		case CollectFiles:
 			ArrayList<IBrowser> browsers = new ArrayList<IBrowser>();
 			for(IBrowser b: existingBrowsers){
-				if(settings.getActiveBrowsers().contains(b.getName())){
+				if(Settings.getInstance().getActiveBrowsers().contains(b.getName())){
 					browsers.add(b);
 				}
 			}
-			this.worker = new FileCollectorWorker(browsers, this, settings);
+			this.worker = new FileCollectorWorker(browsers, this);
 			this.worker.execute();
 			break;
 			
 		case CopyFiles:
-			this.worker = new FileCopyWorker(getFilesToCopy(), getTargetDir(), this, settings);
+			this.worker = new FileCopyWorker(getFilesToCopy(), getTargetDir(), this);
 			this.worker.execute();
 			break;
 		}

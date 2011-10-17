@@ -85,3 +85,5 @@ ProgressDialog.Copied=Скопировано:
 ProgressDialog.AnalyzingTypes=Обработано:
 ProgressDialog.CheckIfSaved=Сохранялся ли:
 WebCacheDigger.NothingFound=Ничего не найдено.
+AudioPreviewPanel.lblFixEncoding.text=Исправить язык:
+AudioPreviewPanel.NoLangChanges=не менять

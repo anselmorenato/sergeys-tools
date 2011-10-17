@@ -41,7 +41,8 @@ public class ImagePreviewPanel extends AbstractFilePreviewPanel {
 		getJPanelCenter().remove(scaledImage);
 		scaledImage = new ScaledImage(imageIcon.getImage(), false);
 		getJPanelCenter().add(scaledImage);
-		invalidate();		
+		//invalidate();
+		revalidate();
 	}
 
 	/**

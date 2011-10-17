@@ -54,7 +54,7 @@ public class Opera extends AbstractBrowser {
 		
 		// 2. filter
 		//int minFileSize = settings.getIntProperty(Settings.MIN_FILE_SIZE_BYTES);
-		long minFileSize = settings.getMinFileSizeBytes();
+		long minFileSize = Settings.getInstance().getMinFileSizeBytes();
 		for(File file: allFiles){			
 			
 			if(!watcher.isAllowedToContinue()){

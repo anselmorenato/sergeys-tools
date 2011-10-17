@@ -31,7 +31,7 @@ public class SettingsPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private Settings settings;
+	
 
 	private JLabel jLabel1 = null;
 	private JPanel jPanelSavePath = null;
@@ -146,29 +146,29 @@ public class SettingsPanel extends JPanel {
 		getBtnForget().setEnabled(getChckbxExcludeSaved().isSelected() && hasSaved);
 	}
 	
-	public void setSettings(Settings settings) {
-		this.settings = settings;
-
-		getJTextFieldSavePath().setText(settings.getSaveToPath());
-		getJTextFieldMinFileSizeBytes().setText(String.valueOf(settings.getMinFileSizeBytes()));
+	public void setSettings() {
 		
-		getTxtPlayerCommand().setText(settings.getExternalPlayerCommand());
-		getChckbxRenameMpFiles().setSelected(settings.isRenameMp3byTags());
+		getJTextFieldSavePath().setText(Settings.getInstance().getSaveToPath());
+		getJTextFieldMinFileSizeBytes().setText(String.valueOf(Settings.getInstance().getMinFileSizeBytes()));
+		
+		getTxtPlayerCommand().setText(Settings.getInstance().getExternalPlayerCommand());
+		getChckbxRenameMpFiles().setSelected(Settings.getInstance().isRenameMp3byTags());
 
-		getChckbxExcludeSaved().setSelected(settings.isExcludeAlreadySaved());
+		getChckbxExcludeSaved().setSelected(Settings.getInstance().isExcludeAlreadySaved());
 		//getBtnForget().setEnabled(getChckbxExcludeSaved().isSelected());
 		setButtonForgetEnabled();
+		
+		//revalidate();
 	}
 
-	public Settings getSettings() {
+	public void updateSettings() {
 		
-		settings.setSaveToPath(getJTextFieldSavePath().getText());
-		settings.setMinFileSizeBytes(Long.parseLong(getJTextFieldMinFileSizeBytes().getText()));
-		settings.setExternalPlayerCommand(getTxtPlayerCommand().getText());
-		settings.setRenameMp3byTags(getChckbxRenameMpFiles().isSelected());
-		settings.setExcludeAlreadySaved(getChckbxExcludeSaved().isSelected());
-
-		return settings;
+		Settings.getInstance().setSaveToPath(getJTextFieldSavePath().getText());
+		Settings.getInstance().setMinFileSizeBytes(Long.parseLong(getJTextFieldMinFileSizeBytes().getText()));
+		Settings.getInstance().setExternalPlayerCommand(getTxtPlayerCommand().getText());
+		Settings.getInstance().setRenameMp3byTags(getChckbxRenameMpFiles().isSelected());
+		Settings.getInstance().setExcludeAlreadySaved(getChckbxExcludeSaved().isSelected());
+		
 	}
 
 	/**
@@ -224,7 +224,10 @@ public class SettingsPanel extends JPanel {
 		JFileChooser fc = new JFileChooser();
 		
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fc.setSelectedFile(new File(getSettings().getSaveToPath()));
+		if(Settings.getInstance().getSaveToPath() != null){
+			fc.setSelectedFile(new File(Settings.getInstance().getSaveToPath()));
+		}
+		
 		if (fc.showOpenDialog(this.getParent()) == JFileChooser.APPROVE_OPTION) {
 			getJTextFieldSavePath().setText(
 					fc.getSelectedFile().getAbsolutePath());

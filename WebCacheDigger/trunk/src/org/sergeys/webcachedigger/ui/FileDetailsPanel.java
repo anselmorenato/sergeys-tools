@@ -14,7 +14,6 @@ import javax.swing.border.SoftBevelBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.Messages;
-import org.sergeys.webcachedigger.logic.Settings;
 
 public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 
@@ -26,7 +25,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 	JPanel panelPreview;
 	
 	private PropertyChangeListener listener;
-	private Settings settings;
+	
 	
 	JPanel panelTop;
 	
@@ -34,11 +33,10 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 	 * This is the default constructor
 	 * @param webCacheDigger 
 	 */
-	public FileDetailsPanel(PropertyChangeListener listener, Settings settings) {
+	public FileDetailsPanel(PropertyChangeListener listener) {
 		super();
 		
 		this.listener = listener;
-		this.settings = settings; 
 		
 		setLayout(new BorderLayout(30, 0));
 		
@@ -132,7 +130,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 			lblFileSize.setText(String.valueOf(file.length()));
 			lblFiletype.setText(file.getMimeType());
 														
-			AbstractFilePreviewPanel preview = AbstractFilePreviewPanel.createFilePreviewPanel(file.getMimeType(), listener, settings);
+			AbstractFilePreviewPanel preview = AbstractFilePreviewPanel.createFilePreviewPanel(file.getMimeType(), listener);
 			if(preview != null){
 				preview.setCachedFile(file);											
 				panelPreview = preview;				

@@ -9,10 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -36,20 +39,29 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 	
 	// for property listeners
 	public static final String PROPERTY_FILE_TO_PLAY = "AudioPreviewPanel_PROPERTY_FILE_TO_PLAY";  //$NON-NLS-1$
-		
+			
+	JPanel panelTop;
 	JPanel panelProperties;
 	JPanel panelArtwork;
-		
+	JComboBox comboBoxLanguage;
 	
-	public AudioPreviewPanel(Settings settings) {
-		
-		setSettings(settings);
+	private ArrayList<Locale> locales;	
+	//Properties charsets;
+	
+	public AudioPreviewPanel() {
+				
+		Mp3Utils.getInstance().setDecodeStrings(false);
 						
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new BorderLayout(0, 0));
 		
+		
+		panelTop = new JPanel();
+		panelTop.setLayout(new BorderLayout(0, 0));
+		add(panelTop, BorderLayout.NORTH);
+		
 		panelProperties = new JPanel();
-		add(panelProperties, BorderLayout.NORTH);
+		panelTop.add(panelProperties, BorderLayout.CENTER);
 		
 //		JScrollPane scrollPane = new JScrollPane(panelProperties);
 //		add(scrollPane, BorderLayout.CENTER);
@@ -98,6 +110,20 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		
 		panelProperties.add(txtpnValue, gbc_txtpnValue);
 		
+		JPanel panelCharsets = new JPanel();
+		panelTop.add(panelCharsets, BorderLayout.SOUTH);
+		
+		JLabel lblFixEncoding = new JLabel(Messages.getString("AudioPreviewPanel.lblFixEncoding.text")); //$NON-NLS-1$
+		panelCharsets.add(lblFixEncoding);
+		
+		comboBoxLanguage = new JComboBox();
+		comboBoxLanguage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doEncodingChanged(e);
+			}
+		});
+		panelCharsets.add(comboBoxLanguage);
+		
 		JPanel panelControl = new JPanel();
 		add(panelControl, BorderLayout.SOUTH);
 		
@@ -107,15 +133,48 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 				doPlay(e);
 			}
 		});
-		btnPlay.setEnabled(getSettings().isExternalPlayerConfigured());
+		btnPlay.setEnabled(Settings.getInstance().isExternalPlayerConfigured());
 		panelControl.add(btnPlay);
 		
 		panelArtwork = new JPanel();
 		add(panelArtwork, BorderLayout.CENTER);
-		panelArtwork.setLayout(new BorderLayout(0, 0));
+		panelArtwork.setLayout(new BorderLayout(0, 0));				
 		
+
+		locales = new ArrayList<Locale>();
+		comboBoxLanguage.addItem(Messages.getString("AudioPreviewPanel.NoLangChanges")); //$NON-NLS-1$
+		comboBoxLanguage.setSelectedIndex(0);
+		locales.add(null);
+				
+		for(Object lang: Mp3Utils.getInstance().getDecodingLanguages()){
+			Locale l = new Locale(lang.toString());
+			comboBoxLanguage.addItem(l.getDisplayName());
+			if(lang.toString().equals(Settings.getInstance().getMp3tagsLanguage())){
+				comboBoxLanguage.setSelectedItem(l.getDisplayName());
+			}
+			locales.add(l);
+		}
+	}
+
+	protected void doEncodingChanged(ActionEvent e) {
 		
+		if(getCachedFile() == null){
+			return;
+		}
 		
+		int selectedIndex = comboBoxLanguage.getSelectedIndex();
+		if(selectedIndex > 0){
+														
+			Locale l = locales.get(selectedIndex);		
+			Settings.getInstance().setMp3tagsLanguage(l.getLanguage());
+		}
+		else if(selectedIndex == 0){						
+			Settings.getInstance().setMp3tagsLanguage(null);
+		}
+				
+		this.setCachedFile(getCachedFile());
+		
+		panelProperties.revalidate();		
 	}
 
 	protected void doPlay(ActionEvent e) {		
@@ -135,7 +194,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		if(value != null && !value.isEmpty()){
 		//if(value != null){
 
-			value = Mp3Utils.decode(value);
+			value = Mp3Utils.getInstance().decode(value);
 			
 			JLabel lblKey = new JLabel(label);
 			lblKey.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -180,6 +239,14 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		
 		super.setCachedFile(cachedFile);
 	
+		if(Settings.getInstance().getMp3tagsLanguage() == null){
+			Mp3Utils.getInstance().setDecodeStrings(false);
+		}
+		else{
+			Mp3Utils.getInstance().setDecodeStrings(true);
+			Mp3Utils.getInstance().setDecodeLanguage(Settings.getInstance().getMp3tagsLanguage());
+		}
+		
 		panelProperties.removeAll();
 		panelArtwork.removeAll();
 		

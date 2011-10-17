@@ -19,10 +19,8 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 	// for property listeners
 	public static final String PROPERTY_FILE_TO_PLAY = "VideoPreviewPanel_PROPERTY_FILE_TO_PLAY";  //$NON-NLS-1$
 	
-	public VideoPreviewPanel(Settings settings) {
-		
-		setSettings(settings);
-		
+	public VideoPreviewPanel() {
+				
 		setLayout(new BorderLayout(0, 0));
 		
 		JLabel lblVideoFile = new JLabel(Messages.getString("VideoPreviewPanel.videoFile")); //$NON-NLS-1$
@@ -34,7 +32,7 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 		
 		JButton btnPlay = new JButton(Messages.getString("VideoPreviewPanel.play")); //$NON-NLS-1$
 		panel.add(btnPlay);
-		btnPlay.setEnabled(getSettings().isExternalPlayerConfigured());
+		btnPlay.setEnabled(Settings.getInstance().isExternalPlayerConfigured());
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doPlay(e);

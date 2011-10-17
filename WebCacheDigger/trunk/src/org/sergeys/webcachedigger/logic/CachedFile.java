@@ -151,30 +151,30 @@ public class CachedFile extends File {
 	 * @param settings
 	 * @param skipped
 	 */
-	public static ArrayList<CachedFile> filter(ArrayList<CachedFile> files, Settings settings, ArrayList<CachedFile> skipped){
+	public static ArrayList<CachedFile> filter(ArrayList<CachedFile> files, ArrayList<CachedFile> skipped){
 		
 		ArrayList<CachedFile> matched = new ArrayList<CachedFile>();
 				
 		for(CachedFile file: files){
 			if(file.getMimeType().startsWith("audio/"))
 			{
-				if(settings.getActiveFileTypes().contains(FileType.Audio)){
+				if(Settings.getInstance().getActiveFileTypes().contains(FileType.Audio)){
 					matched.add(file);
 				}
 			}
 			else if(file.getMimeType().startsWith("video/"))
 			{
-				if(settings.getActiveFileTypes().contains(FileType.Video)){
+				if(Settings.getInstance().getActiveFileTypes().contains(FileType.Video)){
 					matched.add(file);
 				}
 			}
 			else if(file.getMimeType().startsWith("image/"))
 			{
-				if(settings.getActiveFileTypes().contains(FileType.Image)){
+				if(Settings.getInstance().getActiveFileTypes().contains(FileType.Image)){
 					matched.add(file);
 				}
 			}
-			else if(settings.getActiveFileTypes().contains(FileType.Other))
+			else if(Settings.getInstance().getActiveFileTypes().contains(FileType.Other))
 			{
 				matched.add(file);
 			}

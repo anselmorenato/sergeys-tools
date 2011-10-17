@@ -5,12 +5,12 @@ import java.util.List;
 
 public abstract class AbstractBrowser implements IBrowser {
 
-	protected Settings settings;
+	//protected Settings settings;
 	protected List<File> cachePaths;
 		
-	public void setSettings(Settings settings) {
-		this.settings = settings;
-	}
+//	public void setSettings(Settings settings) {
+//		this.settings = settings;
+//	}
 				
 	public boolean isPresent() {
 		boolean present = false;

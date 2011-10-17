@@ -21,7 +21,6 @@ public class SettingsDialog extends JDialog {
 	private JButton jButtonCancel = null;
 	private SettingsPanel jPanelSettings = null;
 
-	private Settings settings; 
 	
 	/**
 	 * @param owner
@@ -45,9 +44,18 @@ public class SettingsDialog extends JDialog {
 
 	@Override
 	public void setVisible(boolean b) {
-		super.setVisible(b);
 		
-		//pack();
+		
+		
+		
+		if(b){		
+			getJPanelSettings().setSettings();
+									
+			//pack();		
+			//getJPanelSettings().revalidate();
+		}
+		
+		super.setVisible(b);
 	};
 	
 	/**
@@ -141,16 +149,21 @@ public class SettingsDialog extends JDialog {
 	/**
 	 * @param settings the settings to set
 	 */
-	public void setSettings(Settings settings) {
-		this.settings = settings;
-		getJPanelSettings().setSettings(this.settings);
-	}
-
-	/**
-	 * @return the settings
-	 */
-	public Settings getSettings() {
-		settings = getJPanelSettings().getSettings();
-		return settings;
+//	public void setSettings(Settings settings) {
+//		this.settings = settings;
+//		getJPanelSettings().setSettings(this.settings);
+//	}
+//
+//	/**
+//	 * @return the settings
+//	 */
+//	public Settings getSettings() {
+//		settings = getJPanelSettings().getSettings();
+//		return settings;
+//	}
+	
+	public void updateSettings(){
+		getJPanelSettings().updateSettings();
+		
 	}
 }  

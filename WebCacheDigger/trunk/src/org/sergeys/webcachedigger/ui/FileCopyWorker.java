@@ -29,13 +29,13 @@ extends SwingWorker<List<CachedFile>, Integer>
 	private List<CachedFile> files;
 	String targetDir;
 	ProgressDialog pd;
-	Settings settings;
 	
-	public FileCopyWorker(List<CachedFile> files, String targetDir, ProgressDialog pd, Settings settings){
+	
+	public FileCopyWorker(List<CachedFile> files, String targetDir, ProgressDialog pd){
 		this.files = files;
 		this.targetDir = targetDir;
 		this.pd = pd;
-		this.settings = settings;
+		
 	}
 	
 	@Override
@@ -82,7 +82,7 @@ extends SwingWorker<List<CachedFile>, Integer>
 			
 			if(file.isSelectedToCopy()){
 				
-				if(settings.isExcludeAlreadySaved()){
+				if(Settings.getInstance().isExcludeAlreadySaved()){
 					// check for duplicates
 					if(markAsSaved.containsKey(file.getHash())){						
 						SimpleLogger.logMessage(String.format("Duplicate file skipped: %s", file.getName()));
@@ -90,8 +90,11 @@ extends SwingWorker<List<CachedFile>, Integer>
 					}
 				}
 				
-				if(file.getMimeType().equals("audio/mpeg") && settings.isRenameMp3byTags()){					
-					file.setProposedName(Mp3Utils.proposeName(file));					
+				if(file.getMimeType().equals("audio/mpeg") && Settings.getInstance().isRenameMp3byTags()){
+					String proposed = Mp3Utils.getInstance().proposeName(file);
+					if(!proposed.contains("?")){
+						file.setProposedName(proposed);		
+					}
 				}
 				
 				// TODO: we may rename different files with same name but I see no sense in that.
@@ -106,7 +109,7 @@ extends SwingWorker<List<CachedFile>, Integer>
 					
 					FileUtils.copyFile(file.getAbsolutePath(), targetFile);
 		
-					if(settings.isExcludeAlreadySaved()){
+					if(Settings.getInstance().isExcludeAlreadySaved()){
 						markAsSaved.put(file.getHash(), file);
 					}
 					
@@ -132,7 +135,7 @@ extends SwingWorker<List<CachedFile>, Integer>
 			}
 		}
 		
-		if(settings.isExcludeAlreadySaved()){
+		if(Settings.getInstance().isExcludeAlreadySaved()){
 			try {
 				Database.getInstance().updateSaved(markAsSaved.values());
 			} catch (NoSuchAlgorithmException e) {

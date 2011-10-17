@@ -25,12 +25,12 @@ implements IProgressWatcher
 	private long totalCount = 0;
 	private ProgressDialog pd;
 	private int stage;
-	private Settings settings;
+	
 
-	public FileCollectorWorker(List<IBrowser> browsers, ProgressDialog pd, Settings settings) {
+	public FileCollectorWorker(List<IBrowser> browsers, ProgressDialog pd) {
 		this.browsers = browsers;
 		this.pd = pd;
-		this.settings = settings;
+		
 	}
 		
 //	private boolean checkAgainstDatabase(CachedFile file) throws SQLException, NoSuchAlgorithmException, IOException{
@@ -57,7 +57,7 @@ implements IProgressWatcher
 		
 		SimpleLogger.logMessage("collected files: " + cacheFiles.size()); //$NON-NLS-1$
 		
-		if(settings.isExcludeAlreadySaved()){
+		if(Settings.getInstance().isExcludeAlreadySaved()){
 			// exclude saved files with same absolute path and timestamp
 			cacheFiles = Database.getInstance().filterSavedByFilesystem(cacheFiles);
 			SimpleLogger.logMessage("not yet copied files: " + cacheFiles.size());
@@ -77,11 +77,11 @@ implements IProgressWatcher
 		}
 		Database.getInstance().insertUpdateMimeTypes(cacheFiles);
 						
-		cacheFiles = CachedFile.filter(cacheFiles, settings, null);
-		knownFiles = CachedFile.filter(knownFiles, settings, null);
+		cacheFiles = CachedFile.filter(cacheFiles, null);
+		knownFiles = CachedFile.filter(knownFiles, null);
 		
 		
-		if(settings.isExcludeAlreadySaved()){
+		if(Settings.getInstance().isExcludeAlreadySaved()){
 			stage = ProgressDialog.STAGE_FILTER_HASH;
 			totalCount = 0;
 			publish(totalCount);

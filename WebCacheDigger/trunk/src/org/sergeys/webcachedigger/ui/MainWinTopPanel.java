@@ -22,16 +22,15 @@ public class MainWinTopPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private WebCacheDigger wcd;
-	
+	//private WebCacheDigger wcd;
+		
 	/**
 	 * Create the panel.
 	 * @throws IOException 
 	 */
 	public MainWinTopPanel(WebCacheDigger wcd) throws IOException {
 		
-		this.wcd = wcd;
+		//this.wcd = wcd;
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
@@ -83,8 +82,8 @@ public class MainWinTopPanel extends JPanel {
 			JLabel lblSingleBrowser = new JLabel(b.getScreenName());
 			lblSingleBrowser.setIcon(b.getIcon());
 			panelBrowsers.add(lblSingleBrowser);
-			wcd.getSettings().getActiveBrowsers().clear();
-			wcd.getSettings().getActiveBrowsers().add(b.getName());
+			Settings.getInstance().getActiveBrowsers().clear();
+			Settings.getInstance().getActiveBrowsers().add(b.getName());
 		}		
 		else{
 			// add buttons for existing browsers
@@ -98,7 +97,7 @@ public class MainWinTopPanel extends JPanel {
 				});
 				toggle.setIcon(browser.getIcon());
 				
-				if(wcd.getSettings().getActiveBrowsers().contains(browser.getName())){
+				if(Settings.getInstance().getActiveBrowsers().contains(browser.getName())){
 					toggle.setSelected(true);
 				}
 				
@@ -131,7 +130,7 @@ public class MainWinTopPanel extends JPanel {
 				doToggleMedia(e);
 			}
 		});
-		tglbtnAudio.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Audio));
+		tglbtnAudio.setSelected(Settings.getInstance().getActiveFileTypes().contains(Settings.FileType.Audio));
 		panel_1.add(tglbtnAudio);
 		
 		JToggleButton tglbtnVideo = new JToggleButton(Messages.getString("MainWinTopPanel.Video")); //$NON-NLS-1$
@@ -141,7 +140,7 @@ public class MainWinTopPanel extends JPanel {
 				doToggleMedia(e);
 			}
 		});
-		tglbtnVideo.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Video));
+		tglbtnVideo.setSelected(Settings.getInstance().getActiveFileTypes().contains(Settings.FileType.Video));
 		panel_1.add(tglbtnVideo);
 		
 		JToggleButton tglbtnImages = new JToggleButton(Messages.getString("MainWinTopPanel.Images")); //$NON-NLS-1$
@@ -151,7 +150,7 @@ public class MainWinTopPanel extends JPanel {
 				doToggleMedia(e);
 			}
 		});
-		tglbtnImages.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Image));
+		tglbtnImages.setSelected(Settings.getInstance().getActiveFileTypes().contains(Settings.FileType.Image));
 		panel_1.add(tglbtnImages);
 		
 		JToggleButton tglbtnOther = new JToggleButton(Messages.getString("MainWinTopPanel.Other")); //$NON-NLS-1$
@@ -161,7 +160,7 @@ public class MainWinTopPanel extends JPanel {
 				doToggleMedia(e);
 			}
 		});
-		tglbtnOther.setSelected(wcd.getSettings().getActiveFileTypes().contains(Settings.FileType.Other));
+		tglbtnOther.setSelected(Settings.getInstance().getActiveFileTypes().contains(Settings.FileType.Other));
 		panel_1.add(tglbtnOther);
 
 	}
@@ -171,10 +170,10 @@ public class MainWinTopPanel extends JPanel {
 		String name = btn.getName();	// browser name
 		Settings.FileType type = Enum.valueOf(Settings.FileType.class, name);
 		if(btn.isSelected()){				
-			wcd.getSettings().getActiveFileTypes().add(type);				
+			Settings.getInstance().getActiveFileTypes().add(type);				
 		}
 		else{
-			wcd.getSettings().getActiveFileTypes().remove(type);				
+			Settings.getInstance().getActiveFileTypes().remove(type);				
 		}
 		
 	}
@@ -183,10 +182,10 @@ public class MainWinTopPanel extends JPanel {
 		JToggleButton btn = (JToggleButton)e.getSource();
 		String name = btn.getName();	// browser name
 		if(btn.isSelected()){				
-			wcd.getSettings().getActiveBrowsers().add(name);				
+			Settings.getInstance().getActiveBrowsers().add(name);				
 		}
 		else{
-			wcd.getSettings().getActiveBrowsers().remove(name);
+			Settings.getInstance().getActiveBrowsers().remove(name);
 		}				
 	}
 

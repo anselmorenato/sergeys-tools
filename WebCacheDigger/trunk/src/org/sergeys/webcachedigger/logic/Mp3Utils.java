@@ -4,8 +4,11 @@ import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.Properties;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -18,34 +21,79 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 public class Mp3Utils {
 	
 	// http://download.oracle.com/javase/6/docs/technotes/guides/intl/encoding.doc.html
-	private static Charset charset8859_1 = null;
-	private static Charset charsetFixed = null;
+	private Charset charset8859_1 = null;
+	private Charset charsetFixed = null;
+	private boolean decodeStrings = false;
 	
-	static{
+	private Properties charsetByLang;
+	
+	private static Mp3Utils instance;
+	
+	// singletion
+	private Mp3Utils(){
 		try{
 			charset8859_1 = Charset.forName("ISO-8859-1");
+			charsetFixed = charset8859_1; 
+			
+			InputStream is = getClass().getResourceAsStream("/resources/charsetByLanguage.properties");
+			charsetByLang = new Properties();
+			try {
+				charsetByLang.load(is);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}				
+
 		}
 		catch(Exception ex){
 			SimpleLogger.logMessage("Cannot instantiate Charset for ISO-8859-1");			 
 		}
 		
-		try{
-			charsetFixed = Charset.forName("windows-1251"); 
-		}
-		catch(Exception ex){
-			SimpleLogger.logMessage("Cannot instantiate Charset for windows-1251");			 
+	}
+	
+	public static Mp3Utils getInstance(){
+		return instance;
+	}
+	
+	static{		
+		instance = new Mp3Utils();				
+	}
+
+	/**
+	 * See http://download.oracle.com/javase/6/docs/technotes/guides/intl/encoding.doc.html
+	 * for encoding names
+	 * 
+	 * @param encoding
+	 */
+	protected void setDecodeCharset(String encoding){		
+		//charsetFixed = Charset.forName("windows-1251"); 			
+		charsetFixed = Charset.forName(encoding);
+	}
+	
+	public void setDecodeLanguage(String lang){
+		if(charsetByLang.containsKey(lang)){
+			setDecodeCharset(charsetByLang.getProperty(lang));			
 		}
 	}
 
-	public static String decode(String src){		
+	public Set<Object> getDecodingLanguages(){
+		return charsetByLang.keySet();
+	}
+	
+	public String decode(String src){		
 
-		ByteBuffer bb = Mp3Utils.charset8859_1.encode(src);
-		String res = Mp3Utils.charsetFixed.decode(bb).toString();	// TODO: see EncodedText, seems trailing zero can occur
-		
-		return res;
+		if(decodeStrings){
+			ByteBuffer bb = charset8859_1.encode(src);
+			String res = charsetFixed.decode(bb).toString();	// TODO: see EncodedText, seems trailing zero can occur
+			return res;
+		}
+		else{
+			return src;
+		}
+				
 	}
 
-	public static Image getArtwork(File file){
+	public Image getArtwork(File file){
 		Mp3File mp3;
 		try {
 			mp3 = new Mp3File(file.getAbsolutePath());
@@ -68,7 +116,7 @@ public class Mp3Utils {
 		return null;
 	}
 	
-	public static String proposeName(File file){
+	public String proposeName(File file){
 		String newName = "";
 		
 		try {
@@ -148,5 +196,13 @@ public class Mp3Utils {
 		
 		
 		return newName;
+	}
+
+	public boolean isDecodeStrings() {
+		return decodeStrings;
+	}
+
+	public void setDecodeStrings(boolean decodeStrings) {
+		this.decodeStrings = decodeStrings;
 	}
 }

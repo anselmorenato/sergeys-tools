@@ -65,7 +65,7 @@ implements ActionListener, PropertyChangeListener
 	private FileDetailsPanel jPanelFileDetails = null;
 	private JMenuItem jMenuItemSettings = null;
 	
-	private Settings settings;  
+//	private Settings settings;  
 	
 	/**
 	 * This method initializes jPanelFoundFiles	
@@ -108,7 +108,7 @@ implements ActionListener, PropertyChangeListener
 			jButtonCopySelectedFiles.setEnabled(false);
 			jButtonCopySelectedFiles.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					String targetDir = settings.getSaveToPath();
+					String targetDir = Settings.getInstance().getSaveToPath();
 					int count = WebCacheDigger.this.doCopyFiles(targetDir);
 					
 					if(count > 0){
@@ -205,7 +205,7 @@ implements ActionListener, PropertyChangeListener
 	 */
 	private FileDetailsPanel getJPanelFileDetails() {
 		if (jPanelFileDetails == null) {
-			jPanelFileDetails = new FileDetailsPanel(this, getSettings());						
+			jPanelFileDetails = new FileDetailsPanel(this);						
 		}
 		return jPanelFileDetails;
 	}
@@ -248,8 +248,9 @@ implements ActionListener, PropertyChangeListener
 				}
 												
 				final WebCacheDigger application = new WebCacheDigger();
-				Locale l = new Locale(application.getSettings().getLanguage());
-				Messages.setLocale(l);
+				Locale l = new Locale(Settings.getInstance().getLanguage());
+				Locale.setDefault(l);
+				//Messages.setLocale(l);
 				
 				JFrame mainWindow = application.getJFrame(); 
 				
@@ -261,18 +262,18 @@ implements ActionListener, PropertyChangeListener
 				int w = mainWindow.getWidth();
 				int h = mainWindow.getHeight();
 				int divpos = application.getJSplitPaneMain().getDividerLocation();
-				x = application.getSettings().getIntProperty(Settings.WINDOW_X, x);
-				y = application.getSettings().getIntProperty(Settings.WINDOW_Y, y);
-				w = application.getSettings().getIntProperty(Settings.WINDOW_W, w);
-				h = application.getSettings().getIntProperty(Settings.WINDOW_H, h);
-				divpos = application.getSettings().getIntProperty(Settings.SPLITTER_POS, divpos); 				
+				x = Settings.getInstance().getIntProperty(Settings.WINDOW_X, x);
+				y = Settings.getInstance().getIntProperty(Settings.WINDOW_Y, y);
+				w = Settings.getInstance().getIntProperty(Settings.WINDOW_W, w);
+				h = Settings.getInstance().getIntProperty(Settings.WINDOW_H, h);
+				divpos = Settings.getInstance().getIntProperty(Settings.SPLITTER_POS, divpos); 				
 				
 				mainWindow.setLocation(x, y);
 				mainWindow.setSize(w, h);
 				application.getJSplitPaneMain().setDividerLocation(divpos);
 				mainWindow.setVisible(true);
 				
-				if(application.getSettings().isFirstRun()){
+				if(Settings.getInstance().isFirstRun()){
 					// add some defaults
 //					application.getSettings().setMinFileSizeBytes(500000);
 //					application.getSettings().setExternalPlayerCommand("vlc " + Settings.EXT_PLAYER_FILEPATH); 
@@ -435,7 +436,7 @@ implements ActionListener, PropertyChangeListener
 		try {
 						
 			if(progressDialog == null){
-				progressDialog = new ProgressDialog(getSettings(), getExistingBrowsers());
+				progressDialog = new ProgressDialog(getExistingBrowsers());
 				progressDialog.addPropertyChangeListener(this);
 			}
 			
@@ -490,7 +491,7 @@ implements ActionListener, PropertyChangeListener
 		}
 		
 		SettingsDialog dlg = getSettingsDialog();
-		dlg.setSettings(getSettings());
+		//dlg.setSettings(getSettings());
 		dlg.setVisible(true);
 	}
 
@@ -498,28 +499,32 @@ implements ActionListener, PropertyChangeListener
 	 * @return the settings
 	 * @throws IOException 
 	 */
-	public Settings getSettings() {
-		if(settings == null){
-			settings = Settings.load();
-		}
-		
-		return settings;
-	}
+//	public Settings getSettings() {
+//		if(settings == null){
+//			settings = Settings.load();
+//		}
+//		
+//		return settings;
+//	}
 
 	/**
 	 * @param settings the settings to set
 	 */
-	public void setSettings(Settings settings) {
-		this.settings = settings;
-	}
+//	public void setSettings(Settings settings) {
+//		this.settings = settings;
+//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == Settings.COMMAND_SAVE_SETTINGS){
-			setSettings(getSettingsDialog().getSettings());
+			//setSettings(getSettingsDialog().getSettings());
 			try {
 				//getSettings().save();
-				Settings.save(getSettings());
+				//Settings.save(getSettings());
+				
+				getSettingsDialog().updateSettings();
+				Settings.getInstance().save();
+				
 			} catch (IOException e1) {
 				JOptionPane.showMessageDialog(getJFrame(), 
 						String.format(Messages.getString("WebCacheDigger.FailedToSaveSettings"), Settings.getSettingsFilePath(), e1.getMessage()),  //$NON-NLS-1$
@@ -536,7 +541,7 @@ implements ActionListener, PropertyChangeListener
 		try {
 			
 			if(progressDialog == null){
-				progressDialog = new ProgressDialog(getSettings(), getExistingBrowsers());
+				progressDialog = new ProgressDialog(getExistingBrowsers());
 				progressDialog.addPropertyChangeListener(this);
 			}
 								
@@ -624,13 +629,13 @@ implements ActionListener, PropertyChangeListener
 		// save window position
 		JFrame mainWindow = getJFrame();
 		try {
-			getSettings().setIntProperty(Settings.WINDOW_X, mainWindow.getX());
-			getSettings().setIntProperty(Settings.WINDOW_Y, mainWindow.getY());
-			getSettings().setIntProperty(Settings.WINDOW_W, mainWindow.getWidth());
-			getSettings().setIntProperty(Settings.WINDOW_H, mainWindow.getHeight());
-			getSettings().setIntProperty(Settings.SPLITTER_POS, getJSplitPaneMain().getDividerLocation());
-			//getSettings().save();
-			Settings.save(getSettings());
+			Settings.getInstance().setIntProperty(Settings.WINDOW_X, mainWindow.getX());
+			Settings.getInstance().setIntProperty(Settings.WINDOW_Y, mainWindow.getY());
+			Settings.getInstance().setIntProperty(Settings.WINDOW_W, mainWindow.getWidth());
+			Settings.getInstance().setIntProperty(Settings.WINDOW_H, mainWindow.getHeight());
+			Settings.getInstance().setIntProperty(Settings.SPLITTER_POS, getJSplitPaneMain().getDividerLocation());
+
+			Settings.getInstance().save();
 		} catch (IOException e) {			
 			e.printStackTrace();
 		}
@@ -671,7 +676,7 @@ implements ActionListener, PropertyChangeListener
 				current.removeAll(copied);
 				getFilesListPanel().filesListChanged();
 				
-				String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), copied.size(), settings.getSaveToPath()); //$NON-NLS-1$
+				String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), copied.size(), Settings.getInstance().getSaveToPath()); //$NON-NLS-1$
 				
 				JOptionPane.showMessageDialog(getJFrame(), 					 
 						msg,
@@ -690,12 +695,12 @@ implements ActionListener, PropertyChangeListener
 	
 	private void doExternalPlayer(final CachedFile f) {		
 		// TODO: run in background
-		if(getSettings().isExternalPlayerConfigured()){
+		if(Settings.getInstance().isExternalPlayerConfigured()){
 			SwingWorker<Void, Void> w = new SwingWorker<Void, Void>(){
 
 				@Override
 				protected Void doInBackground() throws Exception {
-					final String cmdLine = getSettings().getExternalPlayerCommand();
+					final String cmdLine = Settings.getInstance().getExternalPlayerCommand();
 					
 //final String cmdLine = "\"c:\\tmp\\sub dir\\runq.cmd\" %f";
 //cmdLine = "f:\\bin32\\vlc\\flc.exe %f";
@@ -803,7 +808,7 @@ implements ActionListener, PropertyChangeListener
 			
 			ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
 			for(IBrowser browser : ldr){
-				browser.setSettings(getSettings());
+				//browser.setSettings(getSettings());
 				//SimpleLogger.logMessage("Can handle " + browser.getName());   
 				if(browser.isPresent()){
 					existingBrowsers.add(browser);
@@ -833,7 +838,7 @@ implements ActionListener, PropertyChangeListener
 		for(int i = 0; i<lang.length; i++){
 			Locale loc = new Locale(lang[i]);
 			JRadioButtonMenuItem mi = new JRadioButtonMenuItem(loc.getDisplayLanguage());
-			String s = getSettings().getLanguage();
+			String s = Settings.getInstance().getLanguage();
 			
 			if(s.equals(loc.getLanguage())){
 				mi.setSelected(true);
@@ -864,8 +869,8 @@ implements ActionListener, PropertyChangeListener
 
 
 	protected void doLanguageSelected(ActionEvent e) {
-		getSettings().setLanguage(e.getActionCommand());
-		Locale l = new Locale(getSettings().getLanguage());
+		Settings.getInstance().setLanguage(e.getActionCommand());
+		Locale l = new Locale(Settings.getInstance().getLanguage());
 		Messages.setLocale(l);
 		JOptionPane.showMessageDialog(this.getJContentPane(), Messages.getString("WebCacheDigger.RestartAppForNewLanguage")); //$NON-NLS-1$
 	}

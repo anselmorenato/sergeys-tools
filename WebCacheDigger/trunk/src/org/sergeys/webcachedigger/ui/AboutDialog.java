@@ -31,7 +31,7 @@ import org.sergeys.webcachedigger.logic.SimpleLogger;
 
 public class AboutDialog extends JDialog {
 
-	private String version = "16 Oct 2011"; //$NON-NLS-1$
+	private String version = "17 Oct 2011"; //$NON-NLS-1$
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
