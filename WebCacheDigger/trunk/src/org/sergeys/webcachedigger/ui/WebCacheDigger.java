@@ -250,7 +250,6 @@ implements ActionListener, PropertyChangeListener
 				final WebCacheDigger application = new WebCacheDigger();
 				Locale l = new Locale(Settings.getInstance().getLanguage());
 				Locale.setDefault(l);
-				//Messages.setLocale(l);
 				
 				JFrame mainWindow = application.getJFrame(); 
 				
@@ -274,9 +273,6 @@ implements ActionListener, PropertyChangeListener
 				mainWindow.setVisible(true);
 				
 				if(Settings.getInstance().isFirstRun()){
-					// add some defaults
-//					application.getSettings().setMinFileSizeBytes(500000);
-//					application.getSettings().setExternalPlayerCommand("vlc " + Settings.EXT_PLAYER_FILEPATH); 
 					application.editSettings(true);
 				}
 				
@@ -409,10 +405,6 @@ implements ActionListener, PropertyChangeListener
 			aboutMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					JDialog aboutDialog = getAboutDialog();
-					//aboutDialog.pack();
-					//Point loc = getJFrame().getLocation();
-					//loc.translate(20, 20);
-					//aboutDialog.setLocation(loc);
 					aboutDialog.setLocationRelativeTo(getJContentPane());
 					aboutDialog.setVisible(true);
 				}
@@ -448,15 +440,6 @@ implements ActionListener, PropertyChangeListener
 			
 			progressDialog.setLocationRelativeTo(getJContentPane());
 			progressDialog.setVisible(true);
-						
-			// http://www.medsea.eu/mime-util/detectors.html
-			
-//			String msg = String.format("Total files: %d", files.size());
-//			
-//			JOptionPane.showMessageDialog(getJFrame(), 					 
-//					msg,
-//					"Message", 
-//					JOptionPane.INFORMATION_MESSAGE);
 			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(getJFrame(), 
@@ -467,7 +450,7 @@ implements ActionListener, PropertyChangeListener
 	}
 	
 	public void updateCachedFiles(ArrayList<CachedFile> files){
-		//getJContentPane().setEnabled(true);
+
 		getFilesListPanel().setEnabled(true);
 		getFilesListPanel().init(files);
 		progressDialog.setVisible(false);
@@ -477,7 +460,6 @@ implements ActionListener, PropertyChangeListener
 	private SettingsDialog getSettingsDialog(){
 		if(settingsDialog == null){
 			settingsDialog = new SettingsDialog(this.getJFrame());
-			//settingsDialog.pack();
 			settingsDialog.addSaveActionListener(this);
 		}
 		settingsDialog.setLocationRelativeTo(getJContentPane());
@@ -491,41 +473,18 @@ implements ActionListener, PropertyChangeListener
 		}
 		
 		SettingsDialog dlg = getSettingsDialog();
-		//dlg.setSettings(getSettings());
+
 		dlg.setVisible(true);
 	}
 
-	/**
-	 * @return the settings
-	 * @throws IOException 
-	 */
-//	public Settings getSettings() {
-//		if(settings == null){
-//			settings = Settings.load();
-//		}
-//		
-//		return settings;
-//	}
-
-	/**
-	 * @param settings the settings to set
-	 */
-//	public void setSettings(Settings settings) {
-//		this.settings = settings;
-//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == Settings.COMMAND_SAVE_SETTINGS){
-			//setSettings(getSettingsDialog().getSettings());
+			
 			try {
-				//getSettings().save();
-				//Settings.save(getSettings());
-				
 				getSettingsDialog().updateSettings();
-				//Settings.getInstance();
-				Settings.save();
-				
+				Settings.save();				
 			} catch (IOException e1) {
 				JOptionPane.showMessageDialog(getJFrame(), 
 						String.format(Messages.getString("WebCacheDigger.FailedToSaveSettings"), Settings.getSettingsFilePath(), e1.getMessage()),  //$NON-NLS-1$
@@ -561,69 +520,7 @@ implements ActionListener, PropertyChangeListener
 					JOptionPane.ERROR_MESSAGE);
 		}
 		
-		return copied;
-		
-		
-//		int copied = 0;
-//		
-//		ArrayList<CachedFile> markAsSaved = new ArrayList<CachedFile>();
-//		
-//		for(CachedFile file: getFilesListPanel().getCachedFiles()){
-//			if(file.isSelectedToCopy()){
-//				//String targetFile = targetDir + File.separator + file.getName();
-//				String targetFile = targetDir + File.separator + file.getProposedName();
-//				if(file.guessExtension() != null){
-//					targetFile = targetFile + "." + file.guessExtension();  //$NON-NLS-1$
-//				}
-//				try {
-//					//CachedFile.copyFile(file.getAbsolutePath(), targetFile);
-//					FileUtils.copyFile(file.getAbsolutePath(), targetFile);
-//		
-//					if(getSettings().isExcludeAlreadySaved()){
-//						try {
-//							file.getHash();	// calculate hash here to indicate smooth progress
-//						} catch (NoSuchAlgorithmException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						} 
-//						markAsSaved.add(file);
-//					}
-//					
-//					// TODO: java 7
-//					//Files.copy(file.getAbsolutePath(), targetFile, );
-//					
-//					copied++;
-//				} catch (IOException e) {
-//					
-//					String msg = String.format("Failed to copy file from 's' to 's':\n\n%s\n\nContinue to copy other selected files, if present?", e.getMessage());  
-//					if(JOptionPane.NO_OPTION ==
-//					JOptionPane.showConfirmDialog(getJFrame(), 
-//							msg, 
-//							"Failed to copy",  
-//							JOptionPane.YES_NO_OPTION, 
-//							JOptionPane.ERROR_MESSAGE)){
-//						break;
-//					}
-//				}
-//			}
-//		}
-//		
-//		if(getSettings().isExcludeAlreadySaved()){
-//			try {
-//				Database.getInstance().setSaved(markAsSaved);
-//			} catch (NoSuchAlgorithmException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (SQLException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//		return copied;
+		return copied;		
 	}
 
 	private void exit(){
@@ -636,7 +533,6 @@ implements ActionListener, PropertyChangeListener
 			Settings.getInstance().setIntProperty(Settings.WINDOW_H, mainWindow.getHeight());
 			Settings.getInstance().setIntProperty(Settings.SPLITTER_POS, getJSplitPaneMain().getDividerLocation());
 
-			//Settings.getInstance().save();
 			Settings.save();
 		} catch (IOException e) {			
 			e.printStackTrace();
@@ -696,7 +592,7 @@ implements ActionListener, PropertyChangeListener
 	}
 	
 	private void doExternalPlayer(final CachedFile f) {		
-		// TODO: run in background
+
 		if(Settings.getInstance().isExternalPlayerConfigured()){
 			SwingWorker<Void, Void> w = new SwingWorker<Void, Void>(){
 
@@ -704,8 +600,6 @@ implements ActionListener, PropertyChangeListener
 				protected Void doInBackground() throws Exception {
 					final String cmdLine = Settings.getInstance().getExternalPlayerCommand();
 					
-//final String cmdLine = "\"c:\\tmp\\sub dir\\runq.cmd\" %f";
-//cmdLine = "f:\\bin32\\vlc\\flc.exe %f";
 					
 					// http://www.regexplanet.com/simple/index.html
 					Pattern p = Pattern.compile("\"[^\"]+\"|[^\"\\s]+");					 //$NON-NLS-1$
@@ -733,11 +627,9 @@ implements ActionListener, PropertyChangeListener
 					for(int i = 0; i<tokens.size(); i++){
 						if(tokens.get(i).startsWith("\"")){   //$NON-NLS-1$
 							args[i] = tokens.get(i).substring(1, tokens.get(i).length()-1);
-							//args[i] = tokens.get(i);
 						}
 						else if(tokens.get(i).equals(Settings.EXT_PLAYER_FILEPATH)){
 							args[i] = f.getAbsolutePath();
-//args[i] = "\"c:\\tmp\\sub dir\\1.mp3\""; 							
 						}
 						else{
 							args[i] = tokens.get(i);
@@ -782,21 +674,6 @@ implements ActionListener, PropertyChangeListener
 			w.execute();
 		}
 		
-//		String cmdLine;
-//		try {
-//			
-//			String fmt = cmdLine.replaceAll(Settings.EXT_PLAYER_FILEPATH, "%s");
-//			cmdLine = String.format(fmt, f.getAbsolutePath());
-//			
-//			SimpleLogger.logMessage(cmdLine);
-//		    @SuppressWarnings("unused")
-//			Process process = Runtime.getRuntime().exec(cmdLine);        
-//		    //process.waitFor();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}			
-
 	}
 
 	private LinkedHashSet<IBrowser> existingBrowsers = null;
@@ -810,8 +687,6 @@ implements ActionListener, PropertyChangeListener
 			
 			ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
 			for(IBrowser browser : ldr){
-				//browser.setSettings(getSettings());
-				//SimpleLogger.logMessage("Can handle " + browser.getName());   
 				if(browser.isPresent()){
 					existingBrowsers.add(browser);
 					SimpleLogger.logMessage("Found " + browser.getName());					   //$NON-NLS-1$
@@ -861,7 +736,6 @@ implements ActionListener, PropertyChangeListener
 	private JMenu getMnLanguage() {
 		if (mnLanguage == null) {
 			mnLanguage = new JMenu(Messages.getString("WebCacheDigger.Language")); //$NON-NLS-1$
-			//mnLanguage.add(getMntmEnglish());
 			
 			createLanguagesMenu(mnLanguage);
 		}

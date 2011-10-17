@@ -47,5 +47,6 @@
      </application-desc>
      
      <update check="timeout" policy="always"/>
-     <!--  update check='background'/ -->
+     <!-- update check="background" policy="prompt-update"/ -->
+     
 </jnlp>
