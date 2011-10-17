@@ -6,6 +6,10 @@ import java.util.Properties;
 import java.util.Set;
 
 public class ComparePropertyFiles {
+	
+	// TODO: add arguments to automatically add new props and remove unused props from target files
+	// TODO: accept more target files
+	
 	public static void main(String[] args) {
 		
 		if(args.length != 2){
