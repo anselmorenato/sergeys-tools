@@ -3,15 +3,23 @@
 
 = Introduction =
 
-Here is the test page for WebCacheDigger.
+WebCacheDigger: ищет и сохраняет музыку, видео, картинки и прочее из браузеров.
+
+Работает на Windows XP, 7, Linux, MacOS X.
+
+Браузеры: Firefox, Chrome, Opera везде и Internet Explorer на Windows.
+
+Требования: Java 1.6 и выше, 32 или 64 бит - все равно.
+
+Если не уверены, что java установлена, сходите на http://java.com и проверьте:
+
+[http://java.com/en/download/installed.jsp?detect=jre&try=1 Проверить]
+
+оттуда же её и установите, если что.
 
 
-= Details =
+= Run =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-  * Hyperlink to .jnlp file? Is it possible to add files to the wiki?
+Если java установлена, запускайте и пользуйтесь:
 
 [http://sergeys-tools.googlecode.com/files/wcd.jnlp WebStart]
