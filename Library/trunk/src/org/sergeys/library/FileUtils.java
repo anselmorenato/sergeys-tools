@@ -1,9 +1,11 @@
 package org.sergeys.library;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,6 +96,26 @@ public abstract class FileUtils {
 		//InputStream is = new BufferedInputStream(new FileInputStream(file));
 		//InputStream is = new BufferedInputStream(new FileInputStream(file), Integer.MAX_VALUE);
 		InputStream is = new BufferedInputStream(new FileInputStream(file), bufferSize);
+		String md5 = md5hash(is);
+		is.close();
+		return md5;
+	}
+	
+	/**
+	 * Calculate hash for only part of file
+	 * 
+	 * @param file
+	 * @param length
+	 * @return
+	 * @throws FileNotFoundException 
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException
+	 */
+	public static String md5hashPartial(File file, int length) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
+				
+		byte[] buf = new byte[length]; 
+		new FileInputStream(file).read(buf);
+		InputStream is = new ByteArrayInputStream(buf);
 		String md5 = md5hash(is);
 		is.close();
 		return md5;
