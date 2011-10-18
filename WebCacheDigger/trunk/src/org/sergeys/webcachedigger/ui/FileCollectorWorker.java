@@ -26,17 +26,10 @@ implements IProgressWatcher
 	private ProgressDialog pd;
 	private int stage;
 	
-
 	public FileCollectorWorker(List<IBrowser> browsers, ProgressDialog pd) {
 		this.browsers = browsers;
-		this.pd = pd;
-		
-	}
-		
-//	private boolean checkAgainstDatabase(CachedFile file) throws SQLException, NoSuchAlgorithmException, IOException{
-//		return settings.isExcludeAlreadySaved() ? (! Database.getInstance().isSaved(file)) : true;
-//	}
-	
+		this.pd = pd;	
+	}	
 	
 	@Override
 	protected ArrayList<CachedFile> doInBackground() throws Exception {
@@ -78,8 +71,7 @@ implements IProgressWatcher
 		Database.getInstance().insertUpdateMimeTypes(cacheFiles);
 						
 		cacheFiles = CachedFile.filter(cacheFiles, null);
-		knownFiles = CachedFile.filter(knownFiles, null);
-		
+		knownFiles = CachedFile.filter(knownFiles, null);		
 		
 		if(Settings.getInstance().isExcludeAlreadySaved()){
 			stage = ProgressDialog.STAGE_FILTER_HASH;

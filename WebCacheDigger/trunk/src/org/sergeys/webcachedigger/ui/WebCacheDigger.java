@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -35,6 +36,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
+import org.sergeys.library.rss.Feed;
+import org.sergeys.library.rss.RssFeedParser;
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.Messages;
@@ -248,6 +251,7 @@ implements ActionListener, PropertyChangeListener
 				}
 												
 				final WebCacheDigger application = new WebCacheDigger();
+//System.out.println("language " + Settings.getInstance().getLanguage());				
 				Locale l = new Locale(Settings.getInstance().getLanguage());
 				Locale.setDefault(l);
 				
@@ -274,6 +278,33 @@ implements ActionListener, PropertyChangeListener
 				
 				if(Settings.getInstance().isFirstRun()){
 					application.editSettings(true);
+				}
+				else{
+					// show what's changed
+					String resName = "/resources/changes_" + Locale.getDefault().getLanguage() + ".xml";					
+					InputStream is = getClass().getResourceAsStream(resName);
+					if(is == null){
+						is = getClass().getResourceAsStream("/resources/changes.xml");						
+					}
+					
+					if(is != null){
+						//RssFeedParser parser = new RssFeedParser(is, "EEE, d MMM yyyy HH:mm:ss Z");
+						RssFeedParser parser = new RssFeedParser(is, "d MMM yyyy HH:mm");
+						Feed changes = parser.readFeed();
+						
+//						for(FeedMessage msg: changes.getMessages()){
+//							System.out.println(msg.getPubDate() + " " + msg.getDescription());
+//						}
+						
+						if(changes.getPubDate().after(Settings.getInstance().getSavedVersion())){						
+							ChangesDialog chdlg = new ChangesDialog(mainWindow);
+							chdlg.setLocationRelativeTo(mainWindow);
+							chdlg.createText(changes);
+							chdlg.setModal(true);
+							chdlg.setVisible(true);
+						}
+						
+					}															
 				}
 				
 				DatabaseCleanerWorker dbcleaner = new DatabaseCleanerWorker();

@@ -1,11 +1,10 @@
 package org.sergeys.webcachedigger.ui;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import org.sergeys.webcachedigger.logic.Database;
@@ -21,15 +20,11 @@ extends SwingWorker<List<File>, Integer>
 		
 		try {
 			Database.getInstance().removeByName(get());
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 	}
 

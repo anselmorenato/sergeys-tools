@@ -27,11 +27,10 @@ import javax.swing.event.HyperlinkListener;
 
 import org.sergeys.library.swing.SystemPropertiesTable;
 import org.sergeys.webcachedigger.logic.Messages;
+import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 
 public class AboutDialog extends JDialog {
-
-	private String version = "17 Oct 2011"; //$NON-NLS-1$
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
@@ -156,7 +155,7 @@ public class AboutDialog extends JDialog {
 			jLabelVersion = new JLabel();
 			//jLabelVersion.setText("Dec 2 2009: " + CachedFile.junkMessage());
 			//jLabelVersion.setText("Dec 26 2009");
-			jLabelVersion.setText(version);
+			jLabelVersion.setText(Settings.getInstance().getVersionDisplay());
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.gridx = 0;
 			gridBagConstraints1.gridy = 0;
