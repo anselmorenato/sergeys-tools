@@ -53,7 +53,15 @@ public class CachedFile extends File {
 	public void detectHash() throws NoSuchAlgorithmException, IOException{
 //		SimpleLogger.logMessage("calculating md5 for " + this.getName());			
 		//hash = FileUtils.md5hash(this, 1024 * 1024); // not too smooth		
-		hash = FileUtils.md5hash(this, 512 * 512);
+		
+		switch(Settings.getInstance().getCompareFilesMethod()){
+		case Fast:
+			hash = FileUtils.md5hashPartial(this, 1024);
+			break;
+		case Full:
+			hash = FileUtils.md5hash(this, 512 * 512);
+		}
+		
 	}
 	
 	public String getHash() {

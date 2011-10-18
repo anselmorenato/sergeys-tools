@@ -18,6 +18,7 @@ public class Settings
 extends Properties 
 {
 	public enum FileType { Image, Audio, Video, Other };
+	public enum CompareFilesType { Fast, Full };
 	
 	/**
 	 * 
@@ -50,15 +51,15 @@ extends Properties
 
 	// Settings edited by user, as get/set
 	private String saveToPath;
-	private long minFileSizeBytes;
+	//private long minFileSizeBytes;
+	private long minFileSizeBytes = 500000;
 	private String externalPlayerCommand;
 	private String language; // language code for Locale class
-	private boolean renameMp3byTags;
-	private boolean excludeAlreadySaved;
+	private boolean renameMp3byTags = true;
+	private boolean excludeAlreadySaved = false;
 	private String mp3tagsLanguage;
-	
-	private HashSet<String> activeBrowsers = new HashSet<String>();	// browser names
-	
+	private CompareFilesType compareFilesMethod = CompareFilesType.Fast;	
+	private HashSet<String> activeBrowsers = new HashSet<String>();	// browser names	
 	private EnumSet<FileType> activeFileTypes = EnumSet.noneOf(FileType.class); 
 	
 	private boolean firstRun = true;
@@ -147,14 +148,26 @@ extends Properties
 		}
 	}
 	
+	/**
+	 * If forceAll, then all reset to default values.
+	 * If not, only illegal values are set to defaults.
+	 * 
+	 * @param forceAll
+	 */
 	private void setDefaults(){
-		minFileSizeBytes = 500000;		
+		
+		//minFileSizeBytes = 500000;				
 		language = Locale.getDefault().getLanguage();
-		activeFileTypes = EnumSet.allOf(FileType.class);
-		renameMp3byTags = true;
-		excludeAlreadySaved = false;
+		activeFileTypes.clear();
+		activeFileTypes.add(FileType.Audio);
+		activeFileTypes.add(FileType.Video);
+		
+		//renameMp3byTags = true;
+		//excludeAlreadySaved = false;
 		language = Locale.getDefault().getLanguage();
 		
+		//compareFilesMethod = CompareFilesType.Fast;
+				
 		for(IBrowser b: getSupportedBrowsers()){
 			activeBrowsers.add(b.getName());
 		}
@@ -305,6 +318,15 @@ extends Properties
 		this.mp3tagsLanguage = mp3tagsLanguage;
 	}
 
+	public CompareFilesType getCompareFilesMethod() {
+		return compareFilesMethod;
+	}
+
+	public void setCompareFilesMethod(CompareFilesType compareFilesMethod) {
+		this.compareFilesMethod = compareFilesMethod;
+	}
+
 }
+
 
 

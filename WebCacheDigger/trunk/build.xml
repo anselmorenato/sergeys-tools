@@ -149,6 +149,9 @@
 		<mkdir dir="${dist.dir}" />
 		<copy file="jar/webcachedigger.jnlp" tofile="${dist.dir}/wcd.jnlp" overwrite="true">
 		</copy>
+		
+		<copy file="jar/largeicon.png" tofile="${dist.dir}/largeicon.png" overwrite="true">
+		</copy>
 
 		<replace file="${dist.dir}/wcd.jnlp">
 			<replacefilter token="%REVISION%" value="${revision}"/>
@@ -317,7 +320,7 @@
 	
 	<target name="deploy-local">
 		<delete>
-			<fileset dir="${deploy.dir}" includes="*.jar, *.jnlp">
+			<fileset dir="${deploy.dir}" includes="*.jar, *.jnlp, *.png">
 			</fileset>
 		</delete>
 		<copy todir="${deploy.dir}">

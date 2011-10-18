@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.sql.SQLException;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -23,9 +24,13 @@ import javax.swing.filechooser.FileFilter;
 import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
+import org.sergeys.webcachedigger.logic.Settings.CompareFilesType;
+
 import javax.swing.JCheckBox;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import java.awt.GridLayout;
+import javax.swing.JRadioButton;
 
 public class SettingsPanel extends JPanel {
 
@@ -51,6 +56,10 @@ public class SettingsPanel extends JPanel {
 	private JPanel panel_1;
 	private JCheckBox chckbxExcludeSaved;
 	private JButton btnForget;
+	private JLabel lblCompareFiles;
+	private JPanel panelCompare;
+	private JRadioButton rdbtnFast;
+	private JRadioButton rdbtnFull;
 
 	/**
 	 * This is the default constructor
@@ -97,7 +106,7 @@ public class SettingsPanel extends JPanel {
 		jLabel1.setText(Messages.getString("SettingsPanel.saveTo")); //$NON-NLS-1$
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
-		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 1.0};
+		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 0.0, 1.0, 0.0, 1.0};
 		gridBagLayout.columnWeights = new double[]{1.0, 1.0};
 		this.setLayout(gridBagLayout);
 		//this.setSize(450, 120);
@@ -113,24 +122,35 @@ public class SettingsPanel extends JPanel {
 		gbc_panel_1.gridx = 0;
 		gbc_panel_1.gridy = 2;
 		add(getPanel_1(), gbc_panel_1);
+		GridBagConstraints gbc_lblCompareFiles = new GridBagConstraints();
+		gbc_lblCompareFiles.anchor = GridBagConstraints.EAST;
+		gbc_lblCompareFiles.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCompareFiles.gridx = 0;
+		gbc_lblCompareFiles.gridy = 3;
+		add(getLblCompareFiles(), gbc_lblCompareFiles);
+		GridBagConstraints gbc_panelCompare = new GridBagConstraints();
+		gbc_panelCompare.insets = new Insets(0, 0, 5, 0);
+		gbc_panelCompare.fill = GridBagConstraints.HORIZONTAL;
+		gbc_panelCompare.gridx = 1;
+		gbc_panelCompare.gridy = 3;
+		add(getPanelCompare(), gbc_panelCompare);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.insets = new Insets(0, 0, 5, 0);
 		gbc_panel.gridwidth = 2;
 		gbc_panel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 3;
+		gbc_panel.gridy = 4;
 		add(getPanel(), gbc_panel);
 		GridBagConstraints gbc_lblExternalMediaPlayer = new GridBagConstraints();
 		gbc_lblExternalMediaPlayer.anchor = GridBagConstraints.EAST;
-		gbc_lblExternalMediaPlayer.insets = new Insets(0, 0, 5, 5);
+		gbc_lblExternalMediaPlayer.insets = new Insets(0, 0, 0, 5);
 		gbc_lblExternalMediaPlayer.gridx = 0;
-		gbc_lblExternalMediaPlayer.gridy = 4;
+		gbc_lblExternalMediaPlayer.gridy = 5;
 		add(getLblExternalMediaPlayer(), gbc_lblExternalMediaPlayer);
 		GridBagConstraints gbc_panelPlayer = new GridBagConstraints();
-		gbc_panelPlayer.insets = new Insets(0, 0, 5, 0);
 		gbc_panelPlayer.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelPlayer.gridx = 1;
-		gbc_panelPlayer.gridy = 4;
+		gbc_panelPlayer.gridy = 5;
 		add(getPanelPlayer(), gbc_panelPlayer);
 	}
 
@@ -158,6 +178,15 @@ public class SettingsPanel extends JPanel {
 		//getBtnForget().setEnabled(getChckbxExcludeSaved().isSelected());
 		setButtonForgetEnabled();
 		
+		switch(Settings.getInstance().getCompareFilesMethod()){
+			case Fast:
+				getRdbtnFast().setSelected(true);
+				break;
+			case Full:
+				getRdbtnFull().setSelected(true);
+				break;
+		}
+		
 		//revalidate();
 	}
 
@@ -168,6 +197,17 @@ public class SettingsPanel extends JPanel {
 		Settings.getInstance().setExternalPlayerCommand(getTxtPlayerCommand().getText());
 		Settings.getInstance().setRenameMp3byTags(getChckbxRenameMpFiles().isSelected());
 		Settings.getInstance().setExcludeAlreadySaved(getChckbxExcludeSaved().isSelected());
+		
+		
+		if(getRdbtnFast().isSelected()){
+			Settings.getInstance().setCompareFilesMethod(CompareFilesType.Fast);
+		}
+		else if(getRdbtnFull().isSelected()){
+			Settings.getInstance().setCompareFilesMethod(CompareFilesType.Full);
+		}
+		else{
+			Settings.getInstance().setCompareFilesMethod(null);
+		}
 		
 	}
 
@@ -416,5 +456,38 @@ public class SettingsPanel extends JPanel {
 			e1.printStackTrace();
 		}		
 		setButtonForgetEnabled();
+	}
+	
+	private JLabel getLblCompareFiles() {
+		if (lblCompareFiles == null) {
+			lblCompareFiles = new JLabel(Messages.getString("SettingsPanel.lblCompareFiles.text")); //$NON-NLS-1$
+		}
+		return lblCompareFiles;
+	}
+	private JPanel getPanelCompare() {
+		if (panelCompare == null) {
+			panelCompare = new JPanel();
+			panelCompare.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+			
+			ButtonGroup bg = new ButtonGroup();
+			bg.add(getRdbtnFast());
+			bg.add(getRdbtnFull());
+			
+			panelCompare.add(getRdbtnFast());
+			panelCompare.add(getRdbtnFull());
+		}
+		return panelCompare;
+	}
+	private JRadioButton getRdbtnFast() {
+		if (rdbtnFast == null) {
+			rdbtnFast = new JRadioButton(Messages.getString("SettingsPanel.rdbtnFastrecommended.text")); //$NON-NLS-1$
+		}
+		return rdbtnFast;
+	}
+	private JRadioButton getRdbtnFull() {
+		if (rdbtnFull == null) {
+			rdbtnFull = new JRadioButton(Messages.getString("SettingsPanel.rdbtnFullslow.text")); //$NON-NLS-1$
+		}
+		return rdbtnFull;
 	}
 } 
