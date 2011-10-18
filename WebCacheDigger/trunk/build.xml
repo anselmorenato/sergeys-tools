@@ -58,9 +58,12 @@
 		</sequential>
 	</macrodef>
 
-	<target name="all" depends="init, logic, ui, libs, resources, images, jnlp, deploy-local">
-	</target>
+	<!-- target name="all" depends="init, logic, ui, libs, resources, images, jnlp, deploy-local">
+	</target -->
 
+	<target name="all" depends="init, copy-libs, singlepack, jnlp, deploy-local">
+	</target>
+	
 	<target name="init">
 		<property file="${properties.file}">
 		</property>
@@ -75,6 +78,25 @@
 	<target name="libs" depends="library, copy-libs">
 	</target>
 
+	<target name="singlepack-changed">
+		<uptodate property="all.unchanged" targetfile="${dist.dir}/wcd.${revision}.jar">			
+			<srcfiles dir="bin" includes="**"></srcfiles>			
+			<srcfiles dir="${library.dir}" includes="bin/**"></srcfiles>			
+		</uptodate>
+	</target>
+	
+	<target name="singlepack" depends="singlepack-changed, create-key" unless="all.unchanged">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.dir}/wcd.${revision}.jar" index="true">
+			<fileset dir="bin" ></fileset>
+			<fileset dir="${library.dir}/bin" ></fileset>
+		</jar>
+		
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/wcd.${revision}.jar" verbose="true">
+		</signjar>
+	</target>
+	
 	<target name="logic-changed">		
 		<uptodate property="logic.unchanged" targetfile="${dist.dir}/logic.${revision}.jar">			
 			<srcfiles dir="bin" includes="org/sergeys/webcachedigger/logic/**/*.class, META-INF/services/*"></srcfiles>			
@@ -331,4 +353,5 @@
 	
 	
 </project>
+
 
