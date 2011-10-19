@@ -1,32 +1,4 @@
 #summary WebCacheDigger.
 #labels Featured,Phase-Deploy
 
-= Introduction =
-
-WebCacheDigger: ищет и сохраняет музыку, видео, картинки и прочее из браузеров.
-
-Работает на Windows XP, 7, Linux, MacOS X.
-
-Браузеры: Firefox, Chrome, Opera везде и Internet Explorer на Windows.
-
-Требования: Java 1.6 и выше, 32 или 64 бит - все равно.
-
-Если не уверены, что java установлена, сходите на http://java.com и проверьте:
-
-[http://java.com/en/download/installed.jsp?detect=jre&try=1 Проверить]
-
-оттуда же её и установите, если что.
-
-
-= Run =
-
-Если java установлена, запускайте и пользуйтесь:
-
-[http://sergeys-tools.googlecode.com/files/wcd.jnlp WebStart]
-
-
-=== Problem? ===
-
-Вопросы можно пока задавать там:
-
-[http://baccara.livejournal.com/388895.html]
+see [http://svs.bugz.org.ua]
