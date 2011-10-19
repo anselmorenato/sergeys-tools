@@ -7,7 +7,7 @@
 <a href="../index.php">home</a>
 <br/>
 <br/>
-<!--<a href="app/webcachedigger.jnlp" onclick="alert('Not yet.'); return false;">WebCacheDigger</a>-->
-<a href="app/webcachedigger.jnlp">WebCacheDigger</a>
+<a href="app/webcachedigger.jnlp" onclick="alert('Not yet.'); return false;">WebCacheDigger</a>
+<!-- <a href="app/webcachedigger.jnlp">WebCacheDigger</a> -->
 
 <?php require_once("footer.inc.php");?>

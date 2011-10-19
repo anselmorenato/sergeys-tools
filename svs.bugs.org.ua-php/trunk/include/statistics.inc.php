@@ -5,6 +5,12 @@
     function trackVisitor(){
     	global $db_connect;
     	
+    	
+    	if(isset($_SERVER["HTTP_VIA"]) && strpos($_SERVER["HTTP_VIA"], "zeppelin:3128")){
+    		// do not log my own requests
+    		return;
+    	}
+    	
     	db_connect();
     	
     	$sql = sprintf(

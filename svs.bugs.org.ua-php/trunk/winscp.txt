@@ -4,7 +4,7 @@ option confirm on
 
 open svsbugzo@svs.bugz.org.ua
 cd www
-option exclude .*;*.txt;*.cmd;web.config;resources;lleo
+option exclude .*;*.txt;*.cmd;web.config;resources
 synchronize remote
 close
 exit
