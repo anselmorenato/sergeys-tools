@@ -349,6 +349,15 @@
 			<fileset dir="${dist.dir}">
 			</fileset>
 		</copy>
+		
+		<delete>
+			<fileset dir="${deploy2.dir}" includes="*.jar, *.jnlp, *.png">
+			</fileset>
+		</delete>
+		<copy todir="${deploy2.dir}">
+			<fileset dir="${dist.dir}">
+			</fileset>
+		</copy>
 	</target>
 	
 	
