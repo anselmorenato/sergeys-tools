@@ -7,7 +7,7 @@
     	global $db_connect;
     	global $log_visits;
 
-    	if($_SERVER["HTTP_HOST"] == "bugz.localhost:8080"){
+    	if($_SERVER["HTTP_HOST"] == "bugz.localhost:8080" || $_SERVER["HTTP_HOST"] == "192.168.56.1:8080"){
     		// do not log on development
     		return;
     	}
