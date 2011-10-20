@@ -87,6 +87,7 @@
 	
 	<target name="singlepack" depends="singlepack-changed, create-key" unless="all.unchanged">
 		<mkdir dir="${dist.dir}" />
+				
 		<jar destfile="${dist.dir}/wcd.${revision}.jar" index="true">
 			<fileset dir="bin" ></fileset>
 			<fileset dir="${library.dir}/bin" ></fileset>
@@ -340,7 +341,8 @@
 	</target>
 	
 	
-	<target name="deploy-local">
+	<target name="deploy-local" depends="init">
+<!-- 		
 		<delete>
 			<fileset dir="${deploy.dir}" includes="*.jar, *.jnlp, *.png">
 			</fileset>
@@ -349,8 +351,9 @@
 			<fileset dir="${dist.dir}">
 			</fileset>
 		</copy>
-		
-		<delete>
+-->		
+		<echo message="deleting from ${deploy2.dir}"></echo>
+		<delete>			
 			<fileset dir="${deploy2.dir}" includes="*.jar, *.jnlp, *.png">
 			</fileset>
 		</delete>

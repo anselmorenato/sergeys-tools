@@ -47,6 +47,12 @@ public class Database {
 	}
 	
 	private void createIfNeeded() throws SQLException {
+		
+		File dir = new File(Settings.getSettingsDirPath());
+		if(!dir.exists()){
+			dir.mkdirs();
+		}
+
 		Connection conn = getConnection(); 
 		 
 		try {

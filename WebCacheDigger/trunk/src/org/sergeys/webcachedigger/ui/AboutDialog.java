@@ -29,6 +29,7 @@ import org.sergeys.library.swing.SystemPropertiesTable;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
+import java.awt.Insets;
 
 public class AboutDialog extends JDialog {
 	
@@ -49,6 +50,7 @@ public class AboutDialog extends JDialog {
 	private JPanel jPanelSystemActions = null;
 	private JTextPane textPaneLibs;
 	private JScrollPane scrollPane;
+	private JLabel lblJvm;
 
 	/**
 	 * @param owner
@@ -145,11 +147,13 @@ public class AboutDialog extends JDialog {
 	private JPanel getJPanelAbout() {
 		if (jPanelAbout == null) {
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+			gridBagConstraints3.insets = new Insets(0, 0, 5, 0);
 			gridBagConstraints3.gridx = 0;
 			gridBagConstraints3.gridy = 2;
 			jLabelAuthor = new JLabel();
 			jLabelAuthor.setText(Messages.getString("AboutDialog.SergeySelivanov")); //$NON-NLS-1$
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			gridBagConstraints2.insets = new Insets(0, 0, 5, 0);
 			gridBagConstraints2.gridx = 0;
 			gridBagConstraints2.gridy = 1;
 			jLabelVersion = new JLabel();
@@ -157,6 +161,7 @@ public class AboutDialog extends JDialog {
 			//jLabelVersion.setText("Dec 26 2009");
 			jLabelVersion.setText(Settings.getInstance().getVersionDisplay());
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			gridBagConstraints1.insets = new Insets(0, 0, 5, 0);
 			gridBagConstraints1.gridx = 0;
 			gridBagConstraints1.gridy = 0;
 			jLabelTitle = new JLabel();
@@ -167,6 +172,13 @@ public class AboutDialog extends JDialog {
 			jPanelAbout.add(jLabelTitle, gridBagConstraints1);
 			jPanelAbout.add(jLabelVersion, gridBagConstraints2);
 			jPanelAbout.add(jLabelAuthor, gridBagConstraints3);
+			GridBagConstraints gbc_lblJvm = new GridBagConstraints();
+			gbc_lblJvm.gridx = 0;
+			gbc_lblJvm.gridy = 3;
+			getLblJvm().setText(
+					System.getProperties().getProperty("java.runtime.name") + " " + 
+							System.getProperties().getProperty("java.runtime.version"));
+			jPanelAbout.add(getLblJvm(), gbc_lblJvm);
 		}
 		return jPanelAbout;
 	}
@@ -314,5 +326,11 @@ public class AboutDialog extends JDialog {
 			scrollPane = new JScrollPane(getTextPaneLibs());
 		}
 		return scrollPane;
+	}
+	private JLabel getLblJvm() {
+		if (lblJvm == null) {
+			lblJvm = new JLabel(Messages.getString("AboutDialog.lblJvm.text")); //$NON-NLS-1$
+		}
+		return lblJvm;
 	}
 }  //  @jve:decl-index=0:visual-constraint="10,10"
