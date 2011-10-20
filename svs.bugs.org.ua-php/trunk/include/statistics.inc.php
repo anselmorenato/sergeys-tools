@@ -1,10 +1,15 @@
 <?php
     ini_set("include_path", ini_get("include_path") . (substr($_SERVER["DOCUMENT_ROOT"],0,1) != "/" ? ";" : ":") . $_SERVER["DOCUMENT_ROOT"] . "/include");
     require_once("db.inc.php");
-
+    
+    
     function trackVisitor(){
     	global $db_connect;
-    	
+    	global $log_visits;
+
+    	if($_SERVER["HTTP_HOST"] == "bugz.localhost:8080"){
+    		return;
+    	}
     	
     	if(isset($_SERVER["HTTP_VIA"]) && strpos($_SERVER["HTTP_VIA"], "zeppelin:3128")){
     		// do not log my own requests
