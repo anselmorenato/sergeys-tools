@@ -8,6 +8,7 @@
     	global $log_visits;
 
     	if($_SERVER["HTTP_HOST"] == "bugz.localhost:8080"){
+    		// do not log on development
     		return;
     	}
     	
