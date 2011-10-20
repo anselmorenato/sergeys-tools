@@ -1,0 +1,1 @@
+f:\bin32\imagemagick-6.7.2-10\convert %1 -resize 48x48 converted.png

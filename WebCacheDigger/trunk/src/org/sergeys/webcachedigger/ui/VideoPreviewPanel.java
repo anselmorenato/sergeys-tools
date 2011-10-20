@@ -9,6 +9,7 @@ import javax.swing.SwingConstants;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 import javax.swing.JPanel;
+import javax.swing.ImageIcon;
 
 public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 	
@@ -30,7 +31,8 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 		JPanel panel = new JPanel();
 		add(panel, BorderLayout.SOUTH);
 		
-		JButton btnPlay = new JButton(Messages.getString("VideoPreviewPanel.play")); //$NON-NLS-1$
+		JButton btnPlay = new JButton(""); //$NON-NLS-1$
+		btnPlay.setIcon(new ImageIcon(VideoPreviewPanel.class.getResource("/images/player_play.png"))); //$NON-NLS-1$
 		panel.add(btnPlay);
 		btnPlay.setEnabled(Settings.getInstance().isExternalPlayerConfigured());
 		btnPlay.addActionListener(new ActionListener() {

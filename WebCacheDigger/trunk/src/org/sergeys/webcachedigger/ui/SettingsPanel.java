@@ -58,6 +58,8 @@ public class SettingsPanel extends JPanel {
 	private JPanel panelCompare;
 	private JRadioButton rdbtnFast;
 	private JRadioButton rdbtnFull;
+	private JButton btnForgetIgnored;
+	private JPanel panel_2;
 
 	/**
 	 * This is the default constructor
@@ -104,11 +106,11 @@ public class SettingsPanel extends JPanel {
 		jLabel1.setText(Messages.getString("SettingsPanel.saveTo")); //$NON-NLS-1$
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
-		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 0.0, 1.0, 0.0, 1.0};
+		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0};
 		gridBagLayout.columnWeights = new double[]{1.0, 1.0};
 		this.setLayout(gridBagLayout);
 		//this.setSize(450, 120);
-		this.setPreferredSize(new Dimension(477, 288));
+		this.setPreferredSize(new Dimension(488, 288));
 		this.add(jLabel1, gridBagConstraints2);
 		this.add(getJPanelSavePath(), gridBagConstraints3);
 		this.add(jLabel2, gridBagConstraints);
@@ -120,48 +122,63 @@ public class SettingsPanel extends JPanel {
 		gbc_panel_1.gridx = 0;
 		gbc_panel_1.gridy = 2;
 		add(getPanel_1(), gbc_panel_1);
+		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
+		gbc_panel_2.gridwidth = 2;
+		gbc_panel_2.insets = new Insets(0, 0, 5, 5);
+		gbc_panel_2.fill = GridBagConstraints.HORIZONTAL;
+		gbc_panel_2.gridx = 0;
+		gbc_panel_2.gridy = 3;
+		add(getPanel_2(), gbc_panel_2);
 		GridBagConstraints gbc_lblCompareFiles = new GridBagConstraints();
 		gbc_lblCompareFiles.anchor = GridBagConstraints.EAST;
 		gbc_lblCompareFiles.insets = new Insets(0, 0, 5, 5);
 		gbc_lblCompareFiles.gridx = 0;
-		gbc_lblCompareFiles.gridy = 3;
+		gbc_lblCompareFiles.gridy = 4;
 		add(getLblCompareFiles(), gbc_lblCompareFiles);
 		GridBagConstraints gbc_panelCompare = new GridBagConstraints();
 		gbc_panelCompare.insets = new Insets(0, 0, 5, 0);
 		gbc_panelCompare.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelCompare.gridx = 1;
-		gbc_panelCompare.gridy = 3;
+		gbc_panelCompare.gridy = 4;
 		add(getPanelCompare(), gbc_panelCompare);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.insets = new Insets(0, 0, 5, 0);
 		gbc_panel.gridwidth = 2;
 		gbc_panel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 4;
+		gbc_panel.gridy = 5;
 		add(getPanel(), gbc_panel);
 		GridBagConstraints gbc_lblExternalMediaPlayer = new GridBagConstraints();
 		gbc_lblExternalMediaPlayer.anchor = GridBagConstraints.EAST;
 		gbc_lblExternalMediaPlayer.insets = new Insets(0, 0, 0, 5);
 		gbc_lblExternalMediaPlayer.gridx = 0;
-		gbc_lblExternalMediaPlayer.gridy = 5;
+		gbc_lblExternalMediaPlayer.gridy = 6;
 		add(getLblExternalMediaPlayer(), gbc_lblExternalMediaPlayer);
 		GridBagConstraints gbc_panelPlayer = new GridBagConstraints();
 		gbc_panelPlayer.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelPlayer.gridx = 1;
-		gbc_panelPlayer.gridy = 5;
+		gbc_panelPlayer.gridy = 6;
 		add(getPanelPlayer(), gbc_panelPlayer);
 	}
 
-	private void setButtonForgetEnabled(){
+	private void setForgetButtonsEnabled(){
 		boolean hasSaved = false;
-		try {
-			hasSaved = (Database.getInstance().countSaved() > 0);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		boolean hasIgnored = false;
+		if(getChckbxExcludeSaved().isSelected()){
+			try {
+				hasSaved = (Database.getInstance().countSaved() > 0);
+				hasIgnored = (Database.getInstance().countIgnored() > 0);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			getBtnForget().setEnabled(hasSaved);
+			getBtnForgetIgnored().setEnabled(hasIgnored);
 		}
-		
-		getBtnForget().setEnabled(getChckbxExcludeSaved().isSelected() && hasSaved);
+		else{
+			getBtnForget().setEnabled(false);
+			getBtnForgetIgnored().setEnabled(false);
+		}								
 	}
 	
 	public void setSettings() {
@@ -172,9 +189,9 @@ public class SettingsPanel extends JPanel {
 		getTxtPlayerCommand().setText(Settings.getInstance().getExternalPlayerCommand());
 		getChckbxRenameMpFiles().setSelected(Settings.getInstance().isRenameMp3byTags());
 
-		getChckbxExcludeSaved().setSelected(Settings.getInstance().isExcludeAlreadySaved());
+		getChckbxExcludeSaved().setSelected(Settings.getInstance().isExcludeSavedAndIgnored());
 		//getBtnForget().setEnabled(getChckbxExcludeSaved().isSelected());
-		setButtonForgetEnabled();
+		setForgetButtonsEnabled();
 		
 		switch(Settings.getInstance().getCompareFilesMethod()){
 			case Fast:
@@ -194,8 +211,7 @@ public class SettingsPanel extends JPanel {
 		Settings.getInstance().setMinFileSizeBytes(Long.parseLong(getJTextFieldMinFileSizeBytes().getText()));
 		Settings.getInstance().setExternalPlayerCommand(getTxtPlayerCommand().getText());
 		Settings.getInstance().setRenameMp3byTags(getChckbxRenameMpFiles().isSelected());
-		Settings.getInstance().setExcludeAlreadySaved(getChckbxExcludeSaved().isSelected());
-		
+		Settings.getInstance().setExcludeSavedAndIgnored(getChckbxExcludeSaved().isSelected());		
 		
 		if(getRdbtnFast().isSelected()){
 			Settings.getInstance().setCompareFilesMethod(CompareFilesType.Fast);
@@ -413,7 +429,6 @@ public class SettingsPanel extends JPanel {
 			FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
 			flowLayout.setAlignment(FlowLayout.LEFT);
 			panel_1.add(getChckbxExcludeSaved());
-			panel_1.add(getBtnForget());
 		}
 		return panel_1;
 	}
@@ -431,7 +446,7 @@ public class SettingsPanel extends JPanel {
 	}
 	
 	protected void doExcludeChanged(ChangeEvent e) {		
-		setButtonForgetEnabled();
+		setForgetButtonsEnabled();
 	}
 
 	private JButton getBtnForget() {
@@ -453,7 +468,7 @@ public class SettingsPanel extends JPanel {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}		
-		setButtonForgetEnabled();
+		setForgetButtonsEnabled();
 	}
 	
 	private JLabel getLblCompareFiles() {
@@ -487,5 +502,35 @@ public class SettingsPanel extends JPanel {
 			rdbtnFull = new JRadioButton(Messages.getString("SettingsPanel.rdbtnFullslow.text")); //$NON-NLS-1$
 		}
 		return rdbtnFull;
+	}
+	private JButton getBtnForgetIgnored() {
+		if (btnForgetIgnored == null) {
+			btnForgetIgnored = new JButton(Messages.getString("SettingsPanel.btnForget_1.text")); //$NON-NLS-1$
+			btnForgetIgnored.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					doForgetIgnored(e);
+				}
+			});
+		}
+		return btnForgetIgnored;
+	}
+
+	protected void doForgetIgnored(ActionEvent e) {
+		try {
+			Database.getInstance().clearIgnored();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}		
+		setForgetButtonsEnabled();		
+	}
+	
+	private JPanel getPanel_2() {
+		if (panel_2 == null) {
+			panel_2 = new JPanel();
+			panel_2.add(getBtnForget());
+			panel_2.add(getBtnForgetIgnored());
+		}
+		return panel_2;
 	}
 } 

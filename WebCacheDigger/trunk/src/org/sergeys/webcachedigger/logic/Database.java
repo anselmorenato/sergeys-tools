@@ -1,6 +1,7 @@
 package org.sergeys.webcachedigger.logic;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -23,7 +24,7 @@ public class Database {
 	
 	// singleton
 	private Database() throws SQLException{
-		createIfNeeded();
+		upgradeOrCreateIfNeeded();
 	}
 	
 
@@ -46,7 +47,36 @@ public class Database {
 		return connection;
 	}
 	
-	private void createIfNeeded() throws SQLException {
+	private void upgrade(){
+		Statement st;
+		try {
+			st = getConnection().createStatement();
+			ResultSet rs = st.executeQuery("select val from properties where property='version'");
+			rs.next();
+			String version = rs.getString("val");
+			int ver = Integer.valueOf(version);
+			
+			// apply all existing upgrades
+			InputStream in = getClass().getResourceAsStream("/resources/upgrade"+ver+".sql");
+			while(in != null){
+				RunScript.execute(getConnection(), new InputStreamReader(in));
+				in.close();
+				System.out.println("Upgraded database from version " + ver);
+				ver++;
+				in = getClass().getResourceAsStream("/resources/upgrade"+ver+".sql");
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+	
+	private void upgradeOrCreateIfNeeded() throws SQLException {
 		
 		File dir = new File(Settings.getSettingsDirPath());
 		if(!dir.exists()){
@@ -59,14 +89,14 @@ public class Database {
 			// check whether table Properties exist
 			ResultSet rs = conn.getMetaData().getTables(conn.getCatalog(), "PUBLIC", "PROPERTIES", null); // table names are uppercase
 	
-			if(rs.next()){
-				// db exists, can upgrade here is needed
-			}
-			else{
+			if(!rs.next()){			
 				// create new structure
 				InputStream in = getClass().getResourceAsStream("/resources/createdb.sql");
 				RunScript.execute(conn, new InputStreamReader(in));
 			}
+			
+			// apply upgrades
+			upgrade();
 		
 		} catch (SQLException e) {
 			throw e;
@@ -81,10 +111,11 @@ public class Database {
 		st.execute("update files set issaved = false");
 		st.close();
 	}
-	
-	// TODO: delete all which not exist on filesystem
-	public void compact(){
-		
+
+	public void clearIgnored() throws SQLException{
+		Statement st = getConnection().createStatement();
+		st.execute("update files set ignored = false");
+		st.close();
 	}
 	
 	public long countSaved() throws SQLException{
@@ -100,19 +131,32 @@ public class Database {
 		return result;
 	}
 
+	public long countIgnored() throws SQLException{
+		long result = 0;
+		
+		Statement st = getConnection().createStatement();
+		ResultSet rs = st.executeQuery("select count(id) from files where ignored = true");
+		if(rs.next()){
+			result = rs.getLong(1);
+		}
+		st.close();
+		
+		return result;
+	}
+	
 
 	/**
-	 * Exclude saved files with the same absolute path and timestamp 
+	 * Exclude saved and ignored files with the same absolute path and timestamp 
 	 * 
 	 * @param cachedFiles
 	 * @return
 	 */
-	public ArrayList<CachedFile> filterSavedByFilesystem(ArrayList<CachedFile> cachedFiles) {
+	public ArrayList<CachedFile> filterSavedAndIgnoredByFilesystem(ArrayList<CachedFile> cachedFiles) {
 		ArrayList<CachedFile> filtered = new ArrayList<CachedFile>();
 		
 		try {
 			PreparedStatement pst = getConnection().prepareStatement(
-					"select id from files where absolutepath = ? and lastmodified = ? and filesize = ? and issaved");
+					"select id from files where absolutepath = ? and lastmodified = ? and filesize = ? and (issaved or ignored)");
 			
 			for(CachedFile file: cachedFiles){
 				pst.setString(1, file.getAbsolutePath());
@@ -141,6 +185,40 @@ public class Database {
 		return filtered;
 	}
 
+//	public ArrayList<CachedFile> filterIgnoredByFilesystem(ArrayList<CachedFile> cachedFiles) {
+//		ArrayList<CachedFile> filtered = new ArrayList<CachedFile>();
+//		
+//		try {
+//			PreparedStatement pst = getConnection().prepareStatement(
+//					"select id from files where absolutepath = ? and lastmodified = ? and filesize = ? and ignored");
+//			
+//			for(CachedFile file: cachedFiles){
+//				pst.setString(1, file.getAbsolutePath());
+//				pst.setLong(2, file.lastModified());
+//				pst.setLong(3, file.length());
+//				
+//				ResultSet rs = pst.executeQuery();				
+//				if(rs.next()){
+//					// has this file
+////					SimpleLogger.logMessage("already has saved " + file.getAbsolutePath());
+//				}
+//				else{
+//					filtered.add(file);
+//				}								
+//			}
+//			
+//			pst.close();
+//			
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			
+//			return cachedFiles;
+//		}
+//		
+//		return filtered;
+//	}
+	
 	/**
 	 * Populate unchangedFiles with hash and mime if possible.
 	 * Remove preloaded files from allFiles. 
@@ -183,12 +261,12 @@ public class Database {
 	}
 
 
-	public ArrayList<CachedFile> filterSavedByHash(ArrayList<CachedFile> cacheFiles) {
+	public ArrayList<CachedFile> filterSavedAndIgnoredByHash(ArrayList<CachedFile> cacheFiles) {
 		ArrayList<CachedFile> filtered = new ArrayList<CachedFile>();
 		
 		try {
 			PreparedStatement pst = getConnection().prepareStatement(
-					"select id from files where hash = ? and issaved");
+					"select id from files where hash = ? and (issaved or ignored)");
 			
 			for(CachedFile file: cacheFiles){
 				pst.setString(1, file.getHash());
@@ -323,6 +401,30 @@ public class Database {
 		getConnection().setAutoCommit(false);
 				
 		
+		for(CachedFile file: collection){
+			if(file.getHash() == null || file.getHash().isEmpty()){
+				throw new Exception("no hash: " + file.getAbsolutePath());
+			}
+			psUpdate.setString(1, file.getHash());			
+			psUpdate.addBatch();			
+		}
+
+		@SuppressWarnings("unused")
+		int[] count = psUpdate.executeBatch();
+		getConnection().commit();
+		
+		psUpdate.close();
+		
+		getConnection().setAutoCommit(true);
+	}
+
+	public void updateIgnored(Collection<CachedFile> collection) throws Exception {
+		
+		PreparedStatement psUpdate = getConnection().prepareStatement(
+				"update files set ignored = true where hash = ?");		
+		
+		getConnection().setAutoCommit(false);
+						
 		for(CachedFile file: collection){
 			if(file.getHash() == null || file.getHash().isEmpty()){
 				throw new Exception("no hash: " + file.getAbsolutePath());

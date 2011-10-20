@@ -82,10 +82,11 @@ extends SwingWorker<List<CachedFile>, Integer>
 			
 			if(file.isSelectedToCopy()){
 				
-				if(Settings.getInstance().isExcludeAlreadySaved()){
+				if(Settings.getInstance().isExcludeSavedAndIgnored()){
 					// check for duplicates
 					if(markAsSaved.containsKey(file.getHash())){						
 						SimpleLogger.logMessage(String.format("Duplicate file skipped: %s", file.getName()));
+						copied.add(file);	// to remove from visible list
 						continue;											
 					}
 				}
@@ -109,7 +110,7 @@ extends SwingWorker<List<CachedFile>, Integer>
 					
 					FileUtils.copyFile(file.getAbsolutePath(), targetFile);
 		
-					if(Settings.getInstance().isExcludeAlreadySaved()){
+					if(Settings.getInstance().isExcludeSavedAndIgnored()){
 						markAsSaved.put(file.getHash(), file);
 					}
 					
@@ -135,7 +136,7 @@ extends SwingWorker<List<CachedFile>, Integer>
 			}
 		}
 		
-		if(Settings.getInstance().isExcludeAlreadySaved()){
+		if(Settings.getInstance().isExcludeSavedAndIgnored()){
 			try {
 				Database.getInstance().updateSaved(markAsSaved.values());
 			} catch (NoSuchAlgorithmException e) {

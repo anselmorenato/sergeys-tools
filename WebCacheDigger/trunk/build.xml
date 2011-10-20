@@ -89,7 +89,10 @@
 		<mkdir dir="${dist.dir}" />
 				
 		<jar destfile="${dist.dir}/wcd.${revision}.jar" index="true">
-			<fileset dir="bin" ></fileset>
+			<fileset dir="bin" >
+				<exclude name="images/BP*Spybot*"/>
+				<exclude name="images/*.cmd"/>
+			</fileset>
 			<fileset dir="${library.dir}/bin" ></fileset>
 		</jar>
 		
@@ -365,5 +368,6 @@
 	
 	
 </project>
+
 
 

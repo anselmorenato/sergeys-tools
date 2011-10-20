@@ -59,7 +59,7 @@ extends Properties
 	private String externalPlayerCommand;
 	private String language; // language code for Locale class
 	private boolean renameMp3byTags = true;
-	private boolean excludeAlreadySaved = false;
+	private boolean excludeSavedAndIgnored = false;
 	private String mp3tagsLanguage;
 	private CompareFilesType compareFilesMethod = CompareFilesType.Fast;	
 	private HashSet<String> activeBrowsers = new HashSet<String>();	// browser names	
@@ -315,12 +315,12 @@ extends Properties
 		this.renameMp3byTags = renameMp3byTags;
 	}
 
-	public boolean isExcludeAlreadySaved() {
-		return excludeAlreadySaved;
+	public boolean isExcludeSavedAndIgnored() {
+		return excludeSavedAndIgnored;
 	}
 
-	public void setExcludeAlreadySaved(boolean excludeAlreadySaved) {
-		this.excludeAlreadySaved = excludeAlreadySaved;
+	public void setExcludeSavedAndIgnored(boolean excludeAlreadySaved) {
+		this.excludeSavedAndIgnored = excludeAlreadySaved;
 	}
 
 	public String getMp3tagsLanguage() {

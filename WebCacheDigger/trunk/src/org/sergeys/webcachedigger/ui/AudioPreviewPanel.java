@@ -34,6 +34,7 @@ import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import javax.swing.ImageIcon;
 
 public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 	
@@ -127,7 +128,8 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 		JPanel panelControl = new JPanel();
 		add(panelControl, BorderLayout.SOUTH);
 		
-		JButton btnPlay = new JButton(Messages.getString("AudioPreviewPanel.Play")); //$NON-NLS-1$
+		JButton btnPlay = new JButton(""); //$NON-NLS-1$
+		btnPlay.setIcon(new ImageIcon(AudioPreviewPanel.class.getResource("/images/player_play.png"))); //$NON-NLS-1$
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doPlay(e);

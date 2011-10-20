@@ -49,19 +49,19 @@ implements IProgressWatcher
 		}		
 		
 		SimpleLogger.logMessage("collected files: " + cacheFiles.size()); //$NON-NLS-1$
-		
-		if(Settings.getInstance().isExcludeAlreadySaved()){
+				
+		if(Settings.getInstance().isExcludeSavedAndIgnored()){
 			// exclude saved files with same absolute path and timestamp
-			cacheFiles = Database.getInstance().filterSavedByFilesystem(cacheFiles);
-			SimpleLogger.logMessage("not yet copied files: " + cacheFiles.size());
-		}				
-		
+			cacheFiles = Database.getInstance().filterSavedAndIgnoredByFilesystem(cacheFiles);
+			SimpleLogger.logMessage("not yet copied and not ignored files: " + cacheFiles.size());
+		}
+				
 		stage = ProgressDialog.STAGE_FILTER_TYPE;
 		totalCount = 0;
 		publish(totalCount);
 		
-		ArrayList<CachedFile> knownFiles = new ArrayList<CachedFile>();
-		Database.getInstance().preloadMetadata(cacheFiles, knownFiles);	// mime set, hash possibly set
+		ArrayList<CachedFile> knownMimeFiles = new ArrayList<CachedFile>();
+		Database.getInstance().preloadMetadata(cacheFiles, knownMimeFiles);	// mime set, hash possibly set
 		
 		// filter by mime
 		CachedFile.detectMimeTypes(cacheFiles, this);
@@ -71,16 +71,16 @@ implements IProgressWatcher
 		Database.getInstance().insertUpdateMimeTypes(cacheFiles);
 						
 		cacheFiles = CachedFile.filter(cacheFiles, null);
-		knownFiles = CachedFile.filter(knownFiles, null);		
+		knownMimeFiles = CachedFile.filter(knownMimeFiles, null);		
 		
-		if(Settings.getInstance().isExcludeAlreadySaved()){
+		if(Settings.getInstance().isExcludeSavedAndIgnored()){
 			stage = ProgressDialog.STAGE_FILTER_HASH;
 			totalCount = 0;
 			publish(totalCount);
 			
 			ArrayList<CachedFile> hasHash = new ArrayList<CachedFile>();
 			
-			for(CachedFile f: knownFiles){
+			for(CachedFile f: knownMimeFiles){
 				if(f.getHash() != null){
 					hasHash.add(f);
 				}
@@ -95,10 +95,10 @@ implements IProgressWatcher
 			Database.getInstance().insertUpdateHashes(cacheFiles);
 			
 			cacheFiles.addAll(hasHash);			
-			cacheFiles = Database.getInstance().filterSavedByHash(cacheFiles); 
+			cacheFiles = Database.getInstance().filterSavedAndIgnoredByHash(cacheFiles); 
 		}
 		else{
-			cacheFiles.addAll(knownFiles);			
+			cacheFiles.addAll(knownMimeFiles);			
 		}
 		
 		return cacheFiles;

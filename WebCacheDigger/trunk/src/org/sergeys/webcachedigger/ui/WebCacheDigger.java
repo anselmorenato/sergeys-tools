@@ -10,7 +10,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -39,11 +41,13 @@ import javax.swing.border.EmptyBorder;
 import org.sergeys.library.rss.Feed;
 import org.sergeys.library.rss.RssFeedParser;
 import org.sergeys.webcachedigger.logic.CachedFile;
+import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 import org.sergeys.webcachedigger.ui.ProgressDialog.WorkType;
+import javax.swing.ImageIcon;
 
 public class WebCacheDigger 
 implements ActionListener, PropertyChangeListener
@@ -85,18 +89,61 @@ implements ActionListener, PropertyChangeListener
 		return jPanelFoundFiles;
 	}
 
-	/**
-	 * This method initializes jPanelFoundFilesActions	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
+	JButton bthIgnoreSelectedFiles;
+	
 	private JPanel getJPanelFoundFilesActions() {
 		if (jPanelFoundFilesActions == null) {
 			jPanelFoundFilesActions = new JPanel();
-			jPanelFoundFilesActions.setLayout(new FlowLayout());
+			jPanelFoundFilesActions.setLayout(new FlowLayout());									
+			
+			
+			bthIgnoreSelectedFiles = new JButton(Messages.getString("WebCacheDigger.IgnoreCheckedFiles")); //$NON-NLS-1$
+			bthIgnoreSelectedFiles.setEnabled(false);
+			bthIgnoreSelectedFiles.setIcon(new ImageIcon(WebCacheDigger.class.getResource("/images/fileclose.png"))); //$NON-NLS-1$
+			bthIgnoreSelectedFiles.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					doIgnoreSelectedFiles(e);
+					
+				}});
+			jPanelFoundFilesActions.add(bthIgnoreSelectedFiles, null);
+			
 			jPanelFoundFilesActions.add(getJButtonCopySelectedFiles(), null);
 		}
 		return jPanelFoundFilesActions;
+	}
+
+	protected void doIgnoreSelectedFiles(ActionEvent e) {
+		Hashtable<String, CachedFile> markAsIgnored = new Hashtable<String, CachedFile>();
+		ArrayList<CachedFile> ignoredList = new ArrayList<CachedFile>();
+		
+		for(CachedFile file: getFilesListPanel().getCachedFiles()){
+			if(file.isSelectedToCopy()){
+				if(!markAsIgnored.containsKey(file.getHash())){
+					markAsIgnored.put(file.getHash(), file);
+				}
+		
+				ignoredList.add(file);
+			}
+		}
+		
+		if(!ignoredList.isEmpty()){
+			try {
+				Database.getInstance().updateIgnored(markAsIgnored.values());
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	
+			List<CachedFile> current = getFilesListPanel().getCachedFiles();
+			current.removeAll(ignoredList);
+			getFilesListPanel().filesListChanged();
+		}
 	}
 
 	/**
@@ -107,21 +154,12 @@ implements ActionListener, PropertyChangeListener
 	private JButton getJButtonCopySelectedFiles() {
 		if (jButtonCopySelectedFiles == null) {
 			jButtonCopySelectedFiles = new JButton();
+			jButtonCopySelectedFiles.setIcon(new ImageIcon(WebCacheDigger.class.getResource("/images/lc_open.png"))); //$NON-NLS-1$
 			jButtonCopySelectedFiles.setText(Messages.getString("WebCacheDigger.CopyCheckedFiles")); //$NON-NLS-1$
 			jButtonCopySelectedFiles.setEnabled(false);
 			jButtonCopySelectedFiles.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					String targetDir = Settings.getInstance().getSaveToPath();
-					int count = WebCacheDigger.this.doCopyFiles(targetDir);
-					
-					if(count > 0){
-						String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), count, targetDir); //$NON-NLS-1$
-						
-						JOptionPane.showMessageDialog(getJFrame(), 					 
-								msg,
-								Messages.getString("WebCacheDigger.Message"),  //$NON-NLS-1$
-								JOptionPane.INFORMATION_MESSAGE);
-					}
+					doCopySelectedFiles(e);
 				}
 			});
 		}
@@ -179,6 +217,7 @@ implements ActionListener, PropertyChangeListener
 	private JButton getJButtonSearch() {
 		if (jButtonSearch == null) {
 			jButtonSearch = new JButton();
+			jButtonSearch.setIcon(new ImageIcon(WebCacheDigger.class.getResource("/images/lc_zoompage.png"))); //$NON-NLS-1$
 			jButtonSearch.setText(Messages.getString("WebCacheDigger.Search")); //$NON-NLS-1$
 			jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -251,7 +290,7 @@ implements ActionListener, PropertyChangeListener
 				}
 												
 				final WebCacheDigger application = new WebCacheDigger();
-//System.out.println("language " + Settings.getInstance().getLanguage());				
+
 				Locale l = new Locale(Settings.getInstance().getLanguage());
 				Locale.setDefault(l);
 				
@@ -281,15 +320,15 @@ implements ActionListener, PropertyChangeListener
 				}
 				else{
 					// show what's changed
-					String resName = "/resources/changes_" + Locale.getDefault().getLanguage() + ".xml";					
+					String resName = "/resources/changes_" + Locale.getDefault().getLanguage() + ".xml";					 //$NON-NLS-1$ //$NON-NLS-2$
 					InputStream is = getClass().getResourceAsStream(resName);
 					if(is == null){
-						is = getClass().getResourceAsStream("/resources/changes.xml");						
+						is = getClass().getResourceAsStream("/resources/changes.xml");						 //$NON-NLS-1$
 					}
 					
 					if(is != null){
 						//RssFeedParser parser = new RssFeedParser(is, "EEE, d MMM yyyy HH:mm:ss Z");
-						RssFeedParser parser = new RssFeedParser(is, "d MMM yyyy HH:mm");
+						RssFeedParser parser = new RssFeedParser(is, "d MMM yyyy HH:mm"); //$NON-NLS-1$
 						Feed changes = parser.readFeed();
 						
 //						for(FeedMessage msg: changes.getMessages()){
@@ -525,7 +564,10 @@ implements ActionListener, PropertyChangeListener
 		}
 	}	
 	
-	private int doCopyFiles(String targetDir){
+	private void doCopySelectedFiles(ActionEvent e){
+		
+		String targetDir = Settings.getInstance().getSaveToPath();
+		
 		
 		int copied = 0;
 		
@@ -544,14 +586,21 @@ implements ActionListener, PropertyChangeListener
 			progressDialog.setVisible(true);
 						
 			
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(getJFrame(), 
-					String.format(Messages.getString("WebCacheDigger.FailedToCopyFiles"), e.getMessage()), //$NON-NLS-1$
+					String.format(Messages.getString("WebCacheDigger.FailedToCopyFiles"), ex.getMessage()), //$NON-NLS-1$
 					Messages.getString("WebCacheDigger.Error"),   //$NON-NLS-1$
 					JOptionPane.ERROR_MESSAGE);
 		}
 		
-		return copied;		
+		if(copied > 0){
+			String msg = String.format(Messages.getString("WebCacheDigger.CopiedFilesTo"), copied, targetDir); //$NON-NLS-1$
+			
+			JOptionPane.showMessageDialog(getJFrame(), 					 
+					msg,
+					Messages.getString("WebCacheDigger.Message"),  //$NON-NLS-1$
+					JOptionPane.INFORMATION_MESSAGE);
+		}				
 	}
 
 	private void exit(){
@@ -593,6 +642,7 @@ implements ActionListener, PropertyChangeListener
 				}
 				
 				getJButtonCopySelectedFiles().setEnabled(files.size() > 0);
+				bthIgnoreSelectedFiles.setEnabled(Settings.getInstance().isExcludeSavedAndIgnored() && (files.size() > 0));
 			}
 		}
 		else if(evt.getPropertyName().equals(ProgressDialog.COPY_COMPLETE)){
