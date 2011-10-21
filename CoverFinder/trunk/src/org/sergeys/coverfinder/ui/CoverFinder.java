@@ -13,9 +13,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.xml.rpc.ServiceException;
 
@@ -37,6 +39,8 @@ import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 public class CoverFinder {
 
@@ -45,7 +49,6 @@ public class CoverFinder {
 	private static final String APP_ID = "3835365F7AE679189D6105256B8EFE900B846E6A";
 	
 	private JFrame frame;
-	private JTextField txtQuery;
 
 	/**
 	 * Launch the application.
@@ -54,8 +57,10 @@ public class CoverFinder {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					CoverFinder window = new CoverFinder();
-					window.frame.setVisible(true);
+					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+					
+					CoverFinder mainWindow = new CoverFinder();
+					mainWindow.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -72,8 +77,15 @@ public class CoverFinder {
 
 	JPanel panelCenter;
 	private JScrollPane scrollPane;
-	private JMenuBar menuBar;
 	private JPanel panelJunk;
+	private JMenuBar menuBar;
+	private JMenu mnNewMenu;
+	private JMenuItem mntmExit;
+	private JMenu mnSettings;
+	private JMenu mnLanguage;
+	private JMenuItem mntmSettings;
+	private JMenu mnHelp;
+	private JMenuItem mntmAbout;
 	
 	/**
 	 * Initialize the contents of the frame.
@@ -84,20 +96,17 @@ public class CoverFinder {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panelTop = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panelTop.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
 		frame.getContentPane().add(panelTop, BorderLayout.NORTH);
 		
-		txtQuery = new JTextField();
-		txtQuery.setText("led zeppelin physical graffiti");
-		panelTop.add(txtQuery);
-		txtQuery.setColumns(30);
-		
-		JButton btnSearch = new JButton("Search");
-		btnSearch.addActionListener(new ActionListener() {
+		JButton btnSearchFiles = new JButton("Search");
+		btnSearchFiles.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doSearch(e);
 			}
 		});
-		panelTop.add(btnSearch);
+		panelTop.add(btnSearchFiles);
 		
 		panelCenter = new JPanel();
 		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
@@ -111,11 +120,62 @@ public class CoverFinder {
 		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
+		
+		mnNewMenu = new JMenu("File");
+		menuBar.add(mnNewMenu);
+		
+		mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doExit(e);
+			}
+		});
+		mnNewMenu.add(mntmExit);
+		
+		mnSettings = new JMenu("Settings");
+		menuBar.add(mnSettings);
+		
+		mnLanguage = new JMenu("Language");
+		mnSettings.add(mnLanguage);
+		
+		mntmSettings = new JMenuItem("Settings");
+		mntmSettings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doSettings(e);
+			}
+		});
+		mnSettings.add(mntmSettings);
+		
+		mnHelp = new JMenu("Help");
+		menuBar.add(mnHelp);
+		
+		mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doAbout(e);
+			}
+		});
+		mnHelp.add(mntmAbout);
+	}
+
+	protected void doAbout(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void doSettings(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void doExit(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	protected void doSearch(ActionEvent e) {
 		
-		String query = txtQuery.getText();
+		String query = "";//txtQuery.getText();
 		
 		if(query.isEmpty()){
 			return;
@@ -140,8 +200,25 @@ public class CoverFinder {
 			SearchRequestType1 reqType = new SearchRequestType1(req);			
 			SearchResponseType0 respType = portType.search(reqType);
 			SearchResponse resp = respType.getParameters();
-			
+									
 			ImageResult[] images = resp.getImage().getResults();
+						
+			if(images == null){
+				com.microsoft.schemas.LiveSearch._2008._03.Search.Error[] errors = resp.getErrors();
+								
+				if(errors != null){
+					JOptionPane.showMessageDialog(null, "Failed");
+					for(com.microsoft.schemas.LiveSearch._2008._03.Search.Error err: errors){
+						System.out.println("error: " + err.getMessage());
+					}
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "Nothing");
+				}
+				
+				return;
+			}
+			
 			if(images.length > 0){
 				
 				System.out.println(images.length + " results");
