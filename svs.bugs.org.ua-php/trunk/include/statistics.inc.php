@@ -12,7 +12,9 @@
     		return;
     	}
     	
-    	if(isset($_SERVER["HTTP_VIA"]) && strpos($_SERVER["HTTP_VIA"], "zeppelin:3128")){
+    	if(isset($_SERVER["HTTP_VIA"]) && 
+    		(strpos($_SERVER["HTTP_VIA"], "zeppelin:3128") || strpos($_SERVER["HTTP_VIA"], "bugz.localhost:3128"))
+    		){
     		// do not log my own requests
     		return;
     	}
