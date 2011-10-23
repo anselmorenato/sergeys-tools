@@ -266,7 +266,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 				if(row > 0){
 					row = addRow(" ", " ", row); //$NON-NLS-1$ //$NON-NLS-2$
 				}
-				
+								
 				row = addRow(Messages.getString("AudioPreviewPanel.album"), id3v2.getAlbum(), row); //$NON-NLS-1$
 				row = addRow(Messages.getString("AudioPreviewPanel.track"), id3v2.getTrack(), row); //$NON-NLS-1$
 				row = addRow(Messages.getString("AudioPreviewPanel.year"), id3v2.getYear(), row); //$NON-NLS-1$
@@ -290,9 +290,7 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 						ScaledImage artwork = new ScaledImage(img, false);
 						panelArtwork.add(artwork);
 					}
-				}
-							 
-												
+				}							 												
 			}
 			else if(mp3.hasId3v1Tag()){
 				ID3v1 id3v1 = mp3.getId3v1Tag();				
@@ -312,7 +310,18 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 												
 				//row = addRow(":", id3v1.getVersion(), row);								
 			}						
+
+			if(row > 0){
+				row = addRow(" ", " ", row);
+			}
 			
+			row = addRow("", mp3.getChannelMode(), row);	// channel mode
+			row = addRow("Layer", mp3.getLayer(), row);
+			row = addRow("Mode extension", mp3.getModeExtension(), row);
+			//row = addRow("version", mp3.getVersion(), row);
+			row = addRow("Bitrate", String.valueOf(mp3.getBitrate()), row);
+			row = addRow("Sample rate", String.valueOf(mp3.getSampleRate()), row);
+						
 		} catch (UnsupportedTagException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

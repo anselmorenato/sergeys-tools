@@ -1,7 +1,8 @@
+- save settings on [X] button
 - mp3 show bitrate and other data
-- add button to exclude files from search and ignore
-- remove left duplicates from list after copy
-
+- safari
+- squid
+- custom folders
 - include/exclude custom mime types filter
 
 

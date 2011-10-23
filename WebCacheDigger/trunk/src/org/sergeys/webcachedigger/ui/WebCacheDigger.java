@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -296,6 +298,15 @@ implements ActionListener, PropertyChangeListener
 				
 				JFrame mainWindow = application.getJFrame(); 
 				
+				mainWindow.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				mainWindow.addWindowListener(new WindowAdapter(){						
+					@Override
+					public void windowClosing(WindowEvent e) {
+						//super.windowClosing(e);
+						application.doExit();																					
+					}
+				});
+				
 				// set size and position of main window				
 				Dimension desktop = Toolkit.getDefaultToolkit().getScreenSize();
 								
@@ -456,7 +467,7 @@ implements ActionListener, PropertyChangeListener
 			exitMenuItem.setText(Messages.getString("WebCacheDigger.Exit")); //$NON-NLS-1$
 			exitMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {					
-					WebCacheDigger.this.exit();
+					WebCacheDigger.this.doExit();
 				}
 			});
 		}
@@ -603,7 +614,7 @@ implements ActionListener, PropertyChangeListener
 		}				
 	}
 
-	private void exit(){
+	private void doExit(){
 		// save window position
 		JFrame mainWindow = getJFrame();
 		try {
@@ -618,6 +629,9 @@ implements ActionListener, PropertyChangeListener
 			e.printStackTrace();
 		}
 				
+		mainWindow.setVisible(false);
+		mainWindow.dispose();
+		
 		System.exit(0);
 	}
 

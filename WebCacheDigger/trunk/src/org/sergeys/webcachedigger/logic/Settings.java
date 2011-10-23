@@ -177,7 +177,7 @@ extends Properties
 		
 		//renameMp3byTags = true;
 		//excludeAlreadySaved = false;
-		language = Locale.getDefault().getLanguage();
+		
 		
 		//compareFilesMethod = CompareFilesType.Fast;
 				
