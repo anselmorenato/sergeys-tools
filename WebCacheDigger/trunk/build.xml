@@ -355,7 +355,7 @@
 			</fileset>
 		</copy>
 -->		
-		<echo message="deleting from ${deploy2.dir}"></echo>
+		
 		<delete>			
 			<fileset dir="${deploy2.dir}" includes="*.jar, *.jnlp, *.png">
 			</fileset>
@@ -364,6 +364,7 @@
 			<fileset dir="${dist.dir}">
 			</fileset>
 		</copy>
+		<echo message="deployed for ${webstart.url}"></echo>
 	</target>
 	
 	

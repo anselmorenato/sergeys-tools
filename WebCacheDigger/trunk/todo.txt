@@ -1,5 +1,4 @@
-- save settings on [X] button
-- mp3 show bitrate and other data
+
 - safari
 - squid
 - custom folders
