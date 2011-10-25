@@ -6,7 +6,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 public class AlbumListPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private JTable tableAlbums;
+	
 	public AlbumListPanel() {
 		setLayout(new BorderLayout(0, 0));
 		

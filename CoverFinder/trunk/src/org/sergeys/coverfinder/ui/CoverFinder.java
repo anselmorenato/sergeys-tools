@@ -3,25 +3,39 @@ package org.sergeys.coverfinder.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.types.UnsignedInt;
+import org.sergeys.coverfinder.logic.IProgressWatcher;
+import org.sergeys.coverfinder.logic.MusicFile;
+import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.library.swing.ScaledImage;
 
 import com.microsoft.schemas.LiveSearch._2008._03.Search.BingPortType;
@@ -35,14 +49,7 @@ import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchResponseType0;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.SourceType;
 import com.microsoft.schemas.LiveSearch._2008._03.Search.Thumbnail;
 
-import java.awt.FlowLayout;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
-public class CoverFinder {
+public class CoverFinder implements IProgressWatcher<MusicFile> {
 
 	// get wsdl from http://api.bing.net/search.wsdl?AppID=3835365F7AE679189D6105256B8EFE900B846E6A&Version=2.2 
 	
@@ -59,8 +66,37 @@ public class CoverFinder {
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 					
-					CoverFinder mainWindow = new CoverFinder();
+					Locale l = new Locale(Settings.getInstance().getLanguage());
+					Locale.setDefault(l);
+
+										
+					final CoverFinder mainWindow = new CoverFinder();
+					
+					
+					
+					// set size and position of main window									
+					if(Settings.getInstance().getWindowLocation() == null){
+						Dimension desktop = Toolkit.getDefaultToolkit().getScreenSize();
+						
+					}
+					else{
+						mainWindow.frame.setLocation(Settings.getInstance().getWindowLocation());
+						mainWindow.frame.setSize(Settings.getInstance().getWindowSize());
+					}
+										
+					// http://mindprod.com/jgloss/close.html
+					mainWindow.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					mainWindow.frame.addWindowListener(new WindowAdapter(){						
+						@Override
+						public void windowClosing(WindowEvent e) {
+							//super.windowClosing(e);
+							mainWindow.doExit();																					
+						}
+					});
+					
 					mainWindow.frame.setVisible(true);
+					
+					mainWindow.startFileSearch();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -127,7 +163,7 @@ public class CoverFinder {
 		mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				doExit(e);
+				doExit();
 			}
 		});
 		mnNewMenu.add(mntmExit);
@@ -158,6 +194,13 @@ public class CoverFinder {
 		mnHelp.add(mntmAbout);
 	}
 
+	private void startFileSearch(){
+		ArrayList<File> paths = new ArrayList<File>(); 
+		paths.add(new File("i:\\music"));
+		FileCollectorWorker fcw = new FileCollectorWorker(paths, this);
+		fcw.execute();
+	}
+	
 	protected void doAbout(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
@@ -168,9 +211,21 @@ public class CoverFinder {
 		
 	}
 
-	protected void doExit(ActionEvent e) {
-		// TODO Auto-generated method stub
+	protected void doExit() {
+		Settings.getInstance().setWindowLocation(frame.getLocation());
+		Settings.getInstance().setWindowSize(frame.getSize());
 		
+		try {
+			Settings.save();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}		
+		
+		frame.setVisible(false);
+		frame.dispose();
+		
+		System.exit(0);
 	}
 
 	protected void doSearch(ActionEvent e) {
@@ -247,8 +302,7 @@ public class CoverFinder {
 						
 						scaledImage.setPreferredSize(new Dimension(100, 100));
 						scaledImage.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-						
-						
+												
 						panelJunk.add(scaledImage);
 						scaledImage.invalidate();
 						//panelCenter.invalidate();
@@ -270,6 +324,30 @@ public class CoverFinder {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} 
+	}
+
+	@Override
+	public void updateStage(int stage) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateProgress(long count, int stage) {
+		// TODO Auto-generated method stub
+		System.out.println("Found: " + count);		
+	}
+
+	@Override
+	public void progressComplete(Collection<MusicFile> items, int stage) {
+		// TODO Auto-generated method stub
+		System.out.println("Found files: " + items.size());
+	}
+
+	@Override
+	public boolean isAllowedToContinue(int stage) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
