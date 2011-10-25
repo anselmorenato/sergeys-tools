@@ -24,14 +24,15 @@ public abstract class FileUtils {
 //	}
 	
 	/**
-	 * Appends found files to the allFiles
+	 * Appends found files to the allFiles. Returns allFiles.
 	 * 
 	 * @param directory
-	 * @param fileFilter
+	 * @param fileFilter can be null
 	 * @param allFiles
 	 * @return
 	 */
-	public static List<File> listFilesRecursive(File directory, final FileFilter fileFilter, List<File> allFiles){
+	public static List<File> listFilesRecursive(File directory, final FileFilter fileFilter, 
+			final FileFilter subdirFilter, List<File> allFiles){
 		
 		if(directory.isDirectory()){
 						
@@ -51,14 +52,14 @@ public abstract class FileUtils {
 			List<File> subdirs = Arrays.asList(directory
 					.listFiles(new FileFilter() {
 						public boolean accept(File file) {
-							return (fileFilter == null) ?
+							return (subdirFilter == null) ?
 									file.isDirectory() :
-									(file.isDirectory() && fileFilter.accept(file));
+									(file.isDirectory() && subdirFilter.accept(file));
 						}
 					}));
 			
 			for(File subdir: subdirs){
-				listFilesRecursive(subdir, fileFilter, allFiles);
+				listFilesRecursive(subdir, fileFilter, null, allFiles);
 			}			
 		}
 		
