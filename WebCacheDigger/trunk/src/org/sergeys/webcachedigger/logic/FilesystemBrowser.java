@@ -34,7 +34,7 @@ extends AbstractBrowser
 		List<File> files = new ArrayList<File>();
 		List<CachedFile> cachedfiles = new ArrayList<CachedFile>();
 		
-		FileUtils.listFilesRecursive(new File("c:\\tmp\\sub dir"), null, files);
+		FileUtils.listFilesRecursive(new File("c:\\tmp\\sub dir"), null, null, files);
 		for(File f: files){
 			cachedfiles.add(new CachedFile(f));
 		}

@@ -99,7 +99,7 @@ public class Chrome extends AbstractBrowser {
 				public boolean accept(File pathname) {
 					// TODO Auto-generated method stub
 					return (!pathname.getName().equals("index") && !pathname.getName().startsWith("data_"));
-				}}, allFiles);
+				}}, null, allFiles);
 		}
 		
 		// 2. filter

@@ -41,15 +41,20 @@ public class Opera extends AbstractBrowser {
 		
 		for(File cacheDir: getExistingCachePaths()){
 			FileUtils.listFilesRecursive(cacheDir, new FileFilter(){
-
 				@Override
 				public boolean accept(File pathname) {
-					return (!pathname.getName().equals("revocation") && 
-							!pathname.getName().equals("sesn") &&
-							!pathname.getName().equals("CACHEDIR.TAG") &&
+					return (!pathname.getName().equals("CACHEDIR.TAG") &&
 							!pathname.getName().equals("dcache4.url") 
 							);
-				}}, allFiles);
+				}},
+				new FileFilter(){
+					@Override
+					public boolean accept(File pathname) {
+						return (!pathname.getName().equals("revocation") && 
+								!pathname.getName().equals("sesn") 
+								);
+					}},
+				allFiles);
 		}
 		
 		// 2. filter
