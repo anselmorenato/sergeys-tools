@@ -38,12 +38,6 @@ public class Settings {
 				
 		load();
 	}
-
-	
-//	private int windowX;
-//	private int windowY;
-//	private int windowW;
-//	private int windowH;
 	
 	private Point windowLocation = null;
 	private Dimension windowSize = null;

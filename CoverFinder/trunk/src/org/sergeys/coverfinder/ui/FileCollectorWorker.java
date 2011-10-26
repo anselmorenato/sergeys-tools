@@ -72,6 +72,7 @@ extends SwingWorker<Collection<MusicFile>, Long>
 		synchronized (collected) {
 			for(File file: files){
 				MusicFile mf = new MusicFile(file);
+				mf.setDetectFilesMethod(Settings.getInstance().getDetectFilesMethod());
 				collected.add(mf);
 			}			
 		}

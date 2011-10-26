@@ -11,18 +11,17 @@ create unique index uq_properties on properties(property);
 create table files(
 	id identity
 	, absolutepath varchar(4096) not null
+	, absolutedir varchar(4096) not null
 	, lastmodified bigint null	-- File.lastModified is Long
 	, filesize bigint not null		-- File.length is Long
-	, mimetype varchar(128) not null
+	, mimetype varchar(64) not null	-- audio/mpeg
+	, detectionmethod varchar(32) not null
 	, hash varchar(32) -- md5 16 bytes
---	, issaved boolean not null default false
-		
+	, haspicture boolean not null default false
+	, album varchar(2048)
+	, artist varchar(1024)
 );
 
-
---create index idx_files1 on files(filesize);
-create unique index uq_files2 on files(absolutepath);
---create index idx_files3 on files(hash);
-
+create unique index uq_files1 on files(absolutepath);
 
 insert into properties (property, val) values ('version', '1');
