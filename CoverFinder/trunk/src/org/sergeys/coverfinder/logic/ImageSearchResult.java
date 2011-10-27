@@ -4,28 +4,13 @@ import java.net.URL;
 
 public class ImageSearchResult {
 	
-	private URL thumbnail;
-	private URL fullImage;
+	private URL thumbnailUrl;
+	private URL imageUrl;
 	private int width;
 	private int height;
 	
 	public ImageSearchResult(){}
 
-	public URL getThumbnail() {
-		return thumbnail;
-	}
-
-	public void setThumbnail(URL thumbnail) {
-		this.thumbnail = thumbnail;
-	}
-
-	public URL getFullImage() {
-		return fullImage;
-	}
-
-	public void setFullImage(URL fullImage) {
-		this.fullImage = fullImage;
-	}
 
 	public int getWidth() {
 		return width;
@@ -41,5 +26,25 @@ public class ImageSearchResult {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+
+	public URL getThumbnailUrl() {
+		return thumbnailUrl;
+	}
+
+
+	public void setThumbnailUrl(URL thumbnailUrl) {
+		this.thumbnailUrl = thumbnailUrl;
+	}
+
+
+	public URL getImageUrl() {
+		return imageUrl;
+	}
+
+
+	public void setImageUrl(URL imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 }

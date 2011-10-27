@@ -82,8 +82,8 @@ System.out.println("request: " + uri);
 				JSONObject item = items.getJSONObject(i);
 //System.out.println("request: " + uri);
 				ImageSearchResult r = new ImageSearchResult();
-				r.setThumbnail(new URL(item.getString("tbUrl")));
-				r.setFullImage(new URL(item.getString("url")));
+				r.setThumbnailUrl(new URL(item.getString("tbUrl")));
+				r.setImageUrl(new URL(item.getString("url")));
 				r.setWidth(item.getInt("width"));
 				r.setHeight(item.getInt("height"));
 				

@@ -12,11 +12,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
@@ -25,14 +22,12 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
-import javax.xml.rpc.ServiceException;
 
-import org.apache.axis.types.UnsignedInt;
+import org.sergeys.coverfinder.logic.BingImageSearch;
 import org.sergeys.coverfinder.logic.GoogleImageSearch;
 import org.sergeys.coverfinder.logic.IImageSearchEngine;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
@@ -42,22 +37,8 @@ import org.sergeys.coverfinder.logic.MusicFile;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.library.swing.ScaledImage;
 
-import com.microsoft.schemas.LiveSearch._2008._03.Search.BingPortType;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.BingServiceLocator;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.ImageRequest;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.ImageResult;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchRequest;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchRequestType1;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchResponse;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.SearchResponseType0;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.SourceType;
-import com.microsoft.schemas.LiveSearch._2008._03.Search.Thumbnail;
-
 public class CoverFinder implements IProgressWatcher<MusicFile> {
 
-	// get wsdl from http://api.bing.net/search.wsdl?AppID=3835365F7AE679189D6105256B8EFE900B846E6A&Version=2.2 
-	
-	private static final String APP_ID = "3835365F7AE679189D6105256B8EFE900B846E6A";
 	
 	private JFrame frame;
 
@@ -237,119 +218,40 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 
 	protected void doSearch(ActionEvent e) {
 		
-		String query = "1";//txtQuery.getText();
+		String query = "led zeppelin \"houses of the holy\"";//txtQuery.getText();
 		
 		if(query.isEmpty()){
 			return;
 		}
 		
-		// ============== Google
-		
-
-		IImageSearchEngine google = new GoogleImageSearch();
+		//IImageSearchEngine engine = new GoogleImageSearch();
+		IImageSearchEngine engine = new BingImageSearch();
 		ImageSearchRequest r = new ImageSearchRequest();
-		r.setQuery("led zeppelin \"houses of the holy\"");
-		Collection<ImageSearchResult> res = google.search(r);
+		r.setQuery(query);
+		Collection<ImageSearchResult> res = engine.search(r);
 		for(ImageSearchResult item: res){
-			System.out.println(item.getWidth() + "x" + item.getHeight() + " " + item.getFullImage());
+			System.out.println(item.getWidth() + "x" + item.getHeight() + " " + item.getImageUrl());
 		}
 				
-		query = "";
-		if(query.isEmpty()){
-			return;
+		
+		panelJunk.removeAll();
+		Image img = null;
+		try{
+			for(ImageSearchResult item: res){
+				img = ImageIO.read(item.getThumbnailUrl());
+				
+				ScaledImage scaledImage = new ScaledImage(img, false);
+				
+				scaledImage.setPreferredSize(new Dimension(100, 100));
+				scaledImage.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+										
+				panelJunk.add(scaledImage);
+				scaledImage.invalidate();
+			}	
 		}
-		
-		
-		// ============== Bing
-		
-		SearchRequest req = new SearchRequest();
-		req.setAppId(APP_ID);
-		
-		req.setSources(new SourceType[]{ SourceType.Image });
-		req.setQuery(query);
-		//req.setOptions(new SearchOption[]{ new SearchOption("") });
-		
-		ImageRequest ir = new ImageRequest();
-		//ir.setCount(new UnsignedInt(15));
-		ir.setOffset(new UnsignedInt(0));
-		ir.setFilters(new String[]{ "Size:Medium", "Aspect:Square" });	// http://msdn.microsoft.com/en-us/library/dd560913.aspx
-		req.setImage(ir);
-		
-		BingServiceLocator loc = new BingServiceLocator();
-		try {
-			BingPortType portType = loc.getBingPort();
-			SearchRequestType1 reqType = new SearchRequestType1(req);			
-			SearchResponseType0 respType = portType.search(reqType);
-			SearchResponse resp = respType.getParameters();
-									
-			ImageResult[] images = resp.getImage().getResults();
-						
-			if(images == null){
-				com.microsoft.schemas.LiveSearch._2008._03.Search.Error[] errors = resp.getErrors();
-								
-				if(errors != null){
-					JOptionPane.showMessageDialog(null, "Failed");
-					for(com.microsoft.schemas.LiveSearch._2008._03.Search.Error err: errors){
-						System.out.println("error: " + err.getMessage());
-					}
-				}
-				else{
-					JOptionPane.showMessageDialog(null, "Nothing");
-				}
-				
-				return;
-			}
-			
-			if(images.length > 0){
-				
-				System.out.println(images.length + " results");
-				
-				panelJunk.removeAll();
-				
-				boolean found = false;
-				//int i = 0;
-				Image img = null;
-				//while(!found){
-				for(int i = 0; i < images.length; i++){
-					ImageResult imgResult = images[i]; 
-					
-					String url = imgResult.getMediaUrl();
-					Thumbnail th = imgResult.getThumbnail();
-					String mime = imgResult.getContentType();
-					
-					try{
-						//img = ImageIO.read(new URL(url));
-						img = ImageIO.read(new URL(th.getUrl()));
-						
-						found = true;
-						System.out.println(url + " found");
-						
-						ScaledImage scaledImage = new ScaledImage(img, false);
-						
-						scaledImage.setPreferredSize(new Dimension(100, 100));
-						scaledImage.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-												
-						panelJunk.add(scaledImage);
-						scaledImage.invalidate();
-						//panelCenter.invalidate();
-						//panelCenter.repaint();
-					}
-					catch(Exception ex){
-						System.out.println(url + " " + ex.getMessage());						
-					}
-					
-				}
-								
-				
-			}
-			
-		} catch (RemoteException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (ServiceException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} 
+		catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
