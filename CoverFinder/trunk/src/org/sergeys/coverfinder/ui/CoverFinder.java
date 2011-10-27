@@ -33,7 +33,11 @@ import javax.swing.border.EtchedBorder;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.types.UnsignedInt;
+import org.sergeys.coverfinder.logic.GoogleImageSearch;
+import org.sergeys.coverfinder.logic.IImageSearchEngine;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
+import org.sergeys.coverfinder.logic.ImageSearchRequest;
+import org.sergeys.coverfinder.logic.ImageSearchResult;
 import org.sergeys.coverfinder.logic.MusicFile;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.library.swing.ScaledImage;
@@ -68,11 +72,8 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 					
 					Locale l = new Locale(Settings.getInstance().getLanguage());
 					Locale.setDefault(l);
-
 										
-					final CoverFinder mainWindow = new CoverFinder();
-					
-					
+					final CoverFinder mainWindow = new CoverFinder();										
 					
 					// set size and position of main window									
 					if(Settings.getInstance().getWindowLocation() == null){
@@ -236,11 +237,30 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 
 	protected void doSearch(ActionEvent e) {
 		
-		String query = "";//txtQuery.getText();
+		String query = "1";//txtQuery.getText();
 		
 		if(query.isEmpty()){
 			return;
 		}
+		
+		// ============== Google
+		
+
+		IImageSearchEngine google = new GoogleImageSearch();
+		ImageSearchRequest r = new ImageSearchRequest();
+		r.setQuery("led zeppelin \"houses of the holy\"");
+		Collection<ImageSearchResult> res = google.search(r);
+		for(ImageSearchResult item: res){
+			System.out.println(item.getWidth() + "x" + item.getHeight() + " " + item.getFullImage());
+		}
+				
+		query = "";
+		if(query.isEmpty()){
+			return;
+		}
+		
+		
+		// ============== Bing
 		
 		SearchRequest req = new SearchRequest();
 		req.setAppId(APP_ID);
