@@ -1,2 +1,3 @@
 org.sergeys.coverfinder.logic.BingImageSearch
 org.sergeys.coverfinder.logic.GoogleImageSearch
+org.sergeys.coverfinder.logic.FilesystemImageSearch

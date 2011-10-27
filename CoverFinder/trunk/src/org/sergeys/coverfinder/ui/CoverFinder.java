@@ -227,8 +227,8 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 			return;
 		}
 				
-		//Settings.getInstance().setSearchEngineName("Bing");
-		Settings.getInstance().setSearchEngineName("Google Image Search");
+		Settings.getInstance().setSearchEngineName("Bing");
+		//Settings.getInstance().setSearchEngineName("Google Image Search");
 		IImageSearchEngine engine = CoverFinder.getSearchEngine();
 		System.out.println("search via " + engine.getName());
 		

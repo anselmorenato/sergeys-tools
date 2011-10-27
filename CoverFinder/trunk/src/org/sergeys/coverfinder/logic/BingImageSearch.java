@@ -109,4 +109,9 @@ implements IImageSearchEngine
 		return "Bing";
 	}
 
+	@Override
+	public String getDisplayName() {
+		return "Bing";
+	}
+
 }

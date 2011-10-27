@@ -105,8 +105,12 @@ System.out.println("request: " + uri);
 	}
 
 	@Override
-	public String getName() {
-		
+	public String getName() {		
+		return "Google";
+	}
+
+	@Override
+	public String getDisplayName() {
 		return "Google Image Search";
 	}
 
