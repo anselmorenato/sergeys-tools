@@ -52,6 +52,8 @@ public class Settings {
 	//private Collection<File> libraryPaths = Collections.synchronizedCollection(new ArrayList<File>());
 	//private Collection<String> libraryPaths = new ArrayList<String>();
 	private Set<String> libraryPaths = new HashSet<String>();
+	private String searchEngineName;
+	
 	private Properties properties = new Properties();
 	private Date savedVersion = new Date(0);
 	
@@ -206,6 +208,14 @@ public class Settings {
 
 	public void setLibraryPaths(Set<String> libraryPaths) {
 		this.libraryPaths = libraryPaths;
+	}
+
+	public String getSearchEngineName() {
+		return searchEngineName;
+	}
+
+	public void setSearchEngineName(String searchEngineName) {
+		this.searchEngineName = searchEngineName;
 	}
 
 }

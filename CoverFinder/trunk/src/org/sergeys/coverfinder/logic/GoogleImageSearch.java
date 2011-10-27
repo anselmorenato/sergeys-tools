@@ -52,18 +52,18 @@ System.out.println("request: " + uri);
 			StringBuilder builder = new StringBuilder();
 			
 			// request google
-//			URLConnection connection = uri.toURL().openConnection();
-//			connection.addRequestProperty("Referer", referer);
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//			while((line = reader.readLine()) != null) {
-//				builder.append(line);
-//			}
-
-			// test response
-			BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/resources/jsonresponse.txt")));
+			URLConnection connection = uri.toURL().openConnection();
+			connection.addRequestProperty("Referer", referer);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			while((line = reader.readLine()) != null) {
 				builder.append(line);
 			}
+
+			// test response
+//			BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/resources/jsonresponse.txt")));
+//			while((line = reader.readLine()) != null) {
+//				builder.append(line);
+//			}
 			
 			JSONObject json = new JSONObject(builder.toString());
 			
@@ -102,6 +102,12 @@ System.out.println("request: " + uri);
 	public Collection<ImageSearchResult> searchMore() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getName() {
+		
+		return "Google Image Search";
 	}
 
 }

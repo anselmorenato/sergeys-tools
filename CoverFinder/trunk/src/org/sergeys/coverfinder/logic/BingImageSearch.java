@@ -20,6 +20,9 @@ import com.microsoft.schemas.LiveSearch._2008._03.Search.Thumbnail;
 public class BingImageSearch 
 implements IImageSearchEngine
 {
+	
+	// https://ssl.bing.com/webmaster/developers/appids.aspx?rfp=7
+	
 	// get wsdl from http://api.bing.net/search.wsdl?AppID=3835365F7AE679189D6105256B8EFE900B846E6A&Version=2.2 
 	
 	private static final String APP_ID = "3835365F7AE679189D6105256B8EFE900B846E6A";
@@ -99,6 +102,11 @@ implements IImageSearchEngine
 	public Collection<ImageSearchResult> searchMore() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getName() {		
+		return "Bing";
 	}
 
 }

@@ -3,6 +3,7 @@ package org.sergeys.coverfinder.logic;
 import java.util.Collection;
 
 public interface IImageSearchEngine {
+	String getName();
 	Collection<ImageSearchResult> search(ImageSearchRequest req);
 	
 	/**

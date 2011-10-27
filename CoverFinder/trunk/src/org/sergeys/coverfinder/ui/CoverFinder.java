@@ -14,7 +14,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.ServiceLoader;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -223,9 +226,12 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		if(query.isEmpty()){
 			return;
 		}
+				
+		//Settings.getInstance().setSearchEngineName("Bing");
+		Settings.getInstance().setSearchEngineName("Google Image Search");
+		IImageSearchEngine engine = CoverFinder.getSearchEngine();
+		System.out.println("search via " + engine.getName());
 		
-		//IImageSearchEngine engine = new GoogleImageSearch();
-		IImageSearchEngine engine = new BingImageSearch();
 		ImageSearchRequest r = new ImageSearchRequest();
 		r.setQuery(query);
 		Collection<ImageSearchResult> res = engine.search(r);
@@ -280,4 +286,31 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		return false;
 	}
 
+	
+	public static LinkedHashSet<IImageSearchEngine> getSearchEngines(){
+		LinkedHashSet<IImageSearchEngine> engines = new LinkedHashSet<IImageSearchEngine>();
+		ServiceLoader<IImageSearchEngine> ldr = ServiceLoader.load(IImageSearchEngine.class);
+		for(IImageSearchEngine engine: ldr){
+			engines.add(engine);
+		}
+		
+		return engines;
+	}
+	
+	
+	private static IImageSearchEngine searchEngine = null;
+	public static IImageSearchEngine getSearchEngine(){
+		
+		if(searchEngine == null){
+			LinkedHashSet<IImageSearchEngine> engines = getSearchEngines();
+			for(IImageSearchEngine engine: engines){
+				if(engine.getName().equals(Settings.getInstance().getSearchEngineName())){
+					searchEngine = engine;
+					break;
+				}
+			}
+		}
+		
+		return searchEngine;
+	}
 }
