@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Hashtable;
 
 import org.h2.tools.RunScript;
 
@@ -104,8 +106,40 @@ public class Database {
 		}		
 	}
 
+	/**
+	 * Returns changed files
+	 * 
+	 * @param files
+	 * @return
+	 */
 	public Collection<MusicFile> filterUnchanged(Collection<MusicFile> files){
 		ArrayList<MusicFile> changed = new ArrayList<MusicFile>();
+		
+		try {
+			PreparedStatement pst = getConnection().prepareStatement(
+					"select id from files where absolutepath = ? and lastmodified = ? and filesize = ?");
+			
+			for(MusicFile file: files){
+				pst.setString(1, file.getAbsolutePath());
+				pst.setLong(2, file.lastModified());
+				pst.setLong(3, file.length());
+				
+				ResultSet rs = pst.executeQuery();				
+				if(rs.next()){
+					// has this file
+//					SimpleLogger.logMessage("already has saved " + file.getAbsolutePath());
+				}
+				else{
+					changed.add(file);
+				}								
+			}
+			
+			pst.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return changed;
 	}
@@ -122,8 +156,19 @@ public class Database {
 		
 		getConnection().setAutoCommit(false);
 				
+		
+		HashSet<String> unique = new HashSet<String>();
+		
 		for(MusicFile file: files){
 						
+			if(unique.contains(file.getAbsolutePath())){
+				System.out.println("Already inserted/updated: " + file.getAbsolutePath());
+				continue;
+			}
+			else{
+				unique.add(file.getAbsolutePath());
+			}
+			
 //			if(file.getHash() == null || file.getHash().isEmpty()){
 //				SimpleLogger.logMessage("error, empty hash: " + file.getAbsolutePath());
 //				continue;
@@ -148,9 +193,9 @@ public class Database {
 				psInsert.setString(5, file.getMimeType());
 				psInsert.setString(6, file.getDetectFilesMethod().toString());
 				psInsert.setString(7, file.getHash());
-				psUpdate.setBoolean(8, true);
-				psInsert.setString(9, "album");
-				psInsert.setString(10, "artist");
+				psInsert.setBoolean(8, file.isHasPicture());
+				psInsert.setString(9, file.getAlbum());
+				psInsert.setString(10, file.getArtist());
 				
 				psInsert.addBatch();
 			}

@@ -10,11 +10,16 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 
+import org.sergeys.coverfinder.logic.Database;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
+import org.sergeys.coverfinder.logic.IProgressWatcher.Stage;
 import org.sergeys.coverfinder.logic.MusicFile;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.library.FileUtils;
 import org.sergeys.library.NotImplementedException;
+
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.Mp3File;
 
 
 public class FileCollectorWorker
@@ -22,6 +27,7 @@ extends SwingWorker<Collection<MusicFile>, Long>
 {
 	// stage
 	//public static final int COLLECTION = 1;
+	private Stage stage;
 	
 	IProgressWatcher<MusicFile> watcher;
 	Collection<File> rootPaths;
@@ -47,8 +53,7 @@ extends SwingWorker<Collection<MusicFile>, Long>
 					public boolean accept(File file) {						
 						boolean match = file.getName().toLowerCase().endsWith(".mp3");
 						if(match){
-							//watcher.updateProgress(count++, COLLECTION);
-							publish(count++);
+							publish(++count);
 						}
 						return match;
 					}
@@ -65,6 +70,8 @@ extends SwingWorker<Collection<MusicFile>, Long>
 				//break;
 		}
 		
+		stage = Stage.Collecting;
+		
 		for(File root: rootPaths){
 			FileUtils.listFilesRecursive(root, filter, null, files);
 		}
@@ -73,9 +80,36 @@ extends SwingWorker<Collection<MusicFile>, Long>
 			for(File file: files){
 				MusicFile mf = new MusicFile(file);
 				mf.setDetectFilesMethod(Settings.getInstance().getDetectFilesMethod());
+				mf.setMimeType("audio/mpeg");
 				collected.add(mf);
 			}			
 		}
+		
+		Collection<MusicFile> changed = Database.getInstance().filterUnchanged(collected);
+		System.out.println("Files total: " + collected.size());
+		System.out.println("Files new or changed: " + changed.size());
+		
+		// process changed files
+		long count = 0;
+		stage = Stage.Analyzing;
+		for(MusicFile mf: changed){
+			
+			Mp3File mp3 = new Mp3File(mf.getAbsolutePath());
+			if(mp3.hasId3v2Tag()){
+				ID3v2 id3v2 = mp3.getId3v2Tag();
+				mf.setArtist(id3v2.getArtist());
+				mf.setAlbum(id3v2.getAlbum());
+				byte[] bytes = id3v2.getAlbumImage();				
+				if(bytes != null){
+					mf.setHasPicture(true);
+				}
+			}
+			
+			publish(++count);
+		}
+		
+		// update database
+		Database.getInstance().insertOrUpdate(changed);
 		
 		return collected;
 	}
@@ -86,7 +120,7 @@ extends SwingWorker<Collection<MusicFile>, Long>
 		super.done();
 		
 		try {
-			watcher.progressComplete(get(), IProgressWatcher.COLLECTING);
+			watcher.progressComplete(get(), Stage.Finish);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,7 +133,7 @@ extends SwingWorker<Collection<MusicFile>, Long>
 	@Override
 	protected void process(List<Long> chunks) {		
 		super.process(chunks);		
-		watcher.updateProgress(chunks.isEmpty() ? 0 : chunks.get(chunks.size() - 1), IProgressWatcher.COLLECTING);
+		watcher.updateProgress(chunks.isEmpty() ? 0 : chunks.get(chunks.size() - 1), stage);
 	}
 	
 

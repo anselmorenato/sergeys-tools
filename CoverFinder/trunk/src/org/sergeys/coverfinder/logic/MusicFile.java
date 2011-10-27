@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.sergeys.coverfinder.logic.Settings.DetectFilesMethod;
 
+import com.mpatric.mp3agic.Mp3File;
+
 public class MusicFile
 extends File
 {
@@ -15,6 +17,9 @@ extends File
 	private DetectFilesMethod detectFilesMethod;
 	private String hash;
 	private String mimeType = null;
+	private String artist;
+	private String album;
+	private boolean hasPicture;
 	
 	public MusicFile(File file) {
 		super(file.getAbsolutePath());
@@ -42,5 +47,29 @@ extends File
 
 	public void setMimeType(String mimeType) {
 		this.mimeType = mimeType;
+	}
+
+	public String getArtist() {
+		return artist;
+	}
+
+	public void setArtist(String artist) {
+		this.artist = artist;
+	}
+
+	public String getAlbum() {
+		return album;
+	}
+
+	public void setAlbum(String album) {
+		this.album = album;
+	}
+
+	public boolean isHasPicture() {
+		return hasPicture;
+	}
+
+	public void setHasPicture(boolean hasPicture) {
+		this.hasPicture = hasPicture;
 	}
 }

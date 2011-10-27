@@ -3,11 +3,10 @@ package org.sergeys.coverfinder.logic;
 import java.util.Collection;
 
 public interface IProgressWatcher<T> {
-	// stages
-	public static final int COLLECTING = 1;
+	public enum Stage { Collecting, Analyzing, Finish };
 	
-	public void updateStage(int stage);
-	public void updateProgress(long count, int stage);
-	public void progressComplete(Collection<T> items, int stage);
-	public boolean isAllowedToContinue(int stage);
+	public void updateStage(Stage stage);
+	public void updateProgress(long count, Stage stage);
+	public void progressComplete(Collection<T> items, Stage stage);
+	public boolean isAllowedToContinue(Stage stage);
 }

@@ -195,8 +195,14 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 	}
 
 	private void startFileSearch(){
-		ArrayList<File> paths = new ArrayList<File>(); 
-		paths.add(new File("i:\\music"));
+		Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
+		Settings.getInstance().getLibraryPaths().add("i:\\music\\3");
+		
+		ArrayList<File> paths = new ArrayList<File>();
+		for(String path: Settings.getInstance().getLibraryPaths()){
+			paths.add(new File(path));
+		}		
+		
 		FileCollectorWorker fcw = new FileCollectorWorker(paths, this);
 		fcw.execute();
 	}
@@ -327,25 +333,27 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 	}
 
 	@Override
-	public void updateStage(int stage) {
+	public void updateStage(Stage stage) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void updateProgress(long count, int stage) {
+	public void updateProgress(long count, Stage stage) {
 		// TODO Auto-generated method stub
 		System.out.println("Found: " + count);		
 	}
 
 	@Override
-	public void progressComplete(Collection<MusicFile> items, int stage) {
+	public void progressComplete(Collection<MusicFile> items, Stage stage) {
 		// TODO Auto-generated method stub
 		System.out.println("Found files: " + items.size());
+		
+		
 	}
 
 	@Override
-	public boolean isAllowedToContinue(int stage) {
+	public boolean isAllowedToContinue(Stage stage) {
 		// TODO Auto-generated method stub
 		return false;
 	}

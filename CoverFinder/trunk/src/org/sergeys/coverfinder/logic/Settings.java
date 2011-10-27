@@ -11,10 +11,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
 
 public class Settings {
 	
@@ -44,6 +49,9 @@ public class Settings {
 	private String language; // language code for Locale class
 	private CompareFilesMethod compareFilesMethod = CompareFilesMethod.Fast;
 	private DetectFilesMethod detectFilesMethod = DetectFilesMethod.Extension;
+	//private Collection<File> libraryPaths = Collections.synchronizedCollection(new ArrayList<File>());
+	//private Collection<String> libraryPaths = new ArrayList<String>();
+	private Set<String> libraryPaths = new HashSet<String>();
 	private Properties properties = new Properties();
 	private Date savedVersion = new Date(0);
 	
@@ -71,9 +79,15 @@ public class Settings {
 				e.printStackTrace();
 			}
 			
-			XMLDecoder decoder = new XMLDecoder(is);
-			instance = (Settings)decoder.readObject();
-			decoder.close(); 
+			try{
+				XMLDecoder decoder = new XMLDecoder(is);
+				instance = (Settings)decoder.readObject();
+				decoder.close();
+			}
+			catch(Exception ex){
+				ex.printStackTrace();
+				instance.setDefaults();
+			}
 			
 //			instance.firstRun = false;					
 		}
@@ -131,7 +145,7 @@ public class Settings {
 
 	private void setDefaults() {
 		setLanguage(Locale.getDefault().getLanguage());
-		
+		//compareFilesMethod = CompareFilesMethod.Fast;
 	}
 
 	public Point getWindowLocation() {
@@ -184,6 +198,14 @@ public class Settings {
 
 	public void setDetectFilesMethod(DetectFilesMethod detectFilesMethod) {
 		this.detectFilesMethod = detectFilesMethod;
+	}
+
+	public Set<String> getLibraryPaths() {
+		return libraryPaths;
+	}
+
+	public void setLibraryPaths(Set<String> libraryPaths) {
+		this.libraryPaths = libraryPaths;
 	}
 
 }
