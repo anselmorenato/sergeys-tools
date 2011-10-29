@@ -21,15 +21,19 @@ import java.util.ServiceLoader;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 
+import org.sergeys.coverfinder.logic.AcoustIdUtil;
+import org.sergeys.coverfinder.logic.AcoustIdUtil.Fingerprint;
 import org.sergeys.coverfinder.logic.BingImageSearch;
 import org.sergeys.coverfinder.logic.GoogleImageSearch;
 import org.sergeys.coverfinder.logic.IImageSearchEngine;
@@ -129,6 +133,14 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		});
 		panelTop.add(btnSearchFiles);
 		
+		btnTest = new JButton("Test");
+		btnTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				doTest();
+			}
+		});
+		panelTop.add(btnTest);
+		
 		panelCenter = new JPanel();
 		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
 		panelCenter.setLayout(new BorderLayout(0, 0));
@@ -177,6 +189,23 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 			}
 		});
 		mnHelp.add(mntmAbout);
+	}
+
+	protected void doTest() {
+		
+		JFileChooser fc = new JFileChooser();
+		fc.setCurrentDirectory(new File("i:\\music"));
+		if (fc.showOpenDialog(this.frame) == JFileChooser.APPROVE_OPTION) {
+			
+			Fingerprint fp =
+					AcoustIdUtil.getInstance().getFingerprint(fc.getSelectedFile());
+					
+			if(!fp.fingerprint.isEmpty()){				
+				String titles = AcoustIdUtil.getInstance().identify(fp);
+				
+				JOptionPane.showMessageDialog(this.frame, titles);
+			}
+		}
 	}
 
 	private void startFileSearch(){
@@ -299,6 +328,7 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 	
 	
 	private static IImageSearchEngine searchEngine = null;
+	private JButton btnTest;
 	public static IImageSearchEngine getSearchEngine(){
 		
 		if(searchEngine == null){

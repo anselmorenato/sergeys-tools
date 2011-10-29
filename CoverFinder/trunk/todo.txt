@@ -1,3 +1,11 @@
+- identify unknown tracks via http://acoustid.org/faq
+covers from http://www.discogs.com/help/api
+http://www.last.fm/api
+http://musicbrainz.org/doc/Next_Generation_Schema/SearchServerXML
+http://en.wikipedia.org/wiki/List_of_online_music_databases
+ 
+
+--------
 https://ssl.bing.com/webmaster/developers/appids.aspx
 
 Cover Finder
@@ -12,3 +20,54 @@ http://msdn.microsoft.com/en-us/library/dd250965.aspx
 
 
 http://www.webservicex.net/WS/WSDetails.aspx?CATID=4&WSID=60
+
+--------
+{
+"status": "ok", 
+"results": 
+	[
+	{"recordings": 
+		[
+			{
+			"duration": 161, 
+			"title": "My Baby Left Me", 
+			"id": "36738da0-13cc-410e-aee4-0eb305e300ae", 
+			"artists": 
+				[
+					{
+					"id": "2e700147-56a3-416b-a95d-381ea42f947f", 
+					"name": "Slade"
+					}
+				]
+			}
+		], 
+	"score": 0.918019, 
+	"id": "2113835d-bc18-41b4-83e6-76614021b3bd"
+	}
+	]
+}
+
+
+{"status": "ok", "results": [{"recordings": [{"duration": 183, "title": "Wenn die Soldaten", "id": "4e0a9145-f75e-4385-9f43-0bf41a823287", "artists": [{"id": "191cba6a-b83f-49ca-883c-02b20c7a9dd5", "name": "Marlene Dietrich"}]}], "score": 0.874729, "id": "5ab21db8-ea98-4863-a223-60e7c31fcbd6"}, {"recordings": [{"duration": 180, "title": "Wenn die Soldaten...", "id": "09cae0ab-1f67-42ef-b003-d874d58d34c8", "artists": [{"id": "191cba6a-b83f-49ca-883c-02b20c7a9dd5", "name": "Marlene Dietrich"}]}], "score": 0.702652, "id": "907d2e34-25f6-48c0-b424-89e53493b132"}]}
+{"status": "ok", "results": []}
+{"status": "ok", "results": [{"recordings": [{"duration": 132, "title": "The Russian Drinking Song", "id": "1b915b2a-94c4-4622-8707-bbccda78ae1b", "artists": [{"id": "8d741103-d319-4cc8-9f4f-9926b5bf112a", "name": "\u0410\u043a\u0432\u0430\u0440\u0438\u0443\u043c"}]}, {"duration": 131, "title": "Screen Door", "id": "94deede2-7a0d-4480-94ab-2bbd41c9eb56", "artists": [{"id": "e69db8ef-ffd1-4916-a85f-df428f223cce", "name": "Rich Mullins"}]}], "score": 0.887175, "id": "d55a4833-d502-4c0d-a849-9f25e7c8f2b1"}]}
+{"status": "ok", "results": []}
+{"status": "ok", "results": [{"recordings": [{"duration": 262, "title": "La Vie en rose", "id": "d6e858c4-9ca4-4d67-9643-7c62111f1a4b", "artists": [{"id": "1598ccda-b164-4bff-9821-f9ff5a8587a8", "name": "Dalida"}]}], "score": 0.844426, "id": "1305522b-1c5e-4e3d-9b52-b8c4a1b56737"}, {"recordings": [{"duration": 267, "title": "La Vie en rose", "id": "1a08127b-595b-411f-b151-a66a53664885", "artists": [{"id": "1598ccda-b164-4bff-9821-f9ff5a8587a8", "name": "Dalida"}]}], "score": 0.813988, "id": "4ada0b98-3d10-4e52-9386-5467d0629084"}]}
+{"status": "ok", "results": []}
+{"status": "ok", "results": [{"recordings": [{"duration": 185, "title": "Bei mir bist Du sch\u00f6n", "id": "307c3ef1-3cbf-4cf8-a529-9e783f5b01b8", "artists": [{"id": "f5f22a9c-a00c-49f9-8123-329b632da79c", "name": "The Andrews Sisters"}]}, {"duration": 187, "title": "Bei mir bist Du sch\u00f6n", "id": "6604a47c-2337-44ca-9f8d-dcb575eacf6f", "artists": [{"id": "f5f22a9c-a00c-49f9-8123-329b632da79c", "name": "The Andrews Sisters"}]}, {"duration": 188, "title": "Bei mir bist Du sch\u00f6n", "id": "6e40df39-5059-4458-bd12-2390fe4ece59", "artists": [{"id": "f5f22a9c-a00c-49f9-8123-329b632da79c", "name": "The Andrews Sisters"}]}, {"duration": 187, "title": "Bei mir bist Du Sch\u00f6n", "id": "72255d62-b787-48e4-a18e-2de0b69e215b", "artists": [{"id": "f5f22a9c-a00c-49f9-8123-329b632da79c", "name": "The Andrews Sisters"}]}, {"duration": 188, "title": "Bei mir bist Du sch\u00f6n", "id": "c0a3ae43-cea7-455a-a7fd-23625e8e61f3", "artists": [{"id": "f5f22a9c-a00c-49f9-8123-329b632da79c", "name": "The Andrews Sisters"}]}], "score": 0.908279, "id": "0027ba7c-6d0a-45df-b8ee-2580385821e3"}, {"recordings": [{"duration": 189, "title": "Bei mir bist Du sch\u00f6n (Means You're Grand)", "id": "1e0a61b7-6fd3-4fce-a6a9-a6d09942398f", "artists": [{"id": "f5f22a9c-a00c-49f9-8123-329b632da79c", "name": "The Andrews Sisters"}]}, {"duration": 190, "title": "Bei mir bist Du sch\u00f6n", "id": "4d604a1c-3ac3-4e29-8e6a-1cd9764be293", "artists": [{"id": "f5f22a9c-a00c-49f9-8123-329b632da79c", "name": "The Andrews Sisters"}]}, {"duration": 188, "title": "Bei Mir Bist Du Sch\u00f6n", "id": "803635a1-f28e-4250-aa1c-8a42bb2a050e", "artists": [{"id": "f5f22a9c-a00c-49f9-8123-329b632da79c", "name": "The Andrews Sisters"}]}, {"duration": 188, "title": "Bei Mir Bist Du Schoen", "id": "fe49f080-4eef-4464-888e-83a4c2fb0597", "artists": [{"id": "f5f22a9c-a00c-49f9-8123-329b632da79c", "name": "The Andrews Sisters"}]}], "score": 0.819805, "id": "fa5f6b56-34ec-40e8-98cf-dcadfe607e2e"}, {"score": 0.748241, "id": "d399a0be-035d-45a2-be4e-1108882f3717"}]}
+org.json.JSONException: JSONObject["recordings"] not found.
+	at org.json.JSONObject.get(JSONObject.java:454)
+	at org.json.JSONObject.getJSONArray(JSONObject.java:535)
+	at org.sergeys.coverfinder.logic.AcoustIdUtil.identify(AcoustIdUtil.java:151)
+{"status": "ok", "results": [{"recordings": [{"duration": 233, "title": "The House Of The Rising Son", "id": "566462af-9cc3-43f8-abbe-1e387299e3fc", "artists": [{"id": "2944824d-4c26-476f-a981-be849081942f", "name": "Nina Simone"}]}, {"duration": 233, "title": "The House of the Rising Sun", "id": "c4eb9d54-ca14-4177-b506-89fdb71530e0", "artists": [{"id": "2944824d-4c26-476f-a981-be849081942f", "name": "Nina Simone"}]}], "score": 0.79789, "id": "10f8bb62-f2e4-4e39-a37d-6e3df75f506b"}]}
+{"status": "ok", "results": [{"recordings": [{"duration": 310, "title": "Quelli erano i giorni", "id": "556b3852-707c-4fc8-b99e-8412fbf502ce", "artists": [{"id": "5fd6d882-1461-46f2-b82c-8d33c4084f10", "name": "Gigliola Cinquetti"}]}], "score": 0.763934, "id": "09ef77ce-3b64-4732-8ef2-6cb257d2c4dc"}]}
+{"status": "ok", "results": []}
+{"status": "ok", "results": [{"recordings": [{"duration": 176, "title": "Cara Mia", "id": "011fccfe-394d-4ca0-95fa-52f564b0a7d1", "artists": [{"id": "d17a5888-7775-4541-85d6-f6344f9e93b7", "name": "Baccara"}]}, {"duration": 175, "title": "Cara Mia", "id": "0c7dd673-872f-4ce8-a7e6-6f028257d980", "artists": [{"id": "d17a5888-7775-4541-85d6-f6344f9e93b7", "name": "Baccara"}]}, {"duration": 179, "title": "Cara Mia", "id": "15fc0989-1a44-4db4-9e23-d6eb7f1638ef", "artists": [{"id": "d17a5888-7775-4541-85d6-f6344f9e93b7", "name": "Baccara"}]}, {"duration": 177, "title": "Cara Mia", "id": "561a022d-21c1-424d-9ba1-56d07654724e", "artists": [{"id": "d17a5888-7775-4541-85d6-f6344f9e93b7", "name": "Baccara"}]}], "score": 0.913826, "id": "3688183d-8244-46b1-80f8-419fdd3aa852"}]}
+{"status": "ok", "results": []}
+{"status": "ok", "results": []}
+{"status": "ok", "results": []}
+{"status": "ok", "results": []}
+{"status": "ok", "results": [{"recordings": [{"duration": 576, "title": "The Call of Ktulu", "id": "4552aaed-97ca-479f-a5a1-18e6179730fb", "artists": [{"id": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab", "name": "Metallica"}]}, {"duration": 534, "title": "The Call of Ktulu", "id": "4cf8e577-dab6-4be2-97df-3196aa49e71f", "artists": [{"id": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab", "name": "Metallica"}]}, {"duration": 571, "title": "The Call of Ktulu", "id": "e57eb7b9-72fa-433c-b618-b38c5d3772f0", "artists": [{"id": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab", "name": "Metallica"}]}], "score": 0.967262, "id": "d43e8c34-4e63-4de1-89da-f4cf915cda86"}]}
+{"status": "ok", "results": [{"recordings": [{"duration": 310, "title": "Those Were the Days", "id": "17db5aa7-3090-4054-9545-244b6a1c9441", "artists": [{"id": "f6596571-9ce2-4d79-8e92-fa8cfc181b91", "name": "Mary Hopkin"}]}, {"duration": 311, "title": "Those Were the Days", "id": "c8733e4f-0be6-4f19-858d-fe157748ca4c", "artists": [{"id": "f6596571-9ce2-4d79-8e92-fa8cfc181b91", "name": "Mary Hopkin"}]}], "score": 0.988501, "id": "3ee6f1c0-4543-4427-a67b-0a4699437b0f"}]}
+{"status": "ok", "results": [{"recordings": [{"duration": 207, "title": "A Bar in Amsterdam", "id": "fc86836e-7163-488f-866a-110aeab40626", "artists": [{"id": "ad102038-c2a1-4c6b-856f-f671254de54f", "name": "Katzenjammer"}]}], "score": 0.959145, "id": "25549b68-472f-4350-b05b-c3bf606c83b9"}]}
+{"status": "ok", "results": [{"recordings": [{"duration": 169, "title": "Mambo Italiano", "id": "2d681a9d-358a-4f90-8405-7a13cd69c881", "artists": [{"id": "9302171b-77e7-4fcd-833b-65c6a3a281d7", "name": "Shaft"}]}, {"duration": 172, "title": "Mambo Italiano", "id": "32cc619a-96f1-4a34-b4c3-bae5b53e5787", "artists": [{"id": "9302171b-77e7-4fcd-833b-65c6a3a281d7", "name": "Shaft"}]}, {"duration": 168, "title": "Mambo Italiano (radio edit)", "id": "57d4d98e-4275-4111-8862-914a0164b09c", "artists": [{"id": "9302171b-77e7-4fcd-833b-65c6a3a281d7", "name": "Shaft"}]}, {"duration": 169, "title": "Mambo Italiano", "id": "5da27b86-0fc5-4df1-88c9-1103c69595fa", "artists": [{"id": "9302171b-77e7-4fcd-833b-65c6a3a281d7", "name": "Shaft"}]}, {"duration": 171, "title": "Mambo Italiano (radio edit)", "id": "8666c6a4-25af-4ec9-9b82-2aca53b79f3b", "artists": [{"id": "9302171b-77e7-4fcd-833b-65c6a3a281d7", "name": "Shaft"}]}, {"duration": 168, "title": "Mambo Italiano", "id": "aa68ad09-5966-4df7-9024-bf2554533bca", "artists": [{"id": "9302171b-77e7-4fcd-833b-65c6a3a281d7", "name": "Shaft"}]}], "score": 0.922484, "id": "d13a7d6a-ef4f-42c4-900c-d85315ccfc7e"}]}
