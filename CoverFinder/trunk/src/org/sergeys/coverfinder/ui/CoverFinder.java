@@ -196,14 +196,18 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		JFileChooser fc = new JFileChooser();
 		fc.setCurrentDirectory(new File("i:\\music"));
 		if (fc.showOpenDialog(this.frame) == JFileChooser.APPROVE_OPTION) {
-			
-			Fingerprint fp =
-					AcoustIdUtil.getInstance().getFingerprint(fc.getSelectedFile());
+			try{
+				Fingerprint fp =
+						AcoustIdUtil.getInstance().getFingerprint(fc.getSelectedFile());
+						
+				if(!fp.fingerprint.isEmpty()){				
+					String titles = AcoustIdUtil.getInstance().identify(fp);
 					
-			if(!fp.fingerprint.isEmpty()){				
-				String titles = AcoustIdUtil.getInstance().identify(fp);
-				
-				JOptionPane.showMessageDialog(this.frame, titles);
+					JOptionPane.showMessageDialog(this.frame, titles);
+				}
+			}
+			catch(Exception ex){
+				JOptionPane.showMessageDialog(this.frame, ex.getMessage());
 			}
 		}
 	}

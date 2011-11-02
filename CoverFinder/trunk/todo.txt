@@ -1,9 +1,11 @@
 - identify unknown tracks via http://acoustid.org/faq
+- open track on musicbrainz by mbid
 covers from http://www.discogs.com/help/api
 http://www.last.fm/api
 http://musicbrainz.org/doc/Next_Generation_Schema/SearchServerXML
 http://en.wikipedia.org/wiki/List_of_online_music_databases
  
+- log to logfile
 
 --------
 https://ssl.bing.com/webmaster/developers/appids.aspx

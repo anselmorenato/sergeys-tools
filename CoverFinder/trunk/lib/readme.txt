@@ -1,0 +1,1 @@
+get fpcalc static binaries from http://acoustid.org/chromaprint
