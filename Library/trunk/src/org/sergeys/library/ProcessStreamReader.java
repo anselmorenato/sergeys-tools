@@ -23,13 +23,15 @@ extends Thread
 {
     private InputStream is;
     private StringWriter sw = new StringWriter();
-
-    //public ProcessStreamReader(InputStream is) {
+    
     public ProcessStreamReader(Process process) {
-        //this.is = is;
     	this.is = process.getInputStream();
     }
 
+    public ProcessStreamReader(InputStream is) {        
+        this.is = is;        
+    }
+    
     public void run() {
         try {
             int c;
