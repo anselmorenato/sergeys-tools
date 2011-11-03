@@ -42,6 +42,7 @@ import org.sergeys.coverfinder.logic.ImageSearchRequest;
 import org.sergeys.coverfinder.logic.ImageSearchResult;
 import org.sergeys.coverfinder.logic.MusicFile;
 import org.sergeys.coverfinder.logic.Settings;
+import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -87,7 +88,7 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 					
 					mainWindow.frame.setVisible(true);
 					
-					mainWindow.startFileSearch();
+					mainWindow.scanLibrary();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -102,7 +103,7 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		initialize();
 	}
 
-	JPanel panelCenter;
+	DisabledPanel dPanelCenter;
 	private JScrollPane scrollPane;
 	private JPanel panelJunk;
 	private JMenuBar menuBar;
@@ -113,6 +114,7 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 	private JMenuItem mntmSettings;
 	private JMenu mnHelp;
 	private JMenuItem mntmAbout;
+	DisabledPanel dPanelTop;
 	
 	/**
 	 * Initialize the contents of the frame.
@@ -125,7 +127,8 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		JPanel panelTop = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panelTop.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
-		frame.getContentPane().add(panelTop, BorderLayout.NORTH);
+		dPanelTop = new DisabledPanel(panelTop);
+		frame.getContentPane().add(dPanelTop, BorderLayout.NORTH);
 		
 		JButton btnSearchFiles = new JButton("Search");
 		btnSearchFiles.addActionListener(new ActionListener() {
@@ -143,8 +146,9 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		});
 		panelTop.add(btnTest);
 		
-		panelCenter = new JPanel();
-		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
+		JPanel panelCenter = new JPanel();
+		dPanelCenter = new DisabledPanel(panelCenter);
+		frame.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
 		panelCenter.setLayout(new BorderLayout(0, 0));
 		
 		scrollPane = new JScrollPane();
@@ -153,17 +157,10 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		panelJunk = new JPanel();
 		scrollPane.setViewportView(panelJunk);
 		
-		panelStatus = new JPanel();
-		FlowLayout flowLayout_1 = (FlowLayout) panelStatus.getLayout();
-		flowLayout_1.setAlignment(FlowLayout.LEFT);
-		frame.getContentPane().add(panelStatus, BorderLayout.SOUTH);
-		
-		lblProgress = new JLabel("");
-		lblProgress.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/progress.gif")));
-		panelStatus.add(lblProgress);
-		
-		lblStatusMessage = new JLabel("Status message");
-		panelStatus.add(lblStatusMessage);
+		panelStatusBar = new StatusBarPanel();
+		panelStatusBar.setMessage("Ready");
+		panelStatusBar.setWorking(false);
+		frame.getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
 		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -177,6 +174,14 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 				doExit();
 			}
 		});
+		
+		mntmRescanLibrary = new JMenuItem("Rescan library");
+		mntmRescanLibrary.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				doRescanLibrary();
+			}
+		});
+		mnNewMenu.add(mntmRescanLibrary);
 		mnNewMenu.add(mntmExit);
 		
 		mnSettings = new JMenu("Settings");
@@ -205,11 +210,20 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		mnHelp.add(mntmAbout);
 	}
 
+	protected void doRescanLibrary() {
+		scanLibrary();
+	}
+
 	protected void doTest() {
+		
+		
 		
 		JFileChooser fc = new JFileChooser();
 		fc.setCurrentDirectory(new File("i:\\music"));
 		if (fc.showOpenDialog(this.frame) == JFileChooser.APPROVE_OPTION) {
+			panelStatusBar.setMessage("Recognition...");
+			panelStatusBar.setWorking(true);
+
 			try{
 				Fingerprint fp =
 						AcoustIdUtil.getInstance().getFingerprint(fc.getSelectedFile());
@@ -224,9 +238,12 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 				JOptionPane.showMessageDialog(this.frame, ex.getMessage());
 			}
 		}
+		
+		panelStatusBar.setMessage("Ready");
+		panelStatusBar.setWorking(false);
 	}
 
-	private void startFileSearch(){
+	private void scanLibrary(){
 		Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
 		Settings.getInstance().getLibraryPaths().add("i:\\music\\3");
 		
@@ -234,6 +251,10 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		for(String path: Settings.getInstance().getLibraryPaths()){
 			paths.add(new File(path));
 		}		
+		
+		dPanelTop.setEnabled(false);
+		dPanelCenter.setEnabled(false);
+		panelStatusBar.setMessage("Scanning library...", true);
 		
 		FileCollectorWorker fcw = new FileCollectorWorker(paths, this);
 		fcw.execute();
@@ -321,10 +342,11 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 
 	@Override
 	public void progressComplete(Collection<MusicFile> items, Stage stage) {
-		// TODO Auto-generated method stub
 		System.out.println("Found files: " + items.size());
 		
-		
+		dPanelTop.setEnabled(true);
+		dPanelCenter.setEnabled(true);
+		panelStatusBar.setMessage("Found files: " + items.size(), false);
 	}
 
 	@Override
@@ -347,9 +369,8 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 	
 	private static IImageSearchEngine searchEngine = null;
 	private JButton btnTest;
-	private JPanel panelStatus;
-	private JLabel lblProgress;
-	private JLabel lblStatusMessage;
+	private StatusBarPanel panelStatusBar;
+	private JMenuItem mntmRescanLibrary;
 	public static IImageSearchEngine getSearchEngine(){
 		
 		if(searchEngine == null){

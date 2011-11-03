@@ -50,7 +50,13 @@ extends SwingWorker<Collection<MusicFile>, Long>
 				filter = new FileFilter() {		
 					private long count = 0;
 					@Override
-					public boolean accept(File file) {						
+					public boolean accept(File file) {
+//try {
+//	Thread.sleep(100);
+//} catch (InterruptedException e) {
+//	// TODO Auto-generated catch block
+//	e.printStackTrace();
+//}						
 						boolean match = file.getName().toLowerCase().endsWith(".mp3");
 						if(match){
 							publish(++count);
