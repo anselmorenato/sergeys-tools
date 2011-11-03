@@ -20,8 +20,10 @@ extends DefaultMutableTreeNode
 	private DetectFilesMethod detectFilesMethod;
 	private String hash;
 	private String mimeType = null;
+	private String title;
 	private String artist;
 	private String album;
+	private String albumDir;
 	private boolean hasPicture;
 	
 	public Track(File file) {
@@ -80,4 +82,22 @@ extends DefaultMutableTreeNode
 	public void setHasPicture(boolean hasPicture) {
 		this.hasPicture = hasPicture;
 	}
+
+	public String getAlbumDir() {
+		return albumDir;
+	}
+
+	public void setAlbumDir(String albumDir) {
+		this.albumDir = albumDir;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+		setUserObject(title);
+	}
+
 }

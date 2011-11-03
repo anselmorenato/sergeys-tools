@@ -18,8 +18,9 @@ create table files(
 	, detectionmethod varchar(32) not null
 	, hash varchar(32) -- md5 16 bytes
 	, haspicture boolean not null default false
-	, album varchar(2048)
+	, album varchar(1024)
 	, artist varchar(1024)
+	, title varchar(1024)
 );
 
 create unique index uq_files1 on files(absolutepath);

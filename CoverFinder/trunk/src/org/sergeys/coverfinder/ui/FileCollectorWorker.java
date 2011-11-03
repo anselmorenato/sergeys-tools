@@ -98,16 +98,17 @@ extends SwingWorker<Collection<Track>, Long>
 		// process changed files
 		long count = 0;
 		stage = Stage.Analyzing;
-		for(Track mf: changed){
+		for(Track track: changed){
 			
-			Mp3File mp3 = new Mp3File(mf.getFile().getAbsolutePath());
+			Mp3File mp3 = new Mp3File(track.getFile().getAbsolutePath());
 			if(mp3.hasId3v2Tag()){
 				ID3v2 id3v2 = mp3.getId3v2Tag();
-				mf.setArtist(id3v2.getArtist());
-				mf.setAlbum(id3v2.getAlbum());
+				track.setArtist(id3v2.getArtist());
+				track.setAlbum(id3v2.getAlbum());
+				track.setTitle(id3v2.getTitle());
 				byte[] bytes = id3v2.getAlbumImage();				
 				if(bytes != null){
-					mf.setHasPicture(true);
+					track.setHasPicture(true);
 				}
 			}
 			

@@ -146,16 +146,12 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		});
 		panelTop.add(btnTest);
 		
-		JPanel panelCenter = new JPanel();
+		JPanel panelCenter = new TrackTreePanel();
 		dPanelCenter = new DisabledPanel(panelCenter);
 		frame.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
-		panelCenter.setLayout(new BorderLayout(0, 0));
 		
-		scrollPane = new JScrollPane();
-		panelCenter.add(scrollPane, BorderLayout.CENTER);
 		
-		panelJunk = new JPanel();
-		scrollPane.setViewportView(panelJunk);
+						
 		
 		panelStatusBar = new StatusBarPanel();
 		panelStatusBar.setMessage("Ready");

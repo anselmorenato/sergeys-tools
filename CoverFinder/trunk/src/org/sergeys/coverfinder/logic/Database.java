@@ -152,8 +152,8 @@ public class Database {
 				"update files set haspicture = ?, hash = ?, lastmodified = ? where id = ?");
 		PreparedStatement psInsert = getConnection().prepareStatement(
 				"insert into files (absolutepath, absolutedir, lastmodified, filesize, mimetype," +
-						" detectionmethod, hash, haspicture, album, artist)" +
-				" values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						" detectionmethod, hash, haspicture, album, artist, title)" +
+				" values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		
 		getConnection().setAutoCommit(false);
 				
@@ -197,6 +197,7 @@ public class Database {
 				psInsert.setBoolean(8, file.isHasPicture());
 				psInsert.setString(9, file.getAlbum());
 				psInsert.setString(10, file.getArtist());
+				psInsert.setString(11, file.getTitle());
 				
 				psInsert.addBatch();
 			}
@@ -217,10 +218,28 @@ public class Database {
 	public Collection<Track> selectTracks(Album.HasCover hasCover) throws SQLException{
 		ArrayList<Track> tracks = new ArrayList<Track>();
 		
+		StringBuilder sb = new StringBuilder();
+		sb.append("select absolutepath, absolutedir, haspicture, album, artist, title from files");
+		
+//		switch(hasCover){
+//		case NoTracks
+//		
+//		}
+		
+//		sb.append(" where haspicture = false");
+		
+		sb.append(" order by artist, album");
+		
 		Statement st = getConnection().createStatement();
-		ResultSet rs = st.executeQuery("select absolutepath from files");
+		ResultSet rs = st.executeQuery(sb.toString());
 		while(rs.next()){
 			Track track = new Track(new File(rs.getString("absolutepath")));
+			track.setAlbumDir(rs.getString("absolutedir"));
+			track.setHasPicture(rs.getBoolean("haspicture"));
+			track.setAlbum(rs.getString("album") == null ? "<unknown>" : rs.getString("album"));
+			track.setArtist(rs.getString("artist") == null ? "<unknown>" : rs.getString("artist"));
+			track.setTitle(rs.getString("title") == null ? "<unknown>" : rs.getString("title"));
+			
 			tracks.add(track);
 		}
 		
