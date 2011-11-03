@@ -13,7 +13,7 @@ import javax.swing.SwingWorker;
 import org.sergeys.coverfinder.logic.Database;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
 import org.sergeys.coverfinder.logic.IProgressWatcher.Stage;
-import org.sergeys.coverfinder.logic.MusicFile;
+import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.library.FileUtils;
 import org.sergeys.library.NotImplementedException;
@@ -23,24 +23,24 @@ import com.mpatric.mp3agic.Mp3File;
 
 
 public class FileCollectorWorker
-extends SwingWorker<Collection<MusicFile>, Long>
+extends SwingWorker<Collection<Track>, Long>
 {
 	// stage
 	//public static final int COLLECTION = 1;
 	private Stage stage;
 	
-	IProgressWatcher<MusicFile> watcher;
+	IProgressWatcher<Track> watcher;
 	Collection<File> rootPaths;
 	
-	public FileCollectorWorker(Collection<File> rootPaths, IProgressWatcher<MusicFile> watcher){
+	public FileCollectorWorker(Collection<File> rootPaths, IProgressWatcher<Track> watcher){
 		this.watcher = watcher;
 		this.rootPaths = rootPaths;
 	}
 
 	@Override
-	protected Collection<MusicFile> doInBackground() throws Exception {				
+	protected Collection<Track> doInBackground() throws Exception {				
 		
-		Collection<MusicFile> collected = Collections.synchronizedList(new ArrayList<MusicFile>());
+		Collection<Track> collected = Collections.synchronizedList(new ArrayList<Track>());
 		
 		List<File> files = new ArrayList<File>();
 		FileFilter filter = null;
@@ -84,23 +84,23 @@ extends SwingWorker<Collection<MusicFile>, Long>
 		
 		synchronized (collected) {
 			for(File file: files){
-				MusicFile mf = new MusicFile(file);
+				Track mf = new Track(file);
 				mf.setDetectFilesMethod(Settings.getInstance().getDetectFilesMethod());
 				mf.setMimeType("audio/mpeg");
 				collected.add(mf);
 			}			
 		}
 		
-		Collection<MusicFile> changed = Database.getInstance().filterUnchanged(collected);
+		Collection<Track> changed = Database.getInstance().filterUnchanged(collected);
 		System.out.println("Files total: " + collected.size());
 		System.out.println("Files new or changed: " + changed.size());
 		
 		// process changed files
 		long count = 0;
 		stage = Stage.Analyzing;
-		for(MusicFile mf: changed){
+		for(Track mf: changed){
 			
-			Mp3File mp3 = new Mp3File(mf.getAbsolutePath());
+			Mp3File mp3 = new Mp3File(mf.getFile().getAbsolutePath());
 			if(mp3.hasId3v2Tag()){
 				ID3v2 id3v2 = mp3.getId3v2Tag();
 				mf.setArtist(id3v2.getArtist());

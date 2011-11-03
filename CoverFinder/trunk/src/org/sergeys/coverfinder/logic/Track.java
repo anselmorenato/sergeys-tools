@@ -2,18 +2,21 @@ package org.sergeys.coverfinder.logic;
 
 import java.io.File;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.sergeys.coverfinder.logic.Settings.DetectFilesMethod;
 
-import com.mpatric.mp3agic.Mp3File;
-
-public class MusicFile
-extends File
+public class Track
+//extends File
+extends DefaultMutableTreeNode
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private File file;
+	
 	private DetectFilesMethod detectFilesMethod;
 	private String hash;
 	private String mimeType = null;
@@ -21,10 +24,15 @@ extends File
 	private String album;
 	private boolean hasPicture;
 	
-	public MusicFile(File file) {
-		super(file.getAbsolutePath());
+	public Track(File file) {
+		//super(file.getAbsolutePath());
+		this.file = file;
 	}
 
+	public File getFile(){
+		return file;
+	}
+	
 	public DetectFilesMethod getDetectFilesMethod() {
 		return detectFilesMethod;
 	}

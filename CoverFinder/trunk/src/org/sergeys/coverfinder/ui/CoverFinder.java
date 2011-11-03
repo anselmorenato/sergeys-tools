@@ -40,14 +40,14 @@ import org.sergeys.coverfinder.logic.IImageSearchEngine;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
 import org.sergeys.coverfinder.logic.ImageSearchRequest;
 import org.sergeys.coverfinder.logic.ImageSearchResult;
-import org.sergeys.coverfinder.logic.MusicFile;
+import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 
-public class CoverFinder implements IProgressWatcher<MusicFile> {
+public class CoverFinder implements IProgressWatcher<Track> {
 
 	
 	private JFrame frame;
@@ -341,7 +341,7 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 	}
 
 	@Override
-	public void progressComplete(Collection<MusicFile> items, Stage stage) {
+	public void progressComplete(Collection<Track> items, Stage stage) {
 		System.out.println("Found files: " + items.size());
 		
 		dPanelTop.setEnabled(true);

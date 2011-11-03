@@ -1,4 +1,5 @@
-- identify unknown tracks via http://acoustid.org/faq
+- tags from other formats
+- identify unknown tracks via http://acoustid.org
 - open track on musicbrainz by mbid
 covers from http://www.discogs.com/help/api
 http://www.last.fm/api

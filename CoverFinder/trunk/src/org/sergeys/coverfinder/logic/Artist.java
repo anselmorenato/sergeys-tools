@@ -2,11 +2,10 @@ package org.sergeys.coverfinder.logic;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class Album 
+public class Artist 
 extends DefaultMutableTreeNode
 {
-	public enum HasCover { AllTracks, SomeTracks, NoTracks };
-	
+
 	/**
 	 * 
 	 */

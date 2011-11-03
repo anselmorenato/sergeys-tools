@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.h2.tools.RunScript;
 
@@ -112,17 +113,17 @@ public class Database {
 	 * @param files
 	 * @return
 	 */
-	public Collection<MusicFile> filterUnchanged(Collection<MusicFile> files){
-		ArrayList<MusicFile> changed = new ArrayList<MusicFile>();
+	public Collection<Track> filterUnchanged(Collection<Track> files){
+		ArrayList<Track> changed = new ArrayList<Track>();
 		
 		try {
 			PreparedStatement pst = getConnection().prepareStatement(
 					"select id from files where absolutepath = ? and lastmodified = ? and filesize = ?");
 			
-			for(MusicFile file: files){
-				pst.setString(1, file.getAbsolutePath());
-				pst.setLong(2, file.lastModified());
-				pst.setLong(3, file.length());
+			for(Track file: files){
+				pst.setString(1, file.getFile().getAbsolutePath());
+				pst.setLong(2, file.getFile().lastModified());
+				pst.setLong(3, file.getFile().length());
 				
 				ResultSet rs = pst.executeQuery();				
 				if(rs.next()){
@@ -144,7 +145,7 @@ public class Database {
 		return changed;
 	}
 	
-	public void insertOrUpdate(Collection<MusicFile> files) throws SQLException{
+	public void insertOrUpdate(Collection<Track> files) throws SQLException{
 		PreparedStatement psSelect = getConnection().prepareStatement(				
 				"select id from files where absolutepath = ?");
 		PreparedStatement psUpdate = getConnection().prepareStatement(
@@ -159,14 +160,14 @@ public class Database {
 		
 		HashSet<String> unique = new HashSet<String>();
 		
-		for(MusicFile file: files){
+		for(Track file: files){
 						
-			if(unique.contains(file.getAbsolutePath())){
-				System.out.println("Already inserted/updated: " + file.getAbsolutePath());
+			if(unique.contains(file.getFile().getAbsolutePath())){
+				System.out.println("Already inserted/updated: " + file.getFile().getAbsolutePath());
 				continue;
 			}
 			else{
-				unique.add(file.getAbsolutePath());
+				unique.add(file.getFile().getAbsolutePath());
 			}
 			
 //			if(file.getHash() == null || file.getHash().isEmpty()){
@@ -174,22 +175,22 @@ public class Database {
 //				continue;
 //			}
 			
-			psSelect.setString(1, file.getAbsolutePath());
+			psSelect.setString(1, file.getFile().getAbsolutePath());
 
 			ResultSet rs = psSelect.executeQuery();
 			if(rs.next()){
 				psUpdate.setBoolean(1, true);						
 				psUpdate.setString(2, file.getHash());
-				psUpdate.setLong(3, file.lastModified());
+				psUpdate.setLong(3, file.getFile().lastModified());
 				psUpdate.setLong(4, rs.getLong("id"));
 				
 				psUpdate.addBatch();
 			}
 			else{
-				psInsert.setString(1, file.getAbsolutePath());
-				psInsert.setString(2, file.getParentFile().getAbsolutePath());
-				psInsert.setLong(3, file.lastModified());								
-				psInsert.setLong(4, file.length());				
+				psInsert.setString(1, file.getFile().getAbsolutePath());
+				psInsert.setString(2, file.getFile().getParentFile().getAbsolutePath());
+				psInsert.setLong(3, file.getFile().lastModified());								
+				psInsert.setLong(4, file.getFile().length());				
 				psInsert.setString(5, file.getMimeType());
 				psInsert.setString(6, file.getDetectFilesMethod().toString());
 				psInsert.setString(7, file.getHash());
@@ -211,5 +212,30 @@ public class Database {
 		psUpdate.close();
 		
 		getConnection().setAutoCommit(true);		
+	}
+	
+	public Collection<Track> selectTracks(Album.HasCover hasCover) throws SQLException{
+		ArrayList<Track> tracks = new ArrayList<Track>();
+		
+		Statement st = getConnection().createStatement();
+		ResultSet rs = st.executeQuery("select absolutepath from files");
+		while(rs.next()){
+			Track track = new Track(new File(rs.getString("absolutepath")));
+			tracks.add(track);
+		}
+		
+		return tracks;
+	}
+
+
+	public void deleteByAbsolutePath(List<File> list) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public List<File> selectAllFiles() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
