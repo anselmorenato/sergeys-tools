@@ -104,8 +104,7 @@ public class CoverFinder implements IProgressWatcher<Track> {
 	}
 
 	DisabledPanel dPanelCenter;
-	private JScrollPane scrollPane;
-	private JPanel panelJunk;
+	
 	private JMenuBar menuBar;
 	private JMenu mnNewMenu;
 	private JMenuItem mntmExit;
@@ -115,6 +114,7 @@ public class CoverFinder implements IProgressWatcher<Track> {
 	private JMenu mnHelp;
 	private JMenuItem mntmAbout;
 	DisabledPanel dPanelTop;
+	TrackTreePanel panelTree;
 	
 	/**
 	 * Initialize the contents of the frame.
@@ -146,8 +146,8 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		});
 		panelTop.add(btnTest);
 		
-		JPanel panelCenter = new TrackTreePanel();
-		dPanelCenter = new DisabledPanel(panelCenter);
+		panelTree = new TrackTreePanel();
+		dPanelCenter = new DisabledPanel(panelTree);
 		frame.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
 		
 		
@@ -240,8 +240,11 @@ public class CoverFinder implements IProgressWatcher<Track> {
 	}
 
 	private void scanLibrary(){
+		Settings.getInstance().getLibraryPaths().clear();
+		//Settings.getInstance().getLibraryPaths().add("c:\\tmp\\test");
 		Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
 		Settings.getInstance().getLibraryPaths().add("i:\\music\\3");
+
 		
 		ArrayList<File> paths = new ArrayList<File>();
 		for(String path: Settings.getInstance().getLibraryPaths()){
@@ -304,7 +307,7 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		}
 				
 		
-		panelJunk.removeAll();
+		//panelJunk.removeAll();
 		Image img = null;
 		try{
 			for(ImageSearchResult item: res){
@@ -315,7 +318,7 @@ public class CoverFinder implements IProgressWatcher<Track> {
 				scaledImage.setPreferredSize(new Dimension(100, 100));
 				scaledImage.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 										
-				panelJunk.add(scaledImage);
+				//panelJunk.add(scaledImage);
 				scaledImage.invalidate();
 			}	
 		}
@@ -342,6 +345,8 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		
 		dPanelTop.setEnabled(true);
 		dPanelCenter.setEnabled(true);
+		panelTree.update();
+		
 		panelStatusBar.setMessage("Found files: " + items.size(), false);
 	}
 

@@ -236,9 +236,12 @@ public class Database {
 			Track track = new Track(new File(rs.getString("absolutepath")));
 			track.setAlbumDir(rs.getString("absolutedir"));
 			track.setHasPicture(rs.getBoolean("haspicture"));
-			track.setAlbum(rs.getString("album") == null ? "<unknown>" : rs.getString("album"));
-			track.setArtist(rs.getString("artist") == null ? "<unknown>" : rs.getString("artist"));
-			track.setTitle(rs.getString("title") == null ? "<unknown>" : rs.getString("title"));
+			String str = rs.getString("album");
+			track.setAlbum(str == null || str.isEmpty() ? "<unknown>" : str);
+			str = rs.getString("artist");
+			track.setArtist(str == null || str.isEmpty() ? "<unknown>" : str);
+			str = rs.getString("title");
+			track.setTitle(str == null || str.isEmpty() ? "<unknown>" : str);
 			
 			tracks.add(track);
 		}

@@ -7,7 +7,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.sergeys.coverfinder.logic.Settings.DetectFilesMethod;
 
 public class Track
-//extends File
 extends DefaultMutableTreeNode
 {
 	/**
@@ -27,7 +26,7 @@ extends DefaultMutableTreeNode
 	private boolean hasPicture;
 	
 	public Track(File file) {
-		//super(file.getAbsolutePath());
+		
 		this.file = file;
 	}
 
