@@ -87,23 +87,25 @@ public class TreeTableModelAdapter extends AbstractTableModel
 	// the tree changes. We use delayedFireTableDataChanged as we can
 	// not be guaranteed the tree will have finished processing
 	// the event before us.
-	treeTableModel.addTreeModelListener(new TreeModelListener() {
-	    public void treeNodesChanged(TreeModelEvent e) {
-		delayedFireTableDataChanged();
-	    }
-
-	    public void treeNodesInserted(TreeModelEvent e) {
-		delayedFireTableDataChanged();
-	    }
-
-	    public void treeNodesRemoved(TreeModelEvent e) {
-		delayedFireTableDataChanged();
-	    }
-
-	    public void treeStructureChanged(TreeModelEvent e) {
-		delayedFireTableDataChanged();
-	    }
-	});
+	if(treeTableModel != null){
+		treeTableModel.addTreeModelListener(new TreeModelListener() {
+		    public void treeNodesChanged(TreeModelEvent e) {
+			delayedFireTableDataChanged();
+		    }
+	
+		    public void treeNodesInserted(TreeModelEvent e) {
+			delayedFireTableDataChanged();
+		    }
+	
+		    public void treeNodesRemoved(TreeModelEvent e) {
+			delayedFireTableDataChanged();
+		    }
+	
+		    public void treeStructureChanged(TreeModelEvent e) {
+			delayedFireTableDataChanged();
+		    }
+		});
+		}
     }
 
     // Wrappers, implementing TableModel interface. 

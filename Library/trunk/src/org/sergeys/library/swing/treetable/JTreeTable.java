@@ -70,7 +70,7 @@ public class JTreeTable extends JTable {
     protected TreeTableCellRenderer tree;
 
 
-    public JTreeTable(TreeTableModel treeTableModel) {
+    public JTreeTable(final TreeTableModel treeTableModel) {
 		super();
 	
 		// Creates the tree. It will be used as a renderer and editor. 
@@ -85,8 +85,7 @@ public class JTreeTable extends JTable {
 				getColumnModel().getColumn(i).setPreferredWidth(treeTableModel.getColumnWidth(i));
 			}
 		}		
-		
-		
+						
 		// Forces the JTable and JTree to share their row selection models. 
 		ListToTreeSelectionModelWrapper selectionWrapper = new 
 		                        ListToTreeSelectionModelWrapper();
@@ -108,9 +107,14 @@ public class JTreeTable extends JTable {
 		if (tree.getRowHeight() < 1) {
 		    // Metal looks better like this.
 		    setRowHeight(20);
-		}
+		}				
     }
 
+    public void expandRoot(){
+    	//tree.expandRow(1);
+		//tree.expandPath(new TreePath(((DefaultMutableTreeNode)treeTableModel.getRoot()).getPath()));
+    }
+    
     /**
      * Overridden to message super and forward the method to the tree.
      * Since the tree is not actually in the component hierarchy it will
