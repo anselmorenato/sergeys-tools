@@ -43,6 +43,8 @@ import org.sergeys.coverfinder.logic.ImageSearchResult;
 import org.sergeys.coverfinder.logic.MusicFile;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.library.swing.ScaledImage;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 
 public class CoverFinder implements IProgressWatcher<MusicFile> {
 
@@ -150,6 +152,18 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 		
 		panelJunk = new JPanel();
 		scrollPane.setViewportView(panelJunk);
+		
+		panelStatus = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) panelStatus.getLayout();
+		flowLayout_1.setAlignment(FlowLayout.LEFT);
+		frame.getContentPane().add(panelStatus, BorderLayout.SOUTH);
+		
+		lblProgress = new JLabel("");
+		lblProgress.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/progress.gif")));
+		panelStatus.add(lblProgress);
+		
+		lblStatusMessage = new JLabel("Status message");
+		panelStatus.add(lblStatusMessage);
 		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -333,6 +347,9 @@ public class CoverFinder implements IProgressWatcher<MusicFile> {
 	
 	private static IImageSearchEngine searchEngine = null;
 	private JButton btnTest;
+	private JPanel panelStatus;
+	private JLabel lblProgress;
+	private JLabel lblStatusMessage;
 	public static IImageSearchEngine getSearchEngine(){
 		
 		if(searchEngine == null){
