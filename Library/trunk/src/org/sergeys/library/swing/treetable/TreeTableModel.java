@@ -1,4 +1,5 @@
 package org.sergeys.library.swing.treetable;
+// modified by svs
 
 /*
  * Copyright 1998-1999 Sun Microsystems, Inc. All Rights Reserved.
@@ -56,8 +57,8 @@ public interface TreeTableModel extends TreeModel
     /**
      * Returns the number of available columns.
      */
-    public int getColumnCount();
-
+    public int getColumnCount();    
+    
     /**
      * Returns the name for column number <code>column</code>.
      */
@@ -69,6 +70,8 @@ public interface TreeTableModel extends TreeModel
     @SuppressWarnings("rawtypes")
 	public Class getColumnClass(int column);
 
+    public int getColumnWidth(int column);
+    
     /**
      * Returns the value to be displayed for node <code>node</code>, 
      * at column number <code>column</code>.

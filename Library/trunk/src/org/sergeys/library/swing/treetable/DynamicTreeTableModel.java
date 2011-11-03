@@ -1,4 +1,5 @@
 package org.sergeys.library.swing.treetable;
+// modified by svs
 
 /*
  * Copyright 1997-1999 Sun Microsystems, Inc. All Rights Reserved.
@@ -71,6 +72,7 @@ public class DynamicTreeTableModel extends AbstractTreeTableModel {
     @SuppressWarnings("rawtypes")
 	private Class[]         cTypes;
 
+    private int[] columnWidth;
 
     /**
      * Constructor for creating a DynamicTreeTableModel.
@@ -79,12 +81,13 @@ public class DynamicTreeTableModel extends AbstractTreeTableModel {
 	public DynamicTreeTableModel(TreeNode root, String[] columnNames,
 				 String[] getterMethodNames,
 				 String[] setterMethodNames,
-				 Class[] cTypes) {
-	super(root);
-	this.columnNames = columnNames;
-	this.methodNames = getterMethodNames;
-	this.setterMethodNames = setterMethodNames;
-	this.cTypes = cTypes;
+				 Class[] cTypes, int[] columnWidth) {
+		super(root);
+		this.columnNames = columnNames;
+		this.methodNames = getterMethodNames;
+		this.setterMethodNames = setterMethodNames;
+		this.cTypes = cTypes;
+		this.columnWidth = columnWidth;
     }
 
     //
@@ -296,5 +299,10 @@ public class DynamicTreeTableModel extends AbstractTreeTableModel {
         }
         return retNodes;
     }
+
+	@Override
+	public int getColumnWidth(int column) {		
+		return (this.columnWidth == null) ? 1 : this.columnWidth[column];
+	}
 }
 

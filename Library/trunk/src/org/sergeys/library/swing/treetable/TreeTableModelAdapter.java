@@ -1,4 +1,5 @@
 package org.sergeys.library.swing.treetable;
+// modified by svs
 
 /*
  * Copyright 1997-1999 Sun Microsystems, Inc. All Rights Reserved.
@@ -70,7 +71,7 @@ public class TreeTableModelAdapter extends AbstractTableModel
     public TreeTableModelAdapter(TreeTableModel treeTableModel, JTree tree) {
         this.tree = tree;
         this.treeTableModel = treeTableModel;
-
+        
 	tree.addTreeExpansionListener(new TreeExpansionListener() {
 	    // Don't use fireTableRowsInserted() here; the selection model
 	    // would get updated twice. 
