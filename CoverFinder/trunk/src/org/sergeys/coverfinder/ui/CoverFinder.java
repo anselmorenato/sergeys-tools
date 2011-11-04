@@ -50,7 +50,7 @@ import javax.swing.ImageIcon;
 public class CoverFinder implements IProgressWatcher<Track> {
 
 	
-	private JFrame frame;
+	private JFrame frmCoverFinder;
 
 	/**
 	 * Launch the application.
@@ -72,13 +72,13 @@ public class CoverFinder implements IProgressWatcher<Track> {
 						
 					}
 					else{
-						mainWindow.frame.setLocation(Settings.getInstance().getWindowLocation());
-						mainWindow.frame.setSize(Settings.getInstance().getWindowSize());
+						mainWindow.frmCoverFinder.setLocation(Settings.getInstance().getWindowLocation());
+						mainWindow.frmCoverFinder.setSize(Settings.getInstance().getWindowSize());
 					}
 										
 					// http://mindprod.com/jgloss/close.html
-					mainWindow.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-					mainWindow.frame.addWindowListener(new WindowAdapter(){						
+					mainWindow.frmCoverFinder.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					mainWindow.frmCoverFinder.addWindowListener(new WindowAdapter(){						
 						@Override
 						public void windowClosing(WindowEvent e) {
 							//super.windowClosing(e);
@@ -86,7 +86,7 @@ public class CoverFinder implements IProgressWatcher<Track> {
 						}
 					});
 					
-					mainWindow.frame.setVisible(true);
+					mainWindow.frmCoverFinder.setVisible(true);
 					
 					mainWindow.scanLibrary();
 				} catch (Exception e) {
@@ -120,15 +120,17 @@ public class CoverFinder implements IProgressWatcher<Track> {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmCoverFinder = new JFrame();
+		frmCoverFinder.setTitle("Cover Finder");
+		frmCoverFinder.setIconImage(Toolkit.getDefaultToolkit().getImage(CoverFinder.class.getResource("/images/icon.png")));
+		frmCoverFinder.setBounds(100, 100, 450, 300);
+		frmCoverFinder.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panelTop = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panelTop.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		dPanelTop = new DisabledPanel(panelTop);
-		frame.getContentPane().add(dPanelTop, BorderLayout.NORTH);
+		frmCoverFinder.getContentPane().add(dPanelTop, BorderLayout.NORTH);
 		
 		JButton btnSearchFiles = new JButton("Search");
 		btnSearchFiles.addActionListener(new ActionListener() {
@@ -148,7 +150,7 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		
 		panelTree = new TrackTreePanel();
 		dPanelCenter = new DisabledPanel(panelTree);
-		frame.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
+		frmCoverFinder.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
 		
 		
 						
@@ -156,10 +158,10 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		panelStatusBar = new StatusBarPanel();
 		panelStatusBar.setMessage("Ready");
 		panelStatusBar.setWorking(false);
-		frame.getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
+		frmCoverFinder.getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
 		
 		menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
+		frmCoverFinder.setJMenuBar(menuBar);
 		
 		mnNewMenu = new JMenu("File");
 		menuBar.add(mnNewMenu);
@@ -216,7 +218,7 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		
 		JFileChooser fc = new JFileChooser();
 		fc.setCurrentDirectory(new File("i:\\music"));
-		if (fc.showOpenDialog(this.frame) == JFileChooser.APPROVE_OPTION) {
+		if (fc.showOpenDialog(this.frmCoverFinder) == JFileChooser.APPROVE_OPTION) {
 			panelStatusBar.setMessage("Recognition...");
 			panelStatusBar.setWorking(true);
 
@@ -227,11 +229,11 @@ public class CoverFinder implements IProgressWatcher<Track> {
 				if(!fp.fingerprint.isEmpty()){				
 					String titles = AcoustIdUtil.getInstance().identify(fp);
 					
-					JOptionPane.showMessageDialog(this.frame, titles);
+					JOptionPane.showMessageDialog(this.frmCoverFinder, titles);
 				}
 			}
 			catch(Exception ex){
-				JOptionPane.showMessageDialog(this.frame, ex.getMessage());
+				JOptionPane.showMessageDialog(this.frmCoverFinder, ex.getMessage());
 			}
 		}
 		
@@ -270,8 +272,8 @@ public class CoverFinder implements IProgressWatcher<Track> {
 	}
 
 	protected void doExit() {
-		Settings.getInstance().setWindowLocation(frame.getLocation());
-		Settings.getInstance().setWindowSize(frame.getSize());
+		Settings.getInstance().setWindowLocation(frmCoverFinder.getLocation());
+		Settings.getInstance().setWindowSize(frmCoverFinder.getSize());
 		
 		try {
 			Settings.save();
@@ -280,8 +282,8 @@ public class CoverFinder implements IProgressWatcher<Track> {
 			e1.printStackTrace();
 		}		
 		
-		frame.setVisible(false);
-		frame.dispose();
+		frmCoverFinder.setVisible(false);
+		frmCoverFinder.dispose();
 		
 		System.exit(0);
 	}
@@ -335,7 +337,6 @@ public class CoverFinder implements IProgressWatcher<Track> {
 
 	@Override
 	public void updateProgress(long count, Stage stage) {
-		// TODO Auto-generated method stub
 		//System.out.println("Found: " + count);
 		panelStatusBar.setMessage("Examined: " + count);
 	}

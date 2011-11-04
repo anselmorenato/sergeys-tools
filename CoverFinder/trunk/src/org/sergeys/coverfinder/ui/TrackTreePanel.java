@@ -19,7 +19,6 @@ public class TrackTreePanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 	
 	JScrollPane scrollPane;
 	DefaultMutableTreeNode root;
@@ -36,18 +35,18 @@ public class TrackTreePanel extends JPanel {
 		
 		root = new DefaultMutableTreeNode("Artists/Albums/Tracks");
 		treeTable = new JTreeTable(new TrackTreeModel(root, null));
+		
 		scrollPane.setViewportView(treeTable);
 	}
 
 	public void update(){
-		
-		Collection<Track> tracks;
+				
 		try {
-			tracks = Database.getInstance().selectTracks(HasCover.AllTracks, "ru");
-						
+			Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, "ru");
+			root = new DefaultMutableTreeNode("Artists/Albums/Tracks");
 			TrackTreeModel model = new TrackTreeModel(root, tracks);
-			treeTable = new JTreeTable(model);						
-			treeTable.expandRoot();
+			treeTable = new JTreeTable(model);
+			scrollPane.setViewportView(treeTable);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,3 +54,5 @@ public class TrackTreePanel extends JPanel {
 		
 	}
 }
+
+

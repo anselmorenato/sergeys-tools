@@ -2,7 +2,6 @@ package org.sergeys.coverfinder.ui;
 
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ extends DynamicTreeTableModel
 		{ TreeTableModel.class, Boolean.class };
 
 	public TrackTreeModel(DefaultMutableTreeNode root, Collection<Track> tracks) {
-		super(root, columnNames, methodNames, setterMethodNames, classes, widths);
+		super(root, columnNames, methodNames, setterMethodNames, classes, widths);								
 		
 		if(tracks != null){		
 //			Map<String, Artist> artists = Collections.synchronizedMap(new Hashtable<String, Artist>());

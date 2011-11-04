@@ -9,20 +9,15 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLConnection;
 import java.util.zip.GZIPOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.sergeys.library.ProcessStreamReader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -245,8 +240,8 @@ public class AcoustIdUtil {
 					sb.append(title);
 					
 					s = getTextValue(e, "duration");
-					int duration = Integer.valueOf(s);
-					String mbid = getTextValue(e, "id");
+//					int duration = Integer.valueOf(s);
+//					String mbid = getTextValue(e, "id");
 					
 					NodeList nlart = e.getElementsByTagName("artist");
 					for(int k = 0; k < nlart.getLength(); k++){
@@ -277,9 +272,9 @@ public class AcoustIdUtil {
 		return sb.toString();
 	}
 	
-	private String parseJsonResponse(String response){
-		StringBuilder sb = new StringBuilder();
-		
-		return sb.toString();
-	}
+//	private String parseJsonResponse(String response){
+//		StringBuilder sb = new StringBuilder();
+//		
+//		return sb.toString();
+//	}
 }
