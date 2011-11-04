@@ -3,7 +3,10 @@ package org.sergeys.coverfinder.logic;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
@@ -15,6 +18,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.sergeys.library.NotImplementedException;
 import org.sergeys.library.ProcessStreamReader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,6 +35,7 @@ import org.xml.sax.SAXException;
 public class AcoustIdUtil {
 	
 	private final String ApiKey = "q3cdey0t";	// app: coverfinder, version: 1
+	private final String FpCalc = "fpcalc";
 	
 	private static AcoustIdUtil instance;
 	
@@ -49,14 +54,66 @@ public class AcoustIdUtil {
 		public String duration;
 	}
 	
+	public boolean isAvailable(){
+		return checkFingerprintUtility();
+	}
+	
+	private boolean checkFingerprintUtility(){
+		String fpcalcPath = Settings.getSettingsDirPath() + File.separator + FpCalc;
+		String fpcalcPathWin = Settings.getSettingsDirPath() + File.separator + FpCalc + ".exe";
+		
+		if(new File(fpcalcPath).exists() || new File(fpcalcPathWin).exists()){
+			return true;
+		}
+		
+		String targetFile;
+		InputStream is = getClass().getResourceAsStream("/resources/" + FpCalc);
+		if(is == null){
+			is = getClass().getResourceAsStream("/resources/" + FpCalc + ".exe");
+			if(is == null){
+				return false;
+			}
+			targetFile = fpcalcPathWin;
+		}
+		else{
+			targetFile = fpcalcPath;
+		}
+		
+		try {
+			byte[] buffer = new byte[2048];
+			FileOutputStream fos = new FileOutputStream(targetFile);
+			int count = 0;
+			while((count = is.read(buffer)) != -1){
+				fos.write(buffer, 0, count);
+			}
+			fos.close();
+			new File(targetFile).setExecutable(true);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
 	
 	public Fingerprint getFingerprint(File file) throws Exception{
 
+		if(!checkFingerprintUtility()){
+			throw new NotImplementedException();
+		}
+		
 		Fingerprint fp = new Fingerprint();
 		
 		try {
 			String[] args = { 
-					"d:\\workspace\\coverfinder\\lib\\win32\\fpcalc", 
+					//"d:\\workspace\\coverfinder\\lib\\win32\\fpcalc",
+					Settings.getSettingsDirPath() + File.separator + FpCalc,	// on windows .exe extension isn't mandatory
 					file.getAbsolutePath() 
 			};
 			Process process = Runtime.getRuntime().exec(args);

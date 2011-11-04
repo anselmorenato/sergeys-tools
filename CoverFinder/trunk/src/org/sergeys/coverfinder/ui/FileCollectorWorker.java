@@ -25,8 +25,6 @@ import com.mpatric.mp3agic.Mp3File;
 public class FileCollectorWorker
 extends SwingWorker<Collection<Track>, Long>
 {
-	// stage
-	//public static final int COLLECTION = 1;
 	private Stage stage;
 	
 	IProgressWatcher<Track> watcher;

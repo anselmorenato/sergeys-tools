@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.ServiceLoader;
@@ -28,24 +27,19 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 
 import org.sergeys.coverfinder.logic.AcoustIdUtil;
 import org.sergeys.coverfinder.logic.AcoustIdUtil.Fingerprint;
-import org.sergeys.coverfinder.logic.BingImageSearch;
-import org.sergeys.coverfinder.logic.GoogleImageSearch;
 import org.sergeys.coverfinder.logic.IImageSearchEngine;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
 import org.sergeys.coverfinder.logic.ImageSearchRequest;
 import org.sergeys.coverfinder.logic.ImageSearchResult;
-import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.coverfinder.logic.Settings;
+import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
 
 public class CoverFinder implements IProgressWatcher<Track> {
 
@@ -243,9 +237,10 @@ public class CoverFinder implements IProgressWatcher<Track> {
 
 	private void scanLibrary(){
 		Settings.getInstance().getLibraryPaths().clear();
-		//Settings.getInstance().getLibraryPaths().add("c:\\tmp\\test");
-		Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
-		Settings.getInstance().getLibraryPaths().add("i:\\music\\3");
+		Settings.getInstance().getLibraryPaths().add("c:\\tmp\\test");
+		//Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
+		//Settings.getInstance().getLibraryPaths().add("i:\\music\\3");
+		//Settings.getInstance().getLibraryPaths().add("i:\\music");
 
 		
 		ArrayList<File> paths = new ArrayList<File>();

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="all">
+	
+	<property name="properties.file" value="build.properties" />
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
+	
+	<macrodef name="unsignjar">
+		<!-- http://frank.zinepal.com/unsign-a-jar-with-ant -->
+
+		<attribute name="jar" />
+
+		<sequential>
+			<!-- Remove any existing signatures from a JAR file. -->
+			<tempfile prefix="usignjar-" destdir="${java.io.tmpdir}" property="temp.file" />
+			<echo message="Removing signatures from JAR: @{jar}" />
+			<mkdir dir="${temp.file}" />
+
+			<unjar src="@{jar}" dest="${temp.file}">
+				<patternset>
+					<include name="**" />
+					<exclude name="META-INF/*.SF" />
+					<exclude name="META-INF/*.DSA" />
+					<exclude name="META-INF/*.RSA" />
+				</patternset>
+			</unjar>
+
+			<delete file="@{jar}" failonerror="true" />
+
+			<!-- Touch it in case the file didn't have a manifest.
+	             Otherwise the JAR task below will fail if the manifest 
+	             file doesn't exist. -->
+			<mkdir dir="${temp.file}/META-INF" />
+			<touch file="${temp.file}/META-INF/MANIFEST.MF" />
+
+			<jar destfile="@{jar}" basedir="${temp.file}" includes="**" manifest="${temp.file}/META-INF/MANIFEST.MF" />
+
+			<delete dir="${temp.file}" failonerror="true" />
+		</sequential>
+	</macrodef>
+
+	<!-- target name="all" depends="init, copy-libs, singlepack, jnlp, deploy-local" -->
+	<target name="all" depends="init, copy-libs, singlepack, fpcalc, jnlp, deploy-local" />	
+	
+	<target name="init">
+		<property file="${properties.file}" />		
+	</target>
+
+	<target name="check-libs-changed">
+		<uptodate property="libs.unchanged" targetfile="${dist.dir}/.libs">
+			<srcfiles dir="lib" includes="*.jar" />						
+		</uptodate>
+	</target>
+	
+	<target name="copy-sign-lib">
+		
+		<basename file="${file}" property="filename"/>
+		<echo message="copying and signing ${filename}" />
+		
+		<copy file="${file}" todir="${dist.dir}" overwrite="true"/>					
+		<unsignjar jar="${dist.dir}/${filename}" />
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/${filename}" signedjar="${dist.dir}/${filename}" verbose="true">
+		</signjar>		
+	</target>
+	
+	<target name="copy-libs" unless="libs.unchanged" depends="create-key, check-libs-changed">
+		<mkdir dir="${dist.dir}" />
+						
+		<foreach target="copy-sign-lib" param="file" inheritall="true">
+			<path>				
+				<fileset dir="lib" includes="*.jar">								
+				</fileset>								
+			</path>
+		</foreach>		
+		
+		<touch file="${dist.dir}/.libs" />
+	</target>
+
+	<target name="check-key">
+		<available file="${keystore.file}" property="keystore.file.exists">
+		</available>
+	</target>
+
+	<target name="create-key" depends="check-key" unless="keystore.file.exists">
+		<echo>Create key</echo>
+		<mkdir dir="${work.dir}" />
+		<genkey keystore="${keystore.file}" alias="${keystore.alias}" validity="365" storepass="${keystore.password}">
+			<dname>
+				<param name="CN" value="Sergey Selivanov" />
+				<param name="OU" value="Home" />
+				<param name="O" value="Sergey Selivanov" />
+				<param name="C" value="UA" />
+				<param name="L" value="Kharkov" />
+				<!--
+				<param name="EmailAddress" value="sergey.selivanov@gmail.com" />
+				-->
+			</dname>
+		</genkey>
+	</target>
+	
+	<target name="singlepack-changed">
+		<uptodate property="all.unchanged" targetfile="${dist.dir}/cf.${revision}.jar">			
+			<srcfiles dir="bin" includes="**" />			
+			<srcfiles dir="${library.dir}" includes="bin/**" />			
+		</uptodate>
+	</target>
+	
+	<target name="singlepack" depends="singlepack-changed, create-key" unless="all.unchanged">
+		<mkdir dir="${dist.dir}" />
+				
+		<jar destfile="${dist.dir}/cf.${revision}.jar" index="true">
+			<fileset dir="bin" >
+				<exclude name="images/BP*Cherry*"/>
+				<exclude name="**/*.cmd"/>
+				<exclude name="resources/*.exe"/>
+			</fileset>
+			<fileset dir="${library.dir}/bin" ></fileset>
+		</jar>
+		
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/cf.${revision}.jar" verbose="true">
+		</signjar>
+	</target>
+
+	<target name="jnlp">
+		<mkdir dir="${dist.dir}" />
+		<copy file="webstart/cf-template.jnlp" tofile="${dist.dir}/cf.jnlp" overwrite="true" />				
+		<copy file="src/images/largeicon.png" tofile="${dist.dir}/largeicon.png" overwrite="true" />		
+
+		<replace file="${dist.dir}/cf.jnlp">
+			<replacefilter token="%REVISION%" value="${revision}"/>
+			<replacefilter token="%URL%" value="${webstart.url}"/>
+		</replace>
+	</target>
+
+	<target name="deploy-local" depends="init">		
+		<delete>			
+			<fileset dir="${deploy.dir}" includes="*.jar, *.jnlp, *.png" />			
+		</delete>
+		<copy todir="${deploy.dir}">
+			<fileset dir="${dist.dir}" includes="*.jar, *.jnlp, *.png" />
+		</copy>
+		<echo message="deployed for ${webstart.url}"></echo>
+	</target>
+
+	<target name="fpcalc-changed" >
+		<condition property="fpcalc.unchanged">
+			<and>
+				<uptodate srcfile="lib/win32/fpcalc.exe" targetfile="${dist.dir}/fpcalc-win32.jar"/>		
+				<uptodate srcfile="lib/osx/fpcalc" targetfile="${dist.dir}/fpcalc-osx.jar"/>
+				<uptodate srcfile="lib/linux/fpcalc" targetfile="${dist.dir}/fpcalc-linux.jar"/>
+			</and>
+		</condition>				
+	</target>
+	
+	<target name="fpcalc" depends="fpcalc-changed" unless="fpcalc.unchanged">
+		<jar destfile="${dist.dir}/fpcalc-win32.jar">
+			<fileset file="lib/win32/fpcalc.exe" />				
+		</jar>
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/fpcalc-win32.jar" >
+		</signjar>
+		
+		<jar destfile="${dist.dir}/fpcalc-osx.jar">
+			<fileset file="lib/osx/fpcalc" />				
+		</jar>
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/fpcalc-osx.jar" >
+		</signjar>
+		
+		<jar destfile="${dist.dir}/fpcalc-linux.jar">
+			<fileset file="lib/linux/fpcalc" />				
+		</jar>
+		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
+			jar="${dist.dir}/fpcalc-linux.jar" >
+		</signjar>
+	</target>
+	
+</project>
