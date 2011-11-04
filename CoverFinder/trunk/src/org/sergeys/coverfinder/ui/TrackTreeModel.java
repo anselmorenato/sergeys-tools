@@ -49,40 +49,35 @@ extends DynamicTreeTableModel
 		{ TreeTableModel.class, Boolean.class };
 
 	public TrackTreeModel(DefaultMutableTreeNode root, Collection<Track> tracks) {
-		//DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
 		super(root, columnNames, methodNames, setterMethodNames, classes, widths);
 		
-		if(tracks != null){
-		
-			Map<String, Artist> artists = Collections.synchronizedMap(new Hashtable<String, Artist>());
-			Map<String, Album> albums = Collections.synchronizedMap(new Hashtable<String, Album>());
+		if(tracks != null){		
+//			Map<String, Artist> artists = Collections.synchronizedMap(new Hashtable<String, Artist>());
+//			Map<String, Album> albums = Collections.synchronizedMap(new Hashtable<String, Album>());
+			Map<String, Artist> artists = new Hashtable<String, Artist>();
+			Map<String, Album> albums = new Hashtable<String, Album>();
 			
 			for(Track tr: tracks){
-				synchronized(tr){
-				
-					synchronized (artists) {							
-						if(!artists.containsKey(tr.getArtist())){
-							Artist art = new Artist();
-							art.setName(tr.getArtist());
-							artists.put(tr.getArtist(), art);
-							
-							root.add(art);
-						}
-					}
+															
+				if(!artists.containsKey(tr.getArtist())){
+					Artist art = new Artist();
+					art.setName(tr.getArtist());
+					artists.put(tr.getArtist(), art);
 					
-					synchronized(albums){
-						if(!albums.containsKey(tr.getAlbumDir()+tr.getAlbum())){
-							Album alb = new Album();
-							alb.setName(tr.getAlbum());
-							
-							albums.put(tr.getAlbumDir()+tr.getAlbum(), alb);
-							
-							artists.get(tr.getArtist()).add(alb);
-						}
-						
-						albums.get(tr.getAlbumDir()+tr.getAlbum()).add(tr);
-					}
+					root.add(art);
 				}
+									
+				String albumKey = tr.getArtist() + tr.getAlbumDir() + tr.getAlbum(); 
+				if(!albums.containsKey(albumKey)){
+					Album alb = new Album();
+					alb.setName(tr.getAlbum());
+					
+					albums.put(albumKey, alb);
+					
+					artists.get(tr.getArtist()).add(alb);
+				}
+				
+				albums.get(albumKey).add(tr);									
 			}
 		}
 	}

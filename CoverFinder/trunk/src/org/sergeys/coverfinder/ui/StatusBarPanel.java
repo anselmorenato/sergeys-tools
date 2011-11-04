@@ -4,6 +4,9 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.FlowLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class StatusBarPanel extends JPanel {
 
@@ -14,6 +17,7 @@ public class StatusBarPanel extends JPanel {
 
 	JLabel lblProgressindicator;
 	JLabel lblMessage;
+	JButton btnCancel;
 	
 	/**
 	 * Create the panel.
@@ -26,9 +30,22 @@ public class StatusBarPanel extends JPanel {
 		lblProgressindicator.setIcon(new ImageIcon(StatusBarPanel.class.getResource("/images/progress.gif")));
 		add(lblProgressindicator);
 		
+		btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				doCancel();
+			}
+		});
+		add(btnCancel);
+		
 		lblMessage = new JLabel("message");
 		add(lblMessage);
 
+	}
+
+	protected void doCancel() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void setMessage(String message){
@@ -37,11 +54,13 @@ public class StatusBarPanel extends JPanel {
 	
 	public void setWorking(boolean isWorking){
 		lblProgressindicator.setVisible(isWorking);
+		btnCancel.setVisible(isWorking);
 	}
 	
 	public void setMessage(String message, boolean isWorking){
 		lblMessage.setText(message);
 		lblProgressindicator.setVisible(isWorking);
+		btnCancel.setVisible(isWorking);
 	}
 
 }

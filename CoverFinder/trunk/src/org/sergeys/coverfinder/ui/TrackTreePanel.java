@@ -43,7 +43,7 @@ public class TrackTreePanel extends JPanel {
 		
 		Collection<Track> tracks;
 		try {
-			tracks = Database.getInstance().selectTracks(HasCover.AllTracks);
+			tracks = Database.getInstance().selectTracks(HasCover.AllTracks, "ru");
 						
 			TrackTreeModel model = new TrackTreeModel(root, tracks);
 			treeTable = new JTreeTable(model);						

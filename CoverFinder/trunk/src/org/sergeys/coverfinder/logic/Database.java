@@ -13,7 +13,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.h2.tools.RunScript;
@@ -215,7 +214,14 @@ public class Database {
 		getConnection().setAutoCommit(true);		
 	}
 	
-	public Collection<Track> selectTracks(Album.HasCover hasCover) throws SQLException{
+	/**
+	 * 
+	 * @param hasCover
+	 * @param tagsLanguage if not null, tags are decoded
+	 * @return
+	 * @throws SQLException
+	 */
+	public Collection<Track> selectTracks(Album.HasCover hasCover, String tagsLanguage) throws SQLException{
 		ArrayList<Track> tracks = new ArrayList<Track>();
 		
 		StringBuilder sb = new StringBuilder();
@@ -232,16 +238,28 @@ public class Database {
 		
 		Statement st = getConnection().createStatement();
 		ResultSet rs = st.executeQuery(sb.toString());
+		
+		if(tagsLanguage != null){
+			Mp3Utils.getInstance().setDecodeLanguage(tagsLanguage);
+			Mp3Utils.getInstance().setDecodeStrings(true);
+		}
+		else{
+			Mp3Utils.getInstance().setDecodeStrings(false);
+		}
+				
 		while(rs.next()){
 			Track track = new Track(new File(rs.getString("absolutepath")));
 			track.setAlbumDir(rs.getString("absolutedir"));
 			track.setHasPicture(rs.getBoolean("haspicture"));
 			String str = rs.getString("album");
-			track.setAlbum(str == null || str.isEmpty() ? "<unknown>" : str);
+			str = Mp3Utils.getInstance().decode(str);
+			track.setAlbum(str == null || str.isEmpty() ? "<unknown album>" : str);
 			str = rs.getString("artist");
-			track.setArtist(str == null || str.isEmpty() ? "<unknown>" : str);
+			str = Mp3Utils.getInstance().decode(str);
+			track.setArtist(str == null || str.isEmpty() ? "<unknown artist>" : str);
 			str = rs.getString("title");
-			track.setTitle(str == null || str.isEmpty() ? "<unknown>" : str);
+			str = Mp3Utils.getInstance().decode(str);
+			track.setTitle(str == null || str.isEmpty() ? "<unknown track>" : str);
 			
 			tracks.add(track);
 		}

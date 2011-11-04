@@ -336,7 +336,8 @@ public class CoverFinder implements IProgressWatcher<Track> {
 	@Override
 	public void updateProgress(long count, Stage stage) {
 		// TODO Auto-generated method stub
-		System.out.println("Found: " + count);		
+		//System.out.println("Found: " + count);
+		panelStatusBar.setMessage("Examined: " + count);
 	}
 
 	@Override

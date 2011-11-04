@@ -58,9 +58,9 @@ extends SwingWorker<Collection<Track>, Long>
 //	e.printStackTrace();
 //}						
 						boolean match = file.getName().toLowerCase().endsWith(".mp3");
-						if(match){
+						//if(match){
 							publish(++count);
-						}
+						//}
 						return match;
 					}
 				};
