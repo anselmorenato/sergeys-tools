@@ -42,13 +42,13 @@ public class DirTreePanel extends JPanel implements TreeExpansionListener {
 			root = new DefaultMutableTreeNode(rootNodeName);
 			for(File file: roots){
 				FileTreeNode ftn = new FileTreeNode(file);
-				ftn.addSubdirs();
+				ftn.addSubdirs(0);
 				root.add(ftn);
 			}
 		}
 		else{
 			root = new FileTreeNode(roots[0]);			
-			((FileTreeNode)root).addSubdirs();			
+			((FileTreeNode)root).addSubdirs(1);			
 		}
 		
 		tree = new JTree(root);
@@ -73,7 +73,7 @@ public class DirTreePanel extends JPanel implements TreeExpansionListener {
 		for(int i = 0; i < node.getChildCount(); i++){
 			TreeNode child = node.getChildAt(i);
 			if(child instanceof FileTreeNode){
-				((FileTreeNode)child).addSubdirs();
+				((FileTreeNode)child).addSubdirs(0);
 			}
 		}
 	}
