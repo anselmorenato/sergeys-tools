@@ -110,10 +110,15 @@ public class JTreeTable extends JTable {
 		}				
     }
 
-    public void expandRoot(){
-    	//tree.expandRow(1);
-		//tree.expandPath(new TreePath(((DefaultMutableTreeNode)treeTableModel.getRoot()).getPath()));
-    }
+//    public void expandRoot(){
+//    	
+//    	int row = 0;
+//    	while(row < tree.getRowCount()){
+//    		tree.expandRow(row++);
+//    	}
+//    	
+//    	//tree.expandRow(0);
+//    }
     
     /**
      * Overridden to message super and forward the method to the tree.

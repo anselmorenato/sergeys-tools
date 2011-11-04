@@ -73,7 +73,8 @@ public class BookmarksModel extends DynamicTreeTableModel {
 
 
     public BookmarksModel(Bookmarks.BookmarkDirectory root) {
-	super(root, columnNames, methodNames, setterMethodNames, classes);
+	//super(root, columnNames, methodNames, setterMethodNames, classes);
+    	super(root, columnNames, methodNames, setterMethodNames, classes, null);
     }
 
     /**
