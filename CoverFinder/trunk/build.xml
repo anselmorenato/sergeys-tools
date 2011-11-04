@@ -155,22 +155,30 @@
 	</target>
 	
 	<target name="fpcalc" depends="fpcalc-changed" unless="fpcalc.unchanged">
-		<jar destfile="${dist.dir}/fpcalc-win32.jar">
-			<fileset file="lib/win32/fpcalc.exe" />				
+		<mkdir dir="${dist.dir}/win32/resources" />
+		<mkdir dir="${dist.dir}/osx/resources" />
+		<mkdir dir="${dist.dir}/linux/resources" />
+		<copy todir="${dist.dir}/win32/resources" file="lib/win32/fpcalc.exe" />
+		<copy todir="${dist.dir}/osx/resources" file="lib/osx/fpcalc" />
+		<copy todir="${dist.dir}/linux/resources" file="lib/linux/fpcalc" />
+					
+		
+		<jar destfile="${dist.dir}/fpcalc-win32.jar" index="true">
+			<fileset dir="${dist.dir}/win32" />				
 		</jar>
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
 			jar="${dist.dir}/fpcalc-win32.jar" >
 		</signjar>
 		
-		<jar destfile="${dist.dir}/fpcalc-osx.jar">
-			<fileset file="lib/osx/fpcalc" />				
+		<jar destfile="${dist.dir}/fpcalc-osx.jar" index="true">
+			<fileset dir="${dist.dir}/osx" />				
 		</jar>
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
 			jar="${dist.dir}/fpcalc-osx.jar" >
 		</signjar>
 		
-		<jar destfile="${dist.dir}/fpcalc-linux.jar">
-			<fileset file="lib/linux/fpcalc" />				
+		<jar destfile="${dist.dir}/fpcalc-linux.jar" index="true">
+			<fileset dir="${dist.dir}/linux" />				
 		</jar>
 		<signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" 
 			jar="${dist.dir}/fpcalc-linux.jar" >

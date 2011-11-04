@@ -12,6 +12,7 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.zip.GZIPOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -66,11 +67,21 @@ public class AcoustIdUtil {
 			return true;
 		}
 		
+		//ClassLoader cl = getClass().getClassLoader();
+		Class cl = getClass();
+		
+		URL u = cl.getResource("/resources/" + FpCalc);
+		System.out.println("url " + u);
+		u = cl.getResource("/resources/" + FpCalc + ".exe");
+		System.out.println("url " + u);
+		
 		String targetFile;
-		InputStream is = getClass().getResourceAsStream("/resources/" + FpCalc);
+		InputStream is = cl.getResourceAsStream("/resources/" + FpCalc);
 		if(is == null){
-			is = getClass().getResourceAsStream("/resources/" + FpCalc + ".exe");
+System.out.println("no fpcalc, trying .exe ");			
+			is = cl.getResourceAsStream("/resources/" + FpCalc + ".exe");
 			if(is == null){
+System.out.println("no fpcalc.exe ");				
 				return false;
 			}
 			targetFile = fpcalcPathWin;
@@ -80,6 +91,7 @@ public class AcoustIdUtil {
 		}
 		
 		try {
+System.out.println("writing to " + targetFile);			
 			byte[] buffer = new byte[2048];
 			FileOutputStream fos = new FileOutputStream(targetFile);
 			int count = 0;
