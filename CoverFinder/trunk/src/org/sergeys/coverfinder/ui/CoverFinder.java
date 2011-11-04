@@ -142,12 +142,12 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		});
 		panelTop.add(btnTest);
 		
+		btnTest.setEnabled(AcoustIdUtil.getInstance().isAvailable());
+		
 		panelTree = new TrackTreePanel();
 		dPanelCenter = new DisabledPanel(panelTree);
 		frmCoverFinder.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
-		
-		
-						
+										
 		
 		panelStatusBar = new StatusBarPanel();
 		panelStatusBar.setMessage("Ready");
@@ -201,6 +201,7 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		});
 		mnHelp.add(mntmAbout);
 	}
+
 
 	protected void doRescanLibrary() {
 		scanLibrary();
@@ -263,7 +264,9 @@ public class CoverFinder implements IProgressWatcher<Track> {
 
 	protected void doSettings(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		SettingsDialog dlg = new SettingsDialog();
+		dlg.setLocationRelativeTo(frmCoverFinder.getContentPane());
+		dlg.setVisible(true);
 	}
 
 	protected void doExit() {
