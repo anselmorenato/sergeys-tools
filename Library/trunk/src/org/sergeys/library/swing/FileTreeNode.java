@@ -10,19 +10,32 @@ public class FileTreeNode extends DefaultMutableTreeNode {
 
 	private File file;
 	private boolean expanded;
+	private String nodeName;
 	
 	public FileTreeNode(File file){
 		this.file = file;		
 		this.setAllowsChildren(file.isDirectory());		
 	}
 	
+	public FileTreeNode(File file, String nodeName) {
+		this(file);
+		this.nodeName = nodeName;
+	}
+
 	public File getFile(){
 		return file;
 	}
 	
 	@Override
 	public String toString() {		
-		return (file == null) ? "null" : (file.getName().isEmpty() ? file.getPath() : file.getName());
+		
+		if(nodeName != null){
+			return nodeName;
+		}
+		else
+		{		
+			return (file == null) ? "null" : (file.getName().isEmpty() ? file.getPath() : file.getName());
+		}
 	}
 
 	public void addSubdirs(int depth){
@@ -32,6 +45,7 @@ public class FileTreeNode extends DefaultMutableTreeNode {
 				@Override
 				public boolean accept(File file) {					
 					return file.isDirectory() 
+							&& !file.isHidden()
 							&& !file.getName().startsWith(".") 
 							&& !file.getName().equalsIgnoreCase("$recycle.bin");
 				}});

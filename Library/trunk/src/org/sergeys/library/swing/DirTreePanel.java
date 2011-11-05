@@ -40,15 +40,30 @@ public class DirTreePanel extends JPanel implements TreeExpansionListener {
 		DefaultMutableTreeNode root;
 		if(roots.length > 1){
 			root = new DefaultMutableTreeNode(rootNodeName);
+			
+			FileTreeNode ftn = new FileTreeNode(new File(System.getProperty("user.home")), "My Home Folder");
+			ftn.addSubdirs(0);
+			root.add(ftn);
+			
 			for(File file: roots){
-				FileTreeNode ftn = new FileTreeNode(file);
+				ftn = new FileTreeNode(file);
 				ftn.addSubdirs(0);
 				root.add(ftn);
 			}
 		}
 		else{
-			root = new FileTreeNode(roots[0]);			
-			((FileTreeNode)root).addSubdirs(1);			
+			//root = new FileTreeNode(roots[0]);			
+			//((FileTreeNode)root).addSubdirs(1);
+			
+			root = new DefaultMutableTreeNode(rootNodeName);
+			
+			FileTreeNode ftn = new FileTreeNode(new File(System.getProperty("user.home")), "My Home Folder");
+			ftn.addSubdirs(0);
+			root.add(ftn);
+
+			ftn = new FileTreeNode(roots[0]);
+			ftn.addSubdirs(0);
+			root.add(ftn);
 		}
 		
 		tree = new JTree(root);

@@ -18,11 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class FileUtils {
-	
-//	protected FileUtils(){
-//		
-//	}
-	
+		
 	/**
 	 * Appends found files to the allFiles. Returns allFiles.
 	 * 
@@ -41,8 +37,8 @@ public abstract class FileUtils {
 					.listFiles(new FileFilter() {
 						public boolean accept(File file) {
 							return (fileFilter == null) ? 
-									!file.isDirectory() :
-									(!file.isDirectory() && fileFilter.accept(file));
+									!file.isDirectory() && !file.isHidden() :
+									(!file.isDirectory() && !file.isHidden() && fileFilter.accept(file));
 						}
 					}));
 			
@@ -53,8 +49,8 @@ public abstract class FileUtils {
 					.listFiles(new FileFilter() {
 						public boolean accept(File file) {
 							return (subdirFilter == null) ?
-									file.isDirectory() :
-									(file.isDirectory() && subdirFilter.accept(file));
+									file.isDirectory() && !file.isHidden() :
+									(file.isDirectory() && !file.isHidden() && subdirFilter.accept(file));
 						}
 					}));
 			
