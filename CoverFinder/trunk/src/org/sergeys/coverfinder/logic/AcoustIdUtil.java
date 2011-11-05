@@ -116,7 +116,7 @@ System.out.println("no fpcalc.exe ");
 	public Fingerprint getFingerprint(File file) throws Exception{
 
 		if(!checkFingerprintUtility()){
-			throw new NotImplementedException();
+			throw new NotImplementedException("not supported on this platform");
 		}
 		
 		Fingerprint fp = new Fingerprint();

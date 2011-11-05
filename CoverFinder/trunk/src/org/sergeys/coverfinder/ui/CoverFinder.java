@@ -144,6 +144,15 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		
 		btnTest.setEnabled(AcoustIdUtil.getInstance().isAvailable());
 		
+		btnIdentify = new JButton("Identify");
+		btnIdentify.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doIdentify();
+			}
+		});
+		panelTop.add(btnIdentify);
+		btnIdentify.setEnabled(AcoustIdUtil.getInstance().isAvailable());
+		
 		panelTree = new TrackTreePanel();
 		dPanelCenter = new DisabledPanel(panelTree);
 		frmCoverFinder.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
@@ -203,6 +212,29 @@ public class CoverFinder implements IProgressWatcher<Track> {
 	}
 
 
+	protected void doIdentify() {
+		Object item = panelTree.getSelectedItem();
+		if(item != null && item instanceof Track){
+			Track tr = (Track)item;
+
+			try{
+				Fingerprint fp =
+						AcoustIdUtil.getInstance().getFingerprint(tr.getFile());
+						
+				if(!fp.fingerprint.isEmpty()){				
+					String titles = AcoustIdUtil.getInstance().identify(fp);
+					
+					JOptionPane.showMessageDialog(this.frmCoverFinder, titles);
+				}
+			}
+			catch(Exception ex){
+				JOptionPane.showMessageDialog(this.frmCoverFinder, ex.getMessage());
+			}
+			
+		}
+		
+	}
+
 	protected void doRescanLibrary() {
 		scanLibrary();
 	}
@@ -239,8 +271,8 @@ public class CoverFinder implements IProgressWatcher<Track> {
 	private void scanLibrary(){
 		Settings.getInstance().getLibraryPaths().clear();
 		Settings.getInstance().getLibraryPaths().add("c:\\tmp\\test");
-		//Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
-		//Settings.getInstance().getLibraryPaths().add("i:\\music\\3");
+		Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
+		Settings.getInstance().getLibraryPaths().add("i:\\music\\3");
 		//Settings.getInstance().getLibraryPaths().add("i:\\music");
 
 		
@@ -372,6 +404,7 @@ public class CoverFinder implements IProgressWatcher<Track> {
 	private JButton btnTest;
 	private StatusBarPanel panelStatusBar;
 	private JMenuItem mntmRescanLibrary;
+	private JButton btnIdentify;
 	public static IImageSearchEngine getSearchEngine(){
 		
 		if(searchEngine == null){

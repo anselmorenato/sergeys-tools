@@ -53,6 +53,15 @@ public class TrackTreePanel extends JPanel {
 		}
 		
 	}
+	
+	/**
+	 * 
+	 * @return selected Track, Album, Artist or null
+	 */
+	public Object getSelectedItem(){
+		Object o = treeTable.getTree().getLastSelectedPathComponent(); 
+		return o;		
+	}
 }
 
 
