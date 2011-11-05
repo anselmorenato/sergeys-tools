@@ -2,46 +2,48 @@ package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
 import org.sergeys.library.swing.DirTreePanel;
 
 public class DirSelectorDialog extends JDialog {
 
+	public static final String DIRECTORY_SELECTED = "DIRECTORY_SELECTED";
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			DirSelectorDialog dialog = new DirSelectorDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
+	DirTreePanel dirTreePanel;
+	
 	/**
 	 * Create the dialog.
 	 */
-	public DirSelectorDialog() {
+	public DirSelectorDialog(Window owner) {
+		super(owner);
+		
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		setTitle("Select directory");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(DirSelectorDialog.class.getResource("/images/icon.png")));
 		setBounds(100, 100, 450, 462);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
-			DirTreePanel dirTreePanel = new DirTreePanel(File.listRoots(), null, "My Machine");
+			dirTreePanel = new DirTreePanel(File.listRoots(), null, "My Machine");
 			contentPanel.add(dirTreePanel);
 		}
 		{
@@ -50,16 +52,38 @@ public class DirSelectorDialog extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						doOK();
+					}
+				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						doCancel();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+
+	protected void doCancel() {		
+		setVisible(false);
+	}
+
+	protected void doOK() {
+		File selectedDir = dirTreePanel.getSelectedDirectory();
+		if(selectedDir != null){
+			firePropertyChange(DIRECTORY_SELECTED, null, selectedDir);
+		}
+		setVisible(false);
 	}
 
 }

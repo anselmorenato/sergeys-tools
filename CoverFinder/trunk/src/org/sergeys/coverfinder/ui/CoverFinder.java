@@ -29,6 +29,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 
 import org.sergeys.coverfinder.logic.AcoustIdUtil;
 import org.sergeys.coverfinder.logic.AcoustIdUtil.Fingerprint;
@@ -41,7 +43,9 @@ import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
 
-public class CoverFinder implements IProgressWatcher<Track> {
+public class CoverFinder 
+implements IProgressWatcher<Track>, TreeSelectionListener 
+{
 
 	
 	private JFrame frmCoverFinder;
@@ -151,11 +155,12 @@ public class CoverFinder implements IProgressWatcher<Track> {
 			}
 		});
 		panelTop.add(btnIdentify);
-		btnIdentify.setEnabled(AcoustIdUtil.getInstance().isAvailable());
+		btnIdentify.setEnabled(false);
 		
 		panelTree = new TrackTreePanel();
 		dPanelCenter = new DisabledPanel(panelTree);
 		frmCoverFinder.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
+		panelTree.addTreeSelectionListener(this);
 										
 		
 		panelStatusBar = new StatusBarPanel();
@@ -274,6 +279,7 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
 		Settings.getInstance().getLibraryPaths().add("i:\\music\\3");
 		//Settings.getInstance().getLibraryPaths().add("i:\\music");
+		//Settings.getInstance().getLibraryPaths().add(System.getProperty("user.home"));
 
 		
 		ArrayList<File> paths = new ArrayList<File>();
@@ -294,11 +300,13 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		
 	}
 
+	SettingsDialog settingsDlg;
 	protected void doSettings(ActionEvent e) {
-		// TODO Auto-generated method stub
-		SettingsDialog dlg = new SettingsDialog();
-		dlg.setLocationRelativeTo(frmCoverFinder.getContentPane());
-		dlg.setVisible(true);
+		if(settingsDlg == null){
+			settingsDlg = new SettingsDialog(frmCoverFinder);
+			settingsDlg.setLocationRelativeTo(frmCoverFinder.getContentPane());
+		}
+		settingsDlg.setVisible(true);
 	}
 
 	protected void doExit() {
@@ -368,7 +376,15 @@ public class CoverFinder implements IProgressWatcher<Track> {
 	@Override
 	public void updateProgress(long count, Stage stage) {
 		//System.out.println("Found: " + count);
-		panelStatusBar.setMessage("Examined: " + count);
+		switch(stage){
+			case Collecting:
+				panelStatusBar.setMessage("Collected: " + count);
+				break;
+			case Analyzing:
+				panelStatusBar.setMessage("Analyzed: " + count);
+				break;
+		}
+		
 	}
 
 	@Override
@@ -418,5 +434,11 @@ public class CoverFinder implements IProgressWatcher<Track> {
 		}
 		
 		return searchEngine;
+	}
+
+	@Override
+	public void valueChanged(TreeSelectionEvent e) {		
+		Object o = e.getPath().getLastPathComponent();
+		btnIdentify.setEnabled(o instanceof Track && AcoustIdUtil.getInstance().isAvailable());							
 	}
 }

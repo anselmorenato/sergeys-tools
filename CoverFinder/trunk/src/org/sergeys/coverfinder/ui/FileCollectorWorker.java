@@ -65,10 +65,7 @@ extends SwingWorker<Collection<Track>, Long>
 				break;
 			case MimeMagic:
 				throw new NotImplementedException();
-				//break;
-			case Mp3File:
-				throw new NotImplementedException();
-				//break;
+				//break;			
 			default:
 				throw new NotImplementedException();
 				//break;

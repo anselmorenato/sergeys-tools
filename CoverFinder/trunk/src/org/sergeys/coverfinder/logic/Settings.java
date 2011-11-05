@@ -21,7 +21,7 @@ import java.util.Set;
 public class Settings {
 	
 	public enum CompareFilesMethod { Fast, Full };
-	public enum DetectFilesMethod { Extension, MimeMagic, Mp3File };
+	public enum DetectFilesMethod { Extension, MimeMagic/*, Mp3File*/ };
 	
 	public static final String SETTINGS_PATH = ".CoverFinder";	
 	public static final String SETTINGS_FILE = "settings.xml";
