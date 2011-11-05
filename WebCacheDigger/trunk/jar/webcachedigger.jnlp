@@ -7,7 +7,7 @@
         <icon href="%URL%/largeicon.png" kind="default"/>
         <shortcut online="true" install="false">
 	      <desktop/>
-	      <menu submenu="Web Cache Digger"/>
+	      <menu submenu="Webstart Utilities"/>
 	    </shortcut>
         
         <homepage href="%URL%"></homepage>

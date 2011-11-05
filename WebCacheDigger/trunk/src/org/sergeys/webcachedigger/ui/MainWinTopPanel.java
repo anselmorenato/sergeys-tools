@@ -194,9 +194,9 @@ public class MainWinTopPanel extends JPanel {
 		}				
 	}
 
-	public void init(HashSet<IBrowser> availableBrowsers){
-		
-	}
+//	public void init(HashSet<IBrowser> availableBrowsers){
+//		
+//	}
 	
 	
 }

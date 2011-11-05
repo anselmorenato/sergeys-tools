@@ -45,14 +45,8 @@ public class SettingsDialog extends JDialog {
 	@Override
 	public void setVisible(boolean b) {
 		
-		
-		
-		
 		if(b){		
 			getJPanelSettings().setSettings();
-									
-			//pack();		
-			//getJPanelSettings().revalidate();
 		}
 		
 		super.setVisible(b);
@@ -145,22 +139,6 @@ public class SettingsDialog extends JDialog {
 	public void addSaveActionListener(ActionListener l){
 		getJButtonSave().addActionListener(l);
 	}
-
-	/**
-	 * @param settings the settings to set
-	 */
-//	public void setSettings(Settings settings) {
-//		this.settings = settings;
-//		getJPanelSettings().setSettings(this.settings);
-//	}
-//
-//	/**
-//	 * @return the settings
-//	 */
-//	public Settings getSettings() {
-//		settings = getJPanelSettings().getSettings();
-//		return settings;
-//	}
 	
 	public void updateSettings(){
 		getJPanelSettings().updateSettings();

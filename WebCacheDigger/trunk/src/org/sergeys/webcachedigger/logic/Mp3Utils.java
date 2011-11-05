@@ -70,6 +70,10 @@ public class Mp3Utils {
 		charsetFixed = Charset.forName(encoding);
 	}
 	
+	/**
+	 * 
+	 * @param lang Language key as defined in charsetByLanguage.properties (two-letter name for Locale class) 
+	 */
 	public void setDecodeLanguage(String lang){
 		if(charsetByLang.containsKey(lang)){
 			setDecodeCharset(charsetByLang.getProperty(lang));			

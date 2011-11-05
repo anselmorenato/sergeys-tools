@@ -162,6 +162,8 @@ public class InternetExplorer extends AbstractBrowser {
 	/**
 	 * Works on windows 7, xp
 	 * 
+	 * based on http://www.rgagnon.com/javadetails/java-0480.html
+	 * 
 	 * @param location
 	 * @param key
 	 * @param expectedType in form like "REG_SZ", as reg.exe returns
