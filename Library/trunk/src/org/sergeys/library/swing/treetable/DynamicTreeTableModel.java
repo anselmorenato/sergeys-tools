@@ -162,9 +162,9 @@ public class DynamicTreeTableModel extends AbstractTreeTableModel {
     public Object getValueAt(Object node, int column) {
 	try {
 	    Method method = node.getClass().getMethod(methodNames[column],
-						      null);
+						      (Class<?>)null);
 	    if (method != null) {
-		return method.invoke(node, null);
+		return method.invoke(node, (Object)null);
 	    }
 	}
 	catch  (Throwable th) {}
