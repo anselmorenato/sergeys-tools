@@ -2,7 +2,6 @@ package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -81,7 +80,7 @@ public class DirSelectorDialog extends JDialog {
 	protected void doOK() {
 		File selectedDir = dirTreePanel.getSelectedDirectory();
 		if(selectedDir != null){
-			firePropertyChange(DIRECTORY_SELECTED, null, selectedDir);
+			firePropertyChange(DIRECTORY_SELECTED, null, selectedDir.getAbsolutePath());
 		}
 		setVisible(false);
 	}

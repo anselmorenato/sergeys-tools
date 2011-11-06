@@ -107,7 +107,8 @@ System.out.println("request: " + uri);
 
 	@Override
 	public String getDisplayName() {
-		return "Google Image Search";
+		//return "Google Image Search";
+		return "Google";
 	}
 
 }

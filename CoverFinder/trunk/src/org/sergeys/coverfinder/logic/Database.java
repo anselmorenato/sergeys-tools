@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.h2.tools.RunScript;
 
@@ -25,8 +26,7 @@ public class Database {
 	// singleton
 	private Database() throws SQLException{
 		upgradeOrCreateIfNeeded();
-	}
-	
+	}	
 
 	public static Database getInstance() throws SQLException{
 		if(instance == null){
@@ -218,10 +218,11 @@ public class Database {
 	 * 
 	 * @param hasCover
 	 * @param tagsLanguage if not null, tags are decoded
+	 * @param paths if not null, only tracks from that paths returned
 	 * @return
 	 * @throws SQLException
 	 */
-	public Collection<Track> selectTracks(Album.HasCover hasCover, String tagsLanguage) throws SQLException{
+	public Collection<Track> selectTracks(Album.HasCover hasCover, String tagsLanguage, Set<String> paths) throws SQLException{
 		ArrayList<Track> tracks = new ArrayList<Track>();
 		
 		StringBuilder sb = new StringBuilder();
@@ -234,10 +235,38 @@ public class Database {
 		
 //		sb.append(" where haspicture = false");
 		
-		sb.append(" order by artist, album");
+		if(paths != null && !paths.isEmpty()){
+			StringBuilder sbWhere = new StringBuilder();
+			
+			for(@SuppressWarnings("unused") String path: paths){
+				if(sbWhere.length() > 0){
+					sbWhere.append(" or ");
+				}
+				
+				//sbWhere.append("instr(lower(absolutedir), ?) = 1");
+				sbWhere.append("instr(absolutedir, ?) = 1");
+			}
+			
+			sb.append(" where (");
+			sb.append(sbWhere);
+			sb.append(")");
+		}
 		
-		Statement st = getConnection().createStatement();
-		ResultSet rs = st.executeQuery(sb.toString());
+		sb.append(" order by artist, album");
+//System.out.println(sb);		
+		//Statement st = getConnection().createStatement();
+		//ResultSet rs = st.executeQuery(sb.toString());
+		
+		PreparedStatement pst = getConnection().prepareStatement(sb.toString());
+		if(paths != null && !paths.isEmpty()){
+			int i = 1;
+			for(String path: paths){
+				//pst.setString(i++, path.toLowerCase());
+				pst.setString(i++, path);
+			}
+		}
+		ResultSet rs = pst.executeQuery();
+		
 		
 		if(tagsLanguage != null){
 			Mp3Utils.getInstance().setDecodeLanguage(tagsLanguage);

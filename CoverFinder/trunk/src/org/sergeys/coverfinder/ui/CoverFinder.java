@@ -66,7 +66,7 @@ implements IProgressWatcher<Track>, TreeSelectionListener
 					
 					// set size and position of main window									
 					if(Settings.getInstance().getWindowLocation() == null){
-						Dimension desktop = Toolkit.getDefaultToolkit().getScreenSize();
+						//Dimension desktop = Toolkit.getDefaultToolkit().getScreenSize();
 						
 					}
 					else{
@@ -274,16 +274,17 @@ implements IProgressWatcher<Track>, TreeSelectionListener
 	}
 
 	private void scanLibrary(){
-		Settings.getInstance().getLibraryPaths().clear();
-		Settings.getInstance().getLibraryPaths().add("c:\\tmp\\test");
-		Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
-		Settings.getInstance().getLibraryPaths().add("i:\\music\\3");
+//		Settings.getInstance().getLibraryPaths().clear();
+//		Settings.getInstance().getLibraryPaths().add("c:\\tmp\\test");
+//		Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
+//		Settings.getInstance().getLibraryPaths().add("i:\\music\\3");
 		//Settings.getInstance().getLibraryPaths().add("i:\\music");
 		//Settings.getInstance().getLibraryPaths().add(System.getProperty("user.home"));
 
 		
 		ArrayList<File> paths = new ArrayList<File>();
 		for(String path: Settings.getInstance().getLibraryPaths()){
+System.out.println("will scan " + path);			
 			paths.add(new File(path));
 		}		
 		

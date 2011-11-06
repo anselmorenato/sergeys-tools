@@ -2,31 +2,29 @@ package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.SpringLayout;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.AbstractListModel;
-import javax.swing.DefaultListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.JScrollPane;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JCheckBox;
-import java.awt.Toolkit;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.awt.Dialog.ModalityType;
+
+import org.sergeys.coverfinder.logic.Settings;
 
 public class SettingsDialog 
 extends JDialog 
@@ -41,6 +39,8 @@ implements ListSelectionListener, PropertyChangeListener {
 
 	JList listLibraryDirs;
 	DefaultListModel listModel;
+	ImageSearchChooserPanel imageSearchChooserPanel;
+	JButton buttonMinus;
 	
 	/**
 	 * Create the dialog.
@@ -58,7 +58,7 @@ implements ListSelectionListener, PropertyChangeListener {
 		SpringLayout sl_contentPanel = new SpringLayout();
 		contentPanel.setLayout(sl_contentPanel);
 		
-		JLabel lblLibraryFolders = new JLabel("Library folders:");
+		JLabel lblLibraryFolders = new JLabel("Music folders:");
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, lblLibraryFolders, 10, SpringLayout.NORTH, contentPanel);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, lblLibraryFolders, 10, SpringLayout.WEST, contentPanel);
 		contentPanel.add(lblLibraryFolders);
@@ -74,16 +74,17 @@ implements ListSelectionListener, PropertyChangeListener {
 		sl_contentPanel.putConstraint(SpringLayout.EAST, button, -10, SpringLayout.EAST, contentPanel);
 		contentPanel.add(button);
 		
-		JButton button_1 = new JButton("-");
-		button_1.addActionListener(new ActionListener() {
+		buttonMinus = new JButton("-");
+		buttonMinus.setEnabled(false);
+		buttonMinus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doRemoveDirectory();
 			}
 		});
-		sl_contentPanel.putConstraint(SpringLayout.NORTH, button_1, 4, SpringLayout.SOUTH, button);
-		sl_contentPanel.putConstraint(SpringLayout.WEST, button_1, -51, SpringLayout.EAST, contentPanel);
-		sl_contentPanel.putConstraint(SpringLayout.EAST, button_1, -10, SpringLayout.EAST, contentPanel);
-		contentPanel.add(button_1);
+		sl_contentPanel.putConstraint(SpringLayout.NORTH, buttonMinus, 4, SpringLayout.SOUTH, button);
+		sl_contentPanel.putConstraint(SpringLayout.WEST, buttonMinus, -51, SpringLayout.EAST, contentPanel);
+		sl_contentPanel.putConstraint(SpringLayout.EAST, buttonMinus, -10, SpringLayout.EAST, contentPanel);
+		contentPanel.add(buttonMinus);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, scrollPane, -5, SpringLayout.NORTH, lblLibraryFolders);
@@ -99,7 +100,7 @@ implements ListSelectionListener, PropertyChangeListener {
 		scrollPane.setViewportView(listLibraryDirs);
 		listLibraryDirs.addListSelectionListener(this);
 		
-		ImageSearchChooserPanel imageSearchChooserPanel = new ImageSearchChooserPanel();
+		imageSearchChooserPanel = new ImageSearchChooserPanel();
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, imageSearchChooserPanel, 6, SpringLayout.SOUTH, scrollPane);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, imageSearchChooserPanel, 5, SpringLayout.WEST, contentPanel);
 		sl_contentPanel.putConstraint(SpringLayout.EAST, imageSearchChooserPanel, 166, SpringLayout.EAST, contentPanel);
@@ -153,13 +154,29 @@ implements ListSelectionListener, PropertyChangeListener {
 	}
 
 	protected void doSave() {
-		// TODO: set and save settings 
+		Settings.getInstance().getLibraryPaths().clear();
+		for(int i = 0; i < listModel.getSize(); i++){
+			Settings.getInstance().getLibraryPaths().add((String)listModel.get(i));
+		}
+		
+		imageSearchChooserPanel.updateValues();
+		
+		try {
+			Settings.save();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		setVisible(false);		
 	}
 
 	protected void doRemoveDirectory() {
-		// TODO Auto-generated method stub
+		if(listLibraryDirs.getSelectedIndex() != -1){
+			listModel.remove(listLibraryDirs.getSelectedIndex());
+		}
 		
+		buttonMinus.setEnabled(listLibraryDirs.getSelectedIndex() != -1);
 	}
 
 	DirSelectorDialog dlg;
@@ -175,19 +192,27 @@ implements ListSelectionListener, PropertyChangeListener {
 	
 	@Override	
 	public void setVisible(boolean isVisible) {
-		// TODO: set values
+		listModel.removeAllElements();
+		for(String path: Settings.getInstance().getLibraryPaths()){
+			listModel.addElement(path);			
+		}
+		
+		imageSearchChooserPanel.initValues();
+		
+		buttonMinus.setEnabled(listLibraryDirs.getSelectedIndex() != -1);
+		
 		super.setVisible(isVisible);
 	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		e.getFirstIndex();
-		
+		if(!e.getValueIsAdjusting() && e.getFirstIndex() >= 0){
+			buttonMinus.setEnabled(true);			
+		}
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		
+	public void propertyChange(PropertyChangeEvent evt) {		
 		if(evt.getPropertyName().equals(DirSelectorDialog.DIRECTORY_SELECTED)){
 			listModel.addElement(evt.getNewValue());
 		}

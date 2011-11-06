@@ -89,8 +89,10 @@ System.out.println("no fpcalc.exe ");
 			targetFile = fpcalcPath;
 		}
 		
+		Settings.checkDirectory();
+		
 		try {
-//System.out.println("writing to " + targetFile);			
+System.out.println("writing to " + targetFile);			
 			byte[] buffer = new byte[2048];
 			FileOutputStream fos = new FileOutputStream(targetFile);
 			int count = 0;
@@ -101,11 +103,9 @@ System.out.println("no fpcalc.exe ");
 			new File(targetFile).setExecutable(true);
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}

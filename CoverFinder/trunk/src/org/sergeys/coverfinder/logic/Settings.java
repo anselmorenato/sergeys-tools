@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class Settings {
 	
-	public enum CompareFilesMethod { Fast, Full };
+	//public enum CompareFilesMethod { Fast, Full };
 	public enum DetectFilesMethod { Extension, MimeMagic/*, Mp3File*/ };
 	
 	public static final String SETTINGS_PATH = ".CoverFinder";	
@@ -44,7 +44,7 @@ public class Settings {
 	private Point windowLocation = null;
 	private Dimension windowSize = null;
 	private String language; // language code for Locale class
-	private CompareFilesMethod compareFilesMethod = CompareFilesMethod.Fast;
+	//private CompareFilesMethod compareFilesMethod = CompareFilesMethod.Fast;
 	private DetectFilesMethod detectFilesMethod = DetectFilesMethod.Extension;
 	//private Collection<File> libraryPaths = Collections.synchronizedCollection(new ArrayList<File>());
 	//private Collection<String> libraryPaths = new ArrayList<String>();
@@ -104,14 +104,18 @@ public class Settings {
 
 	}
 	
+	public static void checkDirectory(){
+		File dir = new File(settingsDirPath);
+		if(!dir.exists()){
+			dir.mkdirs();
+		}		
+	}
+	
 	public static void save() throws FileNotFoundException{	
 		
 		instance.savedVersion = instance.getCurrentVersion();
 
-		File dir = new File(settingsDirPath);
-		if(!dir.exists()){
-			dir.mkdirs();
-		}
+		checkDirectory();
 		
 		XMLEncoder e;
 				
@@ -163,13 +167,13 @@ public class Settings {
 		this.windowSize = windowSize;
 	}
 
-	public CompareFilesMethod getCompareFilesMethod() {
-		return compareFilesMethod;
-	}
-
-	public void setCompareFilesMethod(CompareFilesMethod compareFilesMethod) {
-		this.compareFilesMethod = compareFilesMethod;
-	}
+//	public CompareFilesMethod getCompareFilesMethod() {
+//		return compareFilesMethod;
+//	}
+//
+//	public void setCompareFilesMethod(CompareFilesMethod compareFilesMethod) {
+//		this.compareFilesMethod = compareFilesMethod;
+//	}
 
 	public Date getSavedVersion() {
 		return savedVersion;

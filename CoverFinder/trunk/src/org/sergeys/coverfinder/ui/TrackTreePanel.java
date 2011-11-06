@@ -7,12 +7,12 @@ import java.util.HashSet;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.sergeys.coverfinder.logic.Album.HasCover;
 import org.sergeys.coverfinder.logic.Database;
+import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.library.swing.treetable.JTreeTable;
 
@@ -51,7 +51,7 @@ extends JPanel
 	public void update(){
 				
 		try {
-			Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, "ru");
+			Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, "ru", Settings.getInstance().getLibraryPaths());
 			root = new DefaultMutableTreeNode("Artists/Albums/Tracks");
 			TrackTreeModel model = new TrackTreeModel(root, tracks);
 			treeTable = new JTreeTable(model);

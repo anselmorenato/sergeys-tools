@@ -23,6 +23,6 @@ create table files(
 	, title varchar(1024)
 );
 
-create unique index uq_files1 on files(absolutepath);
+create unique index uq_files1 on files(absolutepath);	-- note, on windows path is case insensitive so real duplicates are possible
 
 insert into properties (property, val) values ('version', '1');

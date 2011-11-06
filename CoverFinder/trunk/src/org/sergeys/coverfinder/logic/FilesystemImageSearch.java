@@ -23,7 +23,7 @@ implements IImageSearchEngine
 
 	@Override
 	public String getDisplayName() {		
-		return "Filesystem search";
+		return "Local files";
 	}
 
 }
