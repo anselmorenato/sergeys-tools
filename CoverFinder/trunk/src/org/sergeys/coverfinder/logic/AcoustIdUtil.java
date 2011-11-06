@@ -54,11 +54,17 @@ public class AcoustIdUtil {
 		public String duration;
 	}
 	
+	
+	Boolean isPresent = null;
 	public boolean isAvailable(){
-		return checkFingerprintUtility();
-	}
+		if(isPresent == null){
+			isPresent = checkFingerprintUtility(); 
+		}
+		return isPresent;
+	}		
 	
 	private boolean checkFingerprintUtility(){
+						
 		String fpcalcPath = Settings.getSettingsDirPath() + File.separator + FpCalc;
 		String fpcalcPathWin = Settings.getSettingsDirPath() + File.separator + FpCalc + ".exe";
 		
@@ -115,7 +121,8 @@ System.out.println("writing to " + targetFile);
 	
 	public Fingerprint getFingerprint(File file) throws Exception{
 
-		if(!checkFingerprintUtility()){
+		//if(!checkFingerprintUtility()){
+		if(!isAvailable()){
 			throw new NotImplementedException("not supported on this platform");
 		}
 		

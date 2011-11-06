@@ -34,6 +34,7 @@
         <jar href="org.apache.commons.logging_1.0.4.jar" />
         <jar href="saaj.jar" />
         <jar href="json.2011-02-02.jar" />
+        <jar href="bing-api-2.2.jar" />
                         
     </resources>
     
