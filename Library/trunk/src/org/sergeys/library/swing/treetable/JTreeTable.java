@@ -109,16 +109,6 @@ public class JTreeTable extends JTable {
 		    setRowHeight(20);
 		}				
     }
-
-//    public void expandRoot(){
-//    	
-//    	int row = 0;
-//    	while(row < tree.getRowCount()){
-//    		tree.expandRow(row++);
-//    	}
-//    	
-//    	//tree.expandRow(0);
-//    }
     
     /**
      * Overridden to message super and forward the method to the tree.

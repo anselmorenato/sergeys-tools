@@ -23,7 +23,7 @@ public class DirTreePanel extends JPanel implements TreeExpansionListener {
 	private static final long serialVersionUID = 1L;
 
 	public DirTreePanel(){
-		this(new File[]{}, null, "Computer");
+		this(new File[]{}, null, "Computer", "My Home Folder");
 	}
 	
 	JTree tree;
@@ -31,7 +31,7 @@ public class DirTreePanel extends JPanel implements TreeExpansionListener {
 	/**
 	 * Create the panel.
 	 */
-	public DirTreePanel(File[] roots, FileFilter filter, String rootNodeName) {
+	public DirTreePanel(File[] roots, FileFilter filter, String rootNodeName, String homeFolderName) {
 		setLayout(new BorderLayout(0, 0));
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -41,7 +41,7 @@ public class DirTreePanel extends JPanel implements TreeExpansionListener {
 		if(roots.length > 1){
 			root = new DefaultMutableTreeNode(rootNodeName);
 			
-			FileTreeNode ftn = new FileTreeNode(new File(System.getProperty("user.home")), "My Home Folder");
+			FileTreeNode ftn = new FileTreeNode(new File(System.getProperty("user.home")), homeFolderName);
 			ftn.addSubdirs(0);
 			root.add(ftn);
 			
@@ -57,7 +57,7 @@ public class DirTreePanel extends JPanel implements TreeExpansionListener {
 			
 			root = new DefaultMutableTreeNode(rootNodeName);
 			
-			FileTreeNode ftn = new FileTreeNode(new File(System.getProperty("user.home")), "My Home Folder");
+			FileTreeNode ftn = new FileTreeNode(new File(System.getProperty("user.home")), homeFolderName);
 			ftn.addSubdirs(0);
 			root.add(ftn);
 

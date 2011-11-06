@@ -30,7 +30,7 @@ import javax.swing.UIManager;
 
 import darrylbu.util.SwingUtils;
 
-/*
+/**
  *  The DisablePanel will simulate the usage of a "Glass Pane" except that the
  *  glass pane effect is only for the container and not the entire frame.
  *  By default the glass pane is invisible. When the DisablePanel is disabled
