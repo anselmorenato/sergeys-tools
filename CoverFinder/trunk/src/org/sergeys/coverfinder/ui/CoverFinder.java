@@ -34,6 +34,7 @@ import javax.swing.event.TreeSelectionListener;
 
 import org.sergeys.coverfinder.logic.AcoustIdUtil;
 import org.sergeys.coverfinder.logic.AcoustIdUtil.Fingerprint;
+import org.sergeys.coverfinder.logic.FileCollectorWorker;
 import org.sergeys.coverfinder.logic.IImageSearchEngine;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
 import org.sergeys.coverfinder.logic.ImageSearchRequest;
@@ -246,31 +247,33 @@ implements IProgressWatcher<Track>, TreeSelectionListener
 
 	protected void doTest() {
 		
-		
-		
-		JFileChooser fc = new JFileChooser();
-		fc.setCurrentDirectory(new File("i:\\music"));
-		if (fc.showOpenDialog(this.frmCoverFinder) == JFileChooser.APPROVE_OPTION) {
-			panelStatusBar.setMessage("Recognition...");
-			panelStatusBar.setWorking(true);
 
-			try{
-				Fingerprint fp =
-						AcoustIdUtil.getInstance().getFingerprint(fc.getSelectedFile());
-						
-				if(!fp.fingerprint.isEmpty()){				
-					String titles = AcoustIdUtil.getInstance().identify(fp);
-					
-					JOptionPane.showMessageDialog(this.frmCoverFinder, titles);
-				}
-			}
-			catch(Exception ex){
-				JOptionPane.showMessageDialog(this.frmCoverFinder, ex.getMessage());
-			}
-		}
+		ImageSearchDialog dlg = new ImageSearchDialog(this.frmCoverFinder);
+		dlg.setVisible(true);
 		
-		panelStatusBar.setMessage("Ready");
-		panelStatusBar.setWorking(false);
+//		JFileChooser fc = new JFileChooser();
+//		fc.setCurrentDirectory(new File("i:\\music"));
+//		if (fc.showOpenDialog(this.frmCoverFinder) == JFileChooser.APPROVE_OPTION) {
+//			panelStatusBar.setMessage("Recognition...");
+//			panelStatusBar.setWorking(true);
+//
+//			try{
+//				Fingerprint fp =
+//						AcoustIdUtil.getInstance().getFingerprint(fc.getSelectedFile());
+//						
+//				if(!fp.fingerprint.isEmpty()){				
+//					String titles = AcoustIdUtil.getInstance().identify(fp);
+//					
+//					JOptionPane.showMessageDialog(this.frmCoverFinder, titles);
+//				}
+//			}
+//			catch(Exception ex){
+//				JOptionPane.showMessageDialog(this.frmCoverFinder, ex.getMessage());
+//			}
+//		}
+//		
+//		panelStatusBar.setMessage("Ready");
+//		panelStatusBar.setWorking(false);
 	}
 
 	private void scanLibrary(){

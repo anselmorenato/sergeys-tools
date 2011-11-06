@@ -1,4 +1,4 @@
-package org.sergeys.coverfinder.ui;
+package org.sergeys.coverfinder.logic;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package org.sergeys.coverfinder.ui;
+package org.sergeys.coverfinder.logic;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -21,6 +21,7 @@ import org.sergeys.library.NotImplementedException;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 
+// how to run several in parallel: http://stackoverflow.com/questions/3652973/backgrounds-tasks-by-swingworkers-become-sequential
 
 public class FileCollectorWorker
 extends SwingWorker<Collection<Track>, Long>
