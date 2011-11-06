@@ -42,7 +42,7 @@ public class DirSelectorDialog extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
-			dirTreePanel = new DirTreePanel(File.listRoots(), null, "My Machine");
+			dirTreePanel = new DirTreePanel(File.listRoots(), null, "My Machine", "My Home Folder");
 			contentPanel.add(dirTreePanel);
 		}
 		{

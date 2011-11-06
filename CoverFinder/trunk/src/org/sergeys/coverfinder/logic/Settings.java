@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 public class Settings {
@@ -148,6 +149,11 @@ public class Settings {
 
 	private void setDefaults() {
 		setLanguage(Locale.getDefault().getLanguage());
+		
+		// set 1st defined image search
+		ServiceLoader<IImageSearchEngine> ldr = ServiceLoader.load(IImageSearchEngine.class);
+		setSearchEngineName(ldr.iterator().next().getName());
+		
 		//compareFilesMethod = CompareFilesMethod.Fast;
 	}
 

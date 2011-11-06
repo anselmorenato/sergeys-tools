@@ -1,6 +1,5 @@
 package org.sergeys.coverfinder.ui;
 
-
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
@@ -12,7 +11,6 @@ import org.sergeys.coverfinder.logic.Artist;
 import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.library.swing.treetable.DynamicTreeTableModel;
 import org.sergeys.library.swing.treetable.TreeTableModel;
-
 
 public class TrackTreeModel 
 extends DynamicTreeTableModel
@@ -51,8 +49,6 @@ extends DynamicTreeTableModel
 		super(root, columnNames, methodNames, setterMethodNames, classes, widths);								
 		
 		if(tracks != null){		
-//			Map<String, Artist> artists = Collections.synchronizedMap(new Hashtable<String, Artist>());
-//			Map<String, Album> albums = Collections.synchronizedMap(new Hashtable<String, Album>());
 			Map<String, Artist> artists = new Hashtable<String, Artist>();
 			Map<String, Album> albums = new Hashtable<String, Album>();
 			
