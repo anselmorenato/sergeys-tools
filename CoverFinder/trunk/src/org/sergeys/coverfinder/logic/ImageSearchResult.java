@@ -8,6 +8,7 @@ public class ImageSearchResult {
 	private URL imageUrl;
 	private int width;
 	private int height;
+	private long fileSize;
 	
 	public ImageSearchResult(){}
 
@@ -46,5 +47,15 @@ public class ImageSearchResult {
 
 	public void setImageUrl(URL imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+
+	public long getFileSize() {
+		return fileSize;
+	}
+
+
+	public void setFileSize(long fileSize) {
+		this.fileSize = fileSize;
 	}
 }

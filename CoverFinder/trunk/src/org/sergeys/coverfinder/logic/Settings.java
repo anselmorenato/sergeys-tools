@@ -157,6 +157,17 @@ public class Settings {
 		//compareFilesMethod = CompareFilesMethod.Fast;
 	}
 
+	public IImageSearchEngine getImageSearchEngine(){
+		ServiceLoader<IImageSearchEngine> ldr = ServiceLoader.load(IImageSearchEngine.class);
+		for(IImageSearchEngine engine: ldr){				
+			if(engine.getName().equals(getSearchEngineName())){
+				return engine;
+			}
+		}
+		
+		return null;
+	}
+	
 	public Point getWindowLocation() {
 		return windowLocation;
 	}

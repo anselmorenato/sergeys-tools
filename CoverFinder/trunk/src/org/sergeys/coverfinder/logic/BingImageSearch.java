@@ -85,6 +85,7 @@ implements IImageSearchEngine
 					item.setThumbnailUrl(new URL(th.getUrl()));
 					item.setWidth(imgResult.getWidth().intValue());
 					item.setHeight(imgResult.getHeight().intValue());
+					item.setFileSize(imgResult.getFileSize().longValue());
 					
 					results.add(item);
 				}

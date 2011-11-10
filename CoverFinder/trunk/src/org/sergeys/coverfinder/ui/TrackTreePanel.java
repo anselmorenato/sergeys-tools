@@ -1,11 +1,15 @@
 package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -29,6 +33,10 @@ extends JPanel
 	DefaultMutableTreeNode root;
 	JTreeTable treeTable;
 	HashSet<TreeSelectionListener> listeners = new HashSet<TreeSelectionListener>();
+		
+	private final JPopupMenu popupMenu = new JPopupMenu();
+	private JMenuItem mntmIdentifyTrack;
+	
 	
 	/**
 	 * Create the panel.
@@ -46,6 +54,41 @@ extends JPanel
 		for(TreeSelectionListener l: listeners){
 			treeTable.getTree().getSelectionModel().addTreeSelectionListener(l);
 		}
+		
+		// TODO: uncomment this line to get panel components in ui designer,
+		// comment for production.		
+//		add(popupMenu, BorderLayout.EAST);
+		
+		mntmIdentifyTrack = new JMenuItem("Identify track");
+		popupMenu.add(mntmIdentifyTrack);
+		
+		//treeTable.getTree().
+		treeTable.		
+		addMouseListener(new MouseAdapter(){
+			// handle both pressed and released for popup
+			@Override
+			public void mousePressed(MouseEvent e) {
+				doPopupMenu(e);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				doPopupMenu(e);
+			}});		
+	}
+
+	protected void doPopupMenu(MouseEvent e) {
+		if(e.isPopupTrigger()){
+			JTreeTable source = (JTreeTable)e.getSource();
+            int row = source.rowAtPoint( e.getPoint() );
+            int column = source.columnAtPoint( e.getPoint() );
+
+            if (! source.isRowSelected(row)){
+                source.changeSelection(row, column, false, false);
+            }
+
+            popupMenu.show(e.getComponent(), e.getX(), e.getY());
+		}				
 	}
 
 	public void update(){

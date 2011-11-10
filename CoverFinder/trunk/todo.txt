@@ -1,7 +1,8 @@
-- tags from other formats
+- filter track tree by entering text
+- tags from other formats: flac
 - identify unknown tracks via http://acoustid.org
 - open track on musicbrainz by mbid
-- flac
+
 covers from http://www.discogs.com/help/api
 http://www.last.fm/api
 http://musicbrainz.org/doc/Next_Generation_Schema/SearchServerXML
