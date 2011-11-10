@@ -17,6 +17,10 @@ extends JComponent
 		this.enlarge = enlarge;
 	}
 	
+	public void setImage(Image img){
+		this.img = img;
+	}
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		
