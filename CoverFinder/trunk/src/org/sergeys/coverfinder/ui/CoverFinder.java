@@ -20,7 +20,6 @@ import java.util.ServiceLoader;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -34,6 +33,7 @@ import javax.swing.event.TreeSelectionListener;
 
 import org.sergeys.coverfinder.logic.AcoustIdUtil;
 import org.sergeys.coverfinder.logic.AcoustIdUtil.Fingerprint;
+import org.sergeys.coverfinder.logic.Album;
 import org.sergeys.coverfinder.logic.FileCollectorWorker;
 import org.sergeys.coverfinder.logic.IImageSearchEngine;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
@@ -146,8 +146,9 @@ implements IProgressWatcher<Track>, TreeSelectionListener
 			}
 		});
 		panelTop.add(btnTest);
+		btnTest.setEnabled(false);
 		
-		btnTest.setEnabled(AcoustIdUtil.getInstance().isAvailable());
+		//btnTest.setEnabled(AcoustIdUtil.getInstance().isAvailable());
 		
 		btnIdentify = new JButton("Identify");
 		btnIdentify.addActionListener(new ActionListener() {
@@ -245,35 +246,29 @@ implements IProgressWatcher<Track>, TreeSelectionListener
 		scanLibrary();
 	}
 
+	ImageSearchDialog imageSearchDlg;
 	protected void doTest() {
 		
+		if(imageSearchDlg == null){
 
-		ImageSearchDialog dlg = new ImageSearchDialog(this.frmCoverFinder);
-		dlg.setVisible(true);
+			imageSearchDlg = new ImageSearchDialog(this.frmCoverFinder);
+			imageSearchDlg.setLocationRelativeTo(frmCoverFinder);
+		}
 		
-//		JFileChooser fc = new JFileChooser();
-//		fc.setCurrentDirectory(new File("i:\\music"));
-//		if (fc.showOpenDialog(this.frmCoverFinder) == JFileChooser.APPROVE_OPTION) {
-//			panelStatusBar.setMessage("Recognition...");
-//			panelStatusBar.setWorking(true);
-//
-//			try{
-//				Fingerprint fp =
-//						AcoustIdUtil.getInstance().getFingerprint(fc.getSelectedFile());
-//						
-//				if(!fp.fingerprint.isEmpty()){				
-//					String titles = AcoustIdUtil.getInstance().identify(fp);
-//					
-//					JOptionPane.showMessageDialog(this.frmCoverFinder, titles);
-//				}
-//			}
-//			catch(Exception ex){
-//				JOptionPane.showMessageDialog(this.frmCoverFinder, ex.getMessage());
-//			}
-//		}
-//		
-//		panelStatusBar.setMessage("Ready");
-//		panelStatusBar.setWorking(false);
+		String query;
+		
+		Object o = panelTree.getSelectedItem();
+		if(o instanceof Album){
+			query = String.format("%s %s", ((Album)o).getArtist(), ((Album)o).getTitle());
+		}
+		else if(o instanceof Track){
+			query = String.format("%s %s", ((Track)o).getArtist(), ((Track)o).getAlbum());
+		}
+		else{
+			return;
+		}
+		imageSearchDlg.setQuery(query);
+		imageSearchDlg.setVisible(true);		
 	}
 
 	private void scanLibrary(){
@@ -443,6 +438,7 @@ System.out.println("will scan " + path);
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {		
 		Object o = e.getPath().getLastPathComponent();
-		btnIdentify.setEnabled(o instanceof Track && AcoustIdUtil.getInstance().isAvailable());							
+		btnIdentify.setEnabled(o instanceof Track && AcoustIdUtil.getInstance().isAvailable());
+		btnTest.setEnabled(o instanceof Track || o instanceof Album);
 	}
 }

@@ -30,11 +30,19 @@ import java.io.IOException;
 import java.util.Collection;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.Dialog.ModalityType;
 
 public class ImageSearchDialog 
 extends JDialog 
 implements IProgressWatcher<ImageSearchResult> 
 {
+
+	@Override
+	public void setVisible(boolean b) {						
+		super.setVisible(b);
+		
+		//doSearch();
+	}
 
 	/**
 	 * 
@@ -51,6 +59,8 @@ implements IProgressWatcher<ImageSearchResult>
 	 */
 	public ImageSearchDialog(Window owner) {
 		super(owner);
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		setModal(true);
 		
 		setTitle("Search images");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ImageSearchDialog.class.getResource("/images/icon.png")));
@@ -129,6 +139,11 @@ implements IProgressWatcher<ImageSearchResult>
 		}
 	}
 
+	public void setQuery(String query){
+		textFieldQuery.setText(query);
+		queryStringChanged = true;
+	}
+	
 	private boolean queryStringChanged = false;
 	
 	protected void doKeyTyped(KeyEvent e) {

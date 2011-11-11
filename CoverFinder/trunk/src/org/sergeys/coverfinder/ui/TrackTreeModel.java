@@ -65,8 +65,9 @@ extends DynamicTreeTableModel
 				String albumKey = tr.getArtist() + tr.getAlbumDir() + tr.getAlbum(); 
 				if(!albums.containsKey(albumKey)){
 					Album alb = new Album();
-					alb.setName(tr.getAlbum());
-					
+					//alb.setName(tr.getAlbum());
+					alb.setTitle(tr.getAlbum());
+					alb.setArtist(tr.getArtist());
 					albums.put(albumKey, alb);
 					
 					artists.get(tr.getArtist()).add(alb);

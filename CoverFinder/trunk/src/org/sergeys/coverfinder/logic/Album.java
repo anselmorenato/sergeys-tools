@@ -12,15 +12,25 @@ extends DefaultMutableTreeNode
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private String name;
+	private String title;
+	private String artist;
 
-	public String getName() {
-		return name;
+	public String getArtist() {
+		return artist;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-		setUserObject(name);
+	public void setArtist(String artist) {
+		this.artist = artist;
 	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+		setUserObject(title);
+	}
+
 
 }

@@ -28,27 +28,27 @@ public class GoogleImageSearch implements IImageSearchEngine {
 
 			// http://code.google.com/apis/imagesearch/v1/jsondevguide.html#json_snippets_java			
 			StringBuilder sb = new StringBuilder();
-			//sb.append("/ajax/services/search/images");
+
 			sb.append("v=1.0");
 			sb.append("&q=");
 			sb.append(req.getQuery());
+			//sb.append(URLEncoder.encode(req.getQuery(), "UTF-8"));	// encode manually instead of using URI			
 			sb.append("&userip=");
 			sb.append(InetAddress.getLocalHost().getHostAddress());
 			sb.append("&rsz=8");
 									
 			// escape parameters
 			URI uri = new URI("https", "ajax.googleapis.com", "/ajax/services/search/images", sb.toString(), null);
-			//URL url = uri.toURL();
-			
-System.out.println("request: " + uri);			
-
-			
+						
+System.out.println("request uri: " + uri);			
+System.out.println("request uri ascii: " + uri.toASCIIString());
 
 			String line;
 			StringBuilder builder = new StringBuilder();
 			
 			// request google
-			URLConnection connection = uri.toURL().openConnection();
+			//URLConnection connection = uri.toURL().openConnection();
+			URLConnection connection = new URL(uri.toASCIIString()).openConnection();
 			connection.addRequestProperty("Referer", referer);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			while((line = reader.readLine()) != null) {
