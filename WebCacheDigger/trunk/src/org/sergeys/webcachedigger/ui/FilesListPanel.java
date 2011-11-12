@@ -22,6 +22,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
+import javax.swing.ToolTipManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -33,7 +34,10 @@ import org.sergeys.webcachedigger.logic.Messages;
 
 // Uncomment line in initialize() to get panel components in ui designer
 
-public class FilesListPanel extends JPanel implements ListSelectionListener, TableModelListener {
+public class FilesListPanel 
+extends JPanel 
+implements ListSelectionListener, TableModelListener 
+{
 	
 	private static final long serialVersionUID = 1L;
 	private JScrollPane jScrollPane = null;
@@ -200,6 +204,10 @@ public class FilesListPanel extends JPanel implements ListSelectionListener, Tab
 
 			jTableFoundFiles
 					.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			
+			// speed up: http://www.chka.de/swing/table/faq.html
+			ToolTipManager.sharedInstance().unregisterComponent(jTableFoundFiles);
+			ToolTipManager.sharedInstance().unregisterComponent(jTableFoundFiles.getTableHeader());
 		}
 		return jTableFoundFiles;
 	}

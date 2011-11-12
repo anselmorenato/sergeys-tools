@@ -4,9 +4,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -16,22 +16,18 @@ import javax.swing.event.ChangeListener;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
-import javax.swing.ImageIcon;
 
 public class MainWinTopPanel extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	//private WebCacheDigger wcd;
 		
 	/**
 	 * Create the panel.
 	 * @throws IOException 
 	 */
 	public MainWinTopPanel(WebCacheDigger wcd) throws IOException {
-		
-		//this.wcd = wcd;
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
@@ -193,10 +189,5 @@ public class MainWinTopPanel extends JPanel {
 			Settings.getInstance().getActiveBrowsers().remove(name);
 		}				
 	}
-
-//	public void init(HashSet<IBrowser> availableBrowsers){
-//		
-//	}
-	
 	
 }
