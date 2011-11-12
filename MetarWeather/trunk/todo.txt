@@ -1,1 +1,8 @@
 - webstart app similar to mweather
+
+language codes: http://www.loc.gov/standards/iso639-2/php/English_list.php
+
+http://www.nirsoft.net/utils/mweather.html
+
+http://forum.geonames.org/gforum/posts/list/28.page
+http://www.geonames.org/export/JSON-webservices.html#weatherJSON
