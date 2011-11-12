@@ -89,12 +89,17 @@ public class JTreeTable extends JTable {
 		// Forces the JTable and JTree to share their row selection models. 
 		ListToTreeSelectionModelWrapper selectionWrapper = new 
 		                        ListToTreeSelectionModelWrapper();
+// svs: single selection		
+selectionWrapper.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+selectionWrapper.getListSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
 		tree.setSelectionModel(selectionWrapper);
 		setSelectionModel(selectionWrapper.getListSelectionModel()); 
 	
 		// Installs the tree editor renderer and editor. 
 		setDefaultRenderer(TreeTableModel.class, tree); 
-		setDefaultEditor(TreeTableModel.class, new TreeTableCellEditor());
+// svs: no editor		
+//		setDefaultEditor(TreeTableModel.class, new TreeTableCellEditor());
 	
 		// No grid.
 		setShowGrid(false);
@@ -108,9 +113,78 @@ public class JTreeTable extends JTable {
 		    // Metal looks better like this.
 		    setRowHeight(20);
 		}				
+		
+		this.addMouseListener(new MouseAdapter(){
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				super.mouseClicked(e);
+			}
+		});
     }
     
-    /**
+	@Override
+	protected void processMouseEvent(MouseEvent e) {
+
+		//super.processMouseEvent(e);
+		boolean processed = false;
+		
+		// svs: pass mouse event to the tree, instead of editor
+		for (int counter = getColumnCount() - 1; counter >= 0; counter--) {
+			if (getColumnClass(counter) == TreeTableModel.class) {
+				
+				Rectangle cell = getCellRect(0, counter, true);
+				if(e.getX() >= cell.x && e.getX() <= (cell.x+cell.width) ){
+				
+			    MouseEvent newME = new MouseEvent
+			          (JTreeTable.this.tree, e.getID(),
+				   e.getWhen(), e.getModifiers(),
+				   e.getX() - getCellRect(0, counter, true).x,
+				   e.getY(), e.getClickCount(),
+                                   e.isPopupTrigger());
+			    JTreeTable.this.tree.dispatchEvent(newME);
+			    processed = true;
+			    break;
+				}
+			}
+		}
+		
+		if(!processed){
+			super.processMouseEvent(e);
+		}
+	}
+
+	@Override
+	protected void processMouseMotionEvent(MouseEvent e) {
+		boolean processed = false;
+		
+		// svs: pass mouse event to the tree, instead of editor
+		for (int counter = getColumnCount() - 1; counter >= 0; counter--) {
+			if (getColumnClass(counter) == TreeTableModel.class) {
+
+				Rectangle cell = getCellRect(0, counter, true);
+				if(e.getX() >= cell.x && e.getX() <= (cell.x+cell.width) ){
+
+					MouseEvent newME = new MouseEvent
+							(JTreeTable.this.tree, e.getID(),
+									e.getWhen(), e.getModifiers(),
+									e.getX() - getCellRect(0, counter, true).x,
+									e.getY(), e.getClickCount(),
+									e.isPopupTrigger());
+					JTreeTable.this.tree.dispatchEvent(newME);
+					processed = true;
+					break;
+				}
+			}
+		}
+
+		if(!processed){
+			super.processMouseMotionEvent(e);
+		}		
+	};
+
+	/**
      * Overridden to message super and forward the method to the tree.
      * Since the tree is not actually in the component hierarchy it will
      * never receive this unless we forward it in this manner.
@@ -122,7 +196,8 @@ public class JTreeTable extends JTable {
 	    // Do this so that the editor is referencing the current renderer
 	    // from the tree. The renderer can potentially change each time
 	    // laf changes.
-	    setDefaultEditor(TreeTableModel.class, new TreeTableCellEditor());
+// svs: no editor	    
+//	    setDefaultEditor(TreeTableModel.class, new TreeTableCellEditor());
 	}
 	// Use the tree's default foreground and background colors in the
 	// table. 
@@ -158,15 +233,15 @@ public class JTreeTable extends JTable {
      * -1, and therefore doesn't automatically resize the editor for us.
      */
     public void sizeColumnsToFit(int resizingColumn) { 
-	super.sizeColumnsToFit(resizingColumn);
-	if (getEditingColumn() != -1 && getColumnClass(editingColumn) ==
-	    TreeTableModel.class) {
-	    Rectangle cellRect = getCellRect(realEditingRow(),
-					     getEditingColumn(), false);
-            Component component = getEditorComponent();
-	    component.setBounds(cellRect);
-            component.validate();
-	}
+    	super.sizeColumnsToFit(resizingColumn);
+    	if (getEditingColumn() != -1 && getColumnClass(editingColumn) ==
+    			TreeTableModel.class) {
+    		Rectangle cellRect = getCellRect(realEditingRow(),
+    				getEditingColumn(), false);
+    		Component component = getEditorComponent();
+    		component.setBounds(cellRect);
+    		component.validate();
+    	}
     }
 
     /**
@@ -193,11 +268,11 @@ public class JTreeTable extends JTable {
      * the tree in the background, and then draw the editor over it.
      */
     public boolean editCellAt(int row, int column, EventObject e){
-	boolean retValue = super.editCellAt(row, column, e);
-	if (retValue && getColumnClass(column) == TreeTableModel.class) {
-	    repaint(getCellRect(row, column, false));
-	}
-	return retValue;
+    	boolean retValue = super.editCellAt(row, column, e);
+    	if (retValue && getColumnClass(column) == TreeTableModel.class) {
+    		repaint(getCellRect(row, column, false));
+    	}
+    	return retValue;
     }
 
     /**
@@ -205,6 +280,7 @@ public class JTreeTable extends JTable {
      */
     public class TreeTableCellRenderer extends JTree implements
 	         TableCellRenderer {
+
 	/**
 		 * 
 		 */
@@ -217,6 +293,8 @@ public class JTreeTable extends JTable {
 
 	public TreeTableCellRenderer(TreeModel model) {
 	    super(model); 
+	    
+//	    getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 	}
 
 	/**
@@ -368,95 +446,97 @@ public class JTreeTable extends JTable {
      * and you want to support editing in JTreeTable, you will have
      * to do something similiar.
      */
-    public class TreeTableCellEditor extends DefaultCellEditor {
-	/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-	public TreeTableCellEditor() {
-	    super(new TreeTableTextField());
-	}
-
-	/**
-	 * Overridden to determine an offset that tree would place the
-	 * editor at. The offset is determined from the
-	 * <code>getRowBounds</code> JTree method, and additionally
-	 * from the icon DefaultTreeCellRenderer will use.
-	 * <p>The offset is then set on the TreeTableTextField component
-	 * created in the constructor, and returned.
-	 */
-	public Component getTableCellEditorComponent(JTable table,
-						     Object value,
-						     boolean isSelected,
-						     int r, int c) {
-	    Component component = super.getTableCellEditorComponent
-		(table, value, isSelected, r, c);
-	    JTree t = getTree();
-	    boolean rv = t.isRootVisible();
-	    int offsetRow = rv ? r : r - 1;
-	    Rectangle bounds = t.getRowBounds(offsetRow);
-	    int offset = bounds.x;
-	    TreeCellRenderer tcr = t.getCellRenderer();
-	    if (tcr instanceof DefaultTreeCellRenderer) {
-		Object node = t.getPathForRow(offsetRow).
-		                getLastPathComponent();
-		Icon icon;
-		if (t.getModel().isLeaf(node))
-		    icon = ((DefaultTreeCellRenderer)tcr).getLeafIcon();
-		else if (tree.isExpanded(offsetRow))
-		    icon = ((DefaultTreeCellRenderer)tcr).getOpenIcon();
-		else
-		    icon = ((DefaultTreeCellRenderer)tcr).getClosedIcon();
-		if (icon != null) {
-		    offset += ((DefaultTreeCellRenderer)tcr).getIconTextGap() +
-			      icon.getIconWidth();
-		}
-	    }
-	    ((TreeTableTextField)getComponent()).offset = offset;
-	    return component;
-	}
-
-	/**
-	 * This is overridden to forward the event to the tree. This will
-	 * return true if the click count >= 3, or the event is null.
-	 */
-	public boolean isCellEditable(EventObject e) {
-	    if (e instanceof MouseEvent) {
-		MouseEvent me = (MouseEvent)e;
-		// If the modifiers are not 0 (or the left mouse button),
-                // tree may try and toggle the selection, and table
-                // will then try and toggle, resulting in the
-                // selection remaining the same. To avoid this, we
-                // only dispatch when the modifiers are 0 (or the left mouse
-                // button).
-		if (me.getModifiers() == 0 ||
-                    me.getModifiers() == InputEvent.BUTTON1_MASK) {
-		    for (int counter = getColumnCount() - 1; counter >= 0;
-			 counter--) {
-			if (getColumnClass(counter) == TreeTableModel.class) {
-			    MouseEvent newME = new MouseEvent
-			          (JTreeTable.this.tree, me.getID(),
-				   me.getWhen(), me.getModifiers(),
-				   me.getX() - getCellRect(0, counter, true).x,
-				   me.getY(), me.getClickCount(),
-                                   me.isPopupTrigger());
-			    JTreeTable.this.tree.dispatchEvent(newME);
-			    break;
-			}
-		    }
-		}
-		if (me.getClickCount() >= 3) {
-		    return true;
-		}
-		return false;
-	    }
-	    if (e == null) {
-		return true;
-	    }
-	    return false;
-	}
-    }
+//    public class TreeTableCellEditor extends DefaultCellEditor {
+//	/**
+//		 * 
+//		 */
+//		private static final long serialVersionUID = 1L;
+//
+//	public TreeTableCellEditor() {
+//	    super(new TreeTableTextField());
+//	}
+//
+//	/**
+//	 * Overridden to determine an offset that tree would place the
+//	 * editor at. The offset is determined from the
+//	 * <code>getRowBounds</code> JTree method, and additionally
+//	 * from the icon DefaultTreeCellRenderer will use.
+//	 * <p>The offset is then set on the TreeTableTextField component
+//	 * created in the constructor, and returned.
+//	 */
+//	public Component getTableCellEditorComponent(JTable table,
+//						     Object value,
+//						     boolean isSelected,
+//						     int r, int c) {
+//	    Component component = super.getTableCellEditorComponent
+//		(table, value, isSelected, r, c);
+//	    JTree t = getTree();
+//	    boolean rv = t.isRootVisible();
+//	    int offsetRow = rv ? r : r - 1;
+//	    Rectangle bounds = t.getRowBounds(offsetRow);
+//	    int offset = bounds.x;
+//	    TreeCellRenderer tcr = t.getCellRenderer();
+//	    if (tcr instanceof DefaultTreeCellRenderer) {
+//		Object node = t.getPathForRow(offsetRow).
+//		                getLastPathComponent();
+//		Icon icon;
+//		if (t.getModel().isLeaf(node))
+//		    icon = ((DefaultTreeCellRenderer)tcr).getLeafIcon();
+//		else if (tree.isExpanded(offsetRow))
+//		    icon = ((DefaultTreeCellRenderer)tcr).getOpenIcon();
+//		else
+//		    icon = ((DefaultTreeCellRenderer)tcr).getClosedIcon();
+//		if (icon != null) {
+//		    offset += ((DefaultTreeCellRenderer)tcr).getIconTextGap() +
+//			      icon.getIconWidth();
+//		}
+//	    }
+//	    ((TreeTableTextField)getComponent()).offset = offset;
+//	    return component;
+//	}
+//
+//	/**
+//	 * This is overridden to forward the event to the tree. This will
+//	 * return true if the click count >= 3, or the event is null.
+//	 */
+//	
+//	public boolean isCellEditable(EventObject e) {
+//	    if (e instanceof MouseEvent) {
+//		MouseEvent me = (MouseEvent)e;
+//		// If the modifiers are not 0 (or the left mouse button),
+//                // tree may try and toggle the selection, and table
+//                // will then try and toggle, resulting in the
+//                // selection remaining the same. To avoid this, we
+//                // only dispatch when the modifiers are 0 (or the left mouse
+//                // button).
+//		if (me.getModifiers() == 0 ||
+//                    me.getModifiers() == InputEvent.BUTTON1_MASK) {
+//		    for (int counter = getColumnCount() - 1; counter >= 0;
+//			 counter--) {
+//			if (getColumnClass(counter) == TreeTableModel.class) {
+//			    MouseEvent newME = new MouseEvent
+//			          (JTreeTable.this.tree, me.getID(),
+//				   me.getWhen(), me.getModifiers(),
+//				   me.getX() - getCellRect(0, counter, true).x,
+//				   me.getY(), me.getClickCount(),
+//                                   me.isPopupTrigger());
+//			    JTreeTable.this.tree.dispatchEvent(newME);
+//			    break;
+//			}
+//		    }
+//		}
+//		if (me.getClickCount() >= 3) {
+//		    return true;
+//		}
+//		return false;
+//	    }
+//	    if (e == null) {
+//		return true;
+//	    }
+//	    return false;
+//	}
+//	
+//    }
 
 
     /**
@@ -561,7 +641,7 @@ public class JTreeTable extends JTable {
 				                            (counter);
 
 				if(selPath != null) {
-				    addSelectionPath(selPath);
+					addSelectionPath(selPath);				    
 				}
 			    }
 			}
