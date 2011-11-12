@@ -45,7 +45,7 @@ import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
 
 public class CoverFinder 
-implements IProgressWatcher<Track>, TreeSelectionListener 
+implements IProgressWatcher<Track>, TreeSelectionListener, ActionListener 
 {
 
 	
@@ -134,7 +134,7 @@ implements IProgressWatcher<Track>, TreeSelectionListener
 		JButton btnSearchFiles = new JButton("Search");
 		btnSearchFiles.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				doSearch(e);
+				doSearch();
 			}
 		});
 		panelTop.add(btnSearchFiles);
@@ -148,7 +148,6 @@ implements IProgressWatcher<Track>, TreeSelectionListener
 		panelTop.add(btnTest);
 		btnTest.setEnabled(false);
 		
-		//btnTest.setEnabled(AcoustIdUtil.getInstance().isAvailable());
 		
 		btnIdentify = new JButton("Identify");
 		btnIdentify.addActionListener(new ActionListener() {
@@ -159,7 +158,7 @@ implements IProgressWatcher<Track>, TreeSelectionListener
 		panelTop.add(btnIdentify);
 		btnIdentify.setEnabled(false);
 		
-		panelTree = new TrackTreePanel();
+		panelTree = new TrackTreePanel(this);
 		dPanelCenter = new DisabledPanel(panelTree);
 		frmCoverFinder.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
 		panelTree.addTreeSelectionListener(this);
@@ -247,7 +246,7 @@ implements IProgressWatcher<Track>, TreeSelectionListener
 	}
 
 	ImageSearchDialog imageSearchDlg;
-	protected void doTest() {
+	protected void doSearch() {
 		
 		if(imageSearchDlg == null){
 
@@ -325,7 +324,7 @@ System.out.println("will scan " + path);
 		System.exit(0);
 	}
 
-	protected void doSearch(ActionEvent e) {
+	protected void doTest() {
 		
 		String query = "led zeppelin \"houses of the holy\"";//txtQuery.getText();
 		
@@ -440,5 +439,19 @@ System.out.println("will scan " + path);
 		Object o = e.getPath().getLastPathComponent();
 		btnIdentify.setEnabled(o instanceof Track && AcoustIdUtil.getInstance().isAvailable());
 		btnTest.setEnabled(o instanceof Track || o instanceof Album);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() instanceof JMenuItem){
+			JMenuItem item = (JMenuItem)e.getSource();
+			if(item.getName().equals(TrackTreePanel.MENU_IDENTIFY_TRACK)){
+				doIdentify();
+			}
+			else if(item.getName().equals(TrackTreePanel.MENU_SEARCH_COVER)){
+				doSearch();
+			}
+		}
+		
 	}
 }

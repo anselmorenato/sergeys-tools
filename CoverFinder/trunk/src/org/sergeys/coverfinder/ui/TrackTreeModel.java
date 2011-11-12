@@ -32,8 +32,9 @@ extends DynamicTreeTableModel
      */
     private static final String[] setterMethodNames =
                 //{ "setName", "setLocation", "setLastVisited","setCreated" };
-    	//null;
-    	{"setName", "setHasPicture"};	// TODO: not expands when null
+    	null;
+    	//{"setName", "setHasPicture"};	// TODO: not expands when null
+    	//{"", ""};	
     
     private static final int[] widths = { 4000, 1000 };
     
