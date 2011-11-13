@@ -157,14 +157,11 @@ implements IProgressWatcher<ImageSearchResult>
 	protected void doKeyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		queryStringChanged = true;
-	}
-
-
-	protected void doSearchMore() {
-		dContentPanel.setEnabled(false);
 		
 	}
 
+
+	IImageSearchEngine currentEngine;
 
 	protected void doSearch() {
 		//lblProgress.setVisible(true);
@@ -174,8 +171,8 @@ implements IProgressWatcher<ImageSearchResult>
 								
 			ImageSearchRequest req = new ImageSearchRequest();
 			req.setQuery(query);
-			IImageSearchEngine engine = Settings.getInstance().getImageSearchEngine();
-			ImageSearchWorker wrk = new ImageSearchWorker(engine, req, false, this);
+			currentEngine = Settings.getInstance().getImageSearchEngine();
+			ImageSearchWorker wrk = new ImageSearchWorker(currentEngine, req, false, this);
 			
 			panelResults.removeAll();
 			dContentPanel.setEnabled(false);
@@ -184,6 +181,11 @@ implements IProgressWatcher<ImageSearchResult>
 		}
 	}
 
+	protected void doSearchMore() {
+		ImageSearchWorker wrk = new ImageSearchWorker(currentEngine, null, true, this);
+		dContentPanel.setEnabled(false);
+		wrk.execute();
+	}
 
 	protected void doClose() {
 		setVisible(false);		

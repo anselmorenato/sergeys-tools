@@ -27,28 +27,32 @@ implements IImageSearchEngine
 	
 	private static final String APP_ID = "3835365F7AE679189D6105256B8EFE900B846E6A";
 
+	BingServiceLocator locator = new BingServiceLocator();
+	private SearchRequest searchRequest;
+	private ImageRequest imageRequest;
+	private int nextOffset = 0;
 	
-	@Override
-	public Collection<ImageSearchResult> search(ImageSearchRequest req1) {
+	private void buildRequest(String query){
+		searchRequest = new SearchRequest();
+		searchRequest.setAppId(APP_ID);
+		
+		searchRequest.setSources(new SourceType[]{ SourceType.Image });
+		searchRequest.setQuery(query);
+		
+		imageRequest = new ImageRequest();
+		imageRequest.setOffset(new UnsignedInt(0));
+		imageRequest.setFilters(new String[]{ "Size:Medium", "Aspect:Square" });	// http://msdn.microsoft.com/en-us/library/dd560913.aspx
+		searchRequest.setImage(imageRequest);
+		
+		nextOffset = 0;
+	}
+	
+	private Collection<ImageSearchResult> doRequest(){
 		ArrayList<ImageSearchResult> results = new ArrayList<ImageSearchResult>(); 
-		
-		SearchRequest req = new SearchRequest();
-		req.setAppId(APP_ID);
-		
-		req.setSources(new SourceType[]{ SourceType.Image });
-		req.setQuery(req1.getQuery());
-		//req.setOptions(new SearchOption[]{ new SearchOption("") });
-		
-		ImageRequest ir = new ImageRequest();
-		//ir.setCount(new UnsignedInt(15));
-		ir.setOffset(new UnsignedInt(0));
-		ir.setFilters(new String[]{ "Size:Medium", "Aspect:Square" });	// http://msdn.microsoft.com/en-us/library/dd560913.aspx
-		req.setImage(ir);
-		
-		BingServiceLocator loc = new BingServiceLocator();
+				
 		try {
-			BingPortType portType = loc.getBingPort();
-			SearchRequestType1 reqType = new SearchRequestType1(req);			
+			BingPortType portType = locator.getBingPort();
+			SearchRequestType1 reqType = new SearchRequestType1(searchRequest);			
 			SearchResponseType0 respType = portType.search(reqType);
 			SearchResponse resp = respType.getParameters();
 									
@@ -89,6 +93,9 @@ implements IImageSearchEngine
 					
 					results.add(item);
 				}
+				
+				nextOffset += images.length;
+				imageRequest.setOffset(new UnsignedInt(nextOffset));
 			}
 			
 		} catch (Exception e1) {
@@ -96,13 +103,18 @@ implements IImageSearchEngine
 			e1.printStackTrace();
 		} 
 
-		return results;
+		return results;		
+	}
+	
+	@Override
+	public Collection<ImageSearchResult> search(ImageSearchRequest req) {
+		buildRequest(req.getQuery());
+		return doRequest();
 	}
 
 	@Override
-	public Collection<ImageSearchResult> searchMore() {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<ImageSearchResult> searchMore() {		
+		return doRequest();
 	}
 
 	@Override

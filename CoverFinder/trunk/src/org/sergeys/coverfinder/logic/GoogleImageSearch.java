@@ -14,31 +14,18 @@ import org.json.JSONObject;
 
 public class GoogleImageSearch implements IImageSearchEngine {
 
-	@Override
-	public Collection<ImageSearchResult> search(ImageSearchRequest req) {
+	private String referer = "http://svs.bugz.org.ua";
+	private int resultCount = 8;	// This argument supplies an integer from 1–8 indicating the number of results to return per page
+	private String currentBaseQuery;
+	private int currentOffset = 0; 
+	
+	private Collection<ImageSearchResult> doRequest(String query){
 		ArrayList<ImageSearchResult> res = new ArrayList<ImageSearchResult>();
 		
-		String referer = "http://svs.bugz.org.ua";
-		
-		
-		
 		try {
-//			URL url = new URL("https://ajax.googleapis.com/ajax/services/search/images?" +
-//			        "v=1.0&q=barack%20obama&key=INSERT-YOUR-KEY&userip=INSERT-USER-IP");
-
-			// http://code.google.com/apis/imagesearch/v1/jsondevguide.html#json_snippets_java			
-			StringBuilder sb = new StringBuilder();
-
-			sb.append("v=1.0");
-			sb.append("&q=");
-			sb.append(req.getQuery());
-			//sb.append(URLEncoder.encode(req.getQuery(), "UTF-8"));	// encode manually instead of using URI			
-			sb.append("&userip=");
-			sb.append(InetAddress.getLocalHost().getHostAddress());
-			sb.append("&rsz=8");
 									
 			// escape parameters
-			URI uri = new URI("https", "ajax.googleapis.com", "/ajax/services/search/images", sb.toString(), null);
+			URI uri = new URI("https", "ajax.googleapis.com", "/ajax/services/search/images", query, null);
 						
 //System.out.println("request uri: " + uri);			
 //System.out.println("request uri ascii: " + uri.toASCIIString());
@@ -91,13 +78,47 @@ public class GoogleImageSearch implements IImageSearchEngine {
 			e.printStackTrace();
 		}
 				
-		return res;
+		return res;		
+	}
+	
+	@Override
+	public Collection<ImageSearchResult> search(ImageSearchRequest req) {
+		try{
+			//		URL url = new URL("https://ajax.googleapis.com/ajax/services/search/images?" +
+			//        "v=1.0&q=barack%20obama&key=INSERT-YOUR-KEY&userip=INSERT-USER-IP");
+			
+			// http://code.google.com/apis/imagesearch/v1/jsondevguide.html#json_snippets_java			
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append("v=1.0");
+			sb.append("&q=");
+			sb.append(req.getQuery());
+			//sb.append(URLEncoder.encode(req.getQuery(), "UTF-8"));	// encode manually instead of using URI			
+			sb.append("&userip=");
+			sb.append(InetAddress.getLocalHost().getHostAddress());
+			sb.append("&rsz=" + resultCount);
+			
+			this.currentBaseQuery = sb.toString();
+			this.currentOffset = 0;
+			
+			return doRequest(this.currentBaseQuery);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@Override
 	public Collection<ImageSearchResult> searchMore() {
-		// TODO Auto-generated method stub
-		return null;
+		if(currentBaseQuery == null){
+			return null;
+		}
+		currentOffset += resultCount;
+		String moreQuery = currentBaseQuery + "&start=" + currentOffset;
+		return doRequest(moreQuery);
 	}
 
 	@Override
