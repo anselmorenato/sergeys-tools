@@ -2,21 +2,26 @@ package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.Collection;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
-import java.awt.Toolkit;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
+import javax.swing.border.EmptyBorder;
 
 import org.sergeys.coverfinder.logic.IImageSearchEngine;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
@@ -25,12 +30,8 @@ import org.sergeys.coverfinder.logic.ImageSearchResult;
 import org.sergeys.coverfinder.logic.ImageSearchWorker;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.library.swing.DisabledPanel;
-import java.awt.GridLayout;
-import java.io.IOException;
-import java.util.Collection;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.Dialog.ModalityType;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
 
 public class ImageSearchDialog 
 extends JDialog 
@@ -69,7 +70,14 @@ implements IProgressWatcher<ImageSearchResult>
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
 		dContentPanel = new DisabledPanel(contentPanel);
-				
+
+		JComponent glass = dContentPanel.getGlassPane();
+		glass.setLayout(new BorderLayout());
+		JLabel lblProgress = new JLabel();
+		lblProgress.setHorizontalAlignment(SwingConstants.CENTER);
+		lblProgress.setIcon(new ImageIcon(ImageSearchDialog.class.getResource("/images/progress.gif")));
+		glass.add(lblProgress, BorderLayout.CENTER);
+		
 		//getContentPane().add(contentPanel, BorderLayout.CENTER);
 		getContentPane().add(dContentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
@@ -169,6 +177,7 @@ implements IProgressWatcher<ImageSearchResult>
 			IImageSearchEngine engine = Settings.getInstance().getImageSearchEngine();
 			ImageSearchWorker wrk = new ImageSearchWorker(engine, req, false, this);
 			
+			panelResults.removeAll();
 			dContentPanel.setEnabled(false);
 			
 			wrk.execute();		

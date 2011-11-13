@@ -21,8 +21,8 @@ extends DefaultMutableTreeNode
 	private String mimeType = null;
 	private String title;
 	private String artist;
-	private String album;
-	private String albumDir;
+	private String albumTitle;
+	private String filesystemDir;
 	private boolean hasPicture;
 	
 	public Track(File file) {
@@ -66,12 +66,12 @@ extends DefaultMutableTreeNode
 		this.artist = artist;
 	}
 
-	public String getAlbum() {
-		return album;
+	public String getAlbumTitle() {
+		return albumTitle;
 	}
 
-	public void setAlbum(String album) {
-		this.album = album;
+	public void setAlbumTitle(String album) {
+		this.albumTitle = album;
 	}
 
 	public boolean isHasPicture() {
@@ -82,14 +82,6 @@ extends DefaultMutableTreeNode
 		this.hasPicture = hasPicture;
 	}
 
-	public String getAlbumDir() {
-		return albumDir;
-	}
-
-	public void setAlbumDir(String albumDir) {
-		this.albumDir = albumDir;
-	}
-
 	public String getTitle() {
 		return title;
 	}
@@ -97,6 +89,14 @@ extends DefaultMutableTreeNode
 	public void setTitle(String title) {
 		this.title = title;
 		setUserObject(title);
+	}
+
+	public String getFilesystemDir() {
+		return filesystemDir;
+	}
+
+	public void setFilesystemDir(String filesystemDir) {
+		this.filesystemDir = filesystemDir;
 	}
 
 }

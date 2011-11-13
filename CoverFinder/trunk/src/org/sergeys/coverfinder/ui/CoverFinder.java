@@ -1,6 +1,7 @@
 package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -12,6 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -261,7 +263,7 @@ implements IProgressWatcher<Track>, TreeSelectionListener, ActionListener
 			query = String.format("%s %s", ((Album)o).getArtist(), ((Album)o).getTitle());
 		}
 		else if(o instanceof Track){
-			query = String.format("%s %s", ((Track)o).getArtist(), ((Track)o).getAlbum());
+			query = String.format("%s %s", ((Track)o).getArtist(), ((Track)o).getAlbumTitle());
 		}
 		else{
 			return;
@@ -450,6 +452,30 @@ System.out.println("will scan " + path);
 			}
 			else if(item.getName().equals(TrackTreePanel.MENU_SEARCH_COVER)){
 				doSearch();
+			}
+			else if(item.getName().equals(TrackTreePanel.MENU_EDIT_NAME)){
+				
+			}
+			else if(item.getName().equals(TrackTreePanel.MENU_OPEN_LOCATION)){
+				Object o = panelTree.getSelectedItem();
+				if(o != null && Desktop.isDesktopSupported()){
+					if(o instanceof Track){
+						try {
+							Desktop.getDesktop().open(new File(((Track)o).getFilesystemDir()));
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+					else if(o instanceof Album){
+						try {
+							Desktop.getDesktop().open(new File(((Album)o).getFilesystemDir()));
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
 			}
 		}
 		

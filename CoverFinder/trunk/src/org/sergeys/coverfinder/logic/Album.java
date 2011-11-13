@@ -14,6 +14,7 @@ extends DefaultMutableTreeNode
 	
 	private String title;
 	private String artist;
+	private String filesystemDir;
 
 	public String getArtist() {
 		return artist;
@@ -30,6 +31,14 @@ extends DefaultMutableTreeNode
 	public void setTitle(String title) {
 		this.title = title;
 		setUserObject(title);
+	}
+
+	public String getFilesystemDir() {
+		return filesystemDir;
+	}
+
+	public void setFilesystemDir(String filesystemDir) {
+		this.filesystemDir = filesystemDir;
 	}
 
 

@@ -194,7 +194,7 @@ public class Database {
 				psInsert.setString(6, file.getDetectFilesMethod().toString());
 				psInsert.setString(7, file.getHash());
 				psInsert.setBoolean(8, file.isHasPicture());
-				psInsert.setString(9, file.getAlbum());
+				psInsert.setString(9, file.getAlbumTitle());
 				psInsert.setString(10, file.getArtist());
 				psInsert.setString(11, file.getTitle());
 				
@@ -278,11 +278,11 @@ public class Database {
 				
 		while(rs.next()){
 			Track track = new Track(new File(rs.getString("absolutepath")));
-			track.setAlbumDir(rs.getString("absolutedir"));
+			track.setFilesystemDir(rs.getString("absolutedir"));
 			track.setHasPicture(rs.getBoolean("haspicture"));
 			String str = rs.getString("album");
 			str = Mp3Utils.getInstance().decode(str);
-			track.setAlbum(str == null || str.isEmpty() ? "<unknown album>" : str);
+			track.setAlbumTitle(str == null || str.isEmpty() ? "<unknown album>" : str);
 			str = rs.getString("artist");
 			str = Mp3Utils.getInstance().decode(str);
 			track.setArtist(str == null || str.isEmpty() ? "<unknown artist>" : str);

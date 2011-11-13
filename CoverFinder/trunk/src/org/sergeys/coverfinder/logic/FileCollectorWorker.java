@@ -100,7 +100,7 @@ extends SwingWorker<Collection<Track>, Long>
 			if(mp3.hasId3v2Tag()){
 				ID3v2 id3v2 = mp3.getId3v2Tag();
 				track.setArtist(id3v2.getArtist());
-				track.setAlbum(id3v2.getAlbum());
+				track.setAlbumTitle(id3v2.getAlbum());
 				track.setTitle(id3v2.getTitle());
 				byte[] bytes = id3v2.getAlbumImage();				
 				if(bytes != null){

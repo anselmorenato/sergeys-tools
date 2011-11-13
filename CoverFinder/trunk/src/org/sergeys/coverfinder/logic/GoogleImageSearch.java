@@ -40,8 +40,8 @@ public class GoogleImageSearch implements IImageSearchEngine {
 			// escape parameters
 			URI uri = new URI("https", "ajax.googleapis.com", "/ajax/services/search/images", sb.toString(), null);
 						
-System.out.println("request uri: " + uri);			
-System.out.println("request uri ascii: " + uri.toASCIIString());
+//System.out.println("request uri: " + uri);			
+//System.out.println("request uri ascii: " + uri.toASCIIString());
 
 			String line;
 			StringBuilder builder = new StringBuilder();

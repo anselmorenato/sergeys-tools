@@ -33,6 +33,8 @@ extends JPanel
 	
 	public static final String MENU_IDENTIFY_TRACK = "MENU_IDENTIFY_TRACK";
 	public static final String MENU_SEARCH_COVER = "MENU_SEARCH_COVER";
+	public static final String MENU_OPEN_LOCATION = "MENU_OPEN_LOCATION";
+	public static final String MENU_EDIT_NAME = "MENU_EDIT_NAME";
 	
 	JScrollPane scrollPane;
 	DefaultMutableTreeNode root;
@@ -42,6 +44,8 @@ extends JPanel
 	private final JPopupMenu popupMenu = new JPopupMenu();
 	private JMenuItem mntmIdentifyTrack;
 	private JMenuItem mntmSearchCover;
+	private JMenuItem mntmEditName;
+	private JMenuItem mntmOpenLocation;
 	
 	
 	/**
@@ -71,6 +75,16 @@ extends JPanel
 		mntmSearchCover.addActionListener(menuActionListener);
 		mntmSearchCover.setName(MENU_SEARCH_COVER);
 		popupMenu.add(mntmSearchCover);
+		
+		mntmEditName = new JMenuItem("Edit name");
+		mntmEditName.addActionListener(menuActionListener);
+		mntmEditName.setName(MENU_EDIT_NAME);
+		popupMenu.add(mntmEditName);
+		
+		mntmOpenLocation = new JMenuItem("Open location");
+		mntmOpenLocation.addActionListener(menuActionListener);
+		mntmOpenLocation.setName(MENU_OPEN_LOCATION);
+		popupMenu.add(mntmOpenLocation);
 	}
 
 	private void setupTreeTable(JTreeTable tt){
@@ -110,8 +124,8 @@ extends JPanel
 	private void enableMemuItems(){
 		Object selected = getSelectedItem();
 		
-		mntmIdentifyTrack.setEnabled(selected instanceof Track);
-		mntmSearchCover.setEnabled(selected instanceof Track || selected instanceof Album);
+		mntmIdentifyTrack.setVisible(selected instanceof Track);
+		//mntmSearchCover.setEnabled(selected instanceof Track || selected instanceof Album);
 	}
 	
 	protected void doPopupMenu(MouseEvent e) {
@@ -125,9 +139,12 @@ extends JPanel
                 source.changeSelection(row, column, false, false);
             }
 
-            enableMemuItems();
-            //popupMenu.show(e.getComponent(), e.getX(), e.getY());
-            popupMenu.show(treeTable, e.getX(), e.getY());
+			Object selected = getSelectedItem();
+			if(selected != null && (selected instanceof Album || selected instanceof Track)){							
+	            enableMemuItems();
+	            //popupMenu.show(e.getComponent(), e.getX(), e.getY());
+	            popupMenu.show(treeTable, e.getX(), e.getY());
+			}
 		}				
 	}
 
