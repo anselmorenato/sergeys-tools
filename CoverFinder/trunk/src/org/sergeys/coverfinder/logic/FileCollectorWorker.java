@@ -118,10 +118,10 @@ extends SwingWorker<Collection<Track>, Long>
 	}
 
 	@Override
-	protected void done() {
+	protected void done(){
 		
 		super.done();
-		
+				
 		try {
 			watcher.progressComplete(get(), Stage.Finish);
 		} catch (InterruptedException e) {
@@ -130,6 +130,9 @@ extends SwingWorker<Collection<Track>, Long>
 		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+			watcher.reportException(e.getCause());
+			watcher.progressComplete(null, Stage.Finish);
 		}
 	}
 

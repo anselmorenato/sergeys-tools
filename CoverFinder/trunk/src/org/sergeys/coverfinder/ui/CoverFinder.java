@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.ServiceLoader;
 
@@ -34,11 +35,12 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import org.sergeys.coverfinder.logic.AcoustIdUtil;
-import org.sergeys.coverfinder.logic.AcoustIdUtil.Fingerprint;
 import org.sergeys.coverfinder.logic.Album;
 import org.sergeys.coverfinder.logic.FileCollectorWorker;
 import org.sergeys.coverfinder.logic.IImageSearchEngine;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
+import org.sergeys.coverfinder.logic.IdentifyTrackResult;
+import org.sergeys.coverfinder.logic.IdentifyTrackWorker;
 import org.sergeys.coverfinder.logic.ImageSearchRequest;
 import org.sergeys.coverfinder.logic.ImageSearchResult;
 import org.sergeys.coverfinder.logic.Settings;
@@ -46,11 +48,8 @@ import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
 
-public class CoverFinder 
-implements IProgressWatcher<Track>, TreeSelectionListener, ActionListener 
-{
-
-	
+public class CoverFinder  
+{	
 	private JFrame frmCoverFinder;
 
 	/**
@@ -104,6 +103,46 @@ implements IProgressWatcher<Track>, TreeSelectionListener, ActionListener
 		initialize();
 	}
 
+	private ActionListener actionListener = new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(e.getSource() instanceof JMenuItem){
+				JMenuItem item = (JMenuItem)e.getSource();
+				if(item.getName().equals(TrackTreePanel.MENU_IDENTIFY_TRACK)){
+					doIdentify();
+				}
+				else if(item.getName().equals(TrackTreePanel.MENU_SEARCH_COVER)){
+					doSearch();
+				}
+				else if(item.getName().equals(TrackTreePanel.MENU_EDIT_NAME)){
+
+				}
+				else if(item.getName().equals(TrackTreePanel.MENU_OPEN_LOCATION)){
+					Object o = panelTree.getSelectedItem();
+					if(o != null && Desktop.isDesktopSupported()){
+						if(o instanceof Track){
+							try {
+								Desktop.getDesktop().open(new File(((Track)o).getFilesystemDir()));
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+						else if(o instanceof Album){
+							try {
+								Desktop.getDesktop().open(new File(((Album)o).getFilesystemDir()));
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+					}
+				}
+			}			
+		}
+	};
+	
 	DisabledPanel dPanelCenter;
 	
 	private JMenuBar menuBar;
@@ -160,10 +199,22 @@ implements IProgressWatcher<Track>, TreeSelectionListener, ActionListener
 		panelTop.add(btnIdentify);
 		btnIdentify.setEnabled(false);
 		
-		panelTree = new TrackTreePanel(this);
+		panelTree = new TrackTreePanel(actionListener);
 		dPanelCenter = new DisabledPanel(panelTree);
 		frmCoverFinder.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
-		panelTree.addTreeSelectionListener(this);
+		
+		panelTree.addTreeSelectionListener(new TreeSelectionListener(){
+
+			@Override
+			public void valueChanged(TreeSelectionEvent e) {
+				
+				Object o = e.getPath().getLastPathComponent();
+				
+				// adjust available buttons
+				btnIdentify.setEnabled(o instanceof Track && AcoustIdUtil.getInstance().isAvailable());
+				btnTest.setEnabled(o instanceof Track || o instanceof Album);
+
+			}});
 										
 		
 		panelStatusBar = new StatusBarPanel();
@@ -225,20 +276,49 @@ implements IProgressWatcher<Track>, TreeSelectionListener, ActionListener
 		if(item != null && item instanceof Track){
 			Track tr = (Track)item;
 
-			try{
-				Fingerprint fp =
-						AcoustIdUtil.getInstance().getFingerprint(tr.getFile());
-						
-				if(!fp.fingerprint.isEmpty()){				
-					String titles = AcoustIdUtil.getInstance().identify(fp);
-					
-					JOptionPane.showMessageDialog(this.frmCoverFinder, titles);
+			IdentifyTrackWorker worker = new IdentifyTrackWorker(tr, new IProgressWatcher<IdentifyTrackResult>(){
+
+				@Override
+				public void updateStage(Stage stage) {					
 				}
-			}
-			catch(Exception ex){
-				JOptionPane.showMessageDialog(this.frmCoverFinder, ex.getMessage());
-			}
+
+				@Override
+				public void updateProgress(long count, Stage stage) {
+				}
+
+				@Override
+				public void progressComplete(Collection<IdentifyTrackResult> items, Stage stage) {
+					dPanelTop.setEnabled(true);
+					dPanelCenter.setEnabled(true);
+					panelStatusBar.setMessage("OK", false);
+					
+					if(items != null){
+						if(items.size() > 0){
+							IdentifyTrackDialog dlg = new IdentifyTrackDialog((List<IdentifyTrackResult>) items, frmCoverFinder);	// TODO: cast allowed??
+							dlg.setLocationRelativeTo(frmCoverFinder);
+							dlg.setVisible(true);
+						}
+						else{
+							JOptionPane.showMessageDialog(frmCoverFinder, "Track is not known at acoustid.org");
+						}
+					}					
+				}
+
+				@Override
+				public boolean isAllowedToContinue(Stage stage) {
+					return false;
+				}
+
+				@Override
+				public void reportException(Throwable ex) {
+					JOptionPane.showMessageDialog(frmCoverFinder, String.format("Failed to identify track:\n%s", ex.getLocalizedMessage()));
+				}});
 			
+			dPanelTop.setEnabled(false);
+			dPanelCenter.setEnabled(false);
+			panelStatusBar.setMessage("Identifying track...", true);
+			
+			worker.execute();
 		}
 		
 	}
@@ -291,7 +371,49 @@ System.out.println("will scan " + path);
 		dPanelCenter.setEnabled(false);
 		panelStatusBar.setMessage("Scanning library...", true);
 		
-		FileCollectorWorker fcw = new FileCollectorWorker(paths, this);
+		FileCollectorWorker fcw = new FileCollectorWorker(paths, new IProgressWatcher<Track>(){
+
+			@Override
+			public void updateStage(Stage stage) {
+			}
+
+			@Override
+			public void updateProgress(long count, Stage stage) {
+				switch(stage){
+					case Collecting:
+						panelStatusBar.setMessage("Collected: " + count);
+						break;
+					case Analyzing:
+						panelStatusBar.setMessage("Analyzed: " + count);
+						break;
+				}
+			}
+
+			@Override
+			public void progressComplete(Collection<Track> items, Stage stage) {
+				dPanelTop.setEnabled(true);
+				dPanelCenter.setEnabled(true);
+				
+				if(items != null){
+														
+					panelTree.update();					
+					panelStatusBar.setMessage("Found files: " + items.size(), false);
+				}
+				else{
+					panelStatusBar.setMessage("", false);
+				}
+			}
+
+			@Override
+			public boolean isAllowedToContinue(Stage stage) {
+				return true;
+			}
+
+			@Override
+			public void reportException(Throwable ex) {
+				JOptionPane.showMessageDialog(frmCoverFinder, String.format("Failed to scan music files:\n%s", ex.getLocalizedMessage()));				
+			}});
+		
 		fcw.execute();
 	}
 	
@@ -366,44 +488,6 @@ System.out.println("will scan " + path);
 			ex.printStackTrace();
 		}
 	}
-
-	@Override
-	public void updateStage(Stage stage) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateProgress(long count, Stage stage) {
-		//System.out.println("Found: " + count);
-		switch(stage){
-			case Collecting:
-				panelStatusBar.setMessage("Collected: " + count);
-				break;
-			case Analyzing:
-				panelStatusBar.setMessage("Analyzed: " + count);
-				break;
-		}
-		
-	}
-
-	@Override
-	public void progressComplete(Collection<Track> items, Stage stage) {
-		System.out.println("Found files: " + items.size());
-		
-		dPanelTop.setEnabled(true);
-		dPanelCenter.setEnabled(true);
-		panelTree.update();
-		
-		panelStatusBar.setMessage("Found files: " + items.size(), false);
-	}
-
-	@Override
-	public boolean isAllowedToContinue(Stage stage) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	
 	public static LinkedHashSet<IImageSearchEngine> getSearchEngines(){
 		LinkedHashSet<IImageSearchEngine> engines = new LinkedHashSet<IImageSearchEngine>();
@@ -434,50 +518,5 @@ System.out.println("will scan " + path);
 		}
 		
 		return searchEngine;
-	}
-
-	@Override
-	public void valueChanged(TreeSelectionEvent e) {		
-		Object o = e.getPath().getLastPathComponent();
-		btnIdentify.setEnabled(o instanceof Track && AcoustIdUtil.getInstance().isAvailable());
-		btnTest.setEnabled(o instanceof Track || o instanceof Album);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() instanceof JMenuItem){
-			JMenuItem item = (JMenuItem)e.getSource();
-			if(item.getName().equals(TrackTreePanel.MENU_IDENTIFY_TRACK)){
-				doIdentify();
-			}
-			else if(item.getName().equals(TrackTreePanel.MENU_SEARCH_COVER)){
-				doSearch();
-			}
-			else if(item.getName().equals(TrackTreePanel.MENU_EDIT_NAME)){
-				
-			}
-			else if(item.getName().equals(TrackTreePanel.MENU_OPEN_LOCATION)){
-				Object o = panelTree.getSelectedItem();
-				if(o != null && Desktop.isDesktopSupported()){
-					if(o instanceof Track){
-						try {
-							Desktop.getDesktop().open(new File(((Track)o).getFilesystemDir()));
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-					else if(o instanceof Album){
-						try {
-							Desktop.getDesktop().open(new File(((Album)o).getFilesystemDir()));
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-				}
-			}
-		}
-		
 	}
 }

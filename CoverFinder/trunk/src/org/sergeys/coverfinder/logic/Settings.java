@@ -21,7 +21,6 @@ import java.util.Set;
 
 public class Settings {
 	
-	//public enum CompareFilesMethod { Fast, Full };
 	public enum DetectFilesMethod { Extension, MimeMagic/*, Mp3File*/ };
 	
 	public static final String SETTINGS_PATH = ".CoverFinder";	
@@ -184,14 +183,6 @@ public class Settings {
 		this.windowSize = windowSize;
 	}
 
-//	public CompareFilesMethod getCompareFilesMethod() {
-//		return compareFilesMethod;
-//	}
-//
-//	public void setCompareFilesMethod(CompareFilesMethod compareFilesMethod) {
-//		this.compareFilesMethod = compareFilesMethod;
-//	}
-
 	public Date getSavedVersion() {
 		return savedVersion;
 	}
@@ -200,7 +191,7 @@ public class Settings {
 		this.savedVersion = savedVersion;
 	}
 
-	public static String getSettingsDirPath() {
+	public static String getSettingsDirPath() {		
 		return settingsDirPath;
 	}
 

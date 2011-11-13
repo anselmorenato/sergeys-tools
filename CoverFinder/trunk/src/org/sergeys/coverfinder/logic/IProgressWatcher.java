@@ -16,4 +16,5 @@ public interface IProgressWatcher<T> {
 	public void updateProgress(long count, Stage stage);
 	public void progressComplete(Collection<T> items, Stage stage);
 	public boolean isAllowedToContinue(Stage stage);
+	public void reportException(Throwable throwable);
 }

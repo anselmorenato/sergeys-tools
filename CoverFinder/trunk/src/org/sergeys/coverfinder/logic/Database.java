@@ -282,13 +282,13 @@ public class Database {
 			track.setHasPicture(rs.getBoolean("haspicture"));
 			String str = rs.getString("album");
 			str = Mp3Utils.getInstance().decode(str);
-			track.setAlbumTitle(str == null || str.isEmpty() ? "<unknown album>" : str);
+			track.setAlbumTitle(str == null || str.isEmpty() ? Track.UNKNOWN_ALBUM : str);
 			str = rs.getString("artist");
 			str = Mp3Utils.getInstance().decode(str);
-			track.setArtist(str == null || str.isEmpty() ? "<unknown artist>" : str);
+			track.setArtist(str == null || str.isEmpty() ? Track.UNKNOWN_ARTIST : str);
 			str = rs.getString("title");
 			str = Mp3Utils.getInstance().decode(str);
-			track.setTitle(str == null || str.isEmpty() ? "<unknown track>" : str);
+			track.setTitle(str == null || str.isEmpty() ? Track.UNKNOWN_TRACK : str);
 			
 			tracks.add(track);
 		}

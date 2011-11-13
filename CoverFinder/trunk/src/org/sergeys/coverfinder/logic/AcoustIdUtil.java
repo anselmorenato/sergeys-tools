@@ -1,6 +1,7 @@
 package org.sergeys.coverfinder.logic;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,8 +11,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.zip.GZIPOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -75,11 +79,6 @@ public class AcoustIdUtil {
 		@SuppressWarnings("rawtypes")
 		Class cl = getClass();
 		
-//		URL u = cl.getResource("/resources/" + FpCalc);
-//		System.out.println("url " + u);
-//		u = cl.getResource("/resources/" + FpCalc + ".exe");
-//		System.out.println("url " + u);
-		
 		String targetFile;
 		InputStream is = cl.getResourceAsStream("/resources/" + FpCalc);
 		if(is == null){
@@ -121,7 +120,6 @@ System.out.println("writing to " + targetFile);
 	
 	public Fingerprint getFingerprint(File file) throws Exception{
 
-		//if(!checkFingerprintUtility()){
 		if(!isAvailable()){
 			throw new NotImplementedException("not supported on this platform");
 		}
@@ -180,10 +178,7 @@ System.out.println("writing to " + targetFile);
 		return fp;
 	}
 	
-	public String identify(Fingerprint fp){
-		
-		String result = "";
-		
+	private String requestAcoustId(Fingerprint fp){
 		// http://acoustid.org/webservice
 		
 		StringBuilder sb = new StringBuilder();
@@ -230,45 +225,47 @@ System.out.println("writing to " + targetFile);
 			
 			System.out.println(responseText.toString());
 			
-			result = parseXmlResponse(responseText.toString());
-			
-//			sb = new StringBuilder();
-//			
-//			JSONObject json = new JSONObject(responseText.toString());
-//			if(json.getString("status").equals("ok")){
-//				JSONArray results = json.getJSONArray("results");
-//				for(int i = 0; i < results.length(); i++){
-//					JSONObject res = results.getJSONObject(i);
-//					if(res.has("recordings")){
-//						sb.append(
-//								res.getJSONArray("recordings").getJSONObject(0).getString("title")
-//						);
-//						sb.append(" - ");
-//						sb.append(
-//								res.getJSONArray("recordings").getJSONObject(0).getJSONArray("artists").getJSONObject(0).getString("name")
-//						);
-//						
-//						sb.append(" (");
-//						sb.append(res.getDouble("score"));
-//						sb.append("); ");
-//						sb.append("\r\n");
-//					}
-//				}
-//				
-//				result = sb.toString();
-//			}
-
-		} catch (URISyntaxException e) {
+			return responseText.toString();
+		}
+		catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
 		}
 		
+		return null;
+	}
+	
+	@SuppressWarnings("unused")
+	private String requestTest(){
+		// test response
+		StringBuilder builder = new StringBuilder();
+		String line;
+		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/resources/xmlresponse.xml")));
+		try {
+			while((line = reader.readLine()) != null) {
+				builder.append(line);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return builder.toString();
+	}
+	
+	public Collection<IdentifyTrackResult> identify(Fingerprint fp){
+		Collection<IdentifyTrackResult> result = null; 
+		
+		String xml = requestAcoustId(fp);
+		//String xml = requestTest();
+		result = parseXmlResponse(xml);
+											
 		return result;
 	}
 	
@@ -290,16 +287,18 @@ System.out.println("writing to " + targetFile);
 		return textVal;
 	}
 	
-	private String parseXmlResponse(String response){
-		StringBuilder sb = new StringBuilder();
+	private Collection<IdentifyTrackResult> parseXmlResponse(String response){
+		ArrayList<IdentifyTrackResult> list = new ArrayList<IdentifyTrackResult>();
 		
 		try {
 			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();			
-			Document doc = db.parse(new InputSource(new StringReader(response)));
+			//Document doc = db.parse(new InputSource(new StringReader(response)));
+			// StringReader will mess with encoding: http://stackoverflow.com/questions/443305/producing-valid-xml-with-java-and-utf-8-encoding
+			Document doc = db.parse(new InputSource(new ByteArrayInputStream(response.getBytes())));
 			
 			NodeList results = doc.getElementsByTagName("result");
 			for(int i = 0; i < results.getLength(); i++){
-				Element result = (Element)results.item(0);
+				Element result = (Element)results.item(i);
 				
 				// must be present
 				NodeList nl = result.getElementsByTagName("score");
@@ -310,27 +309,32 @@ System.out.println("writing to " + targetFile);
 				nl = result.getElementsByTagName("recording");
 				for(int j = 0; j < nl.getLength(); j++){
 					Element e = (Element)nl.item(j);
+					
+					IdentifyTrackResult trackResult = new IdentifyTrackResult();
+					trackResult.setScore(score);
+					
 					String title = getTextValue(e, "title");
+					trackResult.setTitle(title);
 					
-					sb.append(title);
-					
-					s = getTextValue(e, "duration");
+//					s = getTextValue(e, "duration");
 //					int duration = Integer.valueOf(s);
-//					String mbid = getTextValue(e, "id");
+					String mbid = getTextValue(e, "id");
+					trackResult.setMbid(mbid);
 					
 					NodeList nlart = e.getElementsByTagName("artist");
-					for(int k = 0; k < nlart.getLength(); k++){
-						Element eart = (Element)nlart.item(k);
-						String name = getTextValue(eart, "name");
-						
-						sb.append(" - ");
-						sb.append(name);
+//					for(int k = 0; k < nlart.getLength(); k++){
+//						Element eart = (Element)nlart.item(k);
+//						String name = getTextValue(eart, "name");
+//						
+//					}
+					if(nlart.getLength() > 0){
+						Element eart = (Element)nlart.item(0);
+						String artist = getTextValue(eart, "name");
+						trackResult.setArtist(artist);
 					}
-					sb.append("\r\n");
-				}
 				
-				sb.append("Score: ");
-				sb.append(score);				
+					list.add(trackResult);
+				}
 			}
 									
 		} catch (ParserConfigurationException e) {
@@ -344,7 +348,7 @@ System.out.println("writing to " + targetFile);
 			e.printStackTrace();
 		} 
 		
-		return sb.toString();
+		return list;
 	}
 	
 //	private String parseJsonResponse(String response){
@@ -353,3 +357,4 @@ System.out.println("writing to " + targetFile);
 //		return sb.toString();
 //	}
 }
+

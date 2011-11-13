@@ -9,6 +9,10 @@ import org.sergeys.coverfinder.logic.Settings.DetectFilesMethod;
 public class Track
 extends DefaultMutableTreeNode
 {
+	public static final String UNKNOWN_ARTIST = "<unknown artist>";
+	public static final String UNKNOWN_ALBUM = "<unknown album>";
+	public static final String UNKNOWN_TRACK = "<unknown track>";
+	
 	/**
 	 * 
 	 */

@@ -42,9 +42,11 @@ extends SwingWorker<Collection<ImageSearchResult>, Long>
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			//watcher.reportException(e);
 		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			watcher.reportException(e);
 		}
 	}
 	
