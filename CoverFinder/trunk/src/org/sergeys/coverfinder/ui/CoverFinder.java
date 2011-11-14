@@ -62,6 +62,7 @@ public class CoverFinder
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 					
 					Locale l = new Locale(Settings.getInstance().getLanguage());
+					//Locale l = new Locale("ru");
 					Locale.setDefault(l);
 										
 					final CoverFinder mainWindow = new CoverFinder();										

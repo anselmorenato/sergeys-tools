@@ -9,7 +9,6 @@ import javax.swing.SwingWorker;
 
 import org.sergeys.coverfinder.logic.Database;
 
-
 public class DatabaseCleanerWorker 
 extends SwingWorker<List<File>, Integer>
 {

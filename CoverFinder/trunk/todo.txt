@@ -10,6 +10,9 @@ http://en.wikipedia.org/wiki/List_of_online_music_databases
  
 - log to logfile
 
+how to run several SwingWorkers in parallel: http://stackoverflow.com/questions/3652973/backgrounds-tasks-by-swingworkers-become-sequential
+http://stackoverflow.com/questions/177189/how-to-implement-a-single-instance-java-application
+
 --------
 https://ssl.bing.com/webmaster/developers/appids.aspx
 

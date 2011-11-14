@@ -6,15 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import javax.swing.SwingWorker;
-
-import org.sergeys.coverfinder.logic.Database;
-import org.sergeys.coverfinder.logic.IProgressWatcher;
 import org.sergeys.coverfinder.logic.IProgressWatcher.Stage;
-import org.sergeys.coverfinder.logic.Track;
-import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.library.FileUtils;
 import org.sergeys.library.NotImplementedException;
 
@@ -24,15 +17,13 @@ import com.mpatric.mp3agic.Mp3File;
 // how to run several in parallel: http://stackoverflow.com/questions/3652973/backgrounds-tasks-by-swingworkers-become-sequential
 
 public class FileCollectorWorker
-extends SwingWorker<Collection<Track>, Long>
+extends AbstractWorker<Track>
 {
 	private Stage stage;
-	
-	IProgressWatcher<Track> watcher;
 	Collection<File> rootPaths;
 	
 	public FileCollectorWorker(Collection<File> rootPaths, IProgressWatcher<Track> watcher){
-		this.watcher = watcher;
+		super(watcher);
 		this.rootPaths = rootPaths;
 	}
 
@@ -118,29 +109,8 @@ extends SwingWorker<Collection<Track>, Long>
 	}
 
 	@Override
-	protected void done(){
-		
-		super.done();
-				
-		try {
-			watcher.progressComplete(get(), Stage.Finish);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-			watcher.reportException(e.getCause());
-			watcher.progressComplete(null, Stage.Finish);
-		}
-	}
-
-	@Override
 	protected void process(List<Long> chunks) {		
 		super.process(chunks);		
 		watcher.updateProgress(chunks.isEmpty() ? 0 : chunks.get(chunks.size() - 1), stage);
-	}
-	
-
+	}	
 }
