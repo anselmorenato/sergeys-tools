@@ -351,6 +351,7 @@ extends Properties
 		String[] tokens = ver.split("-");
 		
 		Calendar cal = Calendar.getInstance(); 
+		cal.setTimeInMillis(0);
 		cal.set(Integer.valueOf(tokens[0]), 
 				Integer.valueOf(tokens[1]) - 1,	// month is 0 bazed 
 				Integer.valueOf(tokens[2]), 
