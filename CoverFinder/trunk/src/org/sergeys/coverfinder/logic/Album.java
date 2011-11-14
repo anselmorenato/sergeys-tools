@@ -1,9 +1,8 @@
 package org.sergeys.coverfinder.logic;
 
-import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Album 
-extends DefaultMutableTreeNode
+extends MusicItem
 {
 	public static enum HasCover { AllTracks, SomeTracks, NoTracks };
 	
@@ -11,35 +10,14 @@ extends DefaultMutableTreeNode
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private String title;
-	private String artist;
-	private String filesystemDir;
+		
+//	private List<Track> tracks = new ArrayList<Track>();
+//
+//	public List<Track> getTracks() {
+//		return tracks;
+//	}
 
-	public String getArtist() {
-		return artist;
-	}
-
-	public void setArtist(String artist) {
-		this.artist = artist;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-		setUserObject(title);
-	}
-
-	public String getFilesystemDir() {
-		return filesystemDir;
-	}
-
-	public void setFilesystemDir(String filesystemDir) {
-		this.filesystemDir = filesystemDir;
-	}
-
-
+//	public void setTracks(List<Track> tracks) {
+//		this.tracks = tracks;
+//	}
 }

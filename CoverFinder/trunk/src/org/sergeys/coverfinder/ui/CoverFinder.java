@@ -43,6 +43,7 @@ import org.sergeys.coverfinder.logic.IdentifyTrackResult;
 import org.sergeys.coverfinder.logic.IdentifyTrackWorker;
 import org.sergeys.coverfinder.logic.ImageSearchRequest;
 import org.sergeys.coverfinder.logic.ImageSearchResult;
+import org.sergeys.coverfinder.logic.MusicItem;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.library.swing.DisabledPanel;
@@ -117,7 +118,7 @@ public class CoverFinder
 					doSearch();
 				}
 				else if(item.getName().equals(TrackTreePanel.MENU_EDIT_NAME)){
-
+					doEditTags();					
 				}
 				else if(item.getName().equals(TrackTreePanel.MENU_OPEN_LOCATION)){
 					Object o = panelTree.getSelectedItem();
@@ -271,11 +272,20 @@ public class CoverFinder
 		mnHelp.add(mntmAbout);
 	}
 
+	protected void doEditTags() {		
+		Object selected = panelTree.getSelectedItem();
+		if(selected != null && selected instanceof MusicItem){
+			EditTagsDialog dlg = new EditTagsDialog(frmCoverFinder);					 
+			dlg.setMusicItem((MusicItem)selected);
+			dlg.setLocationRelativeTo(frmCoverFinder);
+			dlg.setVisible(true);
+		}
+	}
 
 	protected void doIdentify() {
 		Object item = panelTree.getSelectedItem();
 		if(item != null && item instanceof Track){
-			Track tr = (Track)item;
+			final Track tr = (Track)item;
 
 			IdentifyTrackWorker worker = new IdentifyTrackWorker(tr, new IProgressWatcher<IdentifyTrackResult>(){
 
@@ -295,7 +305,7 @@ public class CoverFinder
 					
 					if(items != null){
 						if(items.size() > 0){
-							IdentifyTrackDialog dlg = new IdentifyTrackDialog((List<IdentifyTrackResult>) items, frmCoverFinder);	// TODO: cast allowed??
+							IdentifyTrackDialog dlg = new IdentifyTrackDialog((List<IdentifyTrackResult>) items, tr, frmCoverFinder);	// TODO: cast allowed??
 							dlg.setLocationRelativeTo(frmCoverFinder);
 							dlg.setVisible(true);
 						}

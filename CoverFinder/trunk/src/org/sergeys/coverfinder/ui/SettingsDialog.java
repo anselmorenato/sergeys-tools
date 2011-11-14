@@ -28,7 +28,7 @@ import org.sergeys.coverfinder.logic.Settings;
 
 public class SettingsDialog 
 extends JDialog 
-implements ListSelectionListener, PropertyChangeListener {
+{
 
 	/**
 	 * 
@@ -41,6 +41,8 @@ implements ListSelectionListener, PropertyChangeListener {
 	DefaultListModel listModel;
 	ImageSearchChooserPanel imageSearchChooserPanel;
 	JButton buttonMinus;
+	JCheckBox chckbxMakeBackupCopies;
+	JCheckBox chckbxConfirmChangesTo;
 	
 	/**
 	 * Create the dialog.
@@ -51,7 +53,7 @@ implements ListSelectionListener, PropertyChangeListener {
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SettingsDialog.class.getResource("/images/icon.png")));
 		setTitle("Settings");
-		setBounds(100, 100, 450, 248);
+		setBounds(100, 100, 450, 275);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -98,7 +100,15 @@ implements ListSelectionListener, PropertyChangeListener {
 		listModel = new DefaultListModel();
 		listLibraryDirs.setModel(listModel);
 		scrollPane.setViewportView(listLibraryDirs);
-		listLibraryDirs.addListSelectionListener(this);
+		listLibraryDirs.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {				
+				if(!e.getValueIsAdjusting() && e.getFirstIndex() >= 0){
+					buttonMinus.setEnabled(true);			
+				}
+			}
+		});
 		
 		imageSearchChooserPanel = new ImageSearchChooserPanel();
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, imageSearchChooserPanel, 6, SpringLayout.SOUTH, scrollPane);
@@ -106,10 +116,15 @@ implements ListSelectionListener, PropertyChangeListener {
 		sl_contentPanel.putConstraint(SpringLayout.EAST, imageSearchChooserPanel, 166, SpringLayout.EAST, contentPanel);
 		contentPanel.add(imageSearchChooserPanel);
 		
-		JCheckBox chckbxMakeBackupCopies = new JCheckBox("Make backup copies when changing music files");
+		chckbxMakeBackupCopies = new JCheckBox("Make backup copies when changing music files");
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, chckbxMakeBackupCopies, 6, SpringLayout.SOUTH, imageSearchChooserPanel);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, chckbxMakeBackupCopies, 0, SpringLayout.WEST, contentPanel);
 		contentPanel.add(chckbxMakeBackupCopies);
+		
+		chckbxConfirmChangesTo = new JCheckBox("Confirm changes to music files");
+		sl_contentPanel.putConstraint(SpringLayout.NORTH, chckbxConfirmChangesTo, 6, SpringLayout.SOUTH, chckbxMakeBackupCopies);
+		sl_contentPanel.putConstraint(SpringLayout.WEST, chckbxConfirmChangesTo, 0, SpringLayout.WEST, chckbxMakeBackupCopies);
+		contentPanel.add(chckbxConfirmChangesTo);
 		
 		
 //		ImageSearchChooserPanel imgSearchPanel = new ImageSearchChooserPanel();
@@ -154,13 +169,17 @@ implements ListSelectionListener, PropertyChangeListener {
 	}
 
 	protected void doSave() {
+		// collect values
 		Settings.getInstance().getLibraryPaths().clear();
 		for(int i = 0; i < listModel.getSize(); i++){
 			Settings.getInstance().getLibraryPaths().add((String)listModel.get(i));
 		}
 		
 		imageSearchChooserPanel.updateValues();
+		Settings.getInstance().setBackupFileOnSave(chckbxMakeBackupCopies.isSelected());
+		Settings.getInstance().setConfirmFileEdit(chckbxConfirmChangesTo.isSelected());
 		
+		// save
 		try {
 			Settings.save();
 		} catch (FileNotFoundException e) {
@@ -176,7 +195,8 @@ implements ListSelectionListener, PropertyChangeListener {
 			listModel.remove(listLibraryDirs.getSelectedIndex());
 		}
 		
-		buttonMinus.setEnabled(listLibraryDirs.getSelectedIndex() != -1);
+		//buttonMinus.setEnabled(listLibraryDirs.getSelectedIndex() != -1);
+		updateControlsState();
 	}
 
 	DirSelectorDialog dlg;
@@ -184,37 +204,39 @@ implements ListSelectionListener, PropertyChangeListener {
 	protected void doAddDirectory() {
 		if(dlg == null){
 			dlg = new DirSelectorDialog(this);
-			dlg.addPropertyChangeListener(DirSelectorDialog.DIRECTORY_SELECTED, this);
+			dlg.addPropertyChangeListener(DirSelectorDialog.DIRECTORY_SELECTED, new PropertyChangeListener(){
+
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {					
+					if(evt.getPropertyName().equals(DirSelectorDialog.DIRECTORY_SELECTED)){
+						listModel.addElement(evt.getNewValue());
+					}
+				}});
+			
 			dlg.setLocationRelativeTo(this);
 		}
 		dlg.setVisible(true);		
 	}
 	
+			
 	@Override	
 	public void setVisible(boolean isVisible) {
+		// set values
 		listModel.removeAllElements();
 		for(String path: Settings.getInstance().getLibraryPaths()){
 			listModel.addElement(path);			
 		}
 		
 		imageSearchChooserPanel.initValues();
-		
-		buttonMinus.setEnabled(listLibraryDirs.getSelectedIndex() != -1);
+		chckbxConfirmChangesTo.setSelected(Settings.getInstance().isConfirmFileEdit());
+		chckbxMakeBackupCopies.setSelected(Settings.getInstance().isBackupFileOnSave());
+				
+		updateControlsState();
 		
 		super.setVisible(isVisible);
 	}
-
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		if(!e.getValueIsAdjusting() && e.getFirstIndex() >= 0){
-			buttonMinus.setEnabled(true);			
-		}
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {		
-		if(evt.getPropertyName().equals(DirSelectorDialog.DIRECTORY_SELECTED)){
-			listModel.addElement(evt.getNewValue());
-		}
+	
+	private void updateControlsState(){
+		buttonMinus.setEnabled(listLibraryDirs.getSelectedIndex() != -1);
 	}
 }

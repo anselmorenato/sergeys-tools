@@ -50,6 +50,8 @@ public class Settings {
 	//private Collection<String> libraryPaths = new ArrayList<String>();
 	private Set<String> libraryPaths = new HashSet<String>();
 	private String searchEngineName;
+	private boolean confirmFileEdit = true;
+	private boolean backupFileOnSave = true;
 	
 	private Properties properties = new Properties();
 	private Date savedVersion = new Date(0);
@@ -81,7 +83,7 @@ public class Settings {
 			try{
 				XMLDecoder decoder = new XMLDecoder(is);
 				instance = (Settings)decoder.readObject();
-				decoder.close();
+				decoder.close();												
 			}
 			catch(Exception ex){
 				ex.printStackTrace();
@@ -102,6 +104,10 @@ public class Settings {
 			e.printStackTrace();
 		}
 
+		// upgrade things if needed
+		if(instance.getCurrentVersion().after(instance.getSavedVersion())){
+			AcoustIdUtil.getInstance().checkFingerprintUtility(true);
+		}
 	}
 	
 	public static void checkDirectory(){
@@ -129,21 +135,24 @@ public class Settings {
 		
 	}
 
-	
+	private Date currentVersion = null;
 	private Date getCurrentVersion() {
-		String ver = properties.getProperty("version", "");
+		if(currentVersion == null){
+			String ver = properties.getProperty("version", "");
+			
+			String[] tokens = ver.split("-");
+			
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(0);
+			cal.set(Integer.valueOf(tokens[0]), 
+					Integer.valueOf(tokens[1]) - 1,	// month is 0 bazed 
+					Integer.valueOf(tokens[2]), 
+					Integer.valueOf(tokens[3]),
+					Integer.valueOf(tokens[4]));
+			currentVersion = cal.getTime();
+		}
 		
-		String[] tokens = ver.split("-");
-		
-		Calendar cal = Calendar.getInstance(); 
-		cal.set(Integer.valueOf(tokens[0]), 
-				Integer.valueOf(tokens[1]) - 1,	// month is 0 bazed 
-				Integer.valueOf(tokens[2]), 
-				Integer.valueOf(tokens[3]),
-				Integer.valueOf(tokens[4]));
-		Date date = cal.getTime();
-		
-		return date;
+		return currentVersion;
 	}
 
 	private void setDefaults() {
@@ -151,9 +160,7 @@ public class Settings {
 		
 		// set 1st defined image search
 		ServiceLoader<IImageSearchEngine> ldr = ServiceLoader.load(IImageSearchEngine.class);
-		setSearchEngineName(ldr.iterator().next().getName());
-		
-		//compareFilesMethod = CompareFilesMethod.Fast;
+		setSearchEngineName(ldr.iterator().next().getName());		
 	}
 
 	public IImageSearchEngine getImageSearchEngine(){
@@ -225,6 +232,22 @@ public class Settings {
 
 	public void setSearchEngineName(String searchEngineName) {
 		this.searchEngineName = searchEngineName;
+	}
+
+	public boolean isConfirmFileEdit() {
+		return confirmFileEdit;
+	}
+
+	public void setConfirmFileEdit(boolean confirmFileEdit) {
+		this.confirmFileEdit = confirmFileEdit;
+	}
+
+	public boolean isBackupFileOnSave() {
+		return backupFileOnSave;
+	}
+
+	public void setBackupFileOnSave(boolean backupFileOnSave) {
+		this.backupFileOnSave = backupFileOnSave;
 	}
 
 }

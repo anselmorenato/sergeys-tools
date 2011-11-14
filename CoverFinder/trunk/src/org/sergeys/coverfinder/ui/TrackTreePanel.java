@@ -16,9 +16,9 @@ import javax.swing.JScrollPane;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.sergeys.coverfinder.logic.Album;
 import org.sergeys.coverfinder.logic.Album.HasCover;
 import org.sergeys.coverfinder.logic.Database;
+import org.sergeys.coverfinder.logic.MusicItem;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.library.swing.treetable.JTreeTable;
@@ -77,7 +77,7 @@ extends JPanel
 		mntmSearchCover.setName(MENU_SEARCH_COVER);
 		popupMenu.add(mntmSearchCover);
 		
-		mntmEditName = new JMenuItem("Edit name");
+		mntmEditName = new JMenuItem("Edit tags");
 		mntmEditName.addActionListener(menuActionListener);
 		mntmEditName.setName(MENU_EDIT_NAME);
 		popupMenu.add(mntmEditName);
@@ -143,7 +143,8 @@ extends JPanel
             }
 
 			Object selected = getSelectedItem();
-			if(selected != null && (selected instanceof Album || selected instanceof Track)){							
+			//if(selected != null && (selected instanceof Album || selected instanceof Track)){							
+			if(selected != null && (selected instanceof MusicItem)){
 	            enableMemuItems();
 	            //popupMenu.show(e.getComponent(), e.getX(), e.getY());
 	            popupMenu.show(treeTable, e.getX(), e.getY());
@@ -154,7 +155,11 @@ extends JPanel
 	public void update(){
 				
 		try {
-			Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, "ru", Settings.getInstance().getLibraryPaths());
+			
+			// TODO: select tags encoding
+			//Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, "ru", Settings.getInstance().getLibraryPaths());
+			Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, null, Settings.getInstance().getLibraryPaths());
+			
 			root = new DefaultMutableTreeNode("Artists/Albums/Tracks");
 			TrackTreeModel model = new TrackTreeModel(root, tracks);
 			treeTable = new JTreeTable(model);

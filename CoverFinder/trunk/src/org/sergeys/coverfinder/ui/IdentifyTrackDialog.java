@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import org.sergeys.coverfinder.logic.IdentifyTrackResult;
+import org.sergeys.coverfinder.logic.Track;
 
 public class IdentifyTrackDialog extends JDialog {
 
@@ -33,13 +34,17 @@ public class IdentifyTrackDialog extends JDialog {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTable tableResults;
-
+	Track track;
+//	List<IdentifyTrackResult> result;
 
 	/**
 	 * Create the dialog.
 	 */
-	public IdentifyTrackDialog(List<IdentifyTrackResult> result, Window owner) {
+	public IdentifyTrackDialog(List<IdentifyTrackResult> result, Track track, Window owner) {
 		super(owner);
+		
+		this.track = track;
+//		this.result = result;
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(IdentifyTrackDialog.class.getResource("/images/icon.png")));
 		setTitle("Identify track");
@@ -52,7 +57,7 @@ public class IdentifyTrackDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				JButton okButton = new JButton("Update track");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doOK();
@@ -93,10 +98,19 @@ public class IdentifyTrackDialog extends JDialog {
 
 
 	protected void doOK() {
+					
+		EditTagsDialog dlg = new EditTagsDialog(this);					 
+		dlg.setMusicItem(track, 
+				(String)tableResults.getValueAt(checkedRow, 3), 
+				(String)tableResults.getValueAt(checkedRow, 2));
+		dlg.setLocationRelativeTo(this);
+		dlg.setVisible(true);
+						
+		
 		setVisible(false);		
 	}
 
-
+	int checkedRow = 0;
 	private void setupTable(final List<IdentifyTrackResult> result) {
 		tableResults.setModel(new DefaultTableModel(){
 
@@ -108,7 +122,7 @@ public class IdentifyTrackDialog extends JDialog {
 			private String[] columnName = { "Choose", "Score", "Title", "Artist", "Link" };
 			private Class<?>[] columnClass = { Boolean.class, String.class, String.class, String.class, String.class };
 			
-			private int checkedRow = 0;
+			//private int checkedRow = 0;
 			
 			@Override
 			public void setValueAt(Object aValue, int row, int column) {

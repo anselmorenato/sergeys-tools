@@ -62,17 +62,17 @@ public class AcoustIdUtil {
 	Boolean isPresent = null;
 	public boolean isAvailable(){
 		if(isPresent == null){
-			isPresent = checkFingerprintUtility(); 
+			isPresent = checkFingerprintUtility(false); 
 		}
 		return isPresent;
 	}		
 	
-	private boolean checkFingerprintUtility(){
+	public boolean checkFingerprintUtility(boolean overwriteIfExist){
 						
 		String fpcalcPath = Settings.getSettingsDirPath() + File.separator + FpCalc;
 		String fpcalcPathWin = Settings.getSettingsDirPath() + File.separator + FpCalc + ".exe";
 		
-		if(new File(fpcalcPath).exists() || new File(fpcalcPathWin).exists()){
+		if(!overwriteIfExist && (new File(fpcalcPath).exists() || new File(fpcalcPathWin).exists())){
 			return true;
 		}
 		

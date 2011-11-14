@@ -2,12 +2,10 @@ package org.sergeys.coverfinder.logic;
 
 import java.io.File;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import org.sergeys.coverfinder.logic.Settings.DetectFilesMethod;
 
 public class Track
-extends DefaultMutableTreeNode
+extends MusicItem
 {
 	public static final String UNKNOWN_ARTIST = "<unknown artist>";
 	public static final String UNKNOWN_ALBUM = "<unknown album>";
@@ -23,10 +21,9 @@ extends DefaultMutableTreeNode
 	private DetectFilesMethod detectFilesMethod;
 	private String hash;
 	private String mimeType = null;
-	private String title;
-	private String artist;
+	
 	private String albumTitle;
-	private String filesystemDir;
+	
 	private boolean hasPicture;
 	
 	public Track(File file) {
@@ -62,14 +59,6 @@ extends DefaultMutableTreeNode
 		this.mimeType = mimeType;
 	}
 
-	public String getArtist() {
-		return artist;
-	}
-
-	public void setArtist(String artist) {
-		this.artist = artist;
-	}
-
 	public String getAlbumTitle() {
 		return albumTitle;
 	}
@@ -84,23 +73,6 @@ extends DefaultMutableTreeNode
 
 	public void setHasPicture(boolean hasPicture) {
 		this.hasPicture = hasPicture;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-		setUserObject(title);
-	}
-
-	public String getFilesystemDir() {
-		return filesystemDir;
-	}
-
-	public void setFilesystemDir(String filesystemDir) {
-		this.filesystemDir = filesystemDir;
 	}
 
 }
