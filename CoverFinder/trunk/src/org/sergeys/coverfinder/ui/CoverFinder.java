@@ -120,7 +120,7 @@ public class CoverFinder
 				}
 				else if(item.getName().equals(TrackTreePanel.MENU_OPEN_LOCATION)){
 					Object o = panelTree.getSelectedItem();
-					if(o != null && Desktop.isDesktopSupported()){
+					if(o != null && Desktop.isDesktopSupported()){																		
 						if(o instanceof Track){
 							try {
 								Desktop.getDesktop().open(new File(((Track)o).getFilesystemDir()));

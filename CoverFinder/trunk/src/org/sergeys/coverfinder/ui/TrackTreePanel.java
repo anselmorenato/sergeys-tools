@@ -1,6 +1,7 @@
 package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -85,6 +86,8 @@ extends JPanel
 		mntmOpenLocation.addActionListener(menuActionListener);
 		mntmOpenLocation.setName(MENU_OPEN_LOCATION);
 		popupMenu.add(mntmOpenLocation);
+		
+		mntmOpenLocation.setEnabled(Desktop.isDesktopSupported());
 	}
 
 	private void setupTreeTable(JTreeTable tt){
