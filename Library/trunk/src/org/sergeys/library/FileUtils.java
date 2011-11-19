@@ -64,19 +64,29 @@ public abstract class FileUtils {
 
 	// http://www.rgagnon.com/javadetails/java-0064.html
 	// TODO: note limit of 64MB
+	// they say that bug was fixed?
 	public static void copyFile(File in, File out) throws IOException {
 		copyFile(in.getAbsolutePath(), out.getAbsolutePath());
 	}
 
 	public static void copyFile(String in, String out) throws IOException {
-		
+				
 		// TODO: java 7
 		//Files.copy(file.getAbsolutePath(), targetFile, );
 		
 		FileChannel inChannel = new FileInputStream(in).getChannel();
 		FileChannel outChannel = new FileOutputStream(out).getChannel();
 		try {
-			inChannel.transferTo(0, inChannel.size(), outChannel);
+			//inChannel.transferTo(0, inChannel.size(), outChannel);
+			
+			// magic number for Windows, 64Mb - 32Kb)
+           int maxCount = (64 * 1024 * 1024) - (32 * 1024);
+           long size = inChannel.size();
+           long position = 0;
+           while (position < size) {
+              position += inChannel.transferTo(position, maxCount, outChannel);
+           }
+			
 		} catch (IOException e) {
 			throw e;
 		} finally {
@@ -133,4 +143,22 @@ public abstract class FileUtils {
 		return hash;		
 	}
 
+	public static void backupCopy(File file, String suffix) throws IOException{
+		backupCopy(file, file.getParent(), suffix);
+	}
+	
+	public static void backupCopy(File file, String newDirectory, String suffix) throws IOException{
+		int attempt = 0;
+		String newName;
+		File copy;
+		do{
+			newName = String.format("%s%s%s.%d.%s", 
+					newDirectory, File.separator, file.getName(), attempt, suffix);
+			attempt++;
+			copy = new File(newName);
+		}
+		while(copy.exists());
+		
+		copyFile(file, copy);
+	}
 }
