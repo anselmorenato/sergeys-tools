@@ -12,11 +12,15 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
-import com.mpatric.mp3agic.ID3v1;
-import com.mpatric.mp3agic.ID3v2;
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.UnsupportedTagException;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.images.Artwork;
 
 public class Mp3Utils {
 	
@@ -75,6 +79,9 @@ public class Mp3Utils {
 	 * @param lang Language key as defined in charsetByLanguage.properties (two-letter name for Locale class) 
 	 */
 	public void setDecodeLanguage(String lang){
+		if(lang == null || lang.isEmpty()){
+			setDecodeStrings(false);
+		}
 		if(charsetByLang.containsKey(lang)){
 			setDecodeCharset(charsetByLang.getProperty(lang));			
 		}
@@ -84,8 +91,15 @@ public class Mp3Utils {
 		return charsetByLang.keySet();
 	}
 	
+	/**
+	 * Converts string from 8859-1 to another encoding (see SetDecodeLanguage).
+	 * This allows, for example, to correctly display cyrillic chars stored in audio tags
+	 * which are in fact read as 8859-1. 
+	 * 
+	 * @param src
+	 * @return
+	 */
 	public String decode(String src){		
-
 		if(decodeStrings && src != null && !src.isEmpty()){
 			ByteBuffer bb = charset8859_1.encode(src);
 			String res = charsetFixed.decode(bb).toString();	// TODO: see EncodedText, seems trailing zero can occur
@@ -93,52 +107,168 @@ public class Mp3Utils {
 		}
 		else{
 			return src;
-		}
-				
+		}			
 	}
 
+	/**
+	 * Converts string from other encoding to 8859-1.
+	 * 
+	 * @param src
+	 * @return
+	 */
+	public String encode(String src){
+		if(decodeStrings && src != null && !src.isEmpty()){
+			ByteBuffer bb = charsetFixed.encode(src);
+			String res = charset8859_1.decode(bb).toString();
+			return res;
+		}
+		else{
+			return src;
+		}		
+	}
+	
 	public Image getArtwork(File file){
-		Mp3File mp3;
+//		Mp3File mp3;
+//		try {
+//			mp3 = new Mp3File(file.getAbsolutePath());
+//			if(mp3.hasId3v2Tag()){
+//				byte[] bytes = mp3.getId3v2Tag().getAlbumImage();
+//				
+//				return ImageIO.read(new ByteArrayInputStream(bytes));			 
+//			}
+//		} catch (UnsupportedTagException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InvalidDataException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//			
+//		return null;
+		
+		AudioFile af;
 		try {
-			mp3 = new Mp3File(file.getAbsolutePath());
-			if(mp3.hasId3v2Tag()){
-				byte[] bytes = mp3.getId3v2Tag().getAlbumImage();
-				
-				return ImageIO.read(new ByteArrayInputStream(bytes));			 
-			}
-		} catch (UnsupportedTagException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidDataException e) {
+			af = AudioFileIO.read(file);
+			Tag tag = af.getTag();
+			Artwork art = tag.getFirstArtwork();
+			if(art != null){
+				byte[] bytes = art.getBinaryData();
+				return ImageIO.read(new ByteArrayInputStream(bytes));
+			}			
+		} catch (CannotReadException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (TagException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReadOnlyFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAudioFrameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-			
+		
 		return null;
 	}
 	
 	public String proposeName(File file){
 		String newName = "";
 		
-		try {
-			Mp3File mp3 = new Mp3File(file.getAbsolutePath());
-			if(mp3.hasId3v2Tag()){
-				ID3v2 id3v2 = mp3.getId3v2Tag();
-				
-				if(id3v2.getTitle() != null && !id3v2.getTitle().trim().isEmpty()){
-					newName = id3v2.getTitle().trim(); 					
-				}
-				
-				if(id3v2.getArtist() != null && !id3v2.getArtist().trim().isEmpty() && !newName.isEmpty()){
-					newName = id3v2.getArtist().trim() + " - " + newName; 
-				}
-																
-//				if(id3v2.getTrack() != null && !id3v2.getTrack().trim().isEmpty() && !newName.isEmpty()){
-//					newName = id3v2.getTrack().trim() + " - " + newName;
+//		try {
+//			Mp3File mp3 = new Mp3File(file.getAbsolutePath());
+//			if(mp3.hasId3v2Tag()){
+//				ID3v2 id3v2 = mp3.getId3v2Tag();
+//				
+//				if(id3v2.getTitle() != null && !id3v2.getTitle().trim().isEmpty()){
+//					newName = id3v2.getTitle().trim(); 					
 //				}
+//				
+//				if(id3v2.getArtist() != null && !id3v2.getArtist().trim().isEmpty() && !newName.isEmpty()){
+//					newName = id3v2.getArtist().trim() + " - " + newName; 
+//				}
+//																
+////				if(id3v2.getTrack() != null && !id3v2.getTrack().trim().isEmpty() && !newName.isEmpty()){
+////					newName = id3v2.getTrack().trim() + " - " + newName;
+////				}
+//				
+//				if(newName.isEmpty()){
+//					newName = file.getName();
+//				}
+//				
+//				if(newName.contains(" ")){
+//					newName = newName.replace("\"", "");
+//				}
+//				
+//				newName = newName.replace(File.separatorChar, '.');
+//				newName = newName.replace('/', '.');	// on windows still path separator
+//				newName = decode(newName);				
+//			}
+//			else if(mp3.hasId3v1Tag()){
+//				ID3v1 id3v1 = mp3.getId3v1Tag();
+//				
+////				if(id3v1.getTitle() != null){
+////					SimpleLogger.logMessage("id3v1 title: " + id3v1.getTitle());
+////				}
+//				
+//				if(id3v1.getTitle() != null && !id3v1.getTitle().trim().isEmpty()){
+//					newName = id3v1.getTitle().trim(); 					
+//				}
+//				
+//				if(id3v1.getArtist() != null && !id3v1.getArtist().trim().isEmpty() && !newName.isEmpty()){
+//					newName = id3v1.getArtist().trim() + " - " + newName; 
+//				}
+//																
+////				if(id3v1.getTrack() != null && !id3v1.getTrack().trim().isEmpty() && !newName.isEmpty()){
+////					newName = id3v1.getTrack().trim() + " - " + newName;
+////				}
+//				
+//				if(newName.isEmpty()){
+//					newName = file.getName();
+//				}
+//
+//				if(newName.contains(" ")){
+//					newName = newName.replace("\"", "");
+//				}
+//				
+//				newName = newName.replace(File.separatorChar, '.');
+//				newName = newName.replace('/', '.');
+//				newName = decode(newName);
+//			}
+//			else{
+//				newName = file.getName();
+//			}
+//		} catch (UnsupportedTagException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InvalidDataException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		try{
+			AudioFile af = AudioFileIO.read(file);
+			Tag tag = af.getTag();
+			
+			if(tag != null){
+				String str = tag.getFirst(FieldKey.TITLE).trim(); 
+				if(!str.isEmpty()){
+					newName = str;
+				}
+				
+				str = tag.getFirst(FieldKey.ARTIST).trim();
+				if(!str.isEmpty() && !newName.isEmpty()){
+					newName = str + " - " + newName;
+				}
 				
 				if(newName.isEmpty()){
 					newName = file.getName();
@@ -147,58 +277,32 @@ public class Mp3Utils {
 				if(newName.contains(" ")){
 					newName = newName.replace("\"", "");
 				}
-				
+			
 				newName = newName.replace(File.separatorChar, '.');
 				newName = newName.replace('/', '.');	// on windows still path separator
 				newName = decode(newName);				
 			}
-			else if(mp3.hasId3v1Tag()){
-				ID3v1 id3v1 = mp3.getId3v1Tag();
-				
-//				if(id3v1.getTitle() != null){
-//					SimpleLogger.logMessage("id3v1 title: " + id3v1.getTitle());
-//				}
-				
-				if(id3v1.getTitle() != null && !id3v1.getTitle().trim().isEmpty()){
-					newName = id3v1.getTitle().trim(); 					
-				}
-				
-				if(id3v1.getArtist() != null && !id3v1.getArtist().trim().isEmpty() && !newName.isEmpty()){
-					newName = id3v1.getArtist().trim() + " - " + newName; 
-				}
-																
-//				if(id3v1.getTrack() != null && !id3v1.getTrack().trim().isEmpty() && !newName.isEmpty()){
-//					newName = id3v1.getTrack().trim() + " - " + newName;
-//				}
-				
-				if(newName.isEmpty()){
-					newName = file.getName();
-				}
-
-				if(newName.contains(" ")){
-					newName = newName.replace("\"", "");
-				}
-				
-				newName = newName.replace(File.separatorChar, '.');
-				newName = newName.replace('/', '.');
-				newName = decode(newName);
-			}
 			else{
 				newName = file.getName();
 			}
-		} catch (UnsupportedTagException e) {
+		}
+		catch (CannotReadException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvalidDataException e) {
+		} catch (TagException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReadOnlyFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAudioFrameException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
+
 		return newName;
 	}
 

@@ -30,7 +30,7 @@
         <jar href="commons-discovery-0.2.jar" />
         <jar href="javax.wsdl_1.6.2.jar" />
         <jar href="jaxrpc.jar" />        
-        <jar href="mp3agic-0.6.9.jar" />
+        <jar href="jaudiotagger-2.0.4.jar" />
         <jar href="org.apache.commons.logging_1.0.4.jar" />
         <jar href="saaj.jar" />
         <jar href="json.2011-02-02.jar" />

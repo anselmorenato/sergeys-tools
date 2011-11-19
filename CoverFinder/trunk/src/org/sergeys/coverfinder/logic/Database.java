@@ -148,7 +148,9 @@ public class Database {
 		PreparedStatement psSelect = getConnection().prepareStatement(				
 				"select id from files where absolutepath = ?");
 		PreparedStatement psUpdate = getConnection().prepareStatement(
-				"update files set haspicture = ?, hash = ?, lastmodified = ? where id = ?");
+				"update files set haspicture = ?, hash = ?, lastmodified = ?," +
+				" filesize = ?, album = ?, artist = ?, title = ?" +
+				" where id = ?");
 		PreparedStatement psInsert = getConnection().prepareStatement(
 				"insert into files (absolutepath, absolutedir, lastmodified, filesize, mimetype," +
 						" detectionmethod, hash, haspicture, album, artist, title)" +
@@ -178,10 +180,15 @@ public class Database {
 
 			ResultSet rs = psSelect.executeQuery();
 			if(rs.next()){
-				psUpdate.setBoolean(1, true);						
+				psUpdate.setBoolean(1, file.isHasPicture());						
 				psUpdate.setString(2, file.getHash());
 				psUpdate.setLong(3, file.getFile().lastModified());
-				psUpdate.setLong(4, rs.getLong("id"));
+				psUpdate.setLong(4, file.getFile().length());
+				psUpdate.setString(5, file.getAlbumTitle());
+				psUpdate.setString(6, file.getArtist());
+				psUpdate.setString(7, file.getTitle());
+				
+				psUpdate.setLong(8, rs.getLong("id"));
 				
 				psUpdate.addBatch();
 			}

@@ -2,25 +2,38 @@ package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.SpringLayout;
-import java.awt.Dialog.ModalityType;
-import java.awt.Toolkit;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagException;
 import org.sergeys.coverfinder.logic.Album;
+import org.sergeys.coverfinder.logic.Mp3Utils;
 import org.sergeys.coverfinder.logic.MusicItem;
+import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.coverfinder.logic.Track;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import org.sergeys.library.FileUtils;
 
 public class EditTagsDialog extends JDialog {
 
@@ -106,8 +119,91 @@ public class EditTagsDialog extends JDialog {
 		setVisible(false);		
 	}
 
-
+	private void updateTrack(Track track, String artist, String title, String albumTitle){
+		try {
+			
+			if(Settings.getInstance().isBackupFileOnSave()){
+				// backup original file
+				FileUtils.backupCopy(track.getFile(), Settings.MP3_BACKUP_SUFFIX);
+			}
+			
+			AudioFile af = AudioFileIO.read(track.getFile());
+			Tag tag = af.getTagOrCreateAndSetDefault();			
+			
+			Mp3Utils.getInstance().setDecodeLanguage(Settings.getInstance().getAudioTagsLanguage());
+			String str;
+			
+			if(artist != null && !artist.isEmpty()){
+				str = Mp3Utils.getInstance().encode(artist.trim());
+				tag.setField(FieldKey.ARTIST, str);
+			}
+			if(title != null && !title.isEmpty()){
+				str = Mp3Utils.getInstance().encode(title.trim());
+				tag.setField(FieldKey.TITLE, str);
+			}
+			if(albumTitle != null && !albumTitle.isEmpty()){
+				str = Mp3Utils.getInstance().encode(albumTitle.trim());
+				tag.setField(FieldKey.ALBUM, str);
+			}
+			
+			//af.commit();
+			//af = null;	// fixes jaudiotagger warning when updating album for several tracks?
+			AudioFileIO.write(af);
+System.out.println("updated " + track.getFile());			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CannotReadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TagException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReadOnlyFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAudioFrameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CannotWriteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+		
 	protected void doSave() {
+		String message = "";
+		if(this.musicItem instanceof Album){
+			message = String.format("Update %d file(s) in this album?", ((Album)musicItem).getChildCount());
+		}
+		else if(this.musicItem instanceof Track){
+			message = String.format("Update file %s ?", ((Track)musicItem).getFile().getAbsolutePath());
+		}		
+		
+		if(Settings.getInstance().isConfirmFileEdit()){
+			int answer = JOptionPane.showConfirmDialog(this, message);
+			
+			if(answer == JOptionPane.CANCEL_OPTION){
+				return;
+			}
+			else if(answer == JOptionPane.NO_OPTION){
+				setVisible(false);
+				return;
+			} 
+		}
+		
+		if(musicItem instanceof Track){
+			updateTrack((Track) musicItem, txtArtist.getText(), txtTitle.getText(), null);
+		}
+		else{
+			for(@SuppressWarnings("rawtypes")
+			Enumeration e = musicItem.children(); e.hasMoreElements();){
+				Track track = (Track)e.nextElement();
+				updateTrack(track, txtArtist.getText(), null, txtTitle.getText());
+			}
+		}
+		
 		setVisible(false);		
 	}
 	

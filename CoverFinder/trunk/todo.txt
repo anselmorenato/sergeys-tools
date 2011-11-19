@@ -4,6 +4,8 @@
 - identify unknown tracks via http://acoustid.org
 - open track on musicbrainz by mbid
 
+http://www.jthink.net/jaudiotagger/
+
 covers from http://www.discogs.com/help/api
 http://www.last.fm/api
 http://musicbrainz.org/doc/Next_Generation_Schema/SearchServerXML

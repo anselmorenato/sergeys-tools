@@ -158,7 +158,8 @@ extends JPanel
 			
 			// TODO: select tags encoding
 			//Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, "ru", Settings.getInstance().getLibraryPaths());
-			Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, null, Settings.getInstance().getLibraryPaths());
+			Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, 
+					Settings.getInstance().getAudioTagsLanguage(), Settings.getInstance().getLibraryPaths());
 			
 			root = new DefaultMutableTreeNode("Artists/Albums/Tracks");
 			TrackTreeModel model = new TrackTreeModel(root, tracks);

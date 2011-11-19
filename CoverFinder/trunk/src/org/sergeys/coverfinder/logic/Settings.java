@@ -21,10 +21,12 @@ import java.util.Set;
 
 public class Settings {
 	
-	public enum DetectFilesMethod { Extension, MimeMagic/*, Mp3File*/ };
+	public enum DetectFilesMethod { Extension, MimeMagic/*, Mp3File*/ };	// extension uses jaudiotagger filter
 	
 	public static final String SETTINGS_PATH = ".CoverFinder";	
 	public static final String SETTINGS_FILE = "settings.xml";
+	
+	public static final String MP3_BACKUP_SUFFIX = "cfbackup";
 	
 	// action names for events
 	public static final String COMMAND_SAVE_SETTINGS = "COMMAND_SAVE_SETTINGS";
@@ -43,7 +45,7 @@ public class Settings {
 	
 	private Point windowLocation = null;
 	private Dimension windowSize = null;
-	private String language; // language code for Locale class
+	private String language; // two-letter language code for Locale class
 	//private CompareFilesMethod compareFilesMethod = CompareFilesMethod.Fast;
 	private DetectFilesMethod detectFilesMethod = DetectFilesMethod.Extension;
 	//private Collection<File> libraryPaths = Collections.synchronizedCollection(new ArrayList<File>());
@@ -52,6 +54,7 @@ public class Settings {
 	private String searchEngineName;
 	private boolean confirmFileEdit = true;
 	private boolean backupFileOnSave = true;
+	private String audioTagsLanguage = null;	// two-letter code, language to read as and write tags, null when unicode.
 	
 	private Properties properties = new Properties();
 	private Date savedVersion = new Date(0);
@@ -248,6 +251,14 @@ public class Settings {
 
 	public void setBackupFileOnSave(boolean backupFileOnSave) {
 		this.backupFileOnSave = backupFileOnSave;
+	}
+
+	public String getAudioTagsLanguage() {
+		return audioTagsLanguage;
+	}
+
+	public void setAudioTagsLanguage(String audioTagsLanguage) {
+		this.audioTagsLanguage = audioTagsLanguage;
 	}
 
 }

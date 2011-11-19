@@ -7,12 +7,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileFilter;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 import org.sergeys.coverfinder.logic.IProgressWatcher.Stage;
 import org.sergeys.library.FileUtils;
 import org.sergeys.library.NotImplementedException;
-
-import com.mpatric.mp3agic.ID3v2;
-import com.mpatric.mp3agic.Mp3File;
 
 // how to run several in parallel: http://stackoverflow.com/questions/3652973/backgrounds-tasks-by-swingworkers-become-sequential
 
@@ -37,23 +39,26 @@ extends AbstractWorker<Track>
 		
 		switch(Settings.getInstance().getDetectFilesMethod()){
 			case Extension:
-				filter = new FileFilter() {		
-					private long count = 0;
-					@Override
-					public boolean accept(File file) {
-//try {
-//	Thread.sleep(100);
-//} catch (InterruptedException e) {
-//	// TODO Auto-generated catch block
-//	e.printStackTrace();
-//}						
-						boolean match = file.getName().toLowerCase().endsWith(".mp3");
-						//if(match){
-							publish(++count);
-						//}
-						return match;
-					}
-				};
+//				filter = new FileFilter() {		
+//					private long count = 0;
+//					@Override
+//					public boolean accept(File file) {
+////try {
+////	Thread.sleep(100);
+////} catch (InterruptedException e) {
+////	// TODO Auto-generated catch block
+////	e.printStackTrace();
+////}						
+//						boolean match = file.getName().toLowerCase().endsWith(".mp3");
+//						//if(match){
+//							publish(++count);
+//						//}
+//						return match;
+//					}
+//				};
+				
+				filter = new AudioFileFilter(false); 
+				
 				break;
 			case MimeMagic:
 				throw new NotImplementedException();
@@ -87,16 +92,25 @@ extends AbstractWorker<Track>
 		stage = Stage.Analyzing;
 		for(Track track: changed){
 			
-			Mp3File mp3 = new Mp3File(track.getFile().getAbsolutePath());
-			if(mp3.hasId3v2Tag()){
-				ID3v2 id3v2 = mp3.getId3v2Tag();
-				track.setArtist(id3v2.getArtist());
-				track.setAlbumTitle(id3v2.getAlbum());
-				track.setTitle(id3v2.getTitle());
-				byte[] bytes = id3v2.getAlbumImage();				
-				if(bytes != null){
-					track.setHasPicture(true);
-				}
+//			Mp3File mp3 = new Mp3File(track.getFile().getAbsolutePath());
+//			if(mp3.hasId3v2Tag()){
+//				ID3v2 id3v2 = mp3.getId3v2Tag();
+//				track.setArtist(id3v2.getArtist());
+//				track.setAlbumTitle(id3v2.getAlbum());
+//				track.setTitle(id3v2.getTitle());
+//				byte[] bytes = id3v2.getAlbumImage();				
+//				if(bytes != null){
+//					track.setHasPicture(true);
+//				}
+//			}
+
+			AudioFile af = AudioFileIO.read(track.getFile());
+			Tag tag = af.getTag();
+			if(tag != null){
+				track.setArtist(tag.getFirst(FieldKey.ARTIST));
+				track.setAlbumTitle(tag.getFirst(FieldKey.ALBUM));
+				track.setTitle(tag.getFirst(FieldKey.TITLE));
+				track.setHasPicture(tag.getFirstArtwork() != null);
 			}
 			
 			publish(++count);

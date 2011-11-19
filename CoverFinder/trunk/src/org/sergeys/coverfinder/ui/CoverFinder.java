@@ -13,7 +13,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -60,12 +62,22 @@ public class CoverFinder
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
+					// redirect outs to log files
+					File logfile = new File(Settings.getSettingsDirPath() + File.separator + "output.log");
+					if(logfile.exists()){
+						logfile.delete();
+					}
+					PrintStream ps = new PrintStream(logfile);
+					System.setOut(ps);					
+					System.setErr(ps);
+					
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 					
 					Locale l = new Locale(Settings.getInstance().getLanguage());
 					//Locale l = new Locale("ru");
 					Locale.setDefault(l);
-										
+Settings.getInstance().setAudioTagsLanguage("ru");										
 					final CoverFinder mainWindow = new CoverFinder();										
 					
 					// set size and position of main window									
