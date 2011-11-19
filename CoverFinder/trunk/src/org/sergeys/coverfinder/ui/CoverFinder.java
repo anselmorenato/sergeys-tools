@@ -13,7 +13,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -69,8 +68,8 @@ public class CoverFinder
 						logfile.delete();
 					}
 					PrintStream ps = new PrintStream(logfile);
-					System.setOut(ps);					
-					System.setErr(ps);
+//					System.setOut(ps);					
+//					System.setErr(ps);
 					
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 					

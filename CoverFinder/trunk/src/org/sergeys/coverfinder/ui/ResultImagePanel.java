@@ -9,10 +9,10 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import org.sergeys.coverfinder.logic.ImageSearchResult;
 import org.sergeys.library.swing.ScaledImage;
 
 public class ResultImagePanel extends JPanel {
@@ -22,14 +22,18 @@ public class ResultImagePanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	public static final String SELECTED_IMAGE_PROPERTY = "SELECTED_IMAGE_PROPERTY";
+	
 	ScaledImage scaledImage;
 	JLabel lblDimension;
 	JLabel lblSize;
+	ImageSearchResult imgResult;
 	
 	/**
 	 * Create the panel.
 	 */
 	public ResultImagePanel() {
+				
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new BorderLayout(0, 0));
 		
@@ -58,16 +62,17 @@ public class ResultImagePanel extends JPanel {
 	}
 
 	protected void doClicked(MouseEvent e) {
-		
-		JOptionPane.showMessageDialog(this, "Okay");
+		firePropertyChange(SELECTED_IMAGE_PROPERTY, null, imgResult);
 	}
 
-	public ResultImagePanel(Image img, int w, int h, long size){
+	public ResultImagePanel(Image img, ImageSearchResult imgResult){
 		this();
 		
+		this.imgResult = imgResult;
+		
 		scaledImage.setImage(img);
-		lblDimension.setText(String.format("%dx%d", w, h));
-		lblSize.setText((size > 0) ? String.format("%d bytes", size) : "");
+		lblDimension.setText(String.format("%dx%d", imgResult.getWidth(), imgResult.getHeight()));
+		lblSize.setText((imgResult.getFileSize() > 0) ? String.format("%d bytes", imgResult.getFileSize()) : "");
 		revalidate();
 	}
 }

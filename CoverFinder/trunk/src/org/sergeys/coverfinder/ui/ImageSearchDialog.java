@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -36,7 +38,7 @@ import javax.swing.SwingConstants;
 
 public class ImageSearchDialog 
 extends JDialog 
-implements IProgressWatcher<ImageSearchResult> 
+implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener 
 {
 
 	@Override
@@ -216,9 +218,10 @@ implements IProgressWatcher<ImageSearchResult>
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			ResultImagePanel resPanel = new ResultImagePanel(img, res.getWidth(), res.getHeight(), res.getFileSize()); 
+			ResultImagePanel resPanel = new ResultImagePanel(img, res); 
 			panelResults.add(resPanel);
-		}										
+			resPanel.addPropertyChangeListener(ResultImagePanel.SELECTED_IMAGE_PROPERTY, this);
+		}					
 	}
 
 
@@ -230,6 +233,14 @@ implements IProgressWatcher<ImageSearchResult>
 	@Override
 	public void reportException(Throwable ex) {
 		JOptionPane.showMessageDialog(this, ex.getMessage());
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		ImageSearchResult res = (ImageSearchResult)evt.getNewValue();
+		ImageDetailsDialog dlg = new ImageDetailsDialog(this, res);
+		dlg.setLocationRelativeTo(this);
+		dlg.setVisible(true);
 	}
 
 }
