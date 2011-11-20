@@ -29,22 +29,20 @@ import org.sergeys.coverfinder.logic.Track;
 
 public class IdentifyTrackDialog extends JDialog {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+	
 	private JTable tableResults;
 	Track track;
-//	List<IdentifyTrackResult> result;
+	ActionListener actionListener;
 
 	/**
 	 * Create the dialog.
 	 */
-	public IdentifyTrackDialog(List<IdentifyTrackResult> result, Track track, Window owner) {
+	public IdentifyTrackDialog(List<IdentifyTrackResult> result, Track track, Window owner, ActionListener actionListener) {
 		super(owner);
 		
 		this.track = track;
-//		this.result = result;
+		this.actionListener = actionListener;
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(IdentifyTrackDialog.class.getResource("/images/icon.png")));
 		setTitle("Identify track");
@@ -99,7 +97,7 @@ public class IdentifyTrackDialog extends JDialog {
 
 	protected void doOK() {
 					
-		EditTagsDialog dlg = new EditTagsDialog(this);					 
+		EditTagsDialog dlg = new EditTagsDialog(this, actionListener);					 
 		dlg.setMusicItem(track, 
 				(String)tableResults.getValueAt(checkedRow, 3), 
 				(String)tableResults.getValueAt(checkedRow, 2));

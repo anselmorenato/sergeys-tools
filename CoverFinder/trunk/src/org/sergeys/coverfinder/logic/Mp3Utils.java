@@ -15,12 +15,15 @@ import javax.imageio.ImageIO;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.images.Artwork;
+import org.jaudiotagger.tag.images.ArtworkFactory;
+import org.sergeys.library.FileUtils;
 
 public class Mp3Utils {
 	
@@ -81,6 +84,7 @@ public class Mp3Utils {
 	public void setDecodeLanguage(String lang){
 		if(lang == null || lang.isEmpty()){
 			setDecodeStrings(false);
+			return;
 		}
 		if(charsetByLang.containsKey(lang)){
 			setDecodeCharset(charsetByLang.getProperty(lang));			
@@ -313,4 +317,97 @@ public class Mp3Utils {
 	public void setDecodeStrings(boolean decodeStrings) {
 		this.decodeStrings = decodeStrings;
 	}
+	
+	public void updateTags(Track track, String artist, String title, String albumTitle){
+		try {
+			
+			if(Settings.getInstance().isBackupFileOnSave()){			
+				// backup original file
+				FileUtils.backupCopy(track.getFile(), Settings.MP3_BACKUP_SUFFIX);
+			}
+			
+			AudioFile af = AudioFileIO.read(track.getFile());
+			Tag tag = af.getTagOrCreateAndSetDefault();			
+			
+			setDecodeLanguage(Settings.getInstance().getAudioTagsLanguage());
+			String str;
+			
+			if(artist != null && !artist.isEmpty()){
+				str = encode(artist.trim());
+				tag.setField(FieldKey.ARTIST, str);
+			}
+			if(title != null && !title.isEmpty()){
+				str = encode(title.trim());
+				tag.setField(FieldKey.TITLE, str);
+			}
+			if(albumTitle != null && !albumTitle.isEmpty()){
+				str = encode(albumTitle.trim());
+				tag.setField(FieldKey.ALBUM, str);
+			}
+			
+			//af.commit();
+			//af = null;	// fixes jaudiotagger warning when updating album for several tracks?
+			AudioFileIO.write(af);
+System.out.println("updated " + track.getFile());			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CannotReadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TagException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReadOnlyFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAudioFrameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CannotWriteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateArtwork(Track track, File imageFile){
+								
+		try {
+			if(Settings.getInstance().isBackupFileOnSave()){
+				// backup original file
+				FileUtils.backupCopy(track.getFile(), Settings.MP3_BACKUP_SUFFIX);
+			}
+			
+			AudioFile af = AudioFileIO.read(track.getFile());
+			Tag tag = af.getTagOrCreateAndSetDefault();
+			
+			Artwork art = ArtworkFactory.createArtworkFromFile(imageFile);
+			tag.setField(art);
+			
+			AudioFileIO.write(af);
+			System.out.println("updated artwork in " + track.getFile());
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CannotReadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TagException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReadOnlyFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAudioFrameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CannotWriteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
 }

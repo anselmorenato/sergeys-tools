@@ -3,7 +3,6 @@ package org.sergeys.coverfinder.ui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -12,10 +11,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.util.Collection;
 
-import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -24,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import org.sergeys.coverfinder.logic.IImageSearchEngine;
@@ -31,10 +30,9 @@ import org.sergeys.coverfinder.logic.IProgressWatcher;
 import org.sergeys.coverfinder.logic.ImageSearchRequest;
 import org.sergeys.coverfinder.logic.ImageSearchResult;
 import org.sergeys.coverfinder.logic.ImageSearchWorker;
+import org.sergeys.coverfinder.logic.MusicItem;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.library.swing.DisabledPanel;
-import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
 
 public class ImageSearchDialog 
 extends JDialog 
@@ -42,10 +40,12 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener
 {
 
 	@Override
-	public void setVisible(boolean b) {						
-		super.setVisible(b);
+	public void setVisible(boolean b) {
+		if(b){
+			panelResults.removeAll();
+		}
 		
-		//doSearch();
+		super.setVisible(b);						
 	}
 
 	/**
@@ -57,12 +57,18 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener
 	private JTextField textFieldQuery;
 	JLabel lblProgress;
 	JPanel panelResults;
-
+	MusicItem musicItem;
+	ActionListener actionListener;
+	
 	/**
 	 * Create the dialog.
 	 */
-	public ImageSearchDialog(Window owner) {
+	public ImageSearchDialog(Window owner, MusicItem musicItem, ActionListener actionListener) {
 		super(owner);
+		
+		this.musicItem = musicItem;
+		this.actionListener = actionListener;
+		
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModal(true);
 		
@@ -150,7 +156,8 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener
 		}
 	}
 
-	public void setQuery(String query){
+	public void setQuery(String query, MusicItem musicItem){
+		this.musicItem = musicItem;
 		textFieldQuery.setText(query);
 		queryStringChanged = true;
 	}
@@ -211,16 +218,18 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener
 		dContentPanel.setEnabled(true);
 		
 		for(ImageSearchResult res: items){
-			Image img = null;
-			try {
-				img = ImageIO.read(res.getThumbnailUrl());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+//			Image img = null;
+//			try {
+//				img = ImageIO.read(res.getThumbnailUrl());
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			if(res.hasImages()){
+				ResultImagePanel resPanel = new ResultImagePanel(res.getThumbnailImage(), res); 
+				panelResults.add(resPanel);
+				resPanel.addPropertyChangeListener(ResultImagePanel.SELECTED_IMAGE_PROPERTY, this);
 			}
-			ResultImagePanel resPanel = new ResultImagePanel(img, res); 
-			panelResults.add(resPanel);
-			resPanel.addPropertyChangeListener(ResultImagePanel.SELECTED_IMAGE_PROPERTY, this);
 		}					
 	}
 
@@ -238,7 +247,7 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		ImageSearchResult res = (ImageSearchResult)evt.getNewValue();
-		ImageDetailsDialog dlg = new ImageDetailsDialog(this, res);
+		ImageDetailsDialog dlg = new ImageDetailsDialog(this, res, musicItem, actionListener);
 		dlg.setLocationRelativeTo(this);
 		dlg.setVisible(true);
 	}

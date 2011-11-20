@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -44,9 +45,12 @@ import org.sergeys.coverfinder.logic.IdentifyTrackResult;
 import org.sergeys.coverfinder.logic.IdentifyTrackWorker;
 import org.sergeys.coverfinder.logic.ImageSearchRequest;
 import org.sergeys.coverfinder.logic.ImageSearchResult;
+import org.sergeys.coverfinder.logic.Mp3Utils;
 import org.sergeys.coverfinder.logic.MusicItem;
 import org.sergeys.coverfinder.logic.Settings;
 import org.sergeys.coverfinder.logic.Track;
+import org.sergeys.coverfinder.ui.EditTagsDialog.EditTagsEvent;
+import org.sergeys.coverfinder.ui.ImageDetailsDialog.EditImageEvent;
 import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
 
@@ -76,7 +80,9 @@ public class CoverFinder
 					Locale l = new Locale(Settings.getInstance().getLanguage());
 					//Locale l = new Locale("ru");
 					Locale.setDefault(l);
-Settings.getInstance().setAudioTagsLanguage("ru");										
+					
+//Settings.getInstance().setAudioTagsLanguage("ru");
+
 					final CoverFinder mainWindow = new CoverFinder();										
 					
 					// set size and position of main window									
@@ -120,7 +126,38 @@ Settings.getInstance().setAudioTagsLanguage("ru");
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getSource() instanceof JMenuItem){
+			if(e instanceof EditTagsEvent){
+				EditTagsEvent etEvt = (EditTagsEvent)e;
+				
+				if(etEvt.musicItem instanceof Track){
+					Mp3Utils.getInstance().
+						updateTags((Track)etEvt.musicItem, etEvt.artist, etEvt.title, etEvt.albumTitle);
+				}
+				else{
+					for(@SuppressWarnings("rawtypes")
+					Enumeration en = etEvt.musicItem.children(); en.hasMoreElements();){
+						Track track = (Track)en.nextElement();
+						Mp3Utils.getInstance().
+							updateTags(track, etEvt.artist, etEvt.title, etEvt.albumTitle);
+					}
+				}
+
+			}
+			else if(e instanceof EditImageEvent){
+				EditImageEvent evt = (EditImageEvent)e;
+				
+				if(evt.musicItem instanceof Track){
+					Mp3Utils.getInstance().updateArtwork((Track)evt.musicItem, evt.imgResult.getImageFile());						
+				}
+				else{
+					for(@SuppressWarnings("rawtypes")
+					Enumeration en = evt.musicItem.children(); en.hasMoreElements();){
+						Track track = (Track)en.nextElement();
+						Mp3Utils.getInstance().updateArtwork(track, evt.imgResult.getImageFile());
+					}
+				}
+			}
+			else if(e.getSource() instanceof JMenuItem){
 				JMenuItem item = (JMenuItem)e.getSource();
 				if(item.getName().equals(TrackTreePanel.MENU_IDENTIFY_TRACK)){
 					doIdentify();
@@ -286,7 +323,7 @@ Settings.getInstance().setAudioTagsLanguage("ru");
 	protected void doEditTags() {		
 		Object selected = panelTree.getSelectedItem();
 		if(selected != null && selected instanceof MusicItem){
-			EditTagsDialog dlg = new EditTagsDialog(frmCoverFinder);					 
+			EditTagsDialog dlg = new EditTagsDialog(frmCoverFinder, actionListener);					 
 			dlg.setMusicItem((MusicItem)selected);
 			dlg.setLocationRelativeTo(frmCoverFinder);
 			dlg.setVisible(true);
@@ -316,7 +353,8 @@ Settings.getInstance().setAudioTagsLanguage("ru");
 					
 					if(items != null){
 						if(items.size() > 0){
-							IdentifyTrackDialog dlg = new IdentifyTrackDialog((List<IdentifyTrackResult>) items, tr, frmCoverFinder);	// TODO: cast allowed??
+							IdentifyTrackDialog dlg = new IdentifyTrackDialog((List<IdentifyTrackResult>) items, 
+									tr, frmCoverFinder, actionListener);	// TODO: cast allowed??
 							dlg.setLocationRelativeTo(frmCoverFinder);
 							dlg.setVisible(true);
 						}
@@ -350,14 +388,7 @@ Settings.getInstance().setAudioTagsLanguage("ru");
 	}
 
 	ImageSearchDialog imageSearchDlg;
-	protected void doSearch() {
-		
-		if(imageSearchDlg == null){
-
-			imageSearchDlg = new ImageSearchDialog(this.frmCoverFinder);
-			imageSearchDlg.setLocationRelativeTo(frmCoverFinder);
-		}
-		
+	protected void doSearch() {				
 		String query;
 		
 		Object o = panelTree.getSelectedItem();
@@ -370,7 +401,13 @@ Settings.getInstance().setAudioTagsLanguage("ru");
 		else{
 			return;
 		}
-		imageSearchDlg.setQuery(query);
+		
+		if(imageSearchDlg == null){
+			imageSearchDlg = new ImageSearchDialog(this.frmCoverFinder, (MusicItem)o, actionListener);
+			imageSearchDlg.setLocationRelativeTo(frmCoverFinder);
+		}
+		
+		imageSearchDlg.setQuery(query, (MusicItem)o);
 		imageSearchDlg.setVisible(true);		
 	}
 

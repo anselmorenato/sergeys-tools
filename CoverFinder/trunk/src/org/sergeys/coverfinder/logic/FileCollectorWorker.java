@@ -10,6 +10,7 @@ import java.util.List;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileFilter;
 import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.sergeys.coverfinder.logic.IProgressWatcher.Stage;
@@ -104,13 +105,18 @@ extends AbstractWorker<Track>
 //				}
 //			}
 
-			AudioFile af = AudioFileIO.read(track.getFile());
-			Tag tag = af.getTag();
-			if(tag != null){
-				track.setArtist(tag.getFirst(FieldKey.ARTIST));
-				track.setAlbumTitle(tag.getFirst(FieldKey.ALBUM));
-				track.setTitle(tag.getFirst(FieldKey.TITLE));
-				track.setHasPicture(tag.getFirstArtwork() != null);
+			try{
+				AudioFile af = AudioFileIO.read(track.getFile());
+				Tag tag = af.getTag();
+				if(tag != null){
+					track.setArtist(tag.getFirst(FieldKey.ARTIST));
+					track.setAlbumTitle(tag.getFirst(FieldKey.ALBUM));
+					track.setTitle(tag.getFirst(FieldKey.TITLE));
+					track.setHasPicture(tag.getFirstArtwork() != null);
+				}							
+			}
+			catch(CannotReadException ex){
+				ex.printStackTrace();
 			}
 			
 			publish(++count);
