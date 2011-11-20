@@ -14,7 +14,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -25,7 +24,9 @@ import java.util.ServiceLoader;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -53,8 +54,6 @@ import org.sergeys.coverfinder.ui.EditTagsDialog.EditTagsEvent;
 import org.sergeys.coverfinder.ui.ImageDetailsDialog.EditImageEvent;
 import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
 
 public class CoverFinder  
 {	
@@ -73,7 +72,7 @@ public class CoverFinder
 					if(logfile.exists()){
 						logfile.delete();
 					}
-					PrintStream ps = new PrintStream(logfile);
+//					PrintStream ps = new PrintStream(logfile);
 //					System.setOut(ps);					
 //					System.setErr(ps);
 					
@@ -83,7 +82,6 @@ public class CoverFinder
 					//Locale l = new Locale("ru");
 					Locale.setDefault(l);
 					
-//Settings.getInstance().setAudioTagsLanguage("ru");
 
 					final CoverFinder mainWindow = new CoverFinder();										
 					
@@ -255,11 +253,7 @@ public class CoverFinder
 		panelTop.add(lblTagsEncoding);
 		
 		comboBoxTagEncoding = new JComboBox();
-		comboBoxTagEncoding.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				doTagEncodingChanged();
-			}
-		});
+		
 		panelTop.add(comboBoxTagEncoding);		
 		locales = new ArrayList<Locale>();
 		comboBoxTagEncoding.addItem("do not change");
@@ -273,6 +267,12 @@ public class CoverFinder
 			}
 			locales.add(l);
 		}
+		// add listener after adding items, or saved selection will be lost
+		comboBoxTagEncoding.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doTagEncodingChanged();
+			}
+		});
 		
 		panelTree = new TrackTreePanel(actionListener);
 		dPanelCenter = new DisabledPanel(panelTree);

@@ -32,11 +32,12 @@ import org.sergeys.coverfinder.logic.ImageSearchResult;
 import org.sergeys.coverfinder.logic.ImageSearchWorker;
 import org.sergeys.coverfinder.logic.MusicItem;
 import org.sergeys.coverfinder.logic.Settings;
+import org.sergeys.coverfinder.ui.ImageDetailsDialog.EditImageEvent;
 import org.sergeys.library.swing.DisabledPanel;
 
 public class ImageSearchDialog 
 extends JDialog 
-implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener 
+implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionListener
 {
 
 	@Override
@@ -117,7 +118,7 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener
 				panelQuery.add(btnSearch);
 			}
 			{
-				JButton btnMore = new JButton("More");
+				btnMore = new JButton("More");
 				btnMore.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doSearchMore();
@@ -156,10 +157,15 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener
 		}
 	}
 
+	private void setupControls(){
+		btnMore.setEnabled(!queryStringChanged);
+	}
+	
 	public void setQuery(String query, MusicItem musicItem){
 		this.musicItem = musicItem;
 		textFieldQuery.setText(query);
 		queryStringChanged = true;
+		setupControls();
 	}
 	
 	private boolean queryStringChanged = false;
@@ -167,11 +173,11 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener
 	protected void doKeyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		queryStringChanged = true;
-		
+		setupControls();
 	}
 
-
 	IImageSearchEngine currentEngine;
+	private JButton btnMore;
 
 	protected void doSearch() {
 		//lblProgress.setVisible(true);
@@ -230,7 +236,10 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener
 				panelResults.add(resPanel);
 				resPanel.addPropertyChangeListener(ResultImagePanel.SELECTED_IMAGE_PROPERTY, this);
 			}
-		}					
+		}
+		
+		queryStringChanged = false;
+		setupControls();
 	}
 
 
@@ -247,9 +256,18 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		ImageSearchResult res = (ImageSearchResult)evt.getNewValue();
-		ImageDetailsDialog dlg = new ImageDetailsDialog(this, res, musicItem, actionListener);
+		ImageDetailsDialog dlg = new ImageDetailsDialog(this, res, musicItem);
+		dlg.addActionListener(actionListener);
+		dlg.addActionListener(this);
 		dlg.setLocationRelativeTo(this);
 		dlg.setVisible(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {		
+		if(e instanceof EditImageEvent){
+			this.setVisible(false);
+		}
 	}
 
 }

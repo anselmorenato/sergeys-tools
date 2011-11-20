@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -54,17 +55,20 @@ public class ImageDetailsDialog extends JDialog {
 	
 	ImageSearchResult imgResult;
 	MusicItem musicItem;
-	ActionListener actionListener;
+	HashSet<ActionListener> actionListeners = new HashSet<ActionListener>();
+	private JLabel lblDimensions;
+	private JLabel lblFilesize;
+	private JLabel lblTxtFileSize;
 	
 	/**
 	 * Create the dialog.
 	 */
-	public ImageDetailsDialog(Window parent, ImageSearchResult imgResult, MusicItem musicItem, ActionListener actionListener) {
+	public ImageDetailsDialog(Window parent, ImageSearchResult imgResult, MusicItem musicItem) {
 		super(parent);
 		
 		this.imgResult = imgResult;
 		this.musicItem = musicItem;
-		this.actionListener = actionListener;
+		//this.actionListener = actionListener;
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ImageDetailsDialog.class.getResource("/images/icon.png")));
 		setTitle("Image Details");
@@ -84,18 +88,22 @@ public class ImageDetailsDialog extends JDialog {
 			contentPanel.add(panelDetails, BorderLayout.SOUTH);
 			panelDetails.setLayout(new GridLayout(2, 2, 10, 0));
 			{
-				JLabel lblDim = new JLabel("Dim");
-				lblDim.setHorizontalAlignment(SwingConstants.RIGHT);
-				panelDetails.add(lblDim);
+				JLabel lblTxtDimensions = new JLabel("Dimensions:");
+				lblTxtDimensions.setHorizontalAlignment(SwingConstants.RIGHT);
+				panelDetails.add(lblTxtDimensions);
 			}
 			{
-				JLabel lblXxy = new JLabel("XxY");
-				panelDetails.add(lblXxy);
-			}
-			{
-				JLabel lblDimensions = new JLabel("Dimensions:");
-				lblDimensions.setHorizontalAlignment(SwingConstants.RIGHT);
+				lblDimensions = new JLabel("");
 				panelDetails.add(lblDimensions);
+			}
+			{
+				lblTxtFileSize = new JLabel("File size:");
+				lblTxtFileSize.setHorizontalAlignment(SwingConstants.RIGHT);
+				panelDetails.add(lblTxtFileSize);
+			}
+			{
+				lblFilesize = new JLabel("");
+				panelDetails.add(lblFilesize);
 			}
 		}
 		{
@@ -126,13 +134,27 @@ public class ImageDetailsDialog extends JDialog {
 		}
 		
 		//lblImage.setIcon(new ImageIcon(imgResult.getImageUrl()));
-		lblImage.setIcon(new ImageIcon(imgResult.getImage()));
+		if(imgResult.getImage() != null){
+			lblImage.setIcon(new ImageIcon(imgResult.getImage()));
+		}
 		
-		//contentPanel.revalidate();
+		lblDimensions.setText(String.format("%d x %d", imgResult.getWidth(), imgResult.getHeight()));
+		if(imgResult.getFileSize() > 0){
+			lblFilesize.setText(String.format("%d bytes", imgResult.getFileSize()));
+		}
+		else{
+			lblTxtFileSize.setVisible(false);
+			lblFilesize.setVisible(false);
+		}
 		
+		//contentPanel.revalidate();		
 		pack();
 	}
 
+	public void addActionListener(ActionListener actionListener){
+		actionListeners.add(actionListener);
+	}
+	
 	protected void doSave() {
 		String message = "";
 		if(this.musicItem instanceof Album){
@@ -154,7 +176,10 @@ public class ImageDetailsDialog extends JDialog {
 			} 
 		}
 
-		actionListener.actionPerformed(new EditImageEvent(this, imgResult, musicItem));
+		//actionListener.actionPerformed(new EditImageEvent(this, imgResult, musicItem));
+		for(ActionListener listener: actionListeners){
+			listener.actionPerformed(new EditImageEvent(this, imgResult, musicItem));
+		}
 		
 		setVisible(false);		
 	}

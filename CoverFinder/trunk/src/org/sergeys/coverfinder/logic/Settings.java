@@ -54,7 +54,7 @@ public class Settings {
 	private String searchEngineName;
 	private boolean confirmFileEdit = true;
 	private boolean backupFileOnSave = true;
-	private String audioTagsLanguage = null;	// two-letter code, language to read as and write tags, null when unicode.
+	private String audioTagsLanguage;	// two-letter code, language to read as and write tags, null when unicode.
 	
 	private Properties properties = new Properties();
 	private Date savedVersion = new Date(0);
