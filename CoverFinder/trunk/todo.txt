@@ -1,8 +1,6 @@
 - check fpcalc version
 - filter track tree by entering text
 - tags from other formats: flac
-- identify unknown tracks via http://acoustid.org
-- open track on musicbrainz by mbid
 
 http://www.jthink.net/jaudiotagger/
 

@@ -91,20 +91,7 @@ extends AbstractWorker<Track>
 		// process changed files
 		long count = 0;
 		stage = Stage.Analyzing;
-		for(Track track: changed){
-			
-//			Mp3File mp3 = new Mp3File(track.getFile().getAbsolutePath());
-//			if(mp3.hasId3v2Tag()){
-//				ID3v2 id3v2 = mp3.getId3v2Tag();
-//				track.setArtist(id3v2.getArtist());
-//				track.setAlbumTitle(id3v2.getAlbum());
-//				track.setTitle(id3v2.getTitle());
-//				byte[] bytes = id3v2.getAlbumImage();				
-//				if(bytes != null){
-//					track.setHasPicture(true);
-//				}
-//			}
-
+		for(Track track: changed){			
 			try{
 				AudioFile af = AudioFileIO.read(track.getFile());
 				Tag tag = af.getTag();

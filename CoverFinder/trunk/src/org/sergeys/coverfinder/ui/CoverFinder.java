@@ -53,6 +53,8 @@ import org.sergeys.coverfinder.ui.EditTagsDialog.EditTagsEvent;
 import org.sergeys.coverfinder.ui.ImageDetailsDialog.EditImageEvent;
 import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
 
 public class CoverFinder  
 {	
@@ -249,6 +251,29 @@ public class CoverFinder
 		panelTop.add(btnIdentify);
 		btnIdentify.setEnabled(false);
 		
+		lblTagsEncoding = new JLabel("Tags encoding:");
+		panelTop.add(lblTagsEncoding);
+		
+		comboBoxTagEncoding = new JComboBox();
+		comboBoxTagEncoding.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doTagEncodingChanged();
+			}
+		});
+		panelTop.add(comboBoxTagEncoding);		
+		locales = new ArrayList<Locale>();
+		comboBoxTagEncoding.addItem("do not change");
+		comboBoxTagEncoding.setSelectedIndex(0);
+		locales.add(null);
+		for(Object lang: Mp3Utils.getInstance().getDecodingLanguages()){
+			Locale l = new Locale(lang.toString());
+			comboBoxTagEncoding.addItem(l.getDisplayName());
+			if(lang.toString().equals(Settings.getInstance().getAudioTagsLanguage())){
+				comboBoxTagEncoding.setSelectedItem(l.getDisplayName());
+			}
+			locales.add(l);
+		}
+		
 		panelTree = new TrackTreePanel(actionListener);
 		dPanelCenter = new DisabledPanel(panelTree);
 		frmCoverFinder.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
@@ -318,6 +343,21 @@ public class CoverFinder
 			}
 		});
 		mnHelp.add(mntmAbout);
+	}
+
+	protected void doTagEncodingChanged() {
+		int selectedIndex = comboBoxTagEncoding.getSelectedIndex();
+		if(selectedIndex > 0){														
+			Locale l = locales.get(selectedIndex);		
+			Settings.getInstance().setAudioTagsLanguage(l.getLanguage());
+		}
+		else if(selectedIndex == 0){						
+			Settings.getInstance().setAudioTagsLanguage(null);
+		}		
+		
+		if(dPanelCenter != null){
+			scanLibrary();
+		}
 	}
 
 	protected void doEditTags() {		
@@ -564,6 +604,10 @@ System.out.println("will scan " + path);
 	private StatusBarPanel panelStatusBar;
 	private JMenuItem mntmRescanLibrary;
 	private JButton btnIdentify;
+	private JLabel lblTagsEncoding;
+	private JComboBox comboBoxTagEncoding;
+
+	private ArrayList<Locale> locales;
 	public static IImageSearchEngine getSearchEngine(){
 		
 		if(searchEngine == null){

@@ -131,28 +131,7 @@ public class Mp3Utils {
 		}		
 	}
 	
-	public Image getArtwork(File file){
-//		Mp3File mp3;
-//		try {
-//			mp3 = new Mp3File(file.getAbsolutePath());
-//			if(mp3.hasId3v2Tag()){
-//				byte[] bytes = mp3.getId3v2Tag().getAlbumImage();
-//				
-//				return ImageIO.read(new ByteArrayInputStream(bytes));			 
-//			}
-//		} catch (UnsupportedTagException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InvalidDataException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//			
-//		return null;
-		
+	public Image getArtwork(File file){		
 		AudioFile af;
 		try {
 			af = AudioFileIO.read(file);

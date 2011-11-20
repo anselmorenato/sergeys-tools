@@ -28,7 +28,7 @@ extends AbstractWorker<ImageSearchResult>
 		
 		results = searchMore ? engine.searchMore() : engine.search(req); 
 		
-		// download actual images
+		// download actual images in separate threads
 		Executor executor = Executors.newCachedThreadPool();
 		
 		for(final ImageSearchResult isr: results){

@@ -154,10 +154,7 @@ extends JPanel
 
 	public void update(){
 				
-		try {
-			
-			// TODO: select tags encoding
-			//Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, "ru", Settings.getInstance().getLibraryPaths());
+		try {			
 			Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, 
 					Settings.getInstance().getAudioTagsLanguage(), Settings.getInstance().getLibraryPaths());
 			
