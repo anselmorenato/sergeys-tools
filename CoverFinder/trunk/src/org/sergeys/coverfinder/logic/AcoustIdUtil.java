@@ -76,8 +76,8 @@ public class AcoustIdUtil {
 			return true;
 		}
 		
-		@SuppressWarnings("rawtypes")
-		Class cl = getClass();
+		//@SuppressWarnings("rawtypes")
+		Class<?> cl = getClass();
 		
 		String targetFile;
 		InputStream is = cl.getResourceAsStream("/resources/" + FpCalc);

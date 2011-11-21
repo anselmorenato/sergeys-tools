@@ -32,4 +32,9 @@ public class DiscogsImageSearch implements IImageSearchEngine {
 		return null;
 	}
 
+	@Override
+	public String getBranding() {
+		return "Powered by Discogs";
+	}
+
 }

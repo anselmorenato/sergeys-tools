@@ -75,4 +75,7 @@ extends MusicItem
 		this.hasPicture = hasPicture;
 	}
 
+	public String getFilename(){
+		return file.getName();
+	}
 }

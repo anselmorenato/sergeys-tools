@@ -20,13 +20,13 @@ extends DynamicTreeTableModel
      */
     private static final String[] columnNames =
                 //{ "Name", "Location", "Last Visited", "Created" };
-    	{ "Name", "Has picture" };
+    	{ "Name", "File name", "Has picture" };
     /**
      * Method names used to access the data to display.
      */
     private static final String[] methodNames =
                 //{ "getName", "getLocation", "getLastVisited","getCreated" };
-    	{ "getName", "isHasPicture" };
+    	{ "getName", "getFilename", "isHasPicture" };
     /**
      * Method names used to set the data.
      */
@@ -36,15 +36,14 @@ extends DynamicTreeTableModel
     	//{"setName", "setHasPicture"};	// TODO: not expands when null
     	//{"", ""};	
     
-    private static final int[] widths = { 4000, 1000 };
+    private static final int[] widths = { 4000, 4000, 1000 };
     
     /**
      * Classes presenting the data.
-     */
-    @SuppressWarnings("rawtypes")
-	private static final Class[] classes =
+     */    
+	private static final Class<?>[] classes =
                 //{ TreeTableModel.class, String.class, Date.class, Date.class };
-		{ TreeTableModel.class, Boolean.class };
+		{ TreeTableModel.class, String.class, Boolean.class };
 
 	public TrackTreeModel(DefaultMutableTreeNode root, Collection<Track> tracks) {
 		super(root, columnNames, methodNames, setterMethodNames, classes, widths);								

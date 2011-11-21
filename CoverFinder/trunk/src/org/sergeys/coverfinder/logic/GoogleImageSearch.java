@@ -132,4 +132,9 @@ public class GoogleImageSearch implements IImageSearchEngine {
 		return "Google";
 	}
 
+	@Override
+	public String getBranding() {
+		return "Powered by Google";
+	}
+
 }

@@ -127,4 +127,9 @@ implements IImageSearchEngine
 		return "Bing";
 	}
 
+	@Override
+	public String getBranding() {		
+		return "Powered by Bing";
+	}
+
 }

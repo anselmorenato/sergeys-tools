@@ -360,8 +360,10 @@ System.out.println("updated " + track.getFile());
 			
 			AudioFile af = AudioFileIO.read(track.getFile());
 			Tag tag = af.getTagOrCreateAndSetDefault();
-			
+									
 			Artwork art = ArtworkFactory.createArtworkFromFile(imageFile);
+			tag.deleteArtworkField();	// keep only one artwork
+			// TODO: extract and backup existing artworks
 			tag.setField(art);
 			
 			AudioFileIO.write(af);

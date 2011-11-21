@@ -26,4 +26,9 @@ implements IImageSearchEngine
 		return "Local files";
 	}
 
+	@Override
+	public String getBranding() {
+		return "Local files";
+	}
+
 }

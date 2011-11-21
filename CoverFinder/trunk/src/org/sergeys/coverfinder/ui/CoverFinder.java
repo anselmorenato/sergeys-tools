@@ -32,6 +32,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.TreeSelectionEvent;
@@ -275,7 +276,18 @@ public class CoverFinder
 		});
 		
 		panelTree = new TrackTreePanel(actionListener);
-		dPanelCenter = new DisabledPanel(panelTree);
+		
+		JPanel panelCenter = new JPanel();
+		panelCenter.setLayout(new BorderLayout(0, 0));
+		splitPane = new JSplitPane();
+		panelCenter.add(splitPane);
+		splitPane.setLeftComponent(panelTree);
+		trackDetailsPanel = new TrackDetailsPanel();
+		splitPane.setRightComponent(trackDetailsPanel);
+		splitPane.setDividerLocation(Settings.getInstance().getSplitterPosition());
+		
+		//dPanelCenter = new DisabledPanel(panelTree);
+		dPanelCenter = new DisabledPanel(panelCenter);
 		frmCoverFinder.getContentPane().add(dPanelCenter, BorderLayout.CENTER);
 		
 		panelTree.addTreeSelectionListener(new TreeSelectionListener(){
@@ -289,6 +301,9 @@ public class CoverFinder
 				btnIdentify.setEnabled(o instanceof Track && AcoustIdUtil.getInstance().isAvailable());
 				btnTest.setEnabled(o instanceof Track || o instanceof Album);
 
+				if(o instanceof Track){
+					trackDetailsPanel.setTrack((Track)o);
+				}
 			}});
 										
 		
@@ -533,6 +548,7 @@ System.out.println("will scan " + path);
 	protected void doExit() {
 		Settings.getInstance().setWindowLocation(frmCoverFinder.getLocation());
 		Settings.getInstance().setWindowSize(frmCoverFinder.getSize());
+		Settings.getInstance().setSplitterPosition(splitPane.getDividerLocation());
 		
 		try {
 			Settings.save();
@@ -596,8 +612,7 @@ System.out.println("will scan " + path);
 		}
 		
 		return engines;
-	}
-	
+	}	
 	
 	private static IImageSearchEngine searchEngine = null;
 	private JButton btnTest;
@@ -606,8 +621,10 @@ System.out.println("will scan " + path);
 	private JButton btnIdentify;
 	private JLabel lblTagsEncoding;
 	private JComboBox comboBoxTagEncoding;
-
 	private ArrayList<Locale> locales;
+	private TrackDetailsPanel trackDetailsPanel;
+	private JSplitPane splitPane;
+	
 	public static IImageSearchEngine getSearchEngine(){
 		
 		if(searchEngine == null){

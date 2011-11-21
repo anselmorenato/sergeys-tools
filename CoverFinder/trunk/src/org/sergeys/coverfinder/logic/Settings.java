@@ -55,6 +55,7 @@ public class Settings {
 	private boolean confirmFileEdit = true;
 	private boolean backupFileOnSave = true;
 	private String audioTagsLanguage;	// two-letter code, language to read as and write tags, null when unicode.
+	private int splitterPosition = 200;
 	
 	private Properties properties = new Properties();
 	private Date savedVersion = new Date(0);
@@ -259,6 +260,14 @@ public class Settings {
 
 	public void setAudioTagsLanguage(String audioTagsLanguage) {
 		this.audioTagsLanguage = audioTagsLanguage;
+	}
+
+	public int getSplitterPosition() {
+		return splitterPosition;
+	}
+
+	public void setSplitterPosition(int splitterPosition) {
+		this.splitterPosition = splitterPosition;
 	}
 
 }
