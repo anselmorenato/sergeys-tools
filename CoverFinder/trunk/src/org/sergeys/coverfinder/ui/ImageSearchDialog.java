@@ -44,6 +44,7 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 	public void setVisible(boolean b) {
 		if(b){
 			panelResults.removeAll();
+			lblBranding.setText(Settings.getInstance().getImageSearchEngine().getBranding());
 		}
 		
 		super.setVisible(b);						
@@ -95,7 +96,20 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 			JPanel panelQuery = new JPanel();
 			FlowLayout fl_panelQuery = (FlowLayout) panelQuery.getLayout();
 			fl_panelQuery.setAlignment(FlowLayout.LEFT);
-			contentPanel.add(panelQuery, BorderLayout.NORTH);
+			
+			JPanel panelBrand = new JPanel();
+			
+			JPanel panelTop = new JPanel();
+			panelTop.setLayout(new BorderLayout(0, 0));
+			panelTop.add(panelQuery, BorderLayout.CENTER);
+			panelTop.add(panelBrand, BorderLayout.SOUTH);
+			
+			lblBranding = new JLabel("branding");
+			panelBrand.add(lblBranding);
+			
+			
+			//contentPanel.add(panelQuery, BorderLayout.NORTH);
+			contentPanel.add(panelTop, BorderLayout.NORTH);
 			
 			{
 				textFieldQuery = new JTextField();
@@ -155,6 +169,8 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 				buttonPane.add(btnClose);
 			}
 		}
+		
+		
 	}
 
 	private void setupControls(){
@@ -178,6 +194,7 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 
 	IImageSearchEngine currentEngine;
 	private JButton btnMore;
+	private JLabel lblBranding;
 
 	protected void doSearch() {
 		//lblProgress.setVisible(true);

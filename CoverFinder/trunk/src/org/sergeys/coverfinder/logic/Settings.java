@@ -29,7 +29,7 @@ public class Settings {
 	public static final String MP3_BACKUP_SUFFIX = "cfbackup";
 	
 	// action names for events
-	public static final String COMMAND_SAVE_SETTINGS = "COMMAND_SAVE_SETTINGS";
+//	public static final String COMMAND_SAVE_SETTINGS = "COMMAND_SAVE_SETTINGS";
 	
 	private static String settingsDirPath;
 	private static String settingsFilePath; 	

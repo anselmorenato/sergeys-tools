@@ -29,10 +29,8 @@ import org.sergeys.coverfinder.logic.Settings;
 public class SettingsDialog 
 extends JDialog 
 {
-
-	/**
-	 * 
-	 */
+	public static final String SETTINGS_SAVED_PROPERTY = "SETTINGS_SAVED_PROPERTY";
+	
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 
@@ -182,6 +180,7 @@ extends JDialog
 		// save
 		try {
 			Settings.save();
+			firePropertyChange(SETTINGS_SAVED_PROPERTY, null, null);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

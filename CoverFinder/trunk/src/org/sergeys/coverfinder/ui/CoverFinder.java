@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -55,6 +57,7 @@ import org.sergeys.coverfinder.ui.EditTagsDialog.EditTagsEvent;
 import org.sergeys.coverfinder.ui.ImageDetailsDialog.EditImageEvent;
 import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
+import javax.swing.ImageIcon;
 
 public class CoverFinder  
 {	
@@ -108,7 +111,14 @@ public class CoverFinder
 					
 					mainWindow.frmCoverFinder.setVisible(true);
 					
-					mainWindow.scanLibrary();
+					if(Settings.getInstance().getLibraryPaths().isEmpty()){
+						JOptionPane.showMessageDialog(mainWindow.frmCoverFinder, "Please edit settings and add your music folders");
+						mainWindow.doSettings();
+					}
+					else{
+						// scan for changes
+						mainWindow.scanLibrary();
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -170,29 +180,12 @@ public class CoverFinder
 					doEditTags();					
 				}
 				else if(item.getName().equals(TrackTreePanel.MENU_OPEN_LOCATION)){
-					Object o = panelTree.getSelectedItem();
-					if(o != null && Desktop.isDesktopSupported()){																		
-						if(o instanceof Track){
-							try {
-								Desktop.getDesktop().open(new File(((Track)o).getFilesystemDir()));
-							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-						}
-						else if(o instanceof Album){
-							try {
-								Desktop.getDesktop().open(new File(((Album)o).getFilesystemDir()));
-							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-						}
-					}
+					doOpenLocation();					
 				}
 			}			
 		}
 	};
+		
 	
 	DisabledPanel dPanelCenter;
 	
@@ -223,32 +216,55 @@ public class CoverFinder
 		dPanelTop = new DisabledPanel(panelTop);
 		frmCoverFinder.getContentPane().add(dPanelTop, BorderLayout.NORTH);
 		
-		JButton btnSearchFiles = new JButton("Search");
-		btnSearchFiles.addActionListener(new ActionListener() {
+		btnSearchArtwork = new JButton("Search artwork");
+		btnSearchArtwork.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/image.png")));
+		btnSearchArtwork.setEnabled(false);
+		btnSearchArtwork.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doSearch();
 			}
 		});
-		panelTop.add(btnSearchFiles);
+		panelTop.add(btnSearchArtwork);
 		
-		btnTest = new JButton("Test");
-		btnTest.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				doTest();
+		btnEditTags = new JButton("Edit tags");
+		btnEditTags.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/kedit.png")));
+		btnEditTags.setEnabled(false);
+		btnEditTags.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doEditTags();
 			}
 		});
-		panelTop.add(btnTest);
-		btnTest.setEnabled(false);
+		
+//		btnTest = new JButton("Test");
+//		btnTest.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				doTest();
+//			}
+//		});
+//		panelTop.add(btnTest);
+//		btnTest.setEnabled(false);
 		
 		
-		btnIdentify = new JButton("Identify");
-		btnIdentify.addActionListener(new ActionListener() {
+		btnIdentifyTrack = new JButton("Identify track");
+		btnIdentifyTrack.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/cdaudio_unmount.png")));
+		btnIdentifyTrack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doIdentify();
 			}
 		});
-		panelTop.add(btnIdentify);
-		btnIdentify.setEnabled(false);
+		panelTop.add(btnIdentifyTrack);
+		btnIdentifyTrack.setEnabled(false);
+		panelTop.add(btnEditTags);
+		
+		btnOpenLocation = new JButton("Open location");
+		btnOpenLocation.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/my_docs.png")));
+		btnOpenLocation.setEnabled(false);
+		btnOpenLocation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doOpenLocation();
+			}
+		});
+		panelTop.add(btnOpenLocation);
 		
 		lblTagsEncoding = new JLabel("Tags encoding:");
 		panelTop.add(lblTagsEncoding);
@@ -298,9 +314,12 @@ public class CoverFinder
 				Object o = e.getPath().getLastPathComponent();
 				
 				// adjust available buttons
-				btnIdentify.setEnabled(o instanceof Track && AcoustIdUtil.getInstance().isAvailable());
-				btnTest.setEnabled(o instanceof Track || o instanceof Album);
-
+				btnIdentifyTrack.setEnabled(o instanceof Track && AcoustIdUtil.getInstance().isAvailable());
+//				btnTest.setEnabled(o instanceof Track || o instanceof Album);
+				btnSearchArtwork.setEnabled(o instanceof Track || o instanceof Album);
+				btnEditTags.setEnabled(o instanceof Track || o instanceof Album);
+				btnOpenLocation.setEnabled((o instanceof Track || o instanceof Album) && Desktop.isDesktopSupported());
+												
 				if(o instanceof Track){
 					trackDetailsPanel.setTrack((Track)o);
 				}
@@ -343,7 +362,7 @@ public class CoverFinder
 		mntmSettings = new JMenuItem("Settings");
 		mntmSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				doSettings(e);
+				doSettings();
 			}
 		});
 		mnSettings.add(mntmSettings);
@@ -358,6 +377,28 @@ public class CoverFinder
 			}
 		});
 		mnHelp.add(mntmAbout);
+	}
+
+	protected void doOpenLocation() {
+		Object o = panelTree.getSelectedItem();
+		if(o != null && Desktop.isDesktopSupported()){																		
+			if(o instanceof Track){
+				try {
+					Desktop.getDesktop().open(new File(((Track)o).getFilesystemDir()));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else if(o instanceof Album){
+				try {
+					Desktop.getDesktop().open(new File(((Album)o).getFilesystemDir()));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}		
 	}
 
 	protected void doTagEncodingChanged() {
@@ -537,10 +578,16 @@ System.out.println("will scan " + path);
 	}
 
 	SettingsDialog settingsDlg;
-	protected void doSettings(ActionEvent e) {
+	protected void doSettings() {
 		if(settingsDlg == null){
 			settingsDlg = new SettingsDialog(frmCoverFinder);
 			settingsDlg.setLocationRelativeTo(frmCoverFinder.getContentPane());
+			settingsDlg.addPropertyChangeListener(SettingsDialog.SETTINGS_SAVED_PROPERTY, new PropertyChangeListener() {				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {					
+					doRescanLibrary();
+				}
+			});
 		}
 		settingsDlg.setVisible(true);
 	}
@@ -615,15 +662,20 @@ System.out.println("will scan " + path);
 	}	
 	
 	private static IImageSearchEngine searchEngine = null;
-	private JButton btnTest;
+//	private JButton btnTest;
 	private StatusBarPanel panelStatusBar;
 	private JMenuItem mntmRescanLibrary;
-	private JButton btnIdentify;
+	private JButton btnIdentifyTrack;
 	private JLabel lblTagsEncoding;
 	private JComboBox comboBoxTagEncoding;
 	private ArrayList<Locale> locales;
 	private TrackDetailsPanel trackDetailsPanel;
 	private JSplitPane splitPane;
+	private JButton btnEditTags;
+	private JButton btnOpenLocation;
+
+
+	private JButton btnSearchArtwork;
 	
 	public static IImageSearchEngine getSearchEngine(){
 		
