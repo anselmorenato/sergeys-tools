@@ -2,8 +2,10 @@ package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -87,8 +89,14 @@ public class CoverFinder
 					
 					// set size and position of main window									
 					if(Settings.getInstance().getWindowLocation() == null){
-						//Dimension desktop = Toolkit.getDefaultToolkit().getScreenSize();
-						
+						Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+						int w = screen.width / 5;
+						int h = screen.height / 5;
+						Dimension size = new Dimension(w * 3, h * 3);
+						Point loc = new Point(w, h);
+						mainWindow.frmCoverFinder.setLocation(loc);
+						mainWindow.frmCoverFinder.setSize(size);
+						mainWindow.splitPane.setDividerLocation(w * 2);
 					}
 					else{
 						mainWindow.frmCoverFinder.setLocation(Settings.getInstance().getWindowLocation());
