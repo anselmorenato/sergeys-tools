@@ -65,8 +65,8 @@ public class EditTagsDialog extends JDialog {
 		
 		this.actionListener = actionListener;
 		
-		setTitle("Edit tags");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(EditTagsDialog.class.getResource("/images/icon.png")));
+		setTitle(Messages.getString("EditTagsDialog.EditTags")); //$NON-NLS-1$
+		setIconImage(Toolkit.getDefaultToolkit().getImage(EditTagsDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModal(true);
 		setBounds(100, 100, 488, 147);
@@ -76,7 +76,7 @@ public class EditTagsDialog extends JDialog {
 		SpringLayout sl_contentPanel = new SpringLayout();
 		contentPanel.setLayout(sl_contentPanel);
 		
-		JLabel lblArtist = new JLabel("Artist:");
+		JLabel lblArtist = new JLabel(Messages.getString("EditTagsDialog.Artist")); //$NON-NLS-1$
 		lblArtist.setHorizontalAlignment(SwingConstants.TRAILING);
 		contentPanel.add(lblArtist);
 		
@@ -88,7 +88,7 @@ public class EditTagsDialog extends JDialog {
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, lblArtist, 6, SpringLayout.NORTH, txtArtist);
 		sl_contentPanel.putConstraint(SpringLayout.EAST, lblArtist, -6, SpringLayout.WEST, txtArtist);
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, txtArtist, 4, SpringLayout.NORTH, contentPanel);
-		txtArtist.setText("Artist");
+		txtArtist.setText("Artist"); //$NON-NLS-1$
 		contentPanel.add(txtArtist);
 		txtArtist.setColumns(30);
 		
@@ -97,7 +97,7 @@ public class EditTagsDialog extends JDialog {
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, txtTitle, 3, SpringLayout.SOUTH, txtArtist);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, txtTitle, 115, SpringLayout.WEST, contentPanel);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, txtArtist, 0, SpringLayout.WEST, txtTitle);
-		txtTitle.setText("Title");
+		txtTitle.setText("Title"); //$NON-NLS-1$
 		contentPanel.add(txtTitle);
 		txtTitle.setColumns(30);
 		{
@@ -105,24 +105,24 @@ public class EditTagsDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton btnSave = new JButton("Save");
+				JButton btnSave = new JButton(Messages.getString("EditTagsDialog.Save")); //$NON-NLS-1$
 				btnSave.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doSave();
 					}
 				});
-				btnSave.setActionCommand("OK");
+				btnSave.setActionCommand("OK"); //$NON-NLS-1$
 				buttonPane.add(btnSave);
 				getRootPane().setDefaultButton(btnSave);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton(Messages.getString("EditTagsDialog.Cancel")); //$NON-NLS-1$
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doCancel();
 					}
 				});
-				cancelButton.setActionCommand("Cancel");
+				cancelButton.setActionCommand("Cancel"); //$NON-NLS-1$
 				buttonPane.add(cancelButton);
 			}
 		}
@@ -133,12 +133,12 @@ public class EditTagsDialog extends JDialog {
 	}
 		
 	protected void doSave() {
-		String message = "";
+		String message = ""; //$NON-NLS-1$
 		if(this.musicItem instanceof Album){
-			message = String.format("Update %d file(s) in selected album?", ((Album)musicItem).getChildCount());
+			message = String.format(Messages.getString("EditTagsDialog.UpdateFiles"), ((Album)musicItem).getChildCount()); //$NON-NLS-1$
 		}
 		else if(this.musicItem instanceof Track){
-			message = String.format("Update file %s ?", ((Track)musicItem).getFile().getAbsolutePath());
+			message = String.format(Messages.getString("EditTagsDialog.UpdateFile"), ((Track)musicItem).getFile().getAbsolutePath()); //$NON-NLS-1$
 		}		
 		
 		if(Settings.getInstance().isConfirmFileEdit()){
@@ -164,7 +164,7 @@ public class EditTagsDialog extends JDialog {
 	}
 	
 	MusicItem musicItem;
-	private JLabel lblTitle = new JLabel("<MusicItem> title:");
+	private JLabel lblTitle = new JLabel("<MusicItem> title:"); //$NON-NLS-1$
 	
 	public void setMusicItem(MusicItem musicItem){
 		setMusicItem(musicItem, musicItem.getArtist(), musicItem.getTitle());
@@ -174,10 +174,10 @@ public class EditTagsDialog extends JDialog {
 		this.musicItem = musicItem;
 		
 		if(musicItem instanceof Album){
-			lblTitle.setText("Album title:");
+			lblTitle.setText(Messages.getString("EditTagsDialog.AlbumTitle")); //$NON-NLS-1$
 		}
 		else if(musicItem instanceof Track){
-			lblTitle.setText("Track title:");
+			lblTitle.setText(Messages.getString("EditTagsDialog.TrackTitle")); //$NON-NLS-1$
 		}
 		
 		txtArtist.setText(newArtist);

@@ -11,9 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.zip.GZIPOutputStream;
@@ -178,7 +176,7 @@ System.out.println("writing to " + targetFile);
 		return fp;
 	}
 	
-	private String requestAcoustId(Fingerprint fp){
+	private String requestAcoustId(Fingerprint fp) throws IdentifyTrackException{
 		// http://acoustid.org/webservice
 		
 		StringBuilder sb = new StringBuilder();
@@ -227,39 +225,30 @@ System.out.println("writing to " + targetFile);
 			
 			return responseText.toString();
 		}
-		catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
+		catch (Exception e) {
 			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new IdentifyTrackException(e);
 		}
-		
-		return null;
 	}
 	
-	@SuppressWarnings("unused")
-	private String requestTest(){
-		// test response
-		StringBuilder builder = new StringBuilder();
-		String line;
-		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/resources/xmlresponse.xml")));
-		try {
-			while((line = reader.readLine()) != null) {
-				builder.append(line);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return builder.toString();
-	}
+//	private String requestTest(){
+//		// test response
+//		StringBuilder builder = new StringBuilder();
+//		String line;
+//		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/resources/xmlresponse.xml")));
+//		try {
+//			while((line = reader.readLine()) != null) {
+//				builder.append(line);
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		return builder.toString();
+//	}
 	
-	public Collection<IdentifyTrackResult> identify(Fingerprint fp){
+	public Collection<IdentifyTrackResult> identify(Fingerprint fp) throws IdentifyTrackException{
 		Collection<IdentifyTrackResult> result = null; 
 		
 		String xml = requestAcoustId(fp);

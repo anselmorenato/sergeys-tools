@@ -44,8 +44,8 @@ public class IdentifyTrackDialog extends JDialog {
 		this.track = track;
 		this.actionListener = actionListener;
 		
-		setIconImage(Toolkit.getDefaultToolkit().getImage(IdentifyTrackDialog.class.getResource("/images/icon.png")));
-		setTitle("Identify track");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(IdentifyTrackDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
+		setTitle(Messages.getString("IdentifyTrackDialog.IdentifyTrack")); //$NON-NLS-1$
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModal(true);
 		setBounds(100, 100, 593, 233);
@@ -55,24 +55,24 @@ public class IdentifyTrackDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Update track");
+				JButton okButton = new JButton(Messages.getString("IdentifyTrackDialog.UpdateTrack")); //$NON-NLS-1$
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doOK();
 					}
 				});
-				okButton.setActionCommand("OK");
+				okButton.setActionCommand("OK"); //$NON-NLS-1$
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton(Messages.getString("IdentifyTrackDialog.Cancel")); //$NON-NLS-1$
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doCancel();
 					}
 				});
-				cancelButton.setActionCommand("Cancel");
+				cancelButton.setActionCommand("Cancel"); //$NON-NLS-1$
 				buttonPane.add(cancelButton);
 			}
 		}
@@ -117,7 +117,7 @@ public class IdentifyTrackDialog extends JDialog {
 			 */
 			private static final long serialVersionUID = 1L;
 
-			private String[] columnName = { "Choose", "Score", "Title", "Artist", "Link" };
+			private String[] columnName = { Messages.getString("IdentifyTrackDialog.Choose"), Messages.getString("IdentifyTrackDialog.Score"), Messages.getString("IdentifyTrackDialog.Title"), Messages.getString("IdentifyTrackDialog.Artist"), Messages.getString("IdentifyTrackDialog.Link") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 			private Class<?>[] columnClass = { Boolean.class, String.class, String.class, String.class, String.class };
 			
 			//private int checkedRow = 0;
@@ -192,7 +192,7 @@ public class IdentifyTrackDialog extends JDialog {
 			@Override
 			protected void setValue(Object value) {
 				// simulate hyperlink				
-				setText(String.format("<html><a href=\"\">details</a></html>", value));
+				setText(String.format("<html><a href=\"\">"+Messages.getString("IdentifyTrackDialog.Details")+"</a></html>", value)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}});
 		
 		tableResults.addMouseListener(new MouseAdapter() {
@@ -206,7 +206,7 @@ public class IdentifyTrackDialog extends JDialog {
 					String mbid = (String)tableResults.getValueAt(row, col);
 					
 					try {
-						Desktop.getDesktop().browse(new URI(String.format("http://musicbrainz.org/recording/%s", mbid)));
+						Desktop.getDesktop().browse(new URI(String.format("http://musicbrainz.org/recording/%s", mbid))); //$NON-NLS-1$
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

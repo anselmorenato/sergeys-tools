@@ -2,10 +2,8 @@ package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,9 +20,11 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.ServiceLoader;
 
-import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -34,9 +34,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
-import javax.swing.border.EtchedBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -47,8 +47,6 @@ import org.sergeys.coverfinder.logic.IImageSearchEngine;
 import org.sergeys.coverfinder.logic.IProgressWatcher;
 import org.sergeys.coverfinder.logic.IdentifyTrackResult;
 import org.sergeys.coverfinder.logic.IdentifyTrackWorker;
-import org.sergeys.coverfinder.logic.ImageSearchRequest;
-import org.sergeys.coverfinder.logic.ImageSearchResult;
 import org.sergeys.coverfinder.logic.Mp3Utils;
 import org.sergeys.coverfinder.logic.MusicItem;
 import org.sergeys.coverfinder.logic.Settings;
@@ -56,8 +54,6 @@ import org.sergeys.coverfinder.logic.Track;
 import org.sergeys.coverfinder.ui.EditTagsDialog.EditTagsEvent;
 import org.sergeys.coverfinder.ui.ImageDetailsDialog.EditImageEvent;
 import org.sergeys.library.swing.DisabledPanel;
-import org.sergeys.library.swing.ScaledImage;
-import javax.swing.ImageIcon;
 
 public class CoverFinder  
 {	
@@ -72,7 +68,7 @@ public class CoverFinder
 				try {
 					
 					// redirect outs to log files
-					File logfile = new File(Settings.getSettingsDirPath() + File.separator + "output.log");
+					File logfile = new File(Settings.getSettingsDirPath() + File.separator + "output.log"); //$NON-NLS-1$
 					if(logfile.exists()){
 						logfile.delete();
 					}
@@ -80,7 +76,7 @@ public class CoverFinder
 //					System.setOut(ps);					
 //					System.setErr(ps);
 					
-					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
 					
 					Locale l = new Locale(Settings.getInstance().getLanguage());
 					//Locale l = new Locale("ru");
@@ -112,7 +108,7 @@ public class CoverFinder
 					mainWindow.frmCoverFinder.setVisible(true);
 					
 					if(Settings.getInstance().getLibraryPaths().isEmpty()){
-						JOptionPane.showMessageDialog(mainWindow.frmCoverFinder, "Please edit settings and add your music folders");
+						JOptionPane.showMessageDialog(mainWindow.frmCoverFinder, Messages.getString("CoverFinder.PleaseEditSettings")); //$NON-NLS-1$
 						mainWindow.doSettings();
 					}
 					else{
@@ -205,8 +201,8 @@ public class CoverFinder
 	 */
 	private void initialize() {
 		frmCoverFinder = new JFrame();
-		frmCoverFinder.setTitle("Cover Finder");
-		frmCoverFinder.setIconImage(Toolkit.getDefaultToolkit().getImage(CoverFinder.class.getResource("/images/icon.png")));
+		frmCoverFinder.setTitle("Cover Finder"); //$NON-NLS-1$
+		frmCoverFinder.setIconImage(Toolkit.getDefaultToolkit().getImage(CoverFinder.class.getResource("/images/icon.png"))); //$NON-NLS-1$
 		frmCoverFinder.setBounds(100, 100, 450, 300);
 		frmCoverFinder.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -216,8 +212,8 @@ public class CoverFinder
 		dPanelTop = new DisabledPanel(panelTop);
 		frmCoverFinder.getContentPane().add(dPanelTop, BorderLayout.NORTH);
 		
-		btnSearchArtwork = new JButton("Search artwork");
-		btnSearchArtwork.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/image.png")));
+		btnSearchArtwork = new JButton(Messages.getString("CoverFinder.SearchArtwork")); //$NON-NLS-1$
+		btnSearchArtwork.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/image.png"))); //$NON-NLS-1$
 		btnSearchArtwork.setEnabled(false);
 		btnSearchArtwork.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -226,8 +222,8 @@ public class CoverFinder
 		});
 		panelTop.add(btnSearchArtwork);
 		
-		btnEditTags = new JButton("Edit tags");
-		btnEditTags.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/kedit.png")));
+		btnEditTags = new JButton(Messages.getString("CoverFinder.EditTags")); //$NON-NLS-1$
+		btnEditTags.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/kedit.png"))); //$NON-NLS-1$
 		btnEditTags.setEnabled(false);
 		btnEditTags.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -245,8 +241,8 @@ public class CoverFinder
 //		btnTest.setEnabled(false);
 		
 		
-		btnIdentifyTrack = new JButton("Identify track");
-		btnIdentifyTrack.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/cdaudio_unmount.png")));
+		btnIdentifyTrack = new JButton(Messages.getString("CoverFinder.IdentifyTrack")); //$NON-NLS-1$
+		btnIdentifyTrack.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/cdaudio_unmount.png"))); //$NON-NLS-1$
 		btnIdentifyTrack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doIdentify();
@@ -256,8 +252,8 @@ public class CoverFinder
 		btnIdentifyTrack.setEnabled(false);
 		panelTop.add(btnEditTags);
 		
-		btnOpenLocation = new JButton("Open location");
-		btnOpenLocation.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/my_docs.png")));
+		btnOpenLocation = new JButton(Messages.getString("CoverFinder.OpenLocation")); //$NON-NLS-1$
+		btnOpenLocation.setIcon(new ImageIcon(CoverFinder.class.getResource("/images/my_docs.png"))); //$NON-NLS-1$
 		btnOpenLocation.setEnabled(false);
 		btnOpenLocation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -266,14 +262,14 @@ public class CoverFinder
 		});
 		panelTop.add(btnOpenLocation);
 		
-		lblTagsEncoding = new JLabel("Tags encoding:");
+		lblTagsEncoding = new JLabel(Messages.getString("CoverFinder.TagsEncoding")); //$NON-NLS-1$
 		panelTop.add(lblTagsEncoding);
 		
 		comboBoxTagEncoding = new JComboBox();
 		
 		panelTop.add(comboBoxTagEncoding);		
 		locales = new ArrayList<Locale>();
-		comboBoxTagEncoding.addItem("do not change");
+		comboBoxTagEncoding.addItem(Messages.getString("CoverFinder.DoNotChange")); //$NON-NLS-1$
 		comboBoxTagEncoding.setSelectedIndex(0);
 		locales.add(null);
 		for(Object lang: Mp3Utils.getInstance().getDecodingLanguages()){
@@ -327,24 +323,24 @@ public class CoverFinder
 										
 		
 		panelStatusBar = new StatusBarPanel();
-		panelStatusBar.setMessage("Ready");
+		panelStatusBar.setMessage(Messages.getString("CoverFinder.Ready")); //$NON-NLS-1$
 		panelStatusBar.setWorking(false);
 		frmCoverFinder.getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
 		
 		menuBar = new JMenuBar();
 		frmCoverFinder.setJMenuBar(menuBar);
 		
-		mnNewMenu = new JMenu("File");
+		mnNewMenu = new JMenu(Messages.getString("CoverFinder.File")); //$NON-NLS-1$
 		menuBar.add(mnNewMenu);
 		
-		mntmExit = new JMenuItem("Exit");
+		mntmExit = new JMenuItem(Messages.getString("CoverFinder.Exit")); //$NON-NLS-1$
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doExit();
 			}
 		});
 		
-		mntmRescanLibrary = new JMenuItem("Rescan library");
+		mntmRescanLibrary = new JMenuItem(Messages.getString("CoverFinder.RescanLibrary")); //$NON-NLS-1$
 		mntmRescanLibrary.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				doRescanLibrary();
@@ -353,13 +349,15 @@ public class CoverFinder
 		mnNewMenu.add(mntmRescanLibrary);
 		mnNewMenu.add(mntmExit);
 		
-		mnSettings = new JMenu("Settings");
+		mnSettings = new JMenu(Messages.getString("CoverFinder.Settings")); //$NON-NLS-1$
 		menuBar.add(mnSettings);
 		
-		mnLanguage = new JMenu("Language");
+		mnLanguage = new JMenu(Messages.getString("CoverFinder.Language")); //$NON-NLS-1$
 		mnSettings.add(mnLanguage);
 		
-		mntmSettings = new JMenuItem("Settings");
+		createLanguagesMenu(mnLanguage);
+		
+		mntmSettings = new JMenuItem(Messages.getString("CoverFinder.Settings")); //$NON-NLS-1$
 		mntmSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doSettings();
@@ -367,10 +365,10 @@ public class CoverFinder
 		});
 		mnSettings.add(mntmSettings);
 		
-		mnHelp = new JMenu("Help");
+		mnHelp = new JMenu(Messages.getString("CoverFinder.Help")); //$NON-NLS-1$
 		menuBar.add(mnHelp);
 		
-		mntmAbout = new JMenuItem("About");
+		mntmAbout = new JMenuItem(Messages.getString("CoverFinder.About")); //$NON-NLS-1$
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doAbout(e);
@@ -445,7 +443,7 @@ public class CoverFinder
 				public void progressComplete(Collection<IdentifyTrackResult> items, Stage stage) {
 					dPanelTop.setEnabled(true);
 					dPanelCenter.setEnabled(true);
-					panelStatusBar.setMessage("OK", false);
+					panelStatusBar.setMessage("OK", false); //$NON-NLS-1$
 					
 					if(items != null){
 						if(items.size() > 0){
@@ -455,7 +453,7 @@ public class CoverFinder
 							dlg.setVisible(true);
 						}
 						else{
-							JOptionPane.showMessageDialog(frmCoverFinder, "Track is not known at acoustid.org");
+							JOptionPane.showMessageDialog(frmCoverFinder, Messages.getString("CoverFinder.TrackIsNotKnown")); //$NON-NLS-1$
 						}
 					}					
 				}
@@ -467,12 +465,19 @@ public class CoverFinder
 
 				@Override
 				public void reportException(Throwable ex) {
-					JOptionPane.showMessageDialog(frmCoverFinder, String.format("Failed to identify track:\n%s", ex.getLocalizedMessage()));
+					String message;
+					if(ex.getCause() != null){
+						message = String.format(Messages.getString("CoverFinder.FailedToIdentifyTrack2"), ex.getLocalizedMessage(), ex.getCause().getLocalizedMessage()); //$NON-NLS-1$
+					}
+					else{
+						message = String.format(Messages.getString("CoverFinder.FailedToIdentifyTrack1"), ex.getLocalizedMessage()); //$NON-NLS-1$
+					}
+					JOptionPane.showMessageDialog(frmCoverFinder, message);
 				}});
 			
 			dPanelTop.setEnabled(false);
 			dPanelCenter.setEnabled(false);
-			panelStatusBar.setMessage("Identifying track...", true);
+			panelStatusBar.setMessage(Messages.getString("CoverFinder.IdentifyingTrack"), true); //$NON-NLS-1$
 			
 			worker.execute();
 		}
@@ -489,10 +494,10 @@ public class CoverFinder
 		
 		Object o = panelTree.getSelectedItem();
 		if(o instanceof Album){
-			query = String.format("%s %s", ((Album)o).getArtist(), ((Album)o).getTitle());
+			query = String.format("%s %s", ((Album)o).getArtist(), ((Album)o).getTitle()); //$NON-NLS-1$
 		}
 		else if(o instanceof Track){
-			query = String.format("%s %s", ((Track)o).getArtist(), ((Track)o).getAlbumTitle());
+			query = String.format("%s %s", ((Track)o).getArtist(), ((Track)o).getAlbumTitle()); //$NON-NLS-1$
 		}
 		else{
 			return;
@@ -518,13 +523,13 @@ public class CoverFinder
 		
 		ArrayList<File> paths = new ArrayList<File>();
 		for(String path: Settings.getInstance().getLibraryPaths()){
-System.out.println("will scan " + path);			
+System.out.println("will scan " + path);			 //$NON-NLS-1$
 			paths.add(new File(path));
 		}		
 		
 		dPanelTop.setEnabled(false);
 		dPanelCenter.setEnabled(false);
-		panelStatusBar.setMessage("Scanning library...", true);
+		panelStatusBar.setMessage(Messages.getString("CoverFinder.ScanningLibrary"), true); //$NON-NLS-1$
 		
 		FileCollectorWorker fcw = new FileCollectorWorker(paths, new IProgressWatcher<Track>(){
 
@@ -536,10 +541,10 @@ System.out.println("will scan " + path);
 			public void updateProgress(long count, Stage stage) {
 				switch(stage){
 					case Collecting:
-						panelStatusBar.setMessage("Collected: " + count);
+						panelStatusBar.setMessage(Messages.getString("CoverFinder.Collected") + count); //$NON-NLS-1$
 						break;
 					case Analyzing:
-						panelStatusBar.setMessage("Analyzed: " + count);
+						panelStatusBar.setMessage(Messages.getString("CoverFinder.Analyzed") + count); //$NON-NLS-1$
 						break;
 				}
 			}
@@ -552,10 +557,10 @@ System.out.println("will scan " + path);
 				if(items != null){
 														
 					panelTree.update();					
-					panelStatusBar.setMessage("Found files: " + items.size(), false);
+					panelStatusBar.setMessage(Messages.getString("CoverFinder.FoundFiles") + items.size(), false); //$NON-NLS-1$
 				}
 				else{
-					panelStatusBar.setMessage("", false);
+					panelStatusBar.setMessage("", false); //$NON-NLS-1$
 				}
 			}
 
@@ -566,15 +571,19 @@ System.out.println("will scan " + path);
 
 			@Override
 			public void reportException(Throwable ex) {
-				JOptionPane.showMessageDialog(frmCoverFinder, String.format("Failed to scan music files:\n%s", ex.getLocalizedMessage()));				
+				JOptionPane.showMessageDialog(frmCoverFinder, String.format(Messages.getString("CoverFinder.FailedToScanMusicFiles"), ex.getLocalizedMessage()));				 //$NON-NLS-1$
 			}});
 		
 		fcw.execute();
 	}
 	
+	AboutDialog aboutDialog;
 	protected void doAbout(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		if(aboutDialog == null){
+			aboutDialog = new AboutDialog(frmCoverFinder);
+			aboutDialog.setLocationRelativeTo(frmCoverFinder);
+		}
+		aboutDialog.setVisible(true);
 	}
 
 	SettingsDialog settingsDlg;
@@ -610,46 +619,46 @@ System.out.println("will scan " + path);
 		System.exit(0);
 	}
 
-	protected void doTest() {
-		
-		String query = "led zeppelin \"houses of the holy\"";//txtQuery.getText();
-		
-		if(query.isEmpty()){
-			return;
-		}
-				
-		Settings.getInstance().setSearchEngineName("Bing");
-		//Settings.getInstance().setSearchEngineName("Google Image Search");
-		IImageSearchEngine engine = CoverFinder.getSearchEngine();
-		System.out.println("search via " + engine.getName());
-		
-		ImageSearchRequest r = new ImageSearchRequest();
-		r.setQuery(query);
-		Collection<ImageSearchResult> res = engine.search(r);
-		for(ImageSearchResult item: res){
-			System.out.println(item.getWidth() + "x" + item.getHeight() + " " + item.getImageUrl());
-		}
-				
-		
-		//panelJunk.removeAll();
-		Image img = null;
-		try{
-			for(ImageSearchResult item: res){
-				img = ImageIO.read(item.getThumbnailUrl());
-				
-				ScaledImage scaledImage = new ScaledImage(img, false);
-				
-				scaledImage.setPreferredSize(new Dimension(100, 100));
-				scaledImage.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-										
-				//panelJunk.add(scaledImage);
-				scaledImage.invalidate();
-			}	
-		}
-		catch(Exception ex){
-			ex.printStackTrace();
-		}
-	}
+//	protected void doTest() {
+//		
+//		String query = "led zeppelin \"houses of the holy\"";//txtQuery.getText();
+//		
+//		if(query.isEmpty()){
+//			return;
+//		}
+//				
+//		Settings.getInstance().setSearchEngineName("Bing");
+//		//Settings.getInstance().setSearchEngineName("Google Image Search");
+//		IImageSearchEngine engine = CoverFinder.getSearchEngine();
+//		System.out.println("search via " + engine.getName());
+//		
+//		ImageSearchRequest r = new ImageSearchRequest();
+//		r.setQuery(query);
+//		Collection<ImageSearchResult> res = engine.search(r);
+//		for(ImageSearchResult item: res){
+//			System.out.println(item.getWidth() + "x" + item.getHeight() + " " + item.getImageUrl());
+//		}
+//				
+//		
+//		//panelJunk.removeAll();
+//		Image img = null;
+//		try{
+//			for(ImageSearchResult item: res){
+//				img = ImageIO.read(item.getThumbnailUrl());
+//				
+//				ScaledImage scaledImage = new ScaledImage(img, false);
+//				
+//				scaledImage.setPreferredSize(new Dimension(100, 100));
+//				scaledImage.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+//										
+//				//panelJunk.add(scaledImage);
+//				scaledImage.invalidate();
+//			}	
+//		}
+//		catch(Exception ex){
+//			ex.printStackTrace();
+//		}
+//	}
 	
 	public static LinkedHashSet<IImageSearchEngine> getSearchEngines(){
 		LinkedHashSet<IImageSearchEngine> engines = new LinkedHashSet<IImageSearchEngine>();
@@ -691,4 +700,46 @@ System.out.println("will scan " + path);
 		
 		return searchEngine;
 	}
+	
+	private void createLanguagesMenu(JMenu parent){
+		
+		Properties p = new Properties();
+		try {
+			p.load(getClass().getResourceAsStream("/resources/lang/supportedLanguages.properties")); //$NON-NLS-1$
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+				
+		String supported = p.getProperty("supported", "en"); //$NON-NLS-1$ //$NON-NLS-2$
+		String[] lang = supported.split(","); //$NON-NLS-1$
+		
+		ButtonGroup group = new ButtonGroup();
+		
+		for(int i = 0; i < lang.length; i++){
+			Locale loc = new Locale(lang[i]);
+			JRadioButtonMenuItem mi = new JRadioButtonMenuItem(loc.getDisplayLanguage());
+			String s = Settings.getInstance().getLanguage();
+			
+			if(s.equals(loc.getLanguage())){
+				mi.setSelected(true);
+			}
+			mi.setActionCommand(loc.getLanguage());
+			mi.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					doLanguageSelected(e);
+				}
+			});
+			
+			group.add(mi);
+			
+			parent.add(mi);
+		}
+	}
+
+	protected void doLanguageSelected(ActionEvent e) {
+		Settings.getInstance().setLanguage(e.getActionCommand());
+		JOptionPane.showMessageDialog(frmCoverFinder, Messages.getString("CoverFinder.PleaseRestartAppForLang"));		 //$NON-NLS-1$
+	}
+
 }

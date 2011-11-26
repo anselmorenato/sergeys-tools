@@ -28,9 +28,6 @@ public class Settings {
 	
 	public static final String MP3_BACKUP_SUFFIX = "cfbackup";
 	
-	// action names for events
-//	public static final String COMMAND_SAVE_SETTINGS = "COMMAND_SAVE_SETTINGS";
-	
 	private static String settingsDirPath;
 	private static String settingsFilePath; 	
 	
@@ -46,10 +43,7 @@ public class Settings {
 	private Point windowLocation = null;
 	private Dimension windowSize = null;
 	private String language; // two-letter language code for Locale class
-	//private CompareFilesMethod compareFilesMethod = CompareFilesMethod.Fast;
 	private DetectFilesMethod detectFilesMethod = DetectFilesMethod.Extension;
-	//private Collection<File> libraryPaths = Collections.synchronizedCollection(new ArrayList<File>());
-	//private Collection<String> libraryPaths = new ArrayList<String>();
 	private Set<String> libraryPaths = new HashSet<String>();
 	private String searchEngineName;
 	private boolean confirmFileEdit = true;
@@ -59,8 +53,7 @@ public class Settings {
 	
 	private Properties properties = new Properties();
 	private Date savedVersion = new Date(0);
-	
-	
+		
 	
 	// singleton
 	// public constructor for XMLEncoder
@@ -268,6 +261,10 @@ public class Settings {
 
 	public void setSplitterPosition(int splitterPosition) {
 		this.splitterPosition = splitterPosition;
+	}
+
+	public String getVersionDisplay() {
+		return properties.getProperty("version.display", "");
 	}
 
 }

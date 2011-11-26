@@ -17,7 +17,7 @@ import org.sergeys.library.swing.DirTreePanel;
 
 public class DirSelectorDialog extends JDialog {
 
-	public static final String DIRECTORY_SELECTED = "DIRECTORY_SELECTED";
+	public static final String DIRECTORY_SELECTED = "DIRECTORY_SELECTED"; //$NON-NLS-1$
 	
 	/**
 	 * 
@@ -34,15 +34,15 @@ public class DirSelectorDialog extends JDialog {
 		super(owner);
 		
 		setModalityType(ModalityType.APPLICATION_MODAL);
-		setTitle("Select directory");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(DirSelectorDialog.class.getResource("/images/icon.png")));
+		setTitle(Messages.getString("DirSelectorDialog.SelectDirectory")); //$NON-NLS-1$
+		setIconImage(Toolkit.getDefaultToolkit().getImage(DirSelectorDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
 		setBounds(100, 100, 450, 462);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
-			dirTreePanel = new DirTreePanel(File.listRoots(), null, "My Machine", "My Home Folder");
+			dirTreePanel = new DirTreePanel(File.listRoots(), null, Messages.getString("DirSelectorDialog.MyMachine"), Messages.getString("DirSelectorDialog.MyHomeFolder")); //$NON-NLS-1$ //$NON-NLS-2$
 			contentPanel.add(dirTreePanel);
 		}
 		{
@@ -50,24 +50,24 @@ public class DirSelectorDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				JButton okButton = new JButton(Messages.getString("DirSelectorDialog.OK")); //$NON-NLS-1$
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doOK();
 					}
 				});
-				okButton.setActionCommand("OK");
+				okButton.setActionCommand("OK"); //$NON-NLS-1$
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton(Messages.getString("DirSelectorDialog.Cancel")); //$NON-NLS-1$
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doCancel();
 					}
 				});
-				cancelButton.setActionCommand("Cancel");
+				cancelButton.setActionCommand("Cancel"); //$NON-NLS-1$
 				buttonPane.add(cancelButton);
 			}
 		}

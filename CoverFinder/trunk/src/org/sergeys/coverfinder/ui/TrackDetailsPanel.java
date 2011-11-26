@@ -25,7 +25,7 @@ public class TrackDetailsPanel extends JPanel {
 //		ScaledImage scimgArtwork = new ScaledImage((Image) null, false);
 //		add(scimgArtwork, BorderLayout.CENTER);
 //		
-		JLabel lblMessage = new JLabel("No artwork");
+		JLabel lblMessage = new JLabel(Messages.getString("TrackDetailsPanel.NoArtwork")); //$NON-NLS-1$
 		lblMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblMessage, BorderLayout.CENTER);
 	}
@@ -38,7 +38,7 @@ public class TrackDetailsPanel extends JPanel {
 			add(scimgArtwork, BorderLayout.CENTER);			
 		}
 		else{
-			JLabel lblMessage = new JLabel("No artwork");
+			JLabel lblMessage = new JLabel(Messages.getString("TrackDetailsPanel.NoArtwork")); //$NON-NLS-1$
 			lblMessage.setHorizontalAlignment(SwingConstants.CENTER);
 			add(lblMessage, BorderLayout.CENTER);			
 		}

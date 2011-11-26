@@ -22,7 +22,7 @@ public class ResultImagePanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static final String SELECTED_IMAGE_PROPERTY = "SELECTED_IMAGE_PROPERTY";
+	public static final String SELECTED_IMAGE_PROPERTY = "SELECTED_IMAGE_PROPERTY"; //$NON-NLS-1$
 	
 	ScaledImage scaledImage;
 	JLabel lblDimension;
@@ -51,11 +51,11 @@ public class ResultImagePanel extends JPanel {
 		add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
-		lblDimension = new JLabel("Dimension");
+		lblDimension = new JLabel(Messages.getString("ResultImagePanel.Dimension")); //$NON-NLS-1$
 		lblDimension.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.add(lblDimension);
 		
-		lblSize = new JLabel("Size");
+		lblSize = new JLabel(Messages.getString("ResultImagePanel.Size")); //$NON-NLS-1$
 		lblSize.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.add(lblSize);
 
@@ -71,8 +71,8 @@ public class ResultImagePanel extends JPanel {
 		this.imgResult = imgResult;
 		
 		scaledImage.setImage(img);
-		lblDimension.setText(String.format("%dx%d", imgResult.getWidth(), imgResult.getHeight()));
-		lblSize.setText((imgResult.getFileSize() > 0) ? String.format("%d bytes", imgResult.getFileSize()) : "");
+		lblDimension.setText(String.format("%dx%d", imgResult.getWidth(), imgResult.getHeight())); //$NON-NLS-1$
+		lblSize.setText((imgResult.getFileSize() > 0) ? String.format(Messages.getString("ResultImagePanel.Bytes"), imgResult.getFileSize()) : ""); //$NON-NLS-1$ //$NON-NLS-2$
 		revalidate();
 	}
 }

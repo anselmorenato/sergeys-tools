@@ -32,10 +32,10 @@ extends JPanel
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static final String MENU_IDENTIFY_TRACK = "MENU_IDENTIFY_TRACK";
-	public static final String MENU_SEARCH_COVER = "MENU_SEARCH_COVER";
-	public static final String MENU_OPEN_LOCATION = "MENU_OPEN_LOCATION";
-	public static final String MENU_EDIT_NAME = "MENU_EDIT_NAME";
+	public static final String MENU_IDENTIFY_TRACK = "MENU_IDENTIFY_TRACK"; //$NON-NLS-1$
+	public static final String MENU_SEARCH_COVER = "MENU_SEARCH_COVER"; //$NON-NLS-1$
+	public static final String MENU_OPEN_LOCATION = "MENU_OPEN_LOCATION"; //$NON-NLS-1$
+	public static final String MENU_EDIT_NAME = "MENU_EDIT_NAME"; //$NON-NLS-1$
 	
 	JScrollPane scrollPane;
 	DefaultMutableTreeNode root;
@@ -58,7 +58,7 @@ extends JPanel
 		scrollPane = new JScrollPane();
 		add(scrollPane, BorderLayout.CENTER);
 		
-		root = new DefaultMutableTreeNode("Artists/Albums/Tracks");
+		root = new DefaultMutableTreeNode(Messages.getString("TrackTreePanel.ArtistsAlbumsTracks")); //$NON-NLS-1$
 		treeTable = new JTreeTable(new TrackTreeModel(root, null));
 		
 		setupTreeTable(treeTable);
@@ -67,22 +67,23 @@ extends JPanel
 		// comment for production.		
 //		add(popupMenu, BorderLayout.EAST);
 		
-		mntmIdentifyTrack = new JMenuItem("Identify track");
-		mntmIdentifyTrack.addActionListener(menuActionListener);
-		mntmIdentifyTrack.setName(MENU_IDENTIFY_TRACK);
-		popupMenu.add(mntmIdentifyTrack);
 				
-		mntmSearchCover = new JMenuItem("Search and set album cover");
+		mntmSearchCover = new JMenuItem(Messages.getString("TrackTreePanel.SerachAndSetCover")); //$NON-NLS-1$
 		mntmSearchCover.addActionListener(menuActionListener);
 		mntmSearchCover.setName(MENU_SEARCH_COVER);
 		popupMenu.add(mntmSearchCover);
+
+		mntmIdentifyTrack = new JMenuItem(Messages.getString("TrackTreePanel.IdentifyTrack")); //$NON-NLS-1$
+		mntmIdentifyTrack.addActionListener(menuActionListener);
+		mntmIdentifyTrack.setName(MENU_IDENTIFY_TRACK);
+		popupMenu.add(mntmIdentifyTrack);
 		
-		mntmEditName = new JMenuItem("Edit tags");
+		mntmEditName = new JMenuItem(Messages.getString("TrackTreePanel.EditTags")); //$NON-NLS-1$
 		mntmEditName.addActionListener(menuActionListener);
 		mntmEditName.setName(MENU_EDIT_NAME);
 		popupMenu.add(mntmEditName);
 		
-		mntmOpenLocation = new JMenuItem("Open location");
+		mntmOpenLocation = new JMenuItem(Messages.getString("TrackTreePanel.OpenLocation")); //$NON-NLS-1$
 		mntmOpenLocation.addActionListener(menuActionListener);
 		mntmOpenLocation.setName(MENU_OPEN_LOCATION);
 		popupMenu.add(mntmOpenLocation);
@@ -158,7 +159,7 @@ extends JPanel
 			Collection<Track> tracks = Database.getInstance().selectTracks(HasCover.AllTracks, 
 					Settings.getInstance().getAudioTagsLanguage(), Settings.getInstance().getLibraryPaths());
 			
-			root = new DefaultMutableTreeNode("Artists/Albums/Tracks");
+			root = new DefaultMutableTreeNode(Messages.getString("TrackTreePanel.ArtistsAlbumsTracks")); //$NON-NLS-1$
 			TrackTreeModel model = new TrackTreeModel(root, tracks);
 			treeTable = new JTreeTable(model);
 			

@@ -47,7 +47,7 @@ implements IImageSearchEngine
 		nextOffset = 0;
 	}
 	
-	private Collection<ImageSearchResult> doRequest(){
+	private Collection<ImageSearchResult> doRequest() throws ImageSearchException{
 		ArrayList<ImageSearchResult> results = new ArrayList<ImageSearchResult>(); 
 				
 		try {
@@ -99,21 +99,21 @@ implements IImageSearchEngine
 			}
 			
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			//e1.printStackTrace();
+			throw new ImageSearchException(e1);
 		} 
 
 		return results;		
 	}
 	
 	@Override
-	public Collection<ImageSearchResult> search(ImageSearchRequest req) {
+	public Collection<ImageSearchResult> search(ImageSearchRequest req) throws ImageSearchException {
 		buildRequest(req.getQuery());
 		return doRequest();
 	}
 
 	@Override
-	public Collection<ImageSearchResult> searchMore() {		
+	public Collection<ImageSearchResult> searchMore() throws ImageSearchException {		
 		return doRequest();
 	}
 

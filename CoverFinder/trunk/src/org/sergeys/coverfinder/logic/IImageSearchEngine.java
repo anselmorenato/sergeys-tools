@@ -7,11 +7,12 @@ public interface IImageSearchEngine {
 	String getDisplayName();
 	String getBranding();
 	
-	Collection<ImageSearchResult> search(ImageSearchRequest req);
+	Collection<ImageSearchResult> search(ImageSearchRequest req) throws ImageSearchException;
 	
 	/**
 	 * Get more results from previous request
 	 * @return
+	 * @throws ImageSearchException 
 	 */
-	Collection<ImageSearchResult> searchMore();
+	Collection<ImageSearchResult> searchMore() throws ImageSearchException;
 }

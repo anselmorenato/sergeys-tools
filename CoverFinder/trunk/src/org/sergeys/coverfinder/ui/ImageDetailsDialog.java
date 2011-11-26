@@ -26,12 +26,9 @@ import org.sergeys.coverfinder.logic.Track;
 
 public class ImageDetailsDialog extends JDialog {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private JLabel lblImage = new JLabel("");
+	private JLabel lblImage = new JLabel(""); //$NON-NLS-1$
 
 	public class EditImageEvent
 	extends ActionEvent
@@ -70,8 +67,8 @@ public class ImageDetailsDialog extends JDialog {
 		this.musicItem = musicItem;
 		//this.actionListener = actionListener;
 		
-		setIconImage(Toolkit.getDefaultToolkit().getImage(ImageDetailsDialog.class.getResource("/images/icon.png")));
-		setTitle("Image Details");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ImageDetailsDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
+		setTitle(Messages.getString("ImageDetailsDialog.ImageDetails")); //$NON-NLS-1$
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModal(true);
 		setBounds(100, 100, 450, 300);
@@ -88,21 +85,21 @@ public class ImageDetailsDialog extends JDialog {
 			contentPanel.add(panelDetails, BorderLayout.SOUTH);
 			panelDetails.setLayout(new GridLayout(2, 2, 10, 0));
 			{
-				JLabel lblTxtDimensions = new JLabel("Dimensions:");
+				JLabel lblTxtDimensions = new JLabel(Messages.getString("ImageDetailsDialog.Dimensions")); //$NON-NLS-1$
 				lblTxtDimensions.setHorizontalAlignment(SwingConstants.RIGHT);
 				panelDetails.add(lblTxtDimensions);
 			}
 			{
-				lblDimensions = new JLabel("");
+				lblDimensions = new JLabel(""); //$NON-NLS-1$
 				panelDetails.add(lblDimensions);
 			}
 			{
-				lblTxtFileSize = new JLabel("File size:");
+				lblTxtFileSize = new JLabel(Messages.getString("ImageDetailsDialog.FileSize")); //$NON-NLS-1$
 				lblTxtFileSize.setHorizontalAlignment(SwingConstants.RIGHT);
 				panelDetails.add(lblTxtFileSize);
 			}
 			{
-				lblFilesize = new JLabel("");
+				lblFilesize = new JLabel(""); //$NON-NLS-1$
 				panelDetails.add(lblFilesize);
 			}
 		}
@@ -111,24 +108,24 @@ public class ImageDetailsDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Set to selected tracks");
+				JButton okButton = new JButton(Messages.getString("ImageDetailsDialog.SetToSelectedTracks")); //$NON-NLS-1$
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doSave();
 					}
 				});
-				okButton.setActionCommand("OK");
+				okButton.setActionCommand("OK"); //$NON-NLS-1$
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton(Messages.getString("ImageDetailsDialog.Cancel")); //$NON-NLS-1$
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doCancel();
 					}
 				});
-				cancelButton.setActionCommand("Cancel");
+				cancelButton.setActionCommand("Cancel"); //$NON-NLS-1$
 				buttonPane.add(cancelButton);
 			}
 		}
@@ -138,9 +135,9 @@ public class ImageDetailsDialog extends JDialog {
 			lblImage.setIcon(new ImageIcon(imgResult.getImage()));
 		}
 		
-		lblDimensions.setText(String.format("%d x %d", imgResult.getWidth(), imgResult.getHeight()));
+		lblDimensions.setText(String.format("%d x %d", imgResult.getWidth(), imgResult.getHeight())); //$NON-NLS-1$
 		if(imgResult.getFileSize() > 0){
-			lblFilesize.setText(String.format("%d bytes", imgResult.getFileSize()));
+			lblFilesize.setText(String.format(Messages.getString("ImageDetailsDialog.NBytes"), imgResult.getFileSize())); //$NON-NLS-1$
 		}
 		else{
 			lblTxtFileSize.setVisible(false);
@@ -156,12 +153,12 @@ public class ImageDetailsDialog extends JDialog {
 	}
 	
 	protected void doSave() {
-		String message = "";
+		String message = ""; //$NON-NLS-1$
 		if(this.musicItem instanceof Album){
-			message = String.format("Update %d file(s) in selected album?", ((Album)musicItem).getChildCount());
+			message = String.format(Messages.getString("ImageDetailsDialog.UpdateFilesInAlbum"), ((Album)musicItem).getChildCount()); //$NON-NLS-1$
 		}
 		else if(this.musicItem instanceof Track){
-			message = String.format("Update file %s ?", ((Track)musicItem).getFile().getAbsolutePath());
+			message = String.format(Messages.getString("ImageDetailsDialog.UpdateFile"), ((Track)musicItem).getFile().getAbsolutePath()); //$NON-NLS-1$
 		}		
 		
 		if(Settings.getInstance().isConfirmFileEdit()){

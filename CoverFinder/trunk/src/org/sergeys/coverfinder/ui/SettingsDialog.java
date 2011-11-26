@@ -29,7 +29,7 @@ import org.sergeys.coverfinder.logic.Settings;
 public class SettingsDialog 
 extends JDialog 
 {
-	public static final String SETTINGS_SAVED_PROPERTY = "SETTINGS_SAVED_PROPERTY";
+	public static final String SETTINGS_SAVED_PROPERTY = "SETTINGS_SAVED_PROPERTY"; //$NON-NLS-1$
 	
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
@@ -49,8 +49,8 @@ extends JDialog
 		super(owner);
 		
 		setModalityType(ModalityType.APPLICATION_MODAL);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(SettingsDialog.class.getResource("/images/icon.png")));
-		setTitle("Settings");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(SettingsDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
+		setTitle(Messages.getString("SettingsDialog.Settings")); //$NON-NLS-1$
 		setBounds(100, 100, 450, 275);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -58,12 +58,12 @@ extends JDialog
 		SpringLayout sl_contentPanel = new SpringLayout();
 		contentPanel.setLayout(sl_contentPanel);
 		
-		JLabel lblLibraryFolders = new JLabel("Music folders:");
+		JLabel lblLibraryFolders = new JLabel(Messages.getString("SettingsDialog.MusicFolders")); //$NON-NLS-1$
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, lblLibraryFolders, 10, SpringLayout.NORTH, contentPanel);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, lblLibraryFolders, 10, SpringLayout.WEST, contentPanel);
 		contentPanel.add(lblLibraryFolders);
 		
-		JButton button = new JButton("+");
+		JButton button = new JButton("+"); //$NON-NLS-1$
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				doAddDirectory();
@@ -74,7 +74,7 @@ extends JDialog
 		sl_contentPanel.putConstraint(SpringLayout.EAST, button, -10, SpringLayout.EAST, contentPanel);
 		contentPanel.add(button);
 		
-		buttonMinus = new JButton("-");
+		buttonMinus = new JButton("-"); //$NON-NLS-1$
 		buttonMinus.setEnabled(false);
 		buttonMinus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -114,12 +114,12 @@ extends JDialog
 		sl_contentPanel.putConstraint(SpringLayout.EAST, imageSearchChooserPanel, 166, SpringLayout.EAST, contentPanel);
 		contentPanel.add(imageSearchChooserPanel);
 		
-		chckbxMakeBackupCopies = new JCheckBox("Make backup copies when changing music files");
+		chckbxMakeBackupCopies = new JCheckBox(Messages.getString("SettingsDialog.MakeBackupCopies")); //$NON-NLS-1$
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, chckbxMakeBackupCopies, 6, SpringLayout.SOUTH, imageSearchChooserPanel);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, chckbxMakeBackupCopies, 0, SpringLayout.WEST, contentPanel);
 		contentPanel.add(chckbxMakeBackupCopies);
 		
-		chckbxConfirmChangesTo = new JCheckBox("Confirm changes to music files");
+		chckbxConfirmChangesTo = new JCheckBox(Messages.getString("SettingsDialog.ConfirmChanges")); //$NON-NLS-1$
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, chckbxConfirmChangesTo, 6, SpringLayout.SOUTH, chckbxMakeBackupCopies);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, chckbxConfirmChangesTo, 0, SpringLayout.WEST, chckbxMakeBackupCopies);
 		contentPanel.add(chckbxConfirmChangesTo);
@@ -139,24 +139,24 @@ extends JDialog
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton saveButton = new JButton("Save");
+				JButton saveButton = new JButton(Messages.getString("SettingsDialog.Save")); //$NON-NLS-1$
 				saveButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doSave();
 					}
 				});
-				saveButton.setActionCommand("OK");
+				saveButton.setActionCommand("OK"); //$NON-NLS-1$
 				buttonPane.add(saveButton);
 				getRootPane().setDefaultButton(saveButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton(Messages.getString("SettingsDialog.Cancel")); //$NON-NLS-1$
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doCancel();
 					}
 				});
-				cancelButton.setActionCommand("Cancel");
+				cancelButton.setActionCommand("Cancel"); //$NON-NLS-1$
 				buttonPane.add(cancelButton);
 			}
 		}

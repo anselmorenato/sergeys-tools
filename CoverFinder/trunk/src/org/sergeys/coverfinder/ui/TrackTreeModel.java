@@ -20,13 +20,13 @@ extends DynamicTreeTableModel
      */
     private static final String[] columnNames =
                 //{ "Name", "Location", "Last Visited", "Created" };
-    	{ "Name", "File name", "Has picture" };
+    	{ Messages.getString("TrackTreeModel.Name"), Messages.getString("TrackTreeModel.FileName"), Messages.getString("TrackTreeModel.HasPicture") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     /**
      * Method names used to access the data to display.
      */
     private static final String[] methodNames =
                 //{ "getName", "getLocation", "getLastVisited","getCreated" };
-    	{ "getName", "getFilename", "isHasPicture" };
+    	{ "getName", "getFilename", "isHasPicture" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     /**
      * Method names used to set the data.
      */

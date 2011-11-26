@@ -74,8 +74,8 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModal(true);
 		
-		setTitle("Search images");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(ImageSearchDialog.class.getResource("/images/icon.png")));
+		setTitle(Messages.getString("ImageSearchDialog.SearchImages")); //$NON-NLS-1$
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ImageSearchDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
 		setBounds(100, 100, 593, 414);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -86,7 +86,7 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 		glass.setLayout(new BorderLayout());
 		JLabel lblProgress = new JLabel();
 		lblProgress.setHorizontalAlignment(SwingConstants.CENTER);
-		lblProgress.setIcon(new ImageIcon(ImageSearchDialog.class.getResource("/images/progress.gif")));
+		lblProgress.setIcon(new ImageIcon(ImageSearchDialog.class.getResource("/images/progress.gif"))); //$NON-NLS-1$
 		glass.add(lblProgress, BorderLayout.CENTER);
 		
 		//getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -104,7 +104,7 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 			panelTop.add(panelQuery, BorderLayout.CENTER);
 			panelTop.add(panelBrand, BorderLayout.SOUTH);
 			
-			lblBranding = new JLabel("branding");
+			lblBranding = new JLabel("branding"); //$NON-NLS-1$
 			panelBrand.add(lblBranding);
 			
 			
@@ -123,7 +123,7 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 				textFieldQuery.setColumns(30);
 			}
 			{
-				JButton btnSearch = new JButton("Search");
+				JButton btnSearch = new JButton(Messages.getString("ImageSearchDialog.Search")); //$NON-NLS-1$
 				btnSearch.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doSearch();
@@ -132,7 +132,7 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 				panelQuery.add(btnSearch);
 			}
 			{
-				btnMore = new JButton("More");
+				btnMore = new JButton(Messages.getString("ImageSearchDialog.More")); //$NON-NLS-1$
 				btnMore.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doSearchMore();
@@ -159,13 +159,13 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton btnClose = new JButton("Close");
+				JButton btnClose = new JButton(Messages.getString("ImageSearchDialog.Close")); //$NON-NLS-1$
 				btnClose.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doClose();
 					}
 				});
-				btnClose.setActionCommand("Cancel");
+				btnClose.setActionCommand(Messages.getString("ImageSearchDialog.Cancel")); //$NON-NLS-1$
 				buttonPane.add(btnClose);
 			}
 		}
@@ -267,7 +267,14 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 
 	@Override
 	public void reportException(Throwable ex) {
-		JOptionPane.showMessageDialog(this, ex.getMessage());
+		String message;
+		if(ex.getCause() != null){
+			message = String.format(Messages.getString("ImageSearchDialog.FailedToSearch2"), ex.getLocalizedMessage(), ex.getCause().getLocalizedMessage()); //$NON-NLS-1$
+		}
+		else{
+			message = String.format(Messages.getString("ImageSearchDialog.FailedToSearch"), ex.getLocalizedMessage()); //$NON-NLS-1$
+		}
+		JOptionPane.showMessageDialog(this, message);
 	}
 
 	@Override

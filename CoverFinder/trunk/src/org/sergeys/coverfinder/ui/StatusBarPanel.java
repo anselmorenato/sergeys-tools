@@ -26,11 +26,11 @@ public class StatusBarPanel extends JPanel {
 		FlowLayout flowLayout = (FlowLayout) getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		
-		lblProgressindicator = new JLabel("");
-		lblProgressindicator.setIcon(new ImageIcon(StatusBarPanel.class.getResource("/images/progress.gif")));
+		lblProgressindicator = new JLabel(""); //$NON-NLS-1$
+		lblProgressindicator.setIcon(new ImageIcon(StatusBarPanel.class.getResource("/images/progress.gif"))); //$NON-NLS-1$
 		add(lblProgressindicator);
 		
-		btnCancel = new JButton("Cancel");
+		btnCancel = new JButton(Messages.getString("StatusBarPanel.Cancel")); //$NON-NLS-1$
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				doCancel();
@@ -38,7 +38,7 @@ public class StatusBarPanel extends JPanel {
 		});
 		add(btnCancel);
 		
-		lblMessage = new JLabel("message");
+		lblMessage = new JLabel("message"); //$NON-NLS-1$
 		add(lblMessage);
 
 	}

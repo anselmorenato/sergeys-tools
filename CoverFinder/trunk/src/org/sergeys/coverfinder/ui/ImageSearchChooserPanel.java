@@ -32,7 +32,7 @@ public class ImageSearchChooserPanel extends JPanel {
 		FlowLayout flowLayout = (FlowLayout) getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		
-		JLabel lblImageSearchMethod = new JLabel("Image search method:");
+		JLabel lblImageSearchMethod = new JLabel(Messages.getString("ImageSearchChooserPanel.ImageSearchMethod")); //$NON-NLS-1$
 		add(lblImageSearchMethod);
 		
 		bg = new ButtonGroup();
