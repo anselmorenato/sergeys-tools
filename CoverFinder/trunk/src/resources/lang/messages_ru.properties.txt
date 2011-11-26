@@ -88,3 +88,6 @@ TrackTreePanel.SerachAndSetCover=Искать обложки
 TrackTreePanel.EditTags=Редактировать теги
 TrackTreePanel.IdentifyTrack=Распознать трек
 TrackTreePanel.ArtistsAlbumsTracks=Артисты/альбомы/треки
+Track.UnknownAlbum=<неизвестный альбом>
+Track.UnknownArtist=<неизвестный артист>
+Track.UnknownTrack=<неизвестный трек>

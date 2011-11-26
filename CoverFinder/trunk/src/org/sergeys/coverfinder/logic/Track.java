@@ -3,13 +3,14 @@ package org.sergeys.coverfinder.logic;
 import java.io.File;
 
 import org.sergeys.coverfinder.logic.Settings.DetectFilesMethod;
+import org.sergeys.coverfinder.ui.Messages;
 
 public class Track
 extends MusicItem
 {
-	public static final String UNKNOWN_ARTIST = "<unknown artist>";
-	public static final String UNKNOWN_ALBUM = "<unknown album>";
-	public static final String UNKNOWN_TRACK = "<unknown track>";
+	public static final String UNKNOWN_ARTIST = Messages.getString("Track.UnknownArtist"); //$NON-NLS-1$
+	public static final String UNKNOWN_ALBUM = Messages.getString("Track.UnknownAlbum"); //$NON-NLS-1$
+	public static final String UNKNOWN_TRACK = Messages.getString("Track.UnknownTrack"); //$NON-NLS-1$
 	
 	/**
 	 * 
