@@ -19,7 +19,7 @@
         </div>    
     </div>
     
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
   window.onresize = function(){onResize();};
   onResize();
 </script>

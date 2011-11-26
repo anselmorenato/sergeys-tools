@@ -4,7 +4,7 @@
   $page_title .= " - рекомендуемый софт";
   require_once("header.inc.php");
 ?>
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
   function openPopup(url){
 	  window.open(url);
   };  
