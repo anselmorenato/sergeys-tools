@@ -102,9 +102,18 @@ public abstract class FileUtils {
 	public static String md5hash(File file, int bufferSize) throws NoSuchAlgorithmException, IOException{
 		//InputStream is = new BufferedInputStream(new FileInputStream(file));
 		//InputStream is = new BufferedInputStream(new FileInputStream(file), Integer.MAX_VALUE);
-		InputStream is = new BufferedInputStream(new FileInputStream(file), bufferSize);
-		String md5 = md5hash(is);
-		is.close();
+		String md5;
+		InputStream is = null;
+		try{
+			is = new BufferedInputStream(new FileInputStream(file), bufferSize);
+			md5 = md5hash(is);
+		}
+		finally{
+			if(is != null){
+				is.close();
+			}
+		}
+		
 		return md5;
 	}
 	
@@ -120,8 +129,18 @@ public abstract class FileUtils {
 	 */
 	public static String md5hashPartial(File file, int length) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
 				
-		byte[] buf = new byte[length]; 
-		new FileInputStream(file).read(buf);
+		byte[] buf = new byte[length];
+		FileInputStream fis = null;
+		try{
+			fis = new FileInputStream(file);
+			fis.read(buf);
+		}
+		finally{
+			if(fis != null){
+				fis.close();
+			}
+		}
+		
 		InputStream is = new ByteArrayInputStream(buf);
 		String md5 = md5hash(is);
 		is.close();

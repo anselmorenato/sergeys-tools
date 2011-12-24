@@ -51,8 +51,8 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static Boolean POP_UP = Boolean.TRUE;
-	public static Boolean POP_DOWN = Boolean.FALSE;
+	public static final Boolean POP_UP = Boolean.TRUE;
+	public static final Boolean POP_DOWN = Boolean.FALSE;
 
 	private static final int PREFERRED = 0;
 	private static final int MINIMUM = 1;
@@ -443,8 +443,8 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable
 
 				Boolean constraint = constraints.get(component);
 
-				if (constraint != null
-				&&  constraint == Boolean.TRUE)
+				//if (constraint != null && constraint == Boolean.TRUE)
+				if (constraint != null && constraint)
 				{
 					x += popupInsets.right - popupInsets.left;
 					y += popupInsets.bottom - popupInsets.top;

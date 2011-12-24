@@ -113,15 +113,17 @@ selectionWrapper.getListSelectionModel().setSelectionMode(ListSelectionModel.SIN
 		    // Metal looks better like this.
 		    setRowHeight(20);
 		}				
+
+// TODO: findbugs says it's not needed		
 		
-		this.addMouseListener(new MouseAdapter(){
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				super.mouseClicked(e);
-			}
-		});
+//		this.addMouseListener(new MouseAdapter(){
+//			
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				
+//				super.mouseClicked(e);
+//			}
+//		});
     }
     
 	@Override
@@ -221,8 +223,8 @@ selectionWrapper.getListSelectionModel().setSelectionMode(ListSelectionModel.SIN
      * Returns the actual row that is editing as <code>getEditingRow</code>
      * will always return -1.
      */
-    private int realEditingRow() {
-	return editingRow;
+    protected int realEditingRow() {
+    	return editingRow;
     }
 
     /**
@@ -376,8 +378,8 @@ selectionWrapper.getListSelectionModel().setSelectionMode(ListSelectionModel.SIN
 	    }
 	    highlightBorder = null;
 	    if (realEditingRow() == row && getEditingColumn() == column) {
-		background = UIManager.getColor("Table.focusCellBackground");
-		foreground = UIManager.getColor("Table.focusCellForeground");
+	    	background = UIManager.getColor("Table.focusCellBackground");
+	    	foreground = UIManager.getColor("Table.focusCellForeground");
 	    }
 	    else if (hasFocus) {
 		highlightBorder = UIManager.getBorder
@@ -549,15 +551,16 @@ selectionWrapper.getListSelectionModel().setSelectionMode(ListSelectionModel.SIN
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-	public int offset;
+	//public int offset;
+		//private int offset;
 
-	// TODO: deprecated, use setBounds
-	@SuppressWarnings("deprecation")
-	public void reshape(int x, int y, int w, int h) {
-	    int newX = Math.max(x, offset);
-	    super.reshape(newX, y, w - (newX - x), h);
-	    //super.setBounds(newX, y, w - (newX - x), h);
-	}
+//	@SuppressWarnings("deprecation")
+//	public void reshape(int x, int y, int w, int h) {
+//	    //int newX = Math.max(x, offset);
+//	    //super.reshape(newX, y, w - (newX - x), h);
+//	    
+//	    super.reshape(x, y, w, h);
+//	}
     }
 
 

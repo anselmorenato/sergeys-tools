@@ -77,7 +77,7 @@ public class RssFeedParser {
 				XMLEvent event = eventReader.nextEvent();
 
 				if (event.isStartElement()) {
-					if (event.asStartElement().getName().getLocalPart() == (ITEM)) {
+					if (event.asStartElement().getName().getLocalPart().equals(ITEM)) {
 						if (isFeedHeader) {
 							isFeedHeader = false;
 							feed = new Feed(title, link, description, language,
@@ -87,39 +87,39 @@ public class RssFeedParser {
 						continue;
 					}
 
-					if (event.asStartElement().getName().getLocalPart() == (TITLE)) {
+					if (event.asStartElement().getName().getLocalPart().equals(TITLE)) {
 						event = eventReader.nextEvent();
 						title = event.asCharacters().getData();
 						continue;
 					}
-					if (event.asStartElement().getName().getLocalPart() == (DESCRIPTION)) {
+					if (event.asStartElement().getName().getLocalPart().equals(DESCRIPTION)) {
 						event = eventReader.nextEvent();
 						description = event.asCharacters().getData();
 						continue;
 					}
 
-					if (event.asStartElement().getName().getLocalPart() == (LINK)) {
+					if (event.asStartElement().getName().getLocalPart().equals(LINK)) {
 						event = eventReader.nextEvent();
 						link = event.asCharacters().getData();
 						continue;
 					}
 
-					if (event.asStartElement().getName().getLocalPart() == (GUID)) {
+					if (event.asStartElement().getName().getLocalPart().equals(GUID)) {
 						event = eventReader.nextEvent();
 						guid = event.asCharacters().getData();
 						continue;
 					}
-					if (event.asStartElement().getName().getLocalPart() == (LANGUAGE)) {
+					if (event.asStartElement().getName().getLocalPart().equals(LANGUAGE)) {
 						event = eventReader.nextEvent();
 						language = event.asCharacters().getData();
 						continue;
 					}
-					if (event.asStartElement().getName().getLocalPart() == (AUTHOR)) {
+					if (event.asStartElement().getName().getLocalPart().equals(AUTHOR)) {
 						event = eventReader.nextEvent();
 						//author = event.asCharacters().getData();
 						continue;
 					}
-					if (event.asStartElement().getName().getLocalPart() == (PUB_DATE)) {
+					if (event.asStartElement().getName().getLocalPart().equals(PUB_DATE)) {
 						event = eventReader.nextEvent();
 						
 						String data = event.asCharacters().getData(); 
@@ -133,13 +133,13 @@ public class RssFeedParser {
 						}
 						continue;
 					}
-					if (event.asStartElement().getName().getLocalPart() == (COPYRIGHT)) {
+					if (event.asStartElement().getName().getLocalPart().equals(COPYRIGHT)) {
 						event = eventReader.nextEvent();
 						copyright = event.asCharacters().getData();
 						continue;
 					}
 				} else if (event.isEndElement()) {
-					if (event.asEndElement().getName().getLocalPart() == (ITEM)) {
+					if (event.asEndElement().getName().getLocalPart().equals(ITEM)) {
 						FeedMessage message = new FeedMessage();
 						//message.setAuthor(author);
 						message.setDescription(description);

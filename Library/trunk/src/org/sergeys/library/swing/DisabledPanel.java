@@ -225,7 +225,7 @@ public class DisabledPanel extends JPanel
 	 *  a) to paint over top of the Container added to the DisablePanel
 	 *  b) to intercept mouse events when visible
 	 */
-	class GlassPane extends JComponent
+	static class GlassPane extends JComponent
 	{
 		/**
 		 * 
