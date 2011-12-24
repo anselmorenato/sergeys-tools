@@ -173,7 +173,7 @@ implements ActionListener, PropertyChangeListener
 	 * 	
 	 * @return javax.swing.JSplitPane	
 	 */
-	private JSplitPane getJSplitPaneMain() {
+	protected JSplitPane getJSplitPaneMain() {
 		if (jSplitPaneMain == null) {
 			jSplitPaneMain = new JSplitPane();
 			jSplitPaneMain.setPreferredSize(new Dimension(564, 350));
@@ -368,7 +368,7 @@ implements ActionListener, PropertyChangeListener
 	 * 
 	 * @return javax.swing.JFrame
 	 */
-	private JFrame getJFrame() {
+	protected JFrame getJFrame() {
 		if (jFrame == null) {
 			jFrame = new JFrame();
 			jFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(WebCacheDigger.class.getResource("/images/icon.png"))); //$NON-NLS-1$
@@ -387,7 +387,7 @@ implements ActionListener, PropertyChangeListener
 	 * 
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getJContentPane() {
+	protected JPanel getJContentPane() {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
 			BorderLayout bl_jContentPane = new BorderLayout();
@@ -494,7 +494,7 @@ implements ActionListener, PropertyChangeListener
 		return aboutMenuItem;
 	}
 
-	private JDialog getAboutDialog() {
+	protected JDialog getAboutDialog() {
 		if (aboutDialog == null) {
 			aboutDialog = new AboutDialog(this.getJFrame());
 			
@@ -504,7 +504,7 @@ implements ActionListener, PropertyChangeListener
 	
 	ProgressDialog progressDialog;
 	
-	private void doSearchFiles(){					
+	protected void doSearchFiles(){					
 		
 		try {
 						
@@ -561,7 +561,7 @@ implements ActionListener, PropertyChangeListener
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand() == Settings.COMMAND_SAVE_SETTINGS){
+		if(e.getActionCommand().equals(Settings.COMMAND_SAVE_SETTINGS)){
 			
 			try {
 				getSettingsDialog().updateSettings();
@@ -614,7 +614,7 @@ implements ActionListener, PropertyChangeListener
 		}				
 	}
 
-	private void doExit(){
+	protected void doExit(){
 		// save window position
 		JFrame mainWindow = getJFrame();
 		try {
@@ -731,7 +731,7 @@ implements ActionListener, PropertyChangeListener
 						}
 					}
 					
-					try{
+					try{						
 						Process process = Runtime.getRuntime().exec(args);
 						
 						final int exitCode = process.waitFor();
@@ -746,9 +746,8 @@ implements ActionListener, PropertyChangeListener
 									
 								}});
 						}
-						
 					}
-					catch(final Exception ex){
+					catch(final Exception ex){						
 						SwingUtilities.invokeLater(new Runnable(){
 
 							@Override
@@ -757,10 +756,13 @@ implements ActionListener, PropertyChangeListener
 								JOptionPane.showMessageDialog(WebCacheDigger.this.getJContentPane(), 
 										String.format(Messages.getString("WebCacheDigger.ExtPlayerFailed1"), ex.getMessage())); //$NON-NLS-1$
 								
-							}});						
+							}});
+						
+						if(ex instanceof RuntimeException){
+							throw ex;
+						}
 					}
-					
-					
+										
 					return null;
 				}
 				
@@ -795,11 +797,23 @@ implements ActionListener, PropertyChangeListener
 	private void createLanguagesMenu(JMenu parent){
 		
 		Properties p = new Properties();
+		InputStream is = null;
 		try {
-			p.load(getClass().getResourceAsStream("/resources/lang/supportedLanguages.properties")); //$NON-NLS-1$
+			is = WebCacheDigger.class.getResourceAsStream("/resources/lang/supportedLanguages.properties");
+			p.load(is);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		}
+		finally{
+			if(is != null){
+				try {
+					is.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 				
 		String supported = p.getProperty("supported", "en"); //$NON-NLS-1$ //$NON-NLS-2$

@@ -125,7 +125,8 @@ public class Chrome extends AbstractBrowser {
 	@Override
 	public ImageIcon getIcon() {
 		if(icon == null){
-			icon = new ImageIcon(this.getClass().getResource("/images/chrome.png")); 
+			//icon = new ImageIcon(this.getClass().getResource("/images/chrome.png")); 
+			icon = new ImageIcon(Chrome.class.getResource("/images/chrome.png"));
 		}
 		return icon;
 	}

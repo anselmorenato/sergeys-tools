@@ -36,7 +36,11 @@ public class Firefox extends AbstractBrowser {
 			rdr = new BufferedReader(new FileReader(profilesini));
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();									
+			e1.printStackTrace();
+		}
+		
+		if(rdr == null){
+			return paths;
 		}
 		
 		// read all profile locations
@@ -117,6 +121,8 @@ public class Firefox extends AbstractBrowser {
 					}
 				}
 			}
+			
+			rdr.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -248,7 +254,7 @@ public class Firefox extends AbstractBrowser {
 	@Override
 	public ImageIcon getIcon() {
 		if(icon == null){
-			icon = new ImageIcon(this.getClass().getResource("/images/firefox.png")); 
+			icon = new ImageIcon(Firefox.class.getResource("/images/firefox.png")); 
 		}
 		return icon;
 	}

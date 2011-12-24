@@ -20,6 +20,7 @@ public class Database {
 
 	private static final String FILENAME = "wcd";
 	
+	private static Object instanceLock = new Object();
 	private static Database instance;
 	
 	// singleton
@@ -27,10 +28,11 @@ public class Database {
 		upgradeOrCreateIfNeeded();
 	}
 	
-
 	public static Database getInstance() throws SQLException{
-		if(instance == null){
-			instance = new Database();
+		synchronized (instanceLock) {					
+			if(instance == null){
+				instance = new Database();
+			}
 		}
 		
 		return instance;
@@ -66,7 +68,7 @@ public class Database {
 				in = getClass().getResourceAsStream("/resources/upgrade"+ver+".sql");
 			}
 			
-			
+			st.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -91,7 +93,8 @@ public class Database {
 	
 			if(!rs.next()){			
 				// create new structure
-				InputStream in = getClass().getResourceAsStream("/resources/createdb.sql");
+				//InputStream in = getClass().getResourceAsStream("/resources/createdb.sql");
+				InputStream in = Database.class.getResourceAsStream("/resources/createdb.sql");
 				RunScript.execute(conn, new InputStreamReader(in));
 			}
 			
@@ -114,8 +117,8 @@ public class Database {
 
 	public void clearIgnored() throws SQLException{
 		Statement st = getConnection().createStatement();
-		st.execute("update files set ignored = false");
-		st.close();
+		st.execute("update files set ignored = false");		
+		st.close();		
 	}
 	
 	public long countSaved() throws SQLException{
@@ -328,13 +331,17 @@ public class Database {
 			}
 		}
 
-		@SuppressWarnings("unused")
-		int[] count = psInsert.executeBatch();
-		count = psUpdate.executeBatch();
+		//@SuppressWarnings("unused")
+		//int[] count = 
+		psInsert.executeBatch();
+		//count = 
+				psUpdate.executeBatch();
 		getConnection().commit();
 		
 		psInsert.close();
 		psUpdate.close();
+		
+		psSelect.close();
 		
 		getConnection().setAutoCommit(true);
 	}
@@ -378,17 +385,20 @@ public class Database {
 				psInsert.setString(5, file.getHash());
 				
 				psInsert.addBatch();
-			}
-			
+			}						
 		}
 
-		@SuppressWarnings("unused")
-		int[] count = psInsert.executeBatch();
-		count = psUpdate.executeBatch();
+		//@SuppressWarnings("unused")
+		//int[] count = 
+		psInsert.executeBatch();
+		//count = 
+				psUpdate.executeBatch();
 		getConnection().commit();
 		
 		psInsert.close();
 		psUpdate.close();
+		
+		psSelect.close();
 		
 		getConnection().setAutoCommit(true);
 	}
@@ -409,8 +419,9 @@ public class Database {
 			psUpdate.addBatch();			
 		}
 
-		@SuppressWarnings("unused")
-		int[] count = psUpdate.executeBatch();
+		//@SuppressWarnings("unused")
+		//int[] count = 
+		psUpdate.executeBatch();
 		getConnection().commit();
 		
 		psUpdate.close();
@@ -433,8 +444,9 @@ public class Database {
 			psUpdate.addBatch();			
 		}
 
-		@SuppressWarnings("unused")
-		int[] count = psUpdate.executeBatch();
+		//@SuppressWarnings("unused")
+		//int[] count = 
+		psUpdate.executeBatch();
 		getConnection().commit();
 		
 		psUpdate.close();
@@ -450,6 +462,9 @@ public class Database {
 		while(rs.next()){
 			files.add(new File(rs.getString("absolutepath")));
 		}
+		
+		//rs.close();
+		st.close();
 		
 		return files;
 	}

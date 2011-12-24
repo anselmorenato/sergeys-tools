@@ -25,12 +25,23 @@ public class CachedFile extends File {
 	static {
 		MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
 		extensionByMimetype = new Properties();
-		try {			
-			InputStream is = CachedFile.class.getResourceAsStream("/resources/extensionByMime.properties");
+		InputStream is = null;
+		try {						 
+			is = CachedFile.class.getResourceAsStream("/resources/extensionByMime.properties");
 			extensionByMimetype.load(is);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			if(is != null){
+				try {
+					is.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -49,7 +60,7 @@ public class CachedFile extends File {
 	public CachedFile(File file) {
 		super(file.getAbsolutePath());
 	}		
-	
+		
 	public void detectHash() throws NoSuchAlgorithmException, IOException{
 //		SimpleLogger.logMessage("calculating md5 for " + this.getName());			
 		//hash = FileUtils.md5hash(this, 1024 * 1024); // not too smooth		

@@ -149,7 +149,7 @@ public class InternetExplorer extends AbstractBrowser {
 	@Override
 	public ImageIcon getIcon() {
 		if(icon == null){
-			icon = new ImageIcon(this.getClass().getResource("/images/ie.png")); 
+			icon = new ImageIcon(InternetExplorer.class.getResource("/images/ie.png")); 
 		}
 		return icon;
 	}
@@ -168,13 +168,16 @@ public class InternetExplorer extends AbstractBrowser {
 	 * @param key
 	 * @param expectedType in form like "REG_SZ", as reg.exe returns
 	 * @return
+
 	 */
-    protected static final String readRegistry(String location, String key, String expectedType){
+    protected static final String readRegistry(String location, String key, String expectedType) {
         try {
             // Run reg query, then read output with StreamReader (internal class)
-            Process process = Runtime.getRuntime().exec("reg query " + 
-                    '"'+ location + "\" /v " + key);
-
+            Process process;
+			
+			process = Runtime.getRuntime().exec("reg query " + 
+				        '"'+ location + "\" /v " + key);
+			
             StreamReader reader = new StreamReader(process.getInputStream());
             reader.start();
             process.waitFor();
@@ -193,11 +196,13 @@ public class InternetExplorer extends AbstractBrowser {
             String[] parsed = output.split(expectedType);
             return parsed[parsed.length-1].trim();
         }
-        catch (Exception e) {
-        	e.printStackTrace();
-            return null;
-        }
+        catch (IOException e) {
+        	e.printStackTrace();            
+        } catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
+        return null;
     }
 
     static class StreamReader extends Thread {

@@ -274,7 +274,7 @@ public class SettingsPanel extends JPanel {
 		return jButtonSavePath;
 	}
 
-	private void choosePath() {
+	protected void choosePath() {
 		JFileChooser fc = new JFileChooser();
 		
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

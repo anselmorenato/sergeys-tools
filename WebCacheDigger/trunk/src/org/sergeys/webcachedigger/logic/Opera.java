@@ -27,7 +27,7 @@ public class Opera extends AbstractBrowser {
 	public ImageIcon getIcon() {
 		
 		if(icon == null){
-			icon = new ImageIcon(this.getClass().getResource("/images/opera.png")); 
+			icon = new ImageIcon(Opera.class.getResource("/images/opera.png")); 
 		}
 		return icon;
 	}

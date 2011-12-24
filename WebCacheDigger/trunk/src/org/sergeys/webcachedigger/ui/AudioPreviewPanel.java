@@ -320,7 +320,8 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
 			row = addRow("Mode extension", mp3.getModeExtension(), row);
 			//row = addRow("version", mp3.getVersion(), row);
 			row = addRow("Bitrate", String.valueOf(mp3.getBitrate()), row);
-			row = addRow("Sample rate", String.valueOf(mp3.getSampleRate()), row);
+			//row = 
+					addRow("Sample rate", String.valueOf(mp3.getSampleRate()), row);
 						
 		} catch (UnsupportedTagException e) {
 			// TODO Auto-generated catch block

@@ -153,7 +153,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {		
-		if(evt.getPropertyName() == CachedFile.SELECTED_FILE){
+		if(evt.getPropertyName().equals(CachedFile.SELECTED_FILE)){
 			CachedFile file = (CachedFile)evt.getNewValue();
 			setFile(file);
 		}		

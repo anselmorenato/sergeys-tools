@@ -2,12 +2,6 @@
 <project default="all">
 
 	<property name="properties.file" value="build.properties" />
-	
-	<!--
-	<property name="revision" value="2011-10-11-3" />
-	<property name="webstart.url" value="http://192.168.56.1:8080/localweb" />
-	<property name="deploy.dir" value="d:\\tomcat\\webapps\\localweb" />
-	-->
 
 	<property name="dist.dir" value="jar/dist" />
 	<property name="work.dir" value="jar/tmp" />
