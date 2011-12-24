@@ -131,8 +131,8 @@ public class ImageDetailsDialog extends JDialog {
 		}
 		
 		//lblImage.setIcon(new ImageIcon(imgResult.getImageUrl()));
-		if(imgResult.getImage() != null){
-			lblImage.setIcon(new ImageIcon(imgResult.getImage()));
+		if(imgResult.getFullImage() != null){
+			lblImage.setIcon(new ImageIcon(imgResult.getFullImage()));
 		}
 		
 		lblDimensions.setText(String.format("%d x %d", imgResult.getWidth(), imgResult.getHeight())); //$NON-NLS-1$

@@ -18,9 +18,12 @@ public class ImageSearchResult {
 	private int height;
 	private long fileSize;
 	
+	private boolean hasThumbnailImage = false;
+	private boolean hasFullImage = false;
+	
 	private Image thumbnailImage;
 	private Image image;
-	private boolean hasImages = false;
+	//private boolean hasImages = false;
 	private File imageFile;
 	
 	public ImageSearchResult(){}
@@ -72,9 +75,24 @@ public class ImageSearchResult {
 		this.fileSize = fileSize;
 	}
 
-	public void retrieveImages(){
+	public void downloadThumbnailImage(){
 		try {
+			System.out.println(String.format("Downloading thumbnail %s", getThumbnailUrl()));
 			thumbnailImage = ImageIO.read(getThumbnailUrl());
+			hasThumbnailImage = true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			System.out.println(String.format("%s not downloaded: %s, %s",
+					getThumbnailUrl(),
+					e.getLocalizedMessage(), e.getCause() == null ? "(unknown cause)" : e.getCause().getLocalizedMessage()));
+		}
+	}
+
+	public void downloadFullImage(){
+		try {			
+			System.out.println(String.format("Downloading thumbnail %s", getImageUrl()));
+			
 			InputStream is = getImageUrl().openConnection().getInputStream();
 			
 			imageFile = File.createTempFile("coverfinder-image", ".dat");
@@ -93,29 +111,35 @@ public class ImageSearchResult {
 						
 			image = ImageIO.read(imageFile);
 			
-			hasImages = true;
+			hasFullImage = true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
-			System.out.println(String.format("Not downloaded: %s, %s", 
+			System.out.println(String.format("%s not downloaded: %s, %s",
+					getImageUrl(),
 					e.getLocalizedMessage(), e.getCause() == null ? "(unknown cause)" : e.getCause().getLocalizedMessage()));
 		}
+		
 	}
-
+	
+	public boolean hasThumbnailImage() {
+		return hasThumbnailImage;
+	}
+	
 	public Image getThumbnailImage() {
 		return thumbnailImage;
 	}
 
-	public Image getImage() {
+	public boolean hasFullImage() {
+		return hasFullImage;
+	}
+	
+	public Image getFullImage() {
 		return image;
 	}
 
 	public File getImageFile() {
 		return imageFile;
-	}
-
-	public boolean hasImages() {
-		return hasImages;
 	}
 	
 }

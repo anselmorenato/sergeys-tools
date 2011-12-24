@@ -69,6 +69,7 @@ implements IImageSearchEngine
 				}
 				else{
 					//JOptionPane.showMessageDialog(null, "Nothing");
+					System.out.println("No result and no errors from bing!");
 				}
 				
 				return results;

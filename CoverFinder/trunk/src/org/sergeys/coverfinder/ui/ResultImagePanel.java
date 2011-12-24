@@ -2,20 +2,28 @@ package org.sergeys.coverfinder.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 import org.sergeys.coverfinder.logic.ImageSearchResult;
+import org.sergeys.library.swing.DisabledPanel;
 import org.sergeys.library.swing.ScaledImage;
 
-public class ResultImagePanel extends JPanel {
+public class ResultImagePanel 
+extends JPanel
+//extends DisabledPanel
+{
 
 	/**
 	 * 
@@ -32,7 +40,7 @@ public class ResultImagePanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public ResultImagePanel() {
+	public ResultImagePanel() {		
 				
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new BorderLayout(0, 0));
@@ -65,14 +73,49 @@ public class ResultImagePanel extends JPanel {
 		firePropertyChange(SELECTED_IMAGE_PROPERTY, null, imgResult);
 	}
 
-	public ResultImagePanel(Image img, ImageSearchResult imgResult){
-		this();
+	
+	
+	public ResultImagePanel(ImageSearchResult imgResult){		
+		this();				
 		
 		this.imgResult = imgResult;
 		
-		scaledImage.setImage(img);
+		if(this.imgResult.hasThumbnailImage()){
+			scaledImage.setImage(this.imgResult.getThumbnailImage());
+		}
 		lblDimension.setText(String.format("%dx%d", imgResult.getWidth(), imgResult.getHeight())); //$NON-NLS-1$
 		lblSize.setText((imgResult.getFileSize() > 0) ? String.format(Messages.getString("ResultImagePanel.Bytes"), imgResult.getFileSize()) : ""); //$NON-NLS-1$ //$NON-NLS-2$
 		revalidate();
+	}
+
+	public void startDownloadFullImage(){
+		
+		// download full image in background
+		
+		if(this.imgResult.hasFullImage()){
+			this.disabler.setEnabled(true);
+		}
+		else{
+			this.disabler.setEnabled(false);
+			
+			Executor exec = Executors.newSingleThreadExecutor();
+			exec.execute(new Runnable(){
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					ResultImagePanel.this.imgResult.downloadFullImage();
+					//SwingUtilities.invokeLater
+					ResultImagePanel.this.fullImageDownloaded();
+				}});
+		}		
+	}
+	
+	DisabledPanel disabler;
+	public void setDisabledPanel(DisabledPanel disabler){
+		this.disabler = disabler;
+	}
+	
+	protected void fullImageDownloaded() {
+		disabler.setEnabled(true);		
 	}
 }

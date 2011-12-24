@@ -3,6 +3,7 @@ package org.sergeys.coverfinder.ui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -12,6 +13,8 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -148,7 +151,7 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 //			}
 		}
 		{
-			JScrollPane scrollPane = new JScrollPane(); 
+			scrollPane = new JScrollPane(); 
 			panelResults = new JPanel();
 			scrollPane.setViewportView(panelResults);
 			panelResults.setLayout(new GridLayout(0, 5, 5, 5));
@@ -216,6 +219,7 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 
 	protected void doSearchMore() {
 		ImageSearchWorker wrk = new ImageSearchWorker(currentEngine, null, true, this);
+		panelResults.scrollRectToVisible(new Rectangle(panelResults.getWidth() - 10, panelResults.getHeight() - 10, panelResults.getWidth(), panelResults.getHeight()));
 		dContentPanel.setEnabled(false);
 		wrk.execute();
 	}
@@ -235,25 +239,77 @@ implements IProgressWatcher<ImageSearchResult>, PropertyChangeListener, ActionLi
 	}
 
 
+	int count = 0;
+	Object countLock = new Object();
+	private JScrollPane scrollPane;
+	
 	@Override
 	public void progressComplete(Collection<ImageSearchResult> items, IProgressWatcher.Stage stage) {
 		
 		dContentPanel.setEnabled(true);
 		
-		for(ImageSearchResult res: items){
-//			Image img = null;
+		if(items.isEmpty()){
+			JOptionPane.showMessageDialog(getContentPane(), Messages.getString("ImageSearchDialog.NoResults")); //$NON-NLS-1$
+		}
+		
+		// download thumbnails
+		Executor executor = Executors.newCachedThreadPool();		
+		count = 0;
+		
+		for(final ImageSearchResult res: items){
+//			if(res.hasImages()){
+//				ResultImagePanel resPanel = new ResultImagePanel(res.getThumbnailImage(), res); 
+//				panelResults.add(resPanel);
+//				resPanel.addPropertyChangeListener(ResultImagePanel.SELECTED_IMAGE_PROPERTY, this);
+//			}
+			
+			synchronized (countLock) {
+				count++;
+			}
+			executor.execute(new Runnable(){
+				@Override
+				public void run() {
+					res.downloadThumbnailImage();
+					
+					if(res.hasThumbnailImage()){
+						ResultImagePanel resPanel = new ResultImagePanel(res);
+						DisabledPanel dp = new DisabledPanel(resPanel);
+						resPanel.setDisabledPanel(dp);
+						panelResults.add(dp);
+						resPanel.addPropertyChangeListener(ResultImagePanel.SELECTED_IMAGE_PROPERTY, ImageSearchDialog.this);
+						
+						resPanel.startDownloadFullImage();
+					}
+					
+					synchronized (countLock) {
+						count--;
+					}
+				}});
+		}
+		
+//		while(count > 0){
 //			try {
-//				img = ImageIO.read(res.getThumbnailUrl());
-//			} catch (IOException e) {
+//				Thread.sleep(100);
+//				System.out.println("still running " + count);
+//			} catch (InterruptedException e) {
 //				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
-			if(res.hasImages()){
-				ResultImagePanel resPanel = new ResultImagePanel(res.getThumbnailImage(), res); 
-				panelResults.add(resPanel);
-				resPanel.addPropertyChangeListener(ResultImagePanel.SELECTED_IMAGE_PROPERTY, this);
-			}
-		}
+//		}
+		
+		
+		
+//		for(ImageSearchResult res: items){
+//			if(res.hasThumbnailImage()){
+//				ResultImagePanel resPanel = new ResultImagePanel(res);
+//				DisabledPanel dp = new DisabledPanel(resPanel);
+//				resPanel.setDisabledPanel(dp);
+//				panelResults.add(dp);
+//				resPanel.addPropertyChangeListener(ResultImagePanel.SELECTED_IMAGE_PROPERTY, ImageSearchDialog.this);
+//				
+//				resPanel.startDownloadFullImage();
+//			}
+//		}
 		
 		queryStringChanged = false;
 		setupControls();

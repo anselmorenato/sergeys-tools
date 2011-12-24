@@ -91,3 +91,4 @@ TrackTreePanel.ArtistsAlbumsTracks=Артисты/альбомы/треки
 Track.UnknownAlbum=<неизвестный альбом>
 Track.UnknownArtist=<неизвестный артист>
 Track.UnknownTrack=<неизвестный трек>
+ImageSearchDialog.NoResults=Поиск не вернул никаких результатов.
