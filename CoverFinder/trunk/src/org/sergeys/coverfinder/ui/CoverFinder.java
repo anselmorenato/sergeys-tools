@@ -16,6 +16,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -59,7 +60,8 @@ import org.sergeys.library.swing.DisabledPanel;
 
 public class CoverFinder  
 {	
-	private JFrame frmCoverFinder;
+	//private JFrame frmCoverFinder;
+	protected JFrame frmCoverFinder;
 
 	/**
 	 * Launch the application.
@@ -137,7 +139,8 @@ public class CoverFinder
 		initialize();
 	}
 
-	private ActionListener actionListener = new ActionListener() {
+	//private ActionListener actionListener = new ActionListener() {
+	protected ActionListener actionListener = new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -520,7 +523,7 @@ public class CoverFinder
 		imageSearchDlg.setVisible(true);		
 	}
 
-	private void scanLibrary(){
+	protected void scanLibrary(){
 //		Settings.getInstance().getLibraryPaths().clear();
 //		Settings.getInstance().getLibraryPaths().add("c:\\tmp\\test");
 //		Settings.getInstance().getLibraryPaths().add("i:\\music\\2");
@@ -553,6 +556,8 @@ System.out.println("will scan " + path);			 //$NON-NLS-1$
 						break;
 					case Analyzing:
 						panelStatusBar.setMessage(Messages.getString("CoverFinder.Analyzed") + count); //$NON-NLS-1$
+						break;
+					default:
 						break;
 				}
 			}
@@ -680,19 +685,21 @@ System.out.println("will scan " + path);			 //$NON-NLS-1$
 	
 	private static IImageSearchEngine searchEngine = null;
 //	private JButton btnTest;
-	private StatusBarPanel panelStatusBar;
+	//private StatusBarPanel panelStatusBar;
+	protected StatusBarPanel panelStatusBar;
 	private JMenuItem mntmRescanLibrary;
-	private JButton btnIdentifyTrack;
+	protected JButton btnIdentifyTrack;
 	private JLabel lblTagsEncoding;
 	private JComboBox comboBoxTagEncoding;
 	private ArrayList<Locale> locales;
-	private TrackDetailsPanel trackDetailsPanel;
-	private JSplitPane splitPane;
-	private JButton btnEditTags;
-	private JButton btnOpenLocation;
+	protected TrackDetailsPanel trackDetailsPanel;
+	//private JSplitPane splitPane;
+	protected JSplitPane splitPane;
+	protected JButton btnEditTags;
+	protected JButton btnOpenLocation;
 
 
-	private JButton btnSearchArtwork;
+	protected JButton btnSearchArtwork;
 	
 	public static IImageSearchEngine getSearchEngine(){
 		
@@ -712,11 +719,22 @@ System.out.println("will scan " + path);			 //$NON-NLS-1$
 	private void createLanguagesMenu(JMenu parent){
 		
 		Properties p = new Properties();
+		InputStream is = CoverFinder.class.getResourceAsStream("/resources/lang/supportedLanguages.properties"); 
 		try {
-			p.load(getClass().getResourceAsStream("/resources/lang/supportedLanguages.properties")); //$NON-NLS-1$
+			p.load(is); //$NON-NLS-1$
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		}
+		finally{
+			if(is != null){
+				try {
+					is.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 				
 		String supported = p.getProperty("supported", "en"); //$NON-NLS-1$ //$NON-NLS-2$

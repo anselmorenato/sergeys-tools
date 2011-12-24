@@ -43,6 +43,8 @@ public class GoogleImageSearch implements IImageSearchEngine {
 				builder.append(line);
 			}
 
+			reader.close();
+			
 			// test response
 //			BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/resources/jsonresponse.txt")));
 //			while((line = reader.readLine()) != null) {

@@ -38,11 +38,11 @@ public class Mp3Utils {
 	
 	// singletion
 	private Mp3Utils(){
-		try{
+//		try{
 			charset8859_1 = Charset.forName("ISO-8859-1");
 			charsetFixed = charset8859_1; 
 			
-			InputStream is = getClass().getResourceAsStream("/resources/charsetByLanguage.properties");
+			InputStream is = Mp3Utils.class.getResourceAsStream("/resources/charsetByLanguage.properties");
 			charsetByLang = new Properties();
 			try {
 				charsetByLang.load(is);
@@ -50,11 +50,21 @@ public class Mp3Utils {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}				
+			finally{
+				if(is != null){
+					try {
+						is.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
 
-		}
-		catch(Exception ex){
-			SimpleLogger.logMessage("Cannot instantiate Charset for ISO-8859-1");			 
-		}
+//		}
+//		catch(Exception ex){
+//			SimpleLogger.logMessage("Cannot instantiate Charset for ISO-8859-1");			 
+//		}
 		
 	}
 	

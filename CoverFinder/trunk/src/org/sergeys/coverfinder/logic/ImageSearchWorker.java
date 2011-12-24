@@ -20,7 +20,8 @@ extends AbstractWorker<ImageSearchResult>
 		this.searchMore = searchMore;
 	}
 	
-	Integer count = 0;
+	int count = 0;
+	Object countLock = new Object();
 	
 	@Override
 	protected Collection<ImageSearchResult> doInBackground() throws Exception {
@@ -32,7 +33,7 @@ extends AbstractWorker<ImageSearchResult>
 		Executor executor = Executors.newCachedThreadPool();
 		
 		for(final ImageSearchResult isr: results){
-			synchronized (count) {
+			synchronized (countLock) {
 				count++;
 			}
 			
@@ -40,8 +41,14 @@ extends AbstractWorker<ImageSearchResult>
 				@Override
 				public void run() {
 					System.out.println("downloading " + isr.getImageUrl());
-					isr.retrieveImages();
-					synchronized (count) {
+					try{
+						isr.retrieveImages();
+					}
+					catch(Exception ex){
+						System.out.println(String.format("Failed to retrieve images: %s, %s", 
+								ex.getLocalizedMessage(), ex.getCause() == null ? "(unknown cause)" : ex.getCause().getLocalizedMessage()));
+					}
+					synchronized (countLock) {
 						count--;
 					}
 					
@@ -50,7 +57,7 @@ extends AbstractWorker<ImageSearchResult>
 		
 		while(count > 0){
 			Thread.sleep(100);
-			//System.out.println("still running " + count);
+			System.out.println("still running " + count);
 		}
 										
 		return results;

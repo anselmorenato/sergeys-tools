@@ -1,3 +1,6 @@
+- first show thumbnails, then download full images in background, enable each thumbnail after full image downloaded
+- select search provider in search dialog, not in settings 
+
 - check fpcalc version
 - filter track tree by entering text
 - tags from other formats: flac

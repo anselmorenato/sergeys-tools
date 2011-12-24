@@ -21,6 +21,7 @@ import org.h2.tools.RunScript;
 public class Database {
 	private static final String FILENAME = "coverfinder";
 	
+	private static Object instanceLock = new Object();
 	private static Database instance;
 	
 	// singleton
@@ -29,8 +30,10 @@ public class Database {
 	}	
 
 	public static Database getInstance() throws SQLException{
-		if(instance == null){
-			instance = new Database();
+		synchronized (instanceLock) {					
+			if(instance == null){
+				instance = new Database();
+			}
 		}
 		
 		return instance;
@@ -56,8 +59,10 @@ public class Database {
 			String version = rs.getString("val");
 			int ver = Integer.valueOf(version);
 			
+			st.close();
+			
 			// apply all existing upgrades
-			InputStream in = getClass().getResourceAsStream("/resources/upgrade"+ver+".sql");
+			InputStream in = Database.class.getResourceAsStream("/resources/upgrade"+ver+".sql");
 			while(in != null){
 				RunScript.execute(getConnection(), new InputStreamReader(in));
 				in.close();
@@ -91,7 +96,7 @@ public class Database {
 	
 			if(!rs.next()){			
 				// create new structure
-				InputStream in = getClass().getResourceAsStream("/resources/createdb.sql");
+				InputStream in = Database.class.getResourceAsStream("/resources/createdb.sql");
 				RunScript.execute(conn, new InputStreamReader(in));
 			}
 			
@@ -210,13 +215,17 @@ public class Database {
 			
 		}
 
-		@SuppressWarnings("unused")
-		int[] count = psInsert.executeBatch();
-		count = psUpdate.executeBatch();
+		//@SuppressWarnings("unused")
+		//int[] count = 
+		psInsert.executeBatch();
+		//count = 
+				psUpdate.executeBatch();
 		getConnection().commit();
 		
 		psInsert.close();
 		psUpdate.close();
+		
+		psSelect.close();
 		
 		getConnection().setAutoCommit(true);		
 	}
@@ -299,6 +308,8 @@ public class Database {
 			
 			tracks.add(track);
 		}
+		
+		pst.close();
 		
 		return tracks;
 	}

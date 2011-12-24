@@ -36,8 +36,8 @@ import org.xml.sax.SAXException;
  */
 public class AcoustIdUtil {
 	
-	private final String ApiKey = "q3cdey0t";	// app: coverfinder, version: 1
-	private final String FpCalc = "fpcalc";
+	private final static String ApiKey = "q3cdey0t";	// app: coverfinder, version: 1
+	private final static String FpCalc = "fpcalc";
 	
 	private static AcoustIdUtil instance;
 	
@@ -52,7 +52,7 @@ public class AcoustIdUtil {
 	}
 	
 	public static class Fingerprint{
-		public String fingerprint;
+		public String fingerprint = "";
 		public String duration;
 	}
 	
@@ -74,14 +74,11 @@ public class AcoustIdUtil {
 			return true;
 		}
 		
-		//@SuppressWarnings("rawtypes")
-		Class<?> cl = getClass();
-		
 		String targetFile;
-		InputStream is = cl.getResourceAsStream("/resources/" + FpCalc);
+		InputStream is = AcoustIdUtil.class.getResourceAsStream("/resources/" + FpCalc);
 		if(is == null){
 System.out.println("no fpcalc, trying .exe ");			
-			is = cl.getResourceAsStream("/resources/" + FpCalc + ".exe");
+			is = AcoustIdUtil.class.getResourceAsStream("/resources/" + FpCalc + ".exe");
 			if(is == null){
 System.out.println("no fpcalc.exe ");				
 				return false;
@@ -111,6 +108,14 @@ System.out.println("writing to " + targetFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
+		}
+		finally{
+			try {
+				is.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		return true;
@@ -219,6 +224,7 @@ System.out.println("writing to " + targetFile);
 				responseText.append(line);
 			}
 			
+			reader.close();
 			conn.disconnect();
 			
 			System.out.println(responseText.toString());

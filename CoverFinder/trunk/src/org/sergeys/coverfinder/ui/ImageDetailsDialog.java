@@ -30,7 +30,7 @@ public class ImageDetailsDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JLabel lblImage = new JLabel(""); //$NON-NLS-1$
 
-	public class EditImageEvent
+	public static class EditImageEvent
 	extends ActionEvent
 	{
 		private static final long serialVersionUID = 1L;

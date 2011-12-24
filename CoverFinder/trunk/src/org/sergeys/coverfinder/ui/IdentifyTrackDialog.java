@@ -31,7 +31,7 @@ public class IdentifyTrackDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	
-	private JTable tableResults;
+	protected JTable tableResults;
 	Track track;
 	ActionListener actionListener;
 

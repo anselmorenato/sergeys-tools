@@ -37,7 +37,12 @@ public class Settings {
 		settingsDirPath = System.getProperty("user.home") + File.separator + SETTINGS_PATH;
 		settingsFilePath = settingsDirPath + File.separator + SETTINGS_FILE;
 				
-		load();
+		try {
+			load();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private Point windowLocation = null;
@@ -65,7 +70,7 @@ public class Settings {
 	}
 
 	
-	public static void load() {
+	public static void load() throws IOException {
 		
 		if(new File(settingsFilePath).exists()){
 		
@@ -99,6 +104,11 @@ public class Settings {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			if(is != null){
+				is.close();
+			}
 		}
 
 		// upgrade things if needed

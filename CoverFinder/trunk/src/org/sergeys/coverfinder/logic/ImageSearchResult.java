@@ -89,7 +89,7 @@ public class ImageSearchResult {
 			}
 			
 			fos.close();
-			is.close();
+			bis.close();
 						
 			image = ImageIO.read(imageFile);
 			

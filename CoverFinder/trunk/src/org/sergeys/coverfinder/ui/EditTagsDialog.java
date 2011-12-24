@@ -33,7 +33,7 @@ public class EditTagsDialog extends JDialog {
 	private JTextField txtTitle;
 	ActionListener actionListener;
 
-	public class EditTagsEvent
+	public static class EditTagsEvent
 	extends ActionEvent
 	{
 		MusicItem musicItem;
