@@ -26,216 +26,216 @@ import javax.swing.event.ListSelectionListener;
 
 import org.sergeys.coverfinder.logic.Settings;
 
-public class SettingsDialog 
-extends JDialog 
+public class SettingsDialog
+extends JDialog
 {
-	public static final String SETTINGS_SAVED_PROPERTY = "SETTINGS_SAVED_PROPERTY"; //$NON-NLS-1$
-	
-	private static final long serialVersionUID = 1L;
-	private final JPanel contentPanel = new JPanel();
+    public static final String SETTINGS_SAVED_PROPERTY = "SETTINGS_SAVED_PROPERTY"; //$NON-NLS-1$
+
+    private static final long serialVersionUID = 1L;
+    private final JPanel contentPanel = new JPanel();
 
 
-	JList listLibraryDirs;
-	DefaultListModel listModel;
-	ImageSearchChooserPanel imageSearchChooserPanel;
-	JButton buttonMinus;
-	JCheckBox chckbxMakeBackupCopies;
-	JCheckBox chckbxConfirmChangesTo;
-	
-	/**
-	 * Create the dialog.
-	 */
-	public SettingsDialog(Window owner) {
-		super(owner);
-		
-		setModalityType(ModalityType.APPLICATION_MODAL);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(SettingsDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
-		setTitle(Messages.getString("SettingsDialog.Settings")); //$NON-NLS-1$
-		setBounds(100, 100, 450, 275);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		SpringLayout sl_contentPanel = new SpringLayout();
-		contentPanel.setLayout(sl_contentPanel);
-		
-		JLabel lblLibraryFolders = new JLabel(Messages.getString("SettingsDialog.MusicFolders")); //$NON-NLS-1$
-		sl_contentPanel.putConstraint(SpringLayout.NORTH, lblLibraryFolders, 10, SpringLayout.NORTH, contentPanel);
-		sl_contentPanel.putConstraint(SpringLayout.WEST, lblLibraryFolders, 10, SpringLayout.WEST, contentPanel);
-		contentPanel.add(lblLibraryFolders);
-		
-		JButton button = new JButton("+"); //$NON-NLS-1$
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				doAddDirectory();
-			}
-		});
-		sl_contentPanel.putConstraint(SpringLayout.NORTH, button, -4, SpringLayout.NORTH, lblLibraryFolders);
-		sl_contentPanel.putConstraint(SpringLayout.WEST, button, -51, SpringLayout.EAST, contentPanel);
-		sl_contentPanel.putConstraint(SpringLayout.EAST, button, -10, SpringLayout.EAST, contentPanel);
-		contentPanel.add(button);
-		
-		buttonMinus = new JButton("-"); //$NON-NLS-1$
-		buttonMinus.setEnabled(false);
-		buttonMinus.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				doRemoveDirectory();
-			}
-		});
-		sl_contentPanel.putConstraint(SpringLayout.NORTH, buttonMinus, 4, SpringLayout.SOUTH, button);
-		sl_contentPanel.putConstraint(SpringLayout.WEST, buttonMinus, -51, SpringLayout.EAST, contentPanel);
-		sl_contentPanel.putConstraint(SpringLayout.EAST, buttonMinus, -10, SpringLayout.EAST, contentPanel);
-		contentPanel.add(buttonMinus);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		sl_contentPanel.putConstraint(SpringLayout.NORTH, scrollPane, -5, SpringLayout.NORTH, lblLibraryFolders);
-		sl_contentPanel.putConstraint(SpringLayout.WEST, scrollPane, 6, SpringLayout.EAST, lblLibraryFolders);
-		sl_contentPanel.putConstraint(SpringLayout.SOUTH, scrollPane, 90, SpringLayout.NORTH, contentPanel);
-		sl_contentPanel.putConstraint(SpringLayout.EAST, scrollPane, -11, SpringLayout.WEST, button);
-		contentPanel.add(scrollPane);
-		
-		listLibraryDirs = new JList();
-		listLibraryDirs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		listModel = new DefaultListModel();
-		listLibraryDirs.setModel(listModel);
-		scrollPane.setViewportView(listLibraryDirs);
-		listLibraryDirs.addListSelectionListener(new ListSelectionListener() {
-			
-			@Override
-			public void valueChanged(ListSelectionEvent e) {				
-				if(!e.getValueIsAdjusting() && e.getFirstIndex() >= 0){
-					buttonMinus.setEnabled(true);			
-				}
-			}
-		});
-		
-		imageSearchChooserPanel = new ImageSearchChooserPanel();
-		sl_contentPanel.putConstraint(SpringLayout.NORTH, imageSearchChooserPanel, 6, SpringLayout.SOUTH, scrollPane);
-		sl_contentPanel.putConstraint(SpringLayout.WEST, imageSearchChooserPanel, 5, SpringLayout.WEST, contentPanel);
-		sl_contentPanel.putConstraint(SpringLayout.EAST, imageSearchChooserPanel, 166, SpringLayout.EAST, contentPanel);
-		contentPanel.add(imageSearchChooserPanel);
-		
-		chckbxMakeBackupCopies = new JCheckBox(Messages.getString("SettingsDialog.MakeBackupCopies")); //$NON-NLS-1$
-		sl_contentPanel.putConstraint(SpringLayout.NORTH, chckbxMakeBackupCopies, 6, SpringLayout.SOUTH, imageSearchChooserPanel);
-		sl_contentPanel.putConstraint(SpringLayout.WEST, chckbxMakeBackupCopies, 0, SpringLayout.WEST, contentPanel);
-		contentPanel.add(chckbxMakeBackupCopies);
-		
-		chckbxConfirmChangesTo = new JCheckBox(Messages.getString("SettingsDialog.ConfirmChanges")); //$NON-NLS-1$
-		sl_contentPanel.putConstraint(SpringLayout.NORTH, chckbxConfirmChangesTo, 6, SpringLayout.SOUTH, chckbxMakeBackupCopies);
-		sl_contentPanel.putConstraint(SpringLayout.WEST, chckbxConfirmChangesTo, 0, SpringLayout.WEST, chckbxMakeBackupCopies);
-		contentPanel.add(chckbxConfirmChangesTo);
-		
-		
-//		ImageSearchChooserPanel imgSearchPanel = new ImageSearchChooserPanel();
-//		sl_contentPanel.putConstraint(SpringLayout.NORTH, imgSearchPanel, 6, SpringLayout.SOUTH, scrollPane);
-//		sl_contentPanel.putConstraint(SpringLayout.WEST, imgSearchPanel, 0, SpringLayout.WEST, contentPanel);
-//		sl_contentPanel.putConstraint(SpringLayout.SOUTH, imgSearchPanel, 59, SpringLayout.SOUTH, scrollPane);
-//		sl_contentPanel.putConstraint(SpringLayout.EAST, imgSearchPanel, -195, SpringLayout.EAST, contentPanel);
-//		contentPanel.add(imgSearchPanel);
-		
-		
-		
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton saveButton = new JButton(Messages.getString("SettingsDialog.Save")); //$NON-NLS-1$
-				saveButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						doSave();
-					}
-				});
-				saveButton.setActionCommand("OK"); //$NON-NLS-1$
-				buttonPane.add(saveButton);
-				getRootPane().setDefaultButton(saveButton);
-			}
-			{
-				JButton cancelButton = new JButton(Messages.getString("SettingsDialog.Cancel")); //$NON-NLS-1$
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						doCancel();
-					}
-				});
-				cancelButton.setActionCommand("Cancel"); //$NON-NLS-1$
-				buttonPane.add(cancelButton);
-			}
-		}
-	}
+    JList<String> listLibraryDirs;
+    DefaultListModel<String> listModel;
+    ImageSearchChooserPanel imageSearchChooserPanel;
+    JButton buttonMinus;
+    JCheckBox chckbxMakeBackupCopies;
+    JCheckBox chckbxConfirmChangesTo;
 
-	protected void doCancel() {
-		setVisible(false);		
-	}
+    /**
+     * Create the dialog.
+     */
+    public SettingsDialog(Window owner) {
+        super(owner);
 
-	protected void doSave() {
-		// collect values
-		Settings.getInstance().getLibraryPaths().clear();
-		for(int i = 0; i < listModel.getSize(); i++){
-			Settings.getInstance().getLibraryPaths().add((String)listModel.get(i));
-		}
-		
-		imageSearchChooserPanel.updateValues();
-		Settings.getInstance().setBackupFileOnSave(chckbxMakeBackupCopies.isSelected());
-		Settings.getInstance().setConfirmFileEdit(chckbxConfirmChangesTo.isSelected());
-		
-		// save
-		try {
-			Settings.save();
-			firePropertyChange(SETTINGS_SAVED_PROPERTY, null, null);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		setVisible(false);		
-	}
+        setModalityType(ModalityType.APPLICATION_MODAL);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(SettingsDialog.class.getResource("/images/icon.png"))); //$NON-NLS-1$
+        setTitle(Messages.getString("SettingsDialog.Settings")); //$NON-NLS-1$
+        setBounds(100, 100, 450, 275);
+        getContentPane().setLayout(new BorderLayout());
+        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        getContentPane().add(contentPanel, BorderLayout.CENTER);
+        SpringLayout sl_contentPanel = new SpringLayout();
+        contentPanel.setLayout(sl_contentPanel);
 
-	protected void doRemoveDirectory() {
-		if(listLibraryDirs.getSelectedIndex() != -1){
-			listModel.remove(listLibraryDirs.getSelectedIndex());
-		}
-		
-		//buttonMinus.setEnabled(listLibraryDirs.getSelectedIndex() != -1);
-		updateControlsState();
-	}
+        JLabel lblLibraryFolders = new JLabel(Messages.getString("SettingsDialog.MusicFolders")); //$NON-NLS-1$
+        sl_contentPanel.putConstraint(SpringLayout.NORTH, lblLibraryFolders, 10, SpringLayout.NORTH, contentPanel);
+        sl_contentPanel.putConstraint(SpringLayout.WEST, lblLibraryFolders, 10, SpringLayout.WEST, contentPanel);
+        contentPanel.add(lblLibraryFolders);
 
-	DirSelectorDialog dlg;
-	
-	protected void doAddDirectory() {
-		if(dlg == null){
-			dlg = new DirSelectorDialog(this);
-			dlg.addPropertyChangeListener(DirSelectorDialog.DIRECTORY_SELECTED, new PropertyChangeListener(){
+        JButton button = new JButton("+"); //$NON-NLS-1$
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                doAddDirectory();
+            }
+        });
+        sl_contentPanel.putConstraint(SpringLayout.NORTH, button, -4, SpringLayout.NORTH, lblLibraryFolders);
+        sl_contentPanel.putConstraint(SpringLayout.WEST, button, -51, SpringLayout.EAST, contentPanel);
+        sl_contentPanel.putConstraint(SpringLayout.EAST, button, -10, SpringLayout.EAST, contentPanel);
+        contentPanel.add(button);
 
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {					
-					if(evt.getPropertyName().equals(DirSelectorDialog.DIRECTORY_SELECTED)){
-						listModel.addElement(evt.getNewValue());
-					}
-				}});
-			
-			dlg.setLocationRelativeTo(this);
-		}
-		dlg.setVisible(true);		
-	}
-	
-			
-	@Override	
-	public void setVisible(boolean isVisible) {
-		// set values
-		listModel.removeAllElements();
-		for(String path: Settings.getInstance().getLibraryPaths()){
-			listModel.addElement(path);			
-		}
-		
-		imageSearchChooserPanel.initValues();
-		chckbxConfirmChangesTo.setSelected(Settings.getInstance().isConfirmFileEdit());
-		chckbxMakeBackupCopies.setSelected(Settings.getInstance().isBackupFileOnSave());
-				
-		updateControlsState();
-		
-		super.setVisible(isVisible);
-	}
-	
-	private void updateControlsState(){
-		buttonMinus.setEnabled(listLibraryDirs.getSelectedIndex() != -1);
-	}
+        buttonMinus = new JButton("-"); //$NON-NLS-1$
+        buttonMinus.setEnabled(false);
+        buttonMinus.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doRemoveDirectory();
+            }
+        });
+        sl_contentPanel.putConstraint(SpringLayout.NORTH, buttonMinus, 4, SpringLayout.SOUTH, button);
+        sl_contentPanel.putConstraint(SpringLayout.WEST, buttonMinus, -51, SpringLayout.EAST, contentPanel);
+        sl_contentPanel.putConstraint(SpringLayout.EAST, buttonMinus, -10, SpringLayout.EAST, contentPanel);
+        contentPanel.add(buttonMinus);
+
+        JScrollPane scrollPane = new JScrollPane();
+        sl_contentPanel.putConstraint(SpringLayout.NORTH, scrollPane, -5, SpringLayout.NORTH, lblLibraryFolders);
+        sl_contentPanel.putConstraint(SpringLayout.WEST, scrollPane, 6, SpringLayout.EAST, lblLibraryFolders);
+        sl_contentPanel.putConstraint(SpringLayout.SOUTH, scrollPane, 90, SpringLayout.NORTH, contentPanel);
+        sl_contentPanel.putConstraint(SpringLayout.EAST, scrollPane, -11, SpringLayout.WEST, button);
+        contentPanel.add(scrollPane);
+
+        listLibraryDirs = new JList<String>();
+        listLibraryDirs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listModel = new DefaultListModel<String>();
+        listLibraryDirs.setModel(listModel);
+        scrollPane.setViewportView(listLibraryDirs);
+        listLibraryDirs.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(!e.getValueIsAdjusting() && e.getFirstIndex() >= 0){
+                    buttonMinus.setEnabled(true);
+                }
+            }
+        });
+
+        imageSearchChooserPanel = new ImageSearchChooserPanel();
+        sl_contentPanel.putConstraint(SpringLayout.NORTH, imageSearchChooserPanel, 6, SpringLayout.SOUTH, scrollPane);
+        sl_contentPanel.putConstraint(SpringLayout.WEST, imageSearchChooserPanel, 5, SpringLayout.WEST, contentPanel);
+        sl_contentPanel.putConstraint(SpringLayout.EAST, imageSearchChooserPanel, 166, SpringLayout.EAST, contentPanel);
+        contentPanel.add(imageSearchChooserPanel);
+
+        chckbxMakeBackupCopies = new JCheckBox(Messages.getString("SettingsDialog.MakeBackupCopies")); //$NON-NLS-1$
+        sl_contentPanel.putConstraint(SpringLayout.NORTH, chckbxMakeBackupCopies, 6, SpringLayout.SOUTH, imageSearchChooserPanel);
+        sl_contentPanel.putConstraint(SpringLayout.WEST, chckbxMakeBackupCopies, 0, SpringLayout.WEST, contentPanel);
+        contentPanel.add(chckbxMakeBackupCopies);
+
+        chckbxConfirmChangesTo = new JCheckBox(Messages.getString("SettingsDialog.ConfirmChanges")); //$NON-NLS-1$
+        sl_contentPanel.putConstraint(SpringLayout.NORTH, chckbxConfirmChangesTo, 6, SpringLayout.SOUTH, chckbxMakeBackupCopies);
+        sl_contentPanel.putConstraint(SpringLayout.WEST, chckbxConfirmChangesTo, 0, SpringLayout.WEST, chckbxMakeBackupCopies);
+        contentPanel.add(chckbxConfirmChangesTo);
+
+
+//        ImageSearchChooserPanel imgSearchPanel = new ImageSearchChooserPanel();
+//        sl_contentPanel.putConstraint(SpringLayout.NORTH, imgSearchPanel, 6, SpringLayout.SOUTH, scrollPane);
+//        sl_contentPanel.putConstraint(SpringLayout.WEST, imgSearchPanel, 0, SpringLayout.WEST, contentPanel);
+//        sl_contentPanel.putConstraint(SpringLayout.SOUTH, imgSearchPanel, 59, SpringLayout.SOUTH, scrollPane);
+//        sl_contentPanel.putConstraint(SpringLayout.EAST, imgSearchPanel, -195, SpringLayout.EAST, contentPanel);
+//        contentPanel.add(imgSearchPanel);
+
+
+
+        {
+            JPanel buttonPane = new JPanel();
+            buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+            getContentPane().add(buttonPane, BorderLayout.SOUTH);
+            {
+                JButton saveButton = new JButton(Messages.getString("SettingsDialog.Save")); //$NON-NLS-1$
+                saveButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        doSave();
+                    }
+                });
+                saveButton.setActionCommand("OK"); //$NON-NLS-1$
+                buttonPane.add(saveButton);
+                getRootPane().setDefaultButton(saveButton);
+            }
+            {
+                JButton cancelButton = new JButton(Messages.getString("SettingsDialog.Cancel")); //$NON-NLS-1$
+                cancelButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        doCancel();
+                    }
+                });
+                cancelButton.setActionCommand("Cancel"); //$NON-NLS-1$
+                buttonPane.add(cancelButton);
+            }
+        }
+    }
+
+    protected void doCancel() {
+        setVisible(false);
+    }
+
+    protected void doSave() {
+        // collect values
+        Settings.getInstance().getLibraryPaths().clear();
+        for(int i = 0; i < listModel.getSize(); i++){
+            Settings.getInstance().getLibraryPaths().add((String)listModel.get(i));
+        }
+
+        imageSearchChooserPanel.updateValues();
+        Settings.getInstance().setBackupFileOnSave(chckbxMakeBackupCopies.isSelected());
+        Settings.getInstance().setConfirmFileEdit(chckbxConfirmChangesTo.isSelected());
+
+        // save
+        try {
+            Settings.save();
+            firePropertyChange(SETTINGS_SAVED_PROPERTY, null, null);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        setVisible(false);
+    }
+
+    protected void doRemoveDirectory() {
+        if(listLibraryDirs.getSelectedIndex() != -1){
+            listModel.remove(listLibraryDirs.getSelectedIndex());
+        }
+
+        //buttonMinus.setEnabled(listLibraryDirs.getSelectedIndex() != -1);
+        updateControlsState();
+    }
+
+    DirSelectorDialog dlg;
+
+    protected void doAddDirectory() {
+        if(dlg == null){
+            dlg = new DirSelectorDialog(this);
+            dlg.addPropertyChangeListener(DirSelectorDialog.DIRECTORY_SELECTED, new PropertyChangeListener(){
+
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if(evt.getPropertyName().equals(DirSelectorDialog.DIRECTORY_SELECTED)){
+                        listModel.addElement(evt.getNewValue().toString());
+                    }
+                }});
+
+            dlg.setLocationRelativeTo(this);
+        }
+        dlg.setVisible(true);
+    }
+
+
+    @Override
+    public void setVisible(boolean isVisible) {
+        // set values
+        listModel.removeAllElements();
+        for(String path: Settings.getInstance().getLibraryPaths()){
+            listModel.addElement(path);
+        }
+
+        imageSearchChooserPanel.initValues();
+        chckbxConfirmChangesTo.setSelected(Settings.getInstance().isConfirmFileEdit());
+        chckbxMakeBackupCopies.setSelected(Settings.getInstance().isBackupFileOnSave());
+
+        updateControlsState();
+
+        super.setVisible(isVisible);
+    }
+
+    private void updateControlsState(){
+        buttonMinus.setEnabled(listLibraryDirs.getSelectedIndex() != -1);
+    }
 }
