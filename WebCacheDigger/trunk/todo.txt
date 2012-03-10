@@ -72,3 +72,7 @@ http://www.iconfinder.com/free_icons
 http://www.noupe.com/freebie/50-remarkable-free-icon-sets-released-in-2010.html
 
 http://www.everaldo.com/crystal/?action=downloads
+------------
+
+https://github.com/caprica/vlcj/downloads
+http://fobs.sourceforge.net/f4jmf_first.html
