@@ -8,59 +8,67 @@ import org.sergeys.webcachedigger.logic.CachedFile;
 
 public abstract class AbstractFilePreviewPanel extends JPanel {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private CachedFile cachedFile;
-	//private Settings settings;
-	
-	/**
-	 * This is the default constructor
-	 */
-//	public AbstractFilePreviewPanel() {
-//		super();
-//	}
+    private CachedFile cachedFile;
+    //private Settings settings;
+
+    /**
+     * This is the default constructor
+     */
+//    public AbstractFilePreviewPanel() {
+//        super();
+//    }
 
 
-	/**
-	 * @param cachedFile the cachedFile to set
-	 */
-	public void setCachedFile(CachedFile cachedFile) {
-		this.cachedFile = cachedFile;
-	}
+    /**
+     * @param cachedFile the cachedFile to set
+     */
+    public void setCachedFile(CachedFile cachedFile) {
+        this.cachedFile = cachedFile;
+    }
 
-	/**
-	 * @return the cachedFile
-	 */
-	public CachedFile getCachedFile() {
-		return cachedFile;
-	}
+    /**
+     * @return the cachedFile
+     */
+    public CachedFile getCachedFile() {
+        return cachedFile;
+    }
 
-	public static AbstractFilePreviewPanel createFilePreviewPanel(String mimeType, PropertyChangeListener listener){
-		
-		AbstractFilePreviewPanel panel = null;
-		
-		if(mimeType.startsWith("image/")){
-			panel = new ImagePreviewPanel();
-			
-		}
-		else if(mimeType.startsWith("audio/")){
-			panel = new AudioPreviewPanel();			
-			panel.addPropertyChangeListener(AudioPreviewPanel.PROPERTY_FILE_TO_PLAY, listener);
-		}
-		else if(mimeType.startsWith("video/")){
-			panel = new VideoPreviewPanel();			
-			panel.addPropertyChangeListener(VideoPreviewPanel.PROPERTY_FILE_TO_PLAY, listener);
-		}
-						
-		return panel;
-	}
+    public static AbstractFilePreviewPanel createFilePreviewPanel(String mimeType, PropertyChangeListener listener){
 
-//	protected Settings getSettings() {
-//		return settings;
-//	}
+        AbstractFilePreviewPanel panel = null;
+
+        if(mimeType.startsWith("image/")){
+            panel = new ImagePreviewPanel();
+        }
+        else if(mimeType.startsWith("audio/")){
+            panel = new AudioPreviewPanel();
+            panel.addPropertyChangeListener(AudioPreviewPanel.PROPERTY_FILE_TO_PLAY, listener);
+        }
+        else if(mimeType.startsWith("video/")){
+            panel = new VideoPreviewPanel();
+            panel.addPropertyChangeListener(VideoPreviewPanel.PROPERTY_FILE_TO_PLAY, listener);
+        }
+        else{
+            panel = new EmptyPreviewPanel();
+        }
+
+        return panel;
+    }
+
+
+    static class EmptyPreviewPanel extends AbstractFilePreviewPanel{
+        private static final long serialVersionUID = 1L;
+
+        //public EmptyPreviewPanel() {};
+    }
+//    protected Settings getSettings() {
+//        return settings;
+//    }
 //
-//	protected void setSettings(Settings s) {
-//		this.settings = s;
-//	}
+//    protected void setSettings(Settings s) {
+//        this.settings = s;
+//    }
 
 }
