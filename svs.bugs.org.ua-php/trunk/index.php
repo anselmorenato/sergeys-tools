@@ -41,8 +41,8 @@
 <h2>Cover Finder</h2>
 <br>
 <p>
-Простой редактор тегов для аудио файлов. Редактирует название, альбом, артиста. 
-Ищет и вставляет картинку обложки диска. 
+Простой редактор тегов для аудио файлов. Редактирует название, альбом, артиста.
+Ищет и вставляет картинку обложки диска.
 Распознает неопознанную музыку.
 <p>
 Внимание: при добавлении объемных каталогов с музыкой, по нескольку тысяч файлов,
@@ -56,7 +56,7 @@
 <br>
 
 Запустить:
-<script src="http://www.java.com/js/deployJava.js"></script>
+<!-- <script src="http://www.java.com/js/deployJava.js"></script> -->
     <script>
         // using JavaScript to get location of JNLP file relative to HTML page
         var dir = location.href.substring(0, location.href.lastIndexOf('/')+1);
