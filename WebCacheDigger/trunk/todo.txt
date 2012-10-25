@@ -76,3 +76,5 @@ http://www.everaldo.com/crystal/?action=downloads
 
 https://github.com/caprica/vlcj/downloads
 http://fobs.sourceforge.net/f4jmf_first.html
+
+tst commit, remove this line
