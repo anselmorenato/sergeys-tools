@@ -1,5 +1,7 @@
 - webstart app similar to mweather
 
+- download weather photos from google/bing images
+
 language codes: http://www.loc.gov/standards/iso639-2/php/English_list.php
 
 http://www.nirsoft.net/utils/mweather.html
