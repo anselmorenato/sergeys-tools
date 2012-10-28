@@ -67,7 +67,8 @@ public class BookmarksModel extends DynamicTreeTableModel {
     /**
      * Classes presenting the data.
      */
-    private static final Class[] classes = { TreeTableModel.class,
+    //private static final Class[] classes = { TreeTableModel.class,
+    private static final Class<?>[] classes = { TreeTableModel.class,
             String.class, Date.class, Date.class };
 
     public BookmarksModel(Bookmarks.BookmarkDirectory root) {

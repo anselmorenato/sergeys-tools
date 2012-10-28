@@ -74,8 +74,16 @@ public abstract class FileUtils {
 		// TODO: java 7
 		//Files.copy(file.getAbsolutePath(), targetFile, );
 		
-		FileChannel inChannel = new FileInputStream(in).getChannel();
-		FileChannel outChannel = new FileOutputStream(out).getChannel();
+				
+//		FileChannel inChannel = new FileInputStream(in).getChannel();
+//		FileChannel outChannel = new FileOutputStream(out).getChannel();
+
+		FileInputStream fis = new FileInputStream(in);
+		FileOutputStream fos = new FileOutputStream(out);
+
+		FileChannel inChannel = fis.getChannel();
+		FileChannel outChannel = fos.getChannel();
+		
 		try {
 			//inChannel.transferTo(0, inChannel.size(), outChannel);
 			
@@ -93,8 +101,17 @@ public abstract class FileUtils {
 			if (inChannel != null){
 				inChannel.close();
 			}
+			
+			if(fis != null){
+				fis.close();
+			}
+			
 			if (outChannel != null){
 				outChannel.close();
+			}
+			
+			if(fos != null){
+				fos.close();
 			}
 		}
 	}

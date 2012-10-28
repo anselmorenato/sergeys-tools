@@ -101,7 +101,8 @@ public class TreeTableExample3 {
 
         frame.setJMenuBar(mb);
         frame.pack();
-        frame.show();
+        //frame.show();
+        frame.setVisible(true);
     }
 
     /**
