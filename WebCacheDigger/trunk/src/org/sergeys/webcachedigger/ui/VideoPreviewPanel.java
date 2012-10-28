@@ -16,10 +16,12 @@ import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
+import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 import com.sun.jna.NativeLibrary;
 
@@ -28,11 +30,13 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 	private static final long serialVersionUID = 1L;
 	// for property listeners
 	public static final String PROPERTY_FILE_TO_PLAY = "VideoPreviewPanel_PROPERTY_FILE_TO_PLAY";  //$NON-NLS-1$
-	private EmbeddedMediaPlayer vlcPlayer;
+	//private EmbeddedMediaPlayer vlcPlayer;
+	private EmbeddedMediaPlayerComponent mpComponent;
 	
 	public VideoPreviewPanel() {
 				
-		NativeLibrary.addSearchPath("libvlc", "f:\\bin\\vlc");
+		//NativeLibrary.addSearchPath("libvlc", "f:\\bin\\vlc");
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "f:\\bin\\vlc");
 		
 		setLayout(new BorderLayout(0, 0));
 		
@@ -48,21 +52,24 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 		panel.add(btnPlay);
 		btnPlay.setEnabled(Settings.getInstance().isExternalPlayerConfigured());
 		
-		Canvas canvasVideo = new Canvas();
-		add(canvasVideo, BorderLayout.CENTER);
+//		Canvas canvasVideo = new Canvas();
+//		add(canvasVideo, BorderLayout.CENTER);
+				
+//		MediaPlayerFactory factory = new MediaPlayerFactory();
+//		vlcPlayer = factory.newEmbeddedMediaPlayer();
+//		vlcPlayer.setVideoSurface(factory.newVideoSurface(canvasVideo));
+//		vlcPlayer.setPlaySubItems(true);
+//	    vlcPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+//	        @Override
+//	        public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
+//	          List<String> items = mediaPlayer.subItems();
+//	          System.out.println(items);
+//	        }
+//	      });
 		
-		MediaPlayerFactory factory = new MediaPlayerFactory();
-		vlcPlayer = factory.newEmbeddedMediaPlayer();
-		vlcPlayer.setVideoSurface(factory.newVideoSurface(canvasVideo));
-		vlcPlayer.setPlaySubItems(true);
-	    vlcPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-	        @Override
-	        public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
-	          List<String> items = mediaPlayer.subItems();
-	          System.out.println(items);
-	        }
-	      });
-		
+		mpComponent = new EmbeddedMediaPlayerComponent();
+		add(mpComponent, BorderLayout.CENTER);
+	    
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doPlay(e);
@@ -74,7 +81,8 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 		
 		//firePropertyChange(PROPERTY_FILE_TO_PLAY, null, getCachedFile());
 		
-		vlcPlayer.play();				
+		//vlcPlayer.play();
+		mpComponent.getMediaPlayer().play();
 	}
 		
 	@Override
@@ -85,13 +93,15 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 			String url = "file:///" + getCachedFile().getAbsolutePath();
 			System.out.println(url);
 			
-			vlcPlayer.prepareMedia(url);
-			//vlcPlayer.parseMedia();
-			vlcPlayer.play();
-			//vlcPlayer.pause();
+//			vlcPlayer.prepareMedia(url);
+//			vlcPlayer.play();
+			
+			mpComponent.getMediaPlayer().prepareMedia(url);
+			mpComponent.getMediaPlayer().play();
 		}
 		else{
-			vlcPlayer.stop();
+			//vlcPlayer.stop();
+			mpComponent.getMediaPlayer().stop();
 		}		
 	}	
 }
