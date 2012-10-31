@@ -137,5 +137,19 @@ public class Settings {
 
         return date;
     }
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public boolean isFirstRun() {
+		return firstRun;
+	}
+
+	
     
 }
