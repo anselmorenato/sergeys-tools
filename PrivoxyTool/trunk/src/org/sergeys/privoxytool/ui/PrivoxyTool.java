@@ -22,7 +22,9 @@ public class PrivoxyTool {
 			public void run() {
 				
 				try {
-					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+					//UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+					UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+					
 				} catch (ClassNotFoundException | InstantiationException
 						| IllegalAccessException
 						| UnsupportedLookAndFeelException e1) {
@@ -71,13 +73,13 @@ public class PrivoxyTool {
 		JMenu mnLanguage = new JMenu("Language");
 		mnSettings.add(mnLanguage);
 		
-		JMenuItem mntmSettings = new JMenuItem("Settings...");
+		JMenuItem mntmSettings = new JMenuItem("Settings ...");
 		mnSettings.add(mntmSettings);
 		
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
 		
-		JMenuItem mntmAbout = new JMenuItem("About...");
+		JMenuItem mntmAbout = new JMenuItem("About ...");
 		mnHelp.add(mntmAbout);
 		
 		MainPanel mainPanel = new MainPanel();
