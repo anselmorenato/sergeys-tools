@@ -23,7 +23,7 @@
 <p>
 Браузеры: Firefox, Chrome, Opera везде и Internet Explorer на Windows.
 <p>
-Требования: Java 1.6 и выше, 32 или 64 бит - все равно.
+Требования: Java 1.7 и выше, 32 или 64 бит - все равно.
 <p>
 <br>
 
@@ -33,7 +33,7 @@
         // using JavaScript to get location of JNLP file relative to HTML page
         var dir = location.href.substring(0, location.href.lastIndexOf('/')+1);
         var url = dir + "wcd/wcd.jnlp";
-        deployJava.createWebStartLaunchButton(url, '1.6.0');
+        deployJava.createWebStartLaunchButton(url, '1.7.0');
     </script>
 <br>
 <br>
