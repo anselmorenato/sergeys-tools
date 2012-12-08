@@ -283,12 +283,13 @@ implements ActionListener, PropertyChangeListener
 
 				try {
 					
-					if(Settings.getInstance().getLookAndFeel().equals("default") || Settings.getInstance().getLookAndFeel().isEmpty())
+					String laf = Settings.getInstance().getLookAndFeel(); 
+					if(laf == null || laf.equals("default") || laf.isEmpty())
 					{
 						UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 					}
 					else{
-						UIManager.setLookAndFeel(Settings.getInstance().getLookAndFeel());
+						UIManager.setLookAndFeel(laf);
 					}
 					
 					//UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
@@ -866,7 +867,9 @@ implements ActionListener, PropertyChangeListener
 			}
 		});
 		
-		if(Settings.getInstance().getLookAndFeel().equals("default") || Settings.getInstance().getLookAndFeel().isEmpty()){
+		String currentLaf = Settings.getInstance().getLookAndFeel(); 
+		
+		if(currentLaf == null || currentLaf.equals("default") || currentLaf.isEmpty()){
 			mi.setSelected(true);
 		}
 		
@@ -887,7 +890,7 @@ implements ActionListener, PropertyChangeListener
 				}
 			});
 			
-			if(Settings.getInstance().getLookAndFeel().equals(laf.getClassName())){
+			if(laf.getClassName().equals(currentLaf)){
 				mi.setSelected(true);
 			}
 			
