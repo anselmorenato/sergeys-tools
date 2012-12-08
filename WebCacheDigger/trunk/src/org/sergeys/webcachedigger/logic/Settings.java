@@ -70,6 +70,7 @@ extends Properties
     private Properties resources = new Properties();
     private Date savedVersion = new Date(0);
     private String libVlc;
+    private String lookAndFeel;
 
     private static Settings instance = new Settings();
 
@@ -389,6 +390,14 @@ extends Properties
 
 	public void setLibVlc(String libVlc) {
 		this.libVlc = libVlc;
+	}
+
+	public String getLookAndFeel() {
+		return lookAndFeel;
+	}
+
+	public void setLookAndFeel(String lookAndFeel) {
+		this.lookAndFeel = lookAndFeel;
 	}
 }
 

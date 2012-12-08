@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -33,10 +34,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
@@ -49,7 +52,6 @@ import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.SimpleLogger;
 import org.sergeys.webcachedigger.ui.ProgressDialog.WorkType;
-import javax.swing.ImageIcon;
 
 public class WebCacheDigger 
 implements ActionListener, PropertyChangeListener
@@ -280,7 +282,16 @@ implements ActionListener, PropertyChangeListener
 			public void run() {
 
 				try {
-					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
+					
+					if(Settings.getInstance().getLookAndFeel().equals("default") || Settings.getInstance().getLookAndFeel().isEmpty())
+					{
+						UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+					}
+					else{
+						UIManager.setLookAndFeel(Settings.getInstance().getLookAndFeel());
+					}
+					
+					//UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				} catch (InstantiationException e) {
@@ -437,6 +448,7 @@ implements ActionListener, PropertyChangeListener
 			settingsMenu = new JMenu();
 			settingsMenu.setText(Messages.getString("WebCacheDigger.Settings")); //$NON-NLS-1$
 			settingsMenu.add(getMnLanguage());
+			settingsMenu.add(getMnLookAndFeel());
 			settingsMenu.add(getJMenuItemSettings());
 		}
 		return settingsMenu;
@@ -777,6 +789,7 @@ implements ActionListener, PropertyChangeListener
 	private JMenu mnLanguage;
 	@SuppressWarnings("unused")
 	private JMenuItem mntmEnglish;
+	private JMenu mnLookAndFeel;
 	
 	public synchronized LinkedHashSet<IBrowser> getExistingBrowsers(){
 		if(existingBrowsers == null){
@@ -842,6 +855,53 @@ implements ActionListener, PropertyChangeListener
 		}
 	}
 	
+	private void createLafMenu(JMenu parent){
+		ButtonGroup group = new ButtonGroup();
+		
+		JRadioButtonMenuItem mi = new JRadioButtonMenuItem("Default");
+		mi.setActionCommand("default");
+		mi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doLafSelected(e);
+			}
+		});
+		
+		if(Settings.getInstance().getLookAndFeel().equals("default") || Settings.getInstance().getLookAndFeel().isEmpty()){
+			mi.setSelected(true);
+		}
+		
+		group.add(mi);		
+		parent.add(mi);
+		
+		JSeparator sep = new JSeparator();
+		parent.add(sep);
+		
+		LookAndFeelInfo[] lafs = UIManager.getInstalledLookAndFeels();		
+		for(LookAndFeelInfo laf: lafs){
+			mi = new JRadioButtonMenuItem(laf.getName());
+
+			mi.setActionCommand(laf.getClassName());
+			mi.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					doLafSelected(e);
+				}
+			});
+			
+			if(Settings.getInstance().getLookAndFeel().equals(laf.getClassName())){
+				mi.setSelected(true);
+			}
+			
+			group.add(mi);		
+			parent.add(mi);
+		}
+	}
+	
+	protected void doLafSelected(ActionEvent e) {
+//System.out.println(e.getActionCommand());		
+		Settings.getInstance().setLookAndFeel(e.getActionCommand());
+		JOptionPane.showMessageDialog(this.getJContentPane(), "Please restart application to change look and feel.");		
+	}
+
 	private JMenu getMnLanguage() {
 		if (mnLanguage == null) {
 			mnLanguage = new JMenu(Messages.getString("WebCacheDigger.Language")); //$NON-NLS-1$
@@ -851,13 +911,20 @@ implements ActionListener, PropertyChangeListener
 		return mnLanguage;
 	}
 	
-
-
 	protected void doLanguageSelected(ActionEvent e) {
 		Settings.getInstance().setLanguage(e.getActionCommand());
 		//Locale l = new Locale(Settings.getInstance().getLanguage());
 		//Messages.setLocale(l);
 		JOptionPane.showMessageDialog(this.getJContentPane(), Messages.getString("WebCacheDigger.RestartAppForNewLanguage")); //$NON-NLS-1$
+	}
+	
+	private JMenu getMnLookAndFeel() {
+		if (mnLookAndFeel == null) {
+			mnLookAndFeel = new JMenu(Messages.getString("WebCacheDigger.mnLookAndFeel.text"));
+			
+			createLafMenu(mnLookAndFeel);
+		}
+		return mnLookAndFeel;
 	}
 }
 
