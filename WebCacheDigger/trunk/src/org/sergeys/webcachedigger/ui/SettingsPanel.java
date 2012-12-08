@@ -30,6 +30,7 @@ import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 import org.sergeys.webcachedigger.logic.Settings.CompareFilesType;
+import org.sergeys.webcachedigger.logic.Settings.MediaPlayerType;
 
 public class SettingsPanel extends JPanel {
 
@@ -229,6 +230,17 @@ public class SettingsPanel extends JPanel {
                 break;
         }
 
+        switch(Settings.getInstance().getMediaPlayerType()){
+			case External:
+				getRdbtnUseExternalPlayer().setSelected(true);
+				break;
+			case Vlc:
+				getRdbtnUseVlc().setSelected(true);
+				break;
+//		default:
+//			break;        
+        }
+        
         getTextLibvlcLocation().setText(Settings.getInstance().getLibVlc());
         
         //revalidate();
@@ -252,6 +264,16 @@ public class SettingsPanel extends JPanel {
             Settings.getInstance().setCompareFilesMethod(null);
         }
 
+        if(getRdbtnUseExternalPlayer().isSelected()){
+        	Settings.getInstance().setMediaPlayerType(MediaPlayerType.External);
+        }
+        else if(getRdbtnUseVlc().isSelected()){
+        	Settings.getInstance().setMediaPlayerType(MediaPlayerType.Vlc);
+        }
+        else{
+        	Settings.getInstance().setMediaPlayerType(null);        
+        }
+        
         Settings.getInstance().setLibVlc(getTextLibvlcLocation().getText());
     }
 
@@ -579,15 +601,13 @@ public class SettingsPanel extends JPanel {
     }
     private JRadioButton getRdbtnUseVlc() {
         if (rdbtnUseVlc == null) {
-            rdbtnUseVlc = new JRadioButton(Messages.getString("SettingsPanel.rdbtnUseVlc.text")); //$NON-NLS-1$
-            rdbtnUseVlc.setEnabled(false);
+            rdbtnUseVlc = new JRadioButton(Messages.getString("SettingsPanel.rdbtnUseVlc.text"));
         }
         return rdbtnUseVlc;
     }
     private JRadioButton getRdbtnUseExternalPlayer() {
         if (rdbtnUseExternalPlayer == null) {
-            rdbtnUseExternalPlayer = new JRadioButton(Messages.getString("SettingsPanel.rdbtnUseExternalPlayer.text")); //$NON-NLS-1$
-            rdbtnUseExternalPlayer.setEnabled(false);
+            rdbtnUseExternalPlayer = new JRadioButton(Messages.getString("SettingsPanel.rdbtnUseExternalPlayer.text"));
         }
         return rdbtnUseExternalPlayer;
     }

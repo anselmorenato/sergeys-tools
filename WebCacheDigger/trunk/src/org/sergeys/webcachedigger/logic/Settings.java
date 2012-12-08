@@ -25,6 +25,7 @@ extends Properties
 {
     public enum FileType { Image, Audio, Video, Other };
     public enum CompareFilesType { Fast, Full };
+    public enum MediaPlayerType { Vlc, External };
 
     /**
      *
@@ -71,6 +72,7 @@ extends Properties
     private Date savedVersion = new Date(0);
     private String libVlc;
     private String lookAndFeel;
+    private MediaPlayerType mediaPlayerType = MediaPlayerType.External;
 
     private static Settings instance = new Settings();
 
@@ -398,6 +400,14 @@ extends Properties
 
 	public void setLookAndFeel(String lookAndFeel) {
 		this.lookAndFeel = lookAndFeel;
+	}
+
+	public MediaPlayerType getMediaPlayerType() {
+		return mediaPlayerType;
+	}
+
+	public void setMediaPlayerType(MediaPlayerType mediaPlayerType) {
+		this.mediaPlayerType = mediaPlayerType;
 	}
 }
 

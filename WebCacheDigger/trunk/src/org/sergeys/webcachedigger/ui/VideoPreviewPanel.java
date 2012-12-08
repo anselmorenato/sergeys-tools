@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
+import org.sergeys.webcachedigger.logic.Settings.MediaPlayerType;
 
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
@@ -38,18 +39,7 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 
     public VideoPreviewPanel() {
 
-        //NativeLibrary.addSearchPath("libvlc", "f:\\bin\\vlc");
-        //NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "f:\\bin\\vlc201");
-        File libVlcDir = new File(Settings.getInstance().getLibVlc()).getParentFile();
-        if(libVlcDir.isDirectory()){
-            NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), libVlcDir.getAbsolutePath());
-        }
-
-        setLayout(new BorderLayout(0, 0));
-
-        JLabel lblVideoFile = new JLabel(Messages.getString("VideoPreviewPanel.videoFile")); //$NON-NLS-1$
-        lblVideoFile.setHorizontalAlignment(SwingConstants.CENTER);
-        add(lblVideoFile, BorderLayout.NORTH);
+    	setLayout(new BorderLayout(0, 0));
 
         JPanel panel = new JPanel();
         add(panel, BorderLayout.SOUTH);
@@ -60,24 +50,41 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
         panel.add(btnPlay);
         //btnPlay.setEnabled(Settings.getInstance().isExternalPlayerConfigured());
 
-        mpComponent = new EmbeddedMediaPlayerComponent();
-        add(mpComponent, BorderLayout.CENTER);
-
         btnPlay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doPlay(e);
             }
         });
+        
+    	if(Settings.getInstance().getMediaPlayerType() == MediaPlayerType.Vlc){
+            //NativeLibrary.addSearchPath("libvlc", "f:\\bin\\vlc");
+            //NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "f:\\bin\\vlc201");
+            File libVlcDir = new File(Settings.getInstance().getLibVlc()).getParentFile();
+            if(libVlcDir.isDirectory()){
+                NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), libVlcDir.getAbsolutePath());
+            }
+            
+            mpComponent = new EmbeddedMediaPlayerComponent();
+            add(mpComponent, BorderLayout.CENTER);		    		
+    	}
+    	else{
+            JLabel lblVideoFile = new JLabel(Messages.getString("VideoPreviewPanel.videoFile")); //$NON-NLS-1$
+            lblVideoFile.setHorizontalAlignment(SwingConstants.CENTER);
+            add(lblVideoFile, BorderLayout.NORTH);
+    	}
     }
 
-    protected void doPlay(ActionEvent e) {
-
-        //firePropertyChange(PROPERTY_FILE_TO_PLAY, null, getCachedFile());
-
-        togglePlayback(!isPlaying);
+	protected void doPlay(ActionEvent e) {
+		if(Settings.getInstance().getMediaPlayerType() == MediaPlayerType.Vlc){
+			toggleVlcPlayback(!isPlaying);
+		}
+		else{
+			// let external player play this
+			firePropertyChange(PROPERTY_FILE_TO_PLAY, null, getCachedFile());			
+		}
     }
 
-    private void togglePlayback(boolean play){
+    private void toggleVlcPlayback(boolean play){
         if(play){
             btnPlay.setIcon(iconStop);
             mpComponent.getMediaPlayer().play();
@@ -93,16 +100,18 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
     @Override
     public void setVisible(boolean aFlag) {
         super.setVisible(aFlag);
-
-        if(aFlag){
-            String url = "file:///" + getCachedFile().getAbsolutePath();
-            System.out.println(url);
-
-            mpComponent.getMediaPlayer().prepareMedia(url);
-            togglePlayback(true);
-        }
-        else{
-            togglePlayback(false);
+        
+        if(Settings.getInstance().getMediaPlayerType() == MediaPlayerType.Vlc){
+	        if(aFlag){
+	            String url = "file:///" + getCachedFile().getAbsolutePath();
+	            System.out.println(url);
+	
+	            mpComponent.getMediaPlayer().prepareMedia(url);
+	            toggleVlcPlayback(true);
+	        }
+	        else{
+	            toggleVlcPlayback(false);
+	        }
         }
     }
 }
