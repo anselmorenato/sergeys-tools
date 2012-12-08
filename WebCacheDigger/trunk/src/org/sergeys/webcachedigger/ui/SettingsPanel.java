@@ -229,6 +229,8 @@ public class SettingsPanel extends JPanel {
                 break;
         }
 
+        getTextLibvlcLocation().setText(Settings.getInstance().getLibVlc());
+        
         //revalidate();
     }
 
@@ -250,6 +252,7 @@ public class SettingsPanel extends JPanel {
             Settings.getInstance().setCompareFilesMethod(null);
         }
 
+        Settings.getInstance().setLibVlc(getTextLibvlcLocation().getText());
     }
 
     /**
@@ -577,12 +580,14 @@ public class SettingsPanel extends JPanel {
     private JRadioButton getRdbtnUseVlc() {
         if (rdbtnUseVlc == null) {
             rdbtnUseVlc = new JRadioButton(Messages.getString("SettingsPanel.rdbtnUseVlc.text")); //$NON-NLS-1$
+            rdbtnUseVlc.setEnabled(false);
         }
         return rdbtnUseVlc;
     }
     private JRadioButton getRdbtnUseExternalPlayer() {
         if (rdbtnUseExternalPlayer == null) {
             rdbtnUseExternalPlayer = new JRadioButton(Messages.getString("SettingsPanel.rdbtnUseExternalPlayer.text")); //$NON-NLS-1$
+            rdbtnUseExternalPlayer.setEnabled(false);
         }
         return rdbtnUseExternalPlayer;
     }
@@ -683,7 +688,7 @@ public class SettingsPanel extends JPanel {
             if(path.contains(" ")){ 
                 path = "\"" + path + "\"";
             }
-                        
+            
             getTextLibvlcLocation().setText(path);
         }
     }
@@ -691,6 +696,7 @@ public class SettingsPanel extends JPanel {
     private JButton getBtnLibvlcDetect() {
         if (btnLibvlcDetect == null) {
             btnLibvlcDetect = new JButton(Messages.getString("SettingsPanel.btnDetect.text")); //$NON-NLS-1$
+            btnLibvlcDetect.setEnabled(false);
             btnLibvlcDetect.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     doDetectVlc(e);
@@ -701,7 +707,7 @@ public class SettingsPanel extends JPanel {
     }
 
     protected void doDetectVlc(ActionEvent e) {
-
+    	// TODO: detect vlc lib
 
     }
 }

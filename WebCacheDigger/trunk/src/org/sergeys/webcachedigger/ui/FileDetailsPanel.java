@@ -1,15 +1,18 @@
 package org.sergeys.webcachedigger.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Dictionary;
-import java.util.Enumeration;
+import java.io.IOException;
 import java.util.Hashtable;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -32,6 +35,8 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
     private Hashtable<String, AbstractFilePreviewPanel> panelByFileType = new Hashtable<String, AbstractFilePreviewPanel>();
 
     JPanel panelTop;
+    private JButton btnOpenLocation;
+    private CachedFile file;
 
     /**
      * This is the default constructor
@@ -52,9 +57,9 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
         add(panelTop, BorderLayout.NORTH);
         GridBagLayout gbl_panelTop = new GridBagLayout();
         gbl_panelTop.columnWidths = new int[]{0, 0, 0};
-        gbl_panelTop.rowHeights = new int[]{0, 0,0,0};
+        gbl_panelTop.rowHeights = new int[]{0, 0,0,0, 0};
         gbl_panelTop.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-        gbl_panelTop.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+        gbl_panelTop.rowWeights = new double[]{0.0, Double.MIN_VALUE, 0.0, 0.0, 0.0};
         panelTop.setLayout(gbl_panelTop);
 
         JLabel lblFname = new JLabel(Messages.getString("FileDetailsPanel.name")); //$NON-NLS-1$
@@ -92,17 +97,31 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
         JLabel lblType = new JLabel(Messages.getString("FileDetailsPanel.type")); //$NON-NLS-1$
         GridBagConstraints gbc_lblType = new GridBagConstraints();
         gbc_lblType.anchor = GridBagConstraints.EAST;
-        gbc_lblType.insets = new Insets(0, 0, 0, 5);
+        gbc_lblType.insets = new Insets(0, 0, 5, 5);
         gbc_lblType.gridx = 0;
         gbc_lblType.gridy = 3;
         panelTop.add(lblType, gbc_lblType);
 
         lblFiletype = new JLabel("filetype"); //$NON-NLS-1$
         GridBagConstraints gbc_lblFiletype = new GridBagConstraints();
+        gbc_lblFiletype.insets = new Insets(0, 0, 5, 0);
         gbc_lblFiletype.anchor = GridBagConstraints.WEST;
         gbc_lblFiletype.gridx = 1;
         gbc_lblFiletype.gridy = 3;
         panelTop.add(lblFiletype, gbc_lblFiletype);
+        
+        btnOpenLocation = new JButton(Messages.getString("FileDetailsPanel.btnOpenLocation.text"));
+        btnOpenLocation.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		doOpenLocation();
+        	}
+        });
+        GridBagConstraints gbc_btnOpenLocation = new GridBagConstraints();
+        gbc_btnOpenLocation.anchor = GridBagConstraints.LINE_START;
+        gbc_btnOpenLocation.insets = new Insets(0, 0, 0, 5);
+        gbc_btnOpenLocation.gridx = 1;
+        gbc_btnOpenLocation.gridy = 4;
+        panelTop.add(btnOpenLocation, gbc_btnOpenLocation);
 
         panelPreview = new JPanel();
         panelPreview.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -111,7 +130,18 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
         initialize();
     }
 
-    /**
+    protected void doOpenLocation() {    	
+    	if(file != null){
+    		try {
+				Desktop.getDesktop().open(file.getParentFile());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}    					
+	}
+
+	/**
      * This method initializes this
      *
      * @return void
@@ -126,6 +156,8 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
         panelPreview.setVisible(false);
         remove(panelPreview);
 
+        this.file = file;
+        
         if(file != null){
 
             panelTop.setVisible(true);
@@ -166,6 +198,5 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
             setFile(file);
         }
     }
-
 }
 

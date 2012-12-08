@@ -69,6 +69,7 @@ extends Properties
     private boolean firstRun = true;
     private Properties resources = new Properties();
     private Date savedVersion = new Date(0);
+    private String libVlc;
 
     private static Settings instance = new Settings();
 
@@ -381,6 +382,14 @@ extends Properties
     public void setSavedVersion(Date savedVersion) {
         this.savedVersion = savedVersion;
     }
+
+	public String getLibVlc() {
+		return libVlc;
+	}
+
+	public void setLibVlc(String libVlc) {
+		this.libVlc = libVlc;
+	}
 }
 
 
