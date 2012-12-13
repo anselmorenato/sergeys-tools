@@ -85,7 +85,7 @@ public class MainController {
 
         WebEngine webEngine = webview.getEngine();
         try{
-            webEngine.load("file:///D:/workspace/CookBook/files/2.html");
+            webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
             //webEngine.load("http://java.oracle.com");
         }
         catch(Exception ex){

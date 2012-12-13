@@ -32,7 +32,7 @@ public class CookBook extends Application {
 			
 			// http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
 			
-			URL location = getClass().getResource("MainScene.fxml");
+			URL location = getClass().getResource("/fxml/MainScene.fxml");
 			//ResourceBundle resources = ResourceBundle.getBundle("com.foo.example");
 			FXMLLoader fxmlLoader = new FXMLLoader(location);
 
@@ -42,7 +42,7 @@ public class CookBook extends Application {
 			primaryStage.setTitle("CookBook");
 			primaryStage.setScene(new Scene(root, 700, 400));
 			
-			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("amor.png")));	// amor.png BPFolderRecipesGreen.png	
+			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/amor.png")));	// amor.png BPFolderRecipesGreen.png	
 			
 			primaryStage.show();
 			
