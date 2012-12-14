@@ -1,17 +1,23 @@
 package org.sergeys.cookbook;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Arrays;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainController {
@@ -23,10 +29,20 @@ public class MainController {
     private Stage stage;
     private FileChooser fc;
 
+    private Image appIcon;
+    
     public void initialize(){
         System.out.println("init");
     }
 
+    public Image getAppIcon(){
+    	if(appIcon == null){
+    		appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));
+    	}
+    	
+    	return appIcon;
+    }
+    
     public void onMenuCloseAction(ActionEvent e){
         System.out.println("exit");
         Platform.exit();
@@ -91,5 +107,26 @@ public class MainController {
         catch(Exception ex){
             ex.printStackTrace();
         }
+    }
+    
+    public void onMenuHelpAbout(ActionEvent e){    	
+    	// http://stackoverflow.com/questions/8309981/how-to-create-and-show-common-dialog-error-warning-confirmation-in-javafx-2
+    	try{
+			URL location = getClass().getResource("About.fxml");		
+			FXMLLoader fxmlLoader = new FXMLLoader(location);
+	
+			Pane root = (Pane)fxmlLoader.load();		
+			
+	    	Stage dialogStage = new Stage();
+	    	dialogStage.setTitle("CookBook");
+	    	dialogStage.initModality(Modality.WINDOW_MODAL);
+	    	dialogStage.setScene(new Scene(root, 500, 300));
+	    	dialogStage.initOwner(stage);
+	    	dialogStage.getIcons().add(getAppIcon());
+	    	dialogStage.show();
+    	}
+    	catch(Exception ex){
+    		ex.printStackTrace();
+    	}    	
     }
 }

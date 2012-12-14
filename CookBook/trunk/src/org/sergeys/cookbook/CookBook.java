@@ -3,15 +3,14 @@ package org.sergeys.cookbook;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class CookBook extends Application {
 
@@ -32,7 +31,7 @@ public class CookBook extends Application {
 			
 			// http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
 			
-			URL location = getClass().getResource("/fxml/MainScene.fxml");
+			URL location = getClass().getResource("MainScene.fxml");
 			//ResourceBundle resources = ResourceBundle.getBundle("com.foo.example");
 			FXMLLoader fxmlLoader = new FXMLLoader(location);
 
@@ -40,9 +39,9 @@ public class CookBook extends Application {
 			MainController controller = (MainController)fxmlLoader.getController();
 			
 			primaryStage.setTitle("CookBook");
-			primaryStage.setScene(new Scene(root, 700, 400));
+			primaryStage.setScene(new Scene(root, 800, 500));
 			
-			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/amor.png")));	// amor.png BPFolderRecipesGreen.png	
+			primaryStage.getIcons().add(controller.getAppIcon());	// amor.png BPFolderRecipesGreen.png	
 			
 			primaryStage.show();
 			

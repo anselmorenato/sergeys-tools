@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="296.0" prefWidth="517.0" styleClass="red-bg" xmlns:fx="http://javafx.com/fxml">
+  <!-- TODO Add Nodes -->
+  <children>
+    <Label prefHeight="33.0" prefWidth="489.0" styleClass="about-label" text="CookBook © svs 2012" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+      <stylesheets>
+        <URL value="@test.css" />
+      </stylesheets>
+    </Label>
+    <TabPane prefHeight="235.0" prefWidth="517.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="61.0">
+      <tabs>
+        <Tab text="About">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+          </content>
+        </Tab>
+        <Tab text="System">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+          </content>
+        </Tab>
+        <Tab text="Libraries" />
+      </tabs>
+    </TabPane>
+  </children>
+  <stylesheets>
+    <URL value="@test.css" />
+  </stylesheets>
+</AnchorPane>
