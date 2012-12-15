@@ -28,21 +28,21 @@ public class MainController {
 
     private Stage stage;
     private FileChooser fc;
-
     private Image appIcon;
-    
+    private Stage dialogStage;
+
     public void initialize(){
         System.out.println("init");
     }
 
     public Image getAppIcon(){
-    	if(appIcon == null){
-    		appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));
-    	}
-    	
-    	return appIcon;
+        if(appIcon == null){
+            appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));
+        }
+
+        return appIcon;
     }
-    
+
     public void onMenuCloseAction(ActionEvent e){
         System.out.println("exit");
         Platform.exit();
@@ -108,25 +108,39 @@ public class MainController {
             ex.printStackTrace();
         }
     }
-    
-    public void onMenuHelpAbout(ActionEvent e){    	
-    	// http://stackoverflow.com/questions/8309981/how-to-create-and-show-common-dialog-error-warning-confirmation-in-javafx-2
-    	try{
-			URL location = getClass().getResource("About.fxml");		
-			FXMLLoader fxmlLoader = new FXMLLoader(location);
-	
-			Pane root = (Pane)fxmlLoader.load();		
-			
-	    	Stage dialogStage = new Stage();
-	    	dialogStage.setTitle("CookBook");
-	    	dialogStage.initModality(Modality.WINDOW_MODAL);
-	    	dialogStage.setScene(new Scene(root, 500, 300));
-	    	dialogStage.initOwner(stage);
-	    	dialogStage.getIcons().add(getAppIcon());
-	    	dialogStage.show();
-    	}
-    	catch(Exception ex){
-    		ex.printStackTrace();
-    	}    	
+
+    public void onMenuHelpAbout(ActionEvent e){
+        // http://stackoverflow.com/questions/8309981/how-to-create-and-show-common-dialog-error-warning-confirmation-in-javafx-2
+        // http://java-buddy.blogspot.com/2012/02/dialog-with-close-button.html
+        if(dialogStage == null){
+            try{
+                System.out.println("creating dialog");
+
+                URL location = getClass().getResource("About.fxml");
+                FXMLLoader loader = new FXMLLoader(location);
+
+                Pane root = (Pane)loader.load();
+
+                dialogStage = new Stage();
+                dialogStage.setTitle("CookBook");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.setScene(new Scene(root, 500, 300));
+                dialogStage.initOwner(stage);
+                dialogStage.getIcons().add(getAppIcon());
+                
+                // http://stackoverflow.com/questions/13246211/javafx-how-to-get-stage-from-controller-during-initialization
+                DialogController controller = loader.getController();
+                controller.setStage(dialogStage);
+
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+            }
+        }
+        if(dialogStage != null){
+            dialogStage.show();
+            //dialogStage.showAndWait();
+        }
     }
+
 }

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="296.0" prefWidth="517.0" styleClass="red-bg" xmlns:fx="http://javafx.com/fxml">
+<AnchorPane prefHeight="296.0" prefWidth="517.0" styleClass="red-bg" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.DialogController">
   <!-- TODO Add Nodes -->
   <children>
     <Label prefHeight="33.0" prefWidth="489.0" styleClass="about-label" text="CookBook © svs 2012" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
@@ -15,7 +15,7 @@
         <URL value="@test.css" />
       </stylesheets>
     </Label>
-    <TabPane prefHeight="235.0" prefWidth="517.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="61.0">
+    <TabPane prefHeight="176.0" prefWidth="517.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="61.0">
       <tabs>
         <Tab text="About">
           <content>
@@ -27,9 +27,18 @@
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
           </content>
         </Tab>
-        <Tab text="Libraries" />
+        <Tab text="Libraries">
+          <content>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+          </content>
+        </Tab>
       </tabs>
     </TabPane>
+    <AnchorPane prefHeight="59.0" prefWidth="517.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <children>
+        <Button mnemonicParsing="false" onAction="#onClose" text="OK" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+      </children>
+    </AnchorPane>
   </children>
   <stylesheets>
     <URL value="@test.css" />
