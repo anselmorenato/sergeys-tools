@@ -9,6 +9,7 @@
 <?import javafx.scene.web.*?>
 <?scenebuilder-stylesheet test.css?>
 
+
 <AnchorPane id="rootid" fx:id="pane" prefHeight="409.0" prefWidth="670.0" styleClass="root" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.MainController">
   <!-- TODO Add Nodes -->
   <children>
@@ -46,6 +47,7 @@
         </AnchorPane>
       </items>
     </SplitPane>
+
   </children>
   <stylesheets>
     <URL value="@test.css" />

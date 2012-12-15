@@ -4,21 +4,29 @@ import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.TimelineBuilder;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class MainController {
 
@@ -30,6 +38,7 @@ public class MainController {
     private FileChooser fc;
     private Image appIcon;
     private Stage dialogStage;
+    @FXML private StackPane modalDimmer;
 
     public void initialize(){
         System.out.println("init");
@@ -127,7 +136,7 @@ public class MainController {
                 dialogStage.setScene(new Scene(root, 500, 300));
                 dialogStage.initOwner(stage);
                 dialogStage.getIcons().add(getAppIcon());
-                
+
                 // http://stackoverflow.com/questions/13246211/javafx-how-to-get-stage-from-controller-during-initialization
                 DialogController controller = loader.getController();
                 controller.setStage(dialogStage);
@@ -139,8 +148,49 @@ public class MainController {
         }
         if(dialogStage != null){
             dialogStage.show();
-            //dialogStage.showAndWait();
+            //showModalMessage(dialogStage.sceneProperty().get().getRoot());
         }
+    }
+
+
+    /**
+     * Show the given node as a floating dialog over the whole application, with
+     * the rest of the application dimmed out and blocked from mouse events.
+     *
+     * @param message
+     */
+    public void showModalMessage(Node message) {
+        modalDimmer.getChildren().add(message);
+        modalDimmer.setOpacity(0);
+        modalDimmer.setVisible(true);
+        modalDimmer.setCache(true);
+        TimelineBuilder.create().keyFrames(
+            new KeyFrame(Duration.seconds(1),
+                new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent t) {
+                        modalDimmer.setCache(false);
+                    }
+                },
+                new KeyValue(modalDimmer.opacityProperty(),1, Interpolator.EASE_BOTH)
+        )).build().play();
+    }
+
+    /**
+     * Hide any modal message that is shown
+     */
+    public void hideModalMessage() {
+        modalDimmer.setCache(true);
+        TimelineBuilder.create().keyFrames(
+            new KeyFrame(Duration.seconds(1),
+                new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent t) {
+                        modalDimmer.setCache(false);
+                        modalDimmer.setVisible(false);
+                        modalDimmer.getChildren().clear();
+                    }
+                },
+                new KeyValue(modalDimmer.opacityProperty(),0, Interpolator.EASE_BOTH)
+        )).build().play();
     }
 
 }
