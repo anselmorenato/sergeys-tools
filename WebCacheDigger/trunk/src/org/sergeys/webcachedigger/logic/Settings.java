@@ -40,6 +40,7 @@ extends Properties
     // action names for events
     public static final String COMMAND_SAVE_SETTINGS = "COMMAND_SAVE_SETTINGS";
 
+    public static final String LOCK_FILE = "webcachedigger.applock";
 
     /**
      * Placeholder for absolute file path for external player command line
