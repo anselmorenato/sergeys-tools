@@ -10,7 +10,7 @@
 <?scenebuilder-stylesheet test.css?>
 
 
-<AnchorPane id="rootid" fx:id="pane" prefHeight="409.0" prefWidth="670.0" styleClass="root" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.MainController">
+<AnchorPane id="rootid" fx:id="pane" prefHeight="409.0" prefWidth="670.0" styleClass="root" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.ui.MainController">
   <!-- TODO Add Nodes -->
   <children>
     <MenuBar prefWidth="670.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">

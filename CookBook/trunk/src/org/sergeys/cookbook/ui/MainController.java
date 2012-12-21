@@ -1,4 +1,4 @@
-package org.sergeys.cookbook;
+package org.sergeys.cookbook.ui;
 
 import java.io.File;
 import java.net.URL;
