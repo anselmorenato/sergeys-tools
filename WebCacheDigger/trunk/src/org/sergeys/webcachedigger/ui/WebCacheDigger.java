@@ -310,6 +310,10 @@ implements ActionListener, PropertyChangeListener
     	
     	// check if there is another instance running
     	// http://jimlife.wordpress.com/2008/07/21/java-application-make-sure-only-singleone-instance-running-with-file-lock-ampampampampamp-shutdownhook/
+    	File dir = new File(Settings.getSettingsDirPath());
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
     	String lockfilename = Settings.getSettingsDirPath() + File.separator + Settings.LOCK_FILE; 
     	lockfile = new File(lockfilename);
     	
