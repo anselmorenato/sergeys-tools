@@ -1,31 +1,32 @@
 package org.sergeys.cookbook.ui;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class CookBook extends Application {
+import org.sergeys.cookbook.logic.Settings;
 
-	private void init(Stage stage){
-		//stage.getScene().getRoot().getChildrenUnmodifiable().
-	}
-		
+public class CookBook extends Application {
+	
+	Stage primaryStage;
 	
 	@Override
-	public void start(Stage primaryStage) {
-		//Parent root;
+	public void start(final Stage stage) {
+
+		this.primaryStage = stage;
+		
 		try {
-			//root = FXMLLoader.load(getClass().getResource("MainScene.fxml"));						
-						
-			init(primaryStage);
 
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 			
@@ -40,9 +41,20 @@ public class CookBook extends Application {
 			MainController controller = (MainController)fxmlLoader.getController();
 			
 			primaryStage.setTitle("CookBook");
-			primaryStage.setScene(new Scene(root, 800, 500));
+			//primaryStage.setScene(new Scene(root, 800, 500));			
+			primaryStage.setScene(new Scene(root));
+			primaryStage.getIcons().add(controller.getAppIcon());
+						
+			primaryStage.setX(Settings.getInstance().getWinPosition().getWidth());
+			primaryStage.setY(Settings.getInstance().getWinPosition().getHeight());
+			primaryStage.setWidth(Settings.getInstance().getWinSize().getWidth());
+			primaryStage.setHeight(Settings.getInstance().getWinSize().getHeight());											
 			
-			primaryStage.getIcons().add(controller.getAppIcon());	// amor.png BPFolderRecipesGreen.png	
+			primaryStage.setOnHiding(new EventHandler<WindowEvent>(){
+				@Override
+				public void handle(WindowEvent event) {					
+					saveWinPosition();
+				}});
 			
 			primaryStage.show();
 			
@@ -53,6 +65,27 @@ public class CookBook extends Application {
 		}	    		
 	}
 
+	@Override
+	public void stop() throws Exception {
+		// called before main stage closing events
+		super.stop();
+				
+//		Settings.save();
+	}
+	
+	private void saveWinPosition(){
+		// save window location, stage should be still shown
+		Settings.getInstance().getWinPosition().setSize(primaryStage.getX(), primaryStage.getY());
+		Settings.getInstance().getWinSize().setSize(primaryStage.getWidth(), primaryStage.getHeight());	
+		
+		try {
+			Settings.save();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args) {
 		launch(args);
 	}

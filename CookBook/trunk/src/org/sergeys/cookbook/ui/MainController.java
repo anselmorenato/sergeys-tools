@@ -2,6 +2,7 @@ package org.sergeys.cookbook.ui;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import javafx.animation.Interpolator;
@@ -23,13 +24,14 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import org.sergeys.cookbook.logic.HtmlImporter;
+import org.sergeys.cookbook.logic.Database;
 
 public class MainController implements ChangeListener<String> {
 
@@ -49,7 +51,7 @@ public class MainController implements ChangeListener<String> {
 
     public Image getAppIcon(){
         if(appIcon == null){
-            appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));
+            appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));	// amor.png BPFolderRecipesGreen.png
         }
 
         return appIcon;
@@ -111,11 +113,10 @@ public class MainController implements ChangeListener<String> {
         tree.setRoot(treeRoot);
         treeRoot.setExpanded(true);
 
-//        WebEngine webEngine = webview.getEngine();
-
+        WebEngine webEngine = webview.getEngine();
 
         try{
-//            webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
+            webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
             //webEngine.load("http://java.oracle.com");
         }
         catch(Exception ex){
@@ -202,9 +203,15 @@ public class MainController implements ChangeListener<String> {
 
 
     public void test(){
-        HtmlImporter imp = new HtmlImporter();
+        //HtmlImporter imp = new HtmlImporter();
         //imp.Import(new File("D:/workspace/CookBook/samplefiles/2.html"), "d:/tmp/recipes", this);
-        imp.Import(new File("D:/workspace/CookBook/samplefiles/ie-crevetka Рис с овощами.htm"), "d:/tmp/recipes", this);
+        //imp.Import(new File("D:/workspace/CookBook/samplefiles/ie-crevetka Рис с овощами.htm"), "d:/tmp/recipes", this);
+        try {
+			Database.getInstance();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     @Override

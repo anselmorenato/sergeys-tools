@@ -312,22 +312,26 @@ public class HtmlImporter {
 
         fis.close();
         byte[] mdbytes = md.digest();
+        
+        //convert the byte to hex format method 1
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < mdbytes.length; i++) {
+//        	String s = Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1);
 
-//        //convert the byte to hex format method 1
-//        StringBuffer sb = new StringBuffer();
-//        for (int i = 0; i < mdbytes.length; i++) {
-//          sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-//        }
-//
-//        System.out.println("Hex format : " + sb.toString());
-//
-       //convert the byte to hex format method 2
-        StringBuffer hexString = new StringBuffer();
-        for(int i = 0; i < mdbytes.length; i++) {
-          hexString.append(Integer.toHexString(0xFF & mdbytes[i]));
+        	//sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+        	sb.append(String.format("%02x", mdbytes[i]));
         }
 
-        //System.out.println("Hex format : " + hexString.toString());
-        return hexString.toString();
+        System.out.println("Hex format : " + sb.toString());
+        return sb.toString();
+
+//       //convert the byte to hex format method 2
+//        StringBuffer hexString = new StringBuffer();
+//        for(int i = 0; i < mdbytes.length; i++) {
+//          hexString.append(Integer.toHexString(0xFF & mdbytes[i]));
+//        }
+//
+//        System.out.println("Hex format : " + hexString.toString());
+//        return hexString.toString();
     }
 }
