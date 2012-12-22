@@ -9,6 +9,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.TimelineBuilder;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -21,7 +23,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -30,7 +31,7 @@ import javafx.util.Duration;
 
 import org.sergeys.cookbook.logic.HtmlImporter;
 
-public class MainController {
+public class MainController implements ChangeListener<String> {
 
     @FXML private TreeView<String> tree;
     @FXML private WebView webview;
@@ -110,22 +111,11 @@ public class MainController {
         tree.setRoot(treeRoot);
         treeRoot.setExpanded(true);
 
-        WebEngine webEngine = webview.getEngine();
+//        WebEngine webEngine = webview.getEngine();
 
-//        webEngine.getLoadWorker().stateProperty().addListener(
-//                new ChangeListener<State>() {
-//                    public void changed(ObservableValue ov, State oldState, State newState) {
-//                        if (newState == State.SUCCEEDED) {
-//                            loadComplete2();
-//                        }
-//                        else{
-//                            System.out.println("document load failed: " + newState);
-//                        }
-//                    }
-//                });
 
         try{
-            webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
+//            webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
             //webEngine.load("http://java.oracle.com");
         }
         catch(Exception ex){
@@ -213,7 +203,14 @@ public class MainController {
 
     public void test(){
         HtmlImporter imp = new HtmlImporter();
-        imp.Import(new File("D:/workspace/CookBook/samplefiles/2.html"), "d:/tmp/recipes");
-        //imp.Import(new File("D:/workspace/CookBook/samplefiles/ie-crevetka Рис с овощами.htm"), "d:/tmp/recipes");
+        //imp.Import(new File("D:/workspace/CookBook/samplefiles/2.html"), "d:/tmp/recipes", this);
+        imp.Import(new File("D:/workspace/CookBook/samplefiles/ie-crevetka Рис с овощами.htm"), "d:/tmp/recipes", this);
+    }
+
+    @Override
+    public void changed(ObservableValue<? extends String> observable,
+            String oldValue, String newValue) {
+
+        webview.getEngine().load("file:///" + newValue);
     }
 }

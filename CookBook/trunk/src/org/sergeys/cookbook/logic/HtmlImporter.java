@@ -21,6 +21,8 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker.State;
@@ -37,6 +39,8 @@ public class HtmlImporter {
     File originalFile;
     Document doc;
     String destinationDir;
+    SimpleBooleanProperty importComplete = new SimpleBooleanProperty();
+    SimpleStringProperty completedFile = new SimpleStringProperty();
 
     private void removeElements(Document doc, String tag){
         NodeList nodes = doc.getElementsByTagName(tag);
@@ -47,9 +51,13 @@ public class HtmlImporter {
         }
     }
 
-    public void Import(final File htmlFile, String destinationDir){
+    public void Import(final File htmlFile, String destinationDir, ChangeListener<String> listener){
         originalFile = htmlFile;
         this.destinationDir = destinationDir;
+
+        importComplete.set(false);
+        //importComplete.addListener(listener);
+        completedFile.addListener(listener);
 
         Platform.runLater(new Runnable(){
 
@@ -226,18 +234,6 @@ public class HtmlImporter {
         removeElements(doc, "script");
         removeElements(doc, "noscript");
 
-//    	NodeList nodes = doc.getElementsByTagName("input");
-//
-//    	while((nodes.getLength() > 0) && found){
-//
-//    		org.w3c.dom.Node n = nodes.item(0);
-//    		org.w3c.dom.Node attr = n.getAttributes().getNamedItem("type");
-//    		if(attr != null && attr.getNodeValue().equals("hidden")){
-//    			n.getParentNode().removeChild(n);
-//    			nodes = doc.getElementsByTagName(tag);
-//    		}
-//    	}
-
         Path path = FileSystems.getDefault().getPath(destinationDir, hash);
         try {
             if(path.toFile().exists() && path.toFile().isDirectory()){
@@ -295,6 +291,9 @@ public class HtmlImporter {
         // pack all to a single file
         // http://stackoverflow.com/questions/1281229/how-to-use-jaroutputstream-to-create-a-jar-file
         packJar(destinationDir, hash);
+
+        importComplete.set(true);
+        completedFile.set(p.toFile().getAbsolutePath());
     }
 
     private String getFileHash(File file) throws IOException, NoSuchAlgorithmException
