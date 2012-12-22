@@ -214,5 +214,6 @@ public class MainController {
     public void test(){
         HtmlImporter imp = new HtmlImporter();
         imp.Import(new File("D:/workspace/CookBook/samplefiles/2.html"), "d:/tmp/recipes");
+        //imp.Import(new File("D:/workspace/CookBook/samplefiles/ie-crevetka Рис с овощами.htm"), "d:/tmp/recipes");
     }
 }
