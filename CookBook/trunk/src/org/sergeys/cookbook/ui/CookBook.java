@@ -46,7 +46,7 @@ public class CookBook extends Application {
 			
 			primaryStage.show();
 			
-			controller.createSampleData(primaryStage);
+			controller.createSampleData(primaryStage);						
 		} catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

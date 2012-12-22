@@ -5,3 +5,4 @@ This is an EclipseFX project
 - copy-paste to html, save external images locally
 - share recipes via xmpp
 - build tree from tags with drag-n-drop, sort tags by total count
+- favorites

@@ -28,6 +28,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import org.sergeys.cookbook.logic.HtmlImporter;
+
 public class MainController {
 
     @FXML private TreeView<String> tree;
@@ -109,6 +111,19 @@ public class MainController {
         treeRoot.setExpanded(true);
 
         WebEngine webEngine = webview.getEngine();
+
+//        webEngine.getLoadWorker().stateProperty().addListener(
+//                new ChangeListener<State>() {
+//                    public void changed(ObservableValue ov, State oldState, State newState) {
+//                        if (newState == State.SUCCEEDED) {
+//                            loadComplete2();
+//                        }
+//                        else{
+//                            System.out.println("document load failed: " + newState);
+//                        }
+//                    }
+//                });
+
         try{
             webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
             //webEngine.load("http://java.oracle.com");
@@ -116,6 +131,8 @@ public class MainController {
         catch(Exception ex){
             ex.printStackTrace();
         }
+
+        test();
     }
 
     public void onMenuHelpAbout(ActionEvent e){
@@ -193,4 +210,9 @@ public class MainController {
         )).build().play();
     }
 
+
+    public void test(){
+        HtmlImporter imp = new HtmlImporter();
+        imp.Import(new File("D:/workspace/CookBook/samplefiles/2.html"), "d:/tmp/recipes");
+    }
 }
