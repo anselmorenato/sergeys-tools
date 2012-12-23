@@ -8,3 +8,4 @@ This is an EclipseFX project
 - favorites
 - tag synonyms, merge same tags to one
 - mass import, by file mask
+- unpacked recipes in two-level dir structure

@@ -2,6 +2,8 @@ package org.sergeys.cookbook.ui;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javafx.animation.Interpolator;
@@ -32,10 +34,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import org.sergeys.cookbook.logic.Database;
 import org.sergeys.cookbook.logic.HtmlImporter;
-import org.sergeys.cookbook.logic.RecipeLibrary;
 import org.sergeys.cookbook.logic.HtmlImporter.Status;
+import org.sergeys.cookbook.logic.RecipeLibrary;
 import org.sergeys.cookbook.logic.Settings;
+import org.sergeys.cookbook.logic.Tag;
 
 public class MainController {
 
@@ -57,6 +61,22 @@ public class MainController {
         
         // TODO call in background
         RecipeLibrary.getInstance().validate();
+        
+        TreeItem<String> treeRoot = new TreeItem<String>("All recipes");
+        tree.setShowRoot(true);
+        tree.setRoot(treeRoot);
+        treeRoot.setExpanded(true);
+        
+        buildTree();
+        
+        // http://docs.oracle.com/javafx/2/ui_controls/tree-view.htm#BABDEADA
+//        tree.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {			
+//			@Override
+//			public TreeCell<String> call(TreeView<String> arg0) {
+//				
+//				return new TextFieldTreeCellImpl();
+//			}
+//		});
         
         double pos = Settings.getInstance().getWinDividerPosition();
         System.out.println("set " + pos);
@@ -100,6 +120,10 @@ public class MainController {
 			}});
     }
 
+    public void myInit(Stage stage){
+        this.stage = stage;
+    }
+    
     public void applySettings(){
 //    	double pos = Settings.getInstance().getWinDividerPosition();
 //        splitter.setDividerPositions(pos, 1.0 - pos);
@@ -154,89 +178,11 @@ public class MainController {
     }
 
     public void onMenuImport(ActionEvent e){
-    	
-        if(fc == null){
-            fc = new FileChooser();            
-        }
-        
-        File prev = new File(Settings.getInstance().getLastFilechooserLocation());
-        if(prev.exists()){
-        	fc.setInitialDirectory(prev);
-        }
-
-        File file = fc.showOpenDialog(stage);
-        if(file != null){
-        	Settings.getInstance().setLastFilechooserLocation(file.getParent());
-        	final HtmlImporter imp = new HtmlImporter();
-        	imp.Import(file, new ChangeListener<HtmlImporter.Status>() {
-
-				@Override
-				public void changed(
-						ObservableValue<? extends Status> observable,
-						Status oldValue, Status newValue) {
-					// TODO Auto-generated method stub
-					
-					if(newValue == Status.Complete){
-						System.out.println("completed import of " + imp.getHash());
-						
-						RecipeLibrary.getInstance().validate();
-					}
-					else{
-						System.out.println("importer status " + newValue);
-					}
-				}
-			});
-        }
+    	doImport();
 //    	
 //    	double pos = Settings.getInstance().getWinDividerPosition();
 //        System.out.println("set " + pos);        
 //        splitter.setDividerPosition(0, pos);
-    }
-
-    public void createSampleData(Stage stage){
-
-        this.stage = stage;
-
-        TreeItem<String> treeRoot = new TreeItem<String>("Root node");
-
-        treeRoot.getChildren().addAll(Arrays.asList(
-                new TreeItem<String>("Child Node 1"),
-                new TreeItem<String>("Child Node 2"),
-                new TreeItem<String>("Child Node 3")));
-
-
-        treeRoot.getChildren().get(2).getChildren().addAll(Arrays.asList(
-                new TreeItem<String>("Child Node 4"),
-                new TreeItem<String>("Child Node 5"),
-                new TreeItem<String>("Child Node 6"),
-                new TreeItem<String>("Child Node 7"),
-                new TreeItem<String>("Child Node 8"),
-                new TreeItem<String>("Child Node 9"),
-                new TreeItem<String>("Child Node 10"),
-                new TreeItem<String>("Child Node 11"),
-                new TreeItem<String>("Child Node 12")));
-
-
-        tree.setShowRoot(true);
-        tree.setRoot(treeRoot);
-        treeRoot.setExpanded(true);
-
-        // TODO open last file
-//        WebEngine webEngine = webview.getEngine();
-
-        try{
-            //webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
-            //webEngine.load("http://java.oracle.com");
-        }
-        catch(Exception ex){
-            ex.printStackTrace();
-        }
-
-        double pos = Settings.getInstance().getWinDividerPosition();
-        System.out.println("createsample set " + pos);			        
-//        splitter.setDividerPosition(0, pos);        
-        
-//        test();
     }
 
     public void onMenuHelpAbout(ActionEvent e){
@@ -312,6 +258,130 @@ public class MainController {
                 },
                 new KeyValue(modalDimmer.opacityProperty(),0, Interpolator.EASE_BOTH)
         )).build().play();
+    }
+
+    private void buildTree(){
+    	
+    	tree.getRoot().getChildren().clear();
+    	
+    	try {
+			ArrayList<Tag> tags = Database.getInstance().getRootTags();
+			for(Tag t: tags){
+				tree.getRoot().getChildren().add(new TreeItem<String>(t.getVal()));
+			}
+				
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    private void doImport(){
+        if(fc == null){
+            fc = new FileChooser();            
+        }
+        
+        File prev = new File(Settings.getInstance().getLastFilechooserLocation());
+        if(prev.exists()){
+        	fc.setInitialDirectory(prev);
+        }
+
+        File file = fc.showOpenDialog(stage);
+        if(file != null){
+        	Settings.getInstance().setLastFilechooserLocation(file.getParent());
+        	final HtmlImporter imp = new HtmlImporter();
+        	imp.Import(file, new ChangeListener<HtmlImporter.Status>() {
+
+				@Override
+				public void changed(
+						ObservableValue<? extends Status> observable,
+						Status oldValue, Status newValue) {
+					// TODO Auto-generated method stub
+					
+					if(newValue == Status.Complete){
+						System.out.println("completed import of " + imp.getHash());
+						
+						RecipeLibrary.getInstance().validate();
+						
+						buildTree();
+					}
+					else{
+						System.out.println("importer status " + newValue);
+					}
+				}
+			});
+        }    	
+    }
+    
+    
+//    private class TextFieldTreeCellImpl
+//    extends TreeCell<String>
+//    {
+//
+//		@Override
+//		public void cancelEdit() {
+//			// TODO Auto-generated method stub
+//			super.cancelEdit();
+//		}
+//
+//		@Override
+//		public void commitEdit(String newValue) {
+//			// TODO Auto-generated method stub
+//			super.commitEdit(newValue);
+//		}
+//
+//		@Override
+//		public void startEdit() {
+//			// TODO Auto-generated method stub
+//			super.startEdit();
+//		}
+//    	
+//    }
+
+// ===============
+    
+    public void createSampleData(){
+
+        TreeItem<String> treeRoot = new TreeItem<String>("Root node");
+
+        treeRoot.getChildren().addAll(Arrays.asList(
+                new TreeItem<String>("Child Node 1"),
+                new TreeItem<String>("Child Node 2"),
+                new TreeItem<String>("Child Node 3")));
+
+
+        treeRoot.getChildren().get(2).getChildren().addAll(Arrays.asList(
+                new TreeItem<String>("Child Node 4"),
+                new TreeItem<String>("Child Node 5"),
+                new TreeItem<String>("Child Node 6"),
+                new TreeItem<String>("Child Node 7"),
+                new TreeItem<String>("Child Node 8"),
+                new TreeItem<String>("Child Node 9"),
+                new TreeItem<String>("Child Node 10"),
+                new TreeItem<String>("Child Node 11"),
+                new TreeItem<String>("Child Node 12")));
+
+
+        tree.setShowRoot(true);
+        tree.setRoot(treeRoot);
+        treeRoot.setExpanded(true);
+
+        // TODO open last file
+//        WebEngine webEngine = webview.getEngine();
+
+        try{
+            //webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
+            //webEngine.load("http://java.oracle.com");
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }
+
+        double pos = Settings.getInstance().getWinDividerPosition();
+        System.out.println("createsample set " + pos);			        
+//        splitter.setDividerPosition(0, pos);        
+        
+//        test();
     }
 
 }

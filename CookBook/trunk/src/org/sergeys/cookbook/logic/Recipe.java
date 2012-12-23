@@ -2,6 +2,7 @@ package org.sergeys.cookbook.logic;
 
 public class Recipe {
 	
+	private long id;
 	private String hash;
 	private String title;
 	
@@ -19,5 +20,13 @@ public class Recipe {
 	
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}		
 }

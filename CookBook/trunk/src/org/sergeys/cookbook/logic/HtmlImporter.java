@@ -16,6 +16,7 @@ import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -338,6 +339,7 @@ public class HtmlImporter {
         File jarfile = new File(tempDir.toString() + File.separator + hash + ".jar");
         try {
             Database.getInstance().addRecipe(hash, jarfile, "recipe");
+            Database.getInstance().updateRecipeTags(hash, Arrays.asList("kjdfn", "sdb", "bdrb"));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
