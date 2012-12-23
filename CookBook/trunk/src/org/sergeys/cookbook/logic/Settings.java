@@ -24,6 +24,7 @@ public class Settings {
 
     private static String settingsDirPath;
     private static String settingsFilePath;
+    private static String recipeLibraryPath;
 
     private Properties resources = new Properties();
     private Dimension winPosition = new Dimension();
@@ -36,7 +37,18 @@ public class Settings {
     static{
         settingsDirPath = System.getProperty("user.home") + File.separator + SETTINGS_PATH;
         settingsFilePath = settingsDirPath + File.separator + SETTINGS_FILE;
+        recipeLibraryPath = settingsDirPath + File.separator + RECIPES_SUBDIR;
 
+        File dir = new File(settingsDirPath);
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+        
+        dir = new File(recipeLibraryPath);
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+        
         load();
     }
 
@@ -57,14 +69,18 @@ public class Settings {
 		Settings.settingsDirPath = settingsDirPath;
 	}
 	
+	public static String getRecipeLibraryPath() {
+		return recipeLibraryPath;
+	}
+	
     public static void save() throws FileNotFoundException{
 
 //        instance.savedVersion = instance.getCurrentVersion();
 
-        File dir = new File(settingsDirPath);
-        if(!dir.exists()){
-            dir.mkdirs();
-        }
+//        File dir = new File(settingsDirPath);
+//        if(!dir.exists()){
+//            dir.mkdirs();
+//        }
 
         XMLEncoder e;
 

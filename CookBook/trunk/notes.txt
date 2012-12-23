@@ -7,3 +7,4 @@ This is an EclipseFX project
 - build tree from tags with drag-n-drop, sort tags by total count
 - favorites
 - tag synonyms, merge same tags to one
+- mass import, by file mask

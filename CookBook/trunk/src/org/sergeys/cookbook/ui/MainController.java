@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import org.sergeys.cookbook.logic.HtmlImporter;
+import org.sergeys.cookbook.logic.RecipeLibrary;
 import org.sergeys.cookbook.logic.HtmlImporter.Status;
 import org.sergeys.cookbook.logic.Settings;
 
@@ -54,13 +55,16 @@ public class MainController {
     	// http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
         System.out.println("init");
         
+        // TODO call in background
+        RecipeLibrary.getInstance().validate();
+        
         double pos = Settings.getInstance().getWinDividerPosition();
         System.out.println("set " + pos);
         
 //        splitter.setDividerPosition(0, pos);        
         System.out.println("actual " + splitter.getDividerPositions()[0]);
         
-        splitter.layout();
+//        splitter.layout();
         
         splitter.getDividers().get(0).positionProperty().addListener(new ChangeListener<Number>(){
 
@@ -174,6 +178,11 @@ public class MainController {
 					
 					if(newValue == Status.Complete){
 						System.out.println("completed import of " + imp.getHash());
+						
+						RecipeLibrary.getInstance().validate();
+					}
+					else{
+						System.out.println("importer status " + newValue);
 					}
 				}
 			});

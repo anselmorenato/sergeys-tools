@@ -42,10 +42,14 @@ public class HtmlImporter {
 //    SimpleStringProperty completedFile = new SimpleStringProperty();
     String hash;
 
-    public enum Status { Unknown, Complete };
+    public enum Status { Unknown, InProgress, Complete };
 
     SimpleObjectProperty<Status> status = new SimpleObjectProperty<Status>();
 
+    public HtmlImporter(){
+    	status.set(Status.Unknown);
+    }
+    
     private void removeElements(Document doc, String tag){
         NodeList nodes = doc.getElementsByTagName(tag);
         while(nodes.getLength() > 0){
@@ -56,6 +60,9 @@ public class HtmlImporter {
     }
 
     public void Import(final File htmlFile, ChangeListener<Status> listener){
+    	
+    	status.set(Status.InProgress);
+    	
         originalFile = htmlFile;
         destinationDir = Settings.getSettingsDirPath() + File.separator + Settings.RECIPES_SUBDIR;
         File dir = new File(destinationDir);
@@ -224,6 +231,7 @@ public class HtmlImporter {
       }
     }
 
+    // TODO move to util
     private void packJar(String dir, String subdir){
         // http://stackoverflow.com/questions/1281229/how-to-use-jaroutputstream-to-create-a-jar-file
         Manifest manifest = new Manifest();
@@ -374,7 +382,7 @@ public class HtmlImporter {
             sb.append(String.format("%02x", mdbytes[i]));
         }
 
-        System.out.println("Hex format : " + sb.toString());
+//        System.out.println("Hex format : " + sb.toString());
         return sb.toString();
 
 //       //convert the byte to hex format method 2

@@ -2,6 +2,7 @@ package org.sergeys.cookbook.logic;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import org.h2.tools.RunScript;
 
@@ -122,7 +124,10 @@ public class Database {
     	return false;
     }
     
-    public void addRecipe(String hash, File jarfile, String title){
+    public long addRecipe(String hash, File jarfile, String title){
+    	
+    	long id = 0;
+    	
     	try {
 			PreparedStatement pst = getConnection().prepareStatement(
 					"insert into recipes (hash, title, packedfile, filesize) " +
@@ -140,16 +145,85 @@ public class Database {
 			ResultSet rs = pst.getGeneratedKeys();
 //			ResultSetMetaData meta = rs.getMetaData();
 //			int count = meta.getColumnCount();
-			while(rs.next()){
-				//System.out.println("inserted " + rs.getObject(1));
-				System.out.println("inserted " + rs.getLong(1));
+//			while(rs.next()){			
+//				System.out.println("inserted " + rs.getLong(1));
+//			}
+			
+			if(rs.next()){
+				id = rs.getLong(1);
 			}
 			
 			pst.close();							
 		} catch (SQLException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}    	
+    	
+    	return id;
+    }
+    
+    public ArrayList<Recipe> getAllRecipes(){    	
+    	ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+    	try {
+			//PreparedStatement pst = getConnection().prepareStatement("select hash, title from recipes");
+	        Statement st = getConnection().createStatement();
+	        ResultSet rs = st.executeQuery("select hash, title from recipes");
+	        while(rs.next()){
+	        	Recipe r = new Recipe();
+	        	r.setHash(rs.getString("hash"));
+	        	r.setTitle(rs.getString("title"));
+	        	recipes.add(r);	            
+	        }
+
+	        st.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
     	
+    	return recipes;
+    }
+    
+    public void extractRecipeFile(String hash, File targetFile){
+    	try {
+			PreparedStatement pst = getConnection().prepareStatement("select packedfile from recipes where hash = ?");
+			pst.setString(1, hash);
+			ResultSet rs = pst.executeQuery();
+			while(rs.next()){
+				InputStream is = rs.getBinaryStream("packedfile");
+
+				FileOutputStream fos = new FileOutputStream(targetFile);
+				byte[] buf = new byte[20480];
+				int count = is.read(buf);
+				while(count > 0){
+					fos.write(buf, 0, count);
+					count = is.read(buf);
+				}
+				
+				fos.close();
+				is.close();
+				
+//				ReadableByteChannel ich = Channels.newChannel(is);
+//				FileOutputStream fos = new FileOutputStream(targetFile);
+//				
+//				// magic number for Windows, 64Mb - 32Kb)
+//				int maxCount = (64 * 1024 * 1024) - (32 * 1024);
+//								
+//				int available = is.available();	// returns zero here
+//				long position = 0;
+//				while(available > 0){
+//					int count = (available > maxCount) ? maxCount: available;					
+//					position += fos.getChannel().transferFrom(ich, position, count);
+//					available = is.available();
+//				}
+//				
+//				fos.close();
+//				ich.close();
+//				is.close();								
+			}
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }
