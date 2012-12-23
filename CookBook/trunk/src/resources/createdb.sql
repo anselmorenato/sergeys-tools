@@ -12,7 +12,7 @@ create table recipes(
 	hash varchar(64) not null,	-- sha-256 digest
 	title varchar(1024),
 	packedfile blob,
-	filesize int not null
+	filesize bigint not null
 );	
 
 create unique index uq_recipes on recipes(hash);

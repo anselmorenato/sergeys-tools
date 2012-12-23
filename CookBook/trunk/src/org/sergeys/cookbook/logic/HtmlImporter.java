@@ -15,14 +15,14 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.web.WebEngine;
@@ -38,8 +38,13 @@ public class HtmlImporter {
     File originalFile;
     Document doc;
     String destinationDir;
-    SimpleBooleanProperty importComplete = new SimpleBooleanProperty();
-    SimpleStringProperty completedFile = new SimpleStringProperty();
+//    SimpleBooleanProperty importComplete = new SimpleBooleanProperty();
+//    SimpleStringProperty completedFile = new SimpleStringProperty();
+    String hash;
+
+    public enum Status { Unknown, Complete };
+
+    SimpleObjectProperty<Status> status = new SimpleObjectProperty<Status>();
 
     private void removeElements(Document doc, String tag){
         NodeList nodes = doc.getElementsByTagName(tag);
@@ -50,17 +55,18 @@ public class HtmlImporter {
         }
     }
 
-    public void Import(final File htmlFile, ChangeListener<String> listener){
+    public void Import(final File htmlFile, ChangeListener<Status> listener){
         originalFile = htmlFile;
         destinationDir = Settings.getSettingsDirPath() + File.separator + Settings.RECIPES_SUBDIR;
-        File dir = new File(destinationDir); 
+        File dir = new File(destinationDir);
         if(!dir.exists()){
-        	dir.mkdirs();
+            dir.mkdirs();
         }
 
-        importComplete.set(false);
+        //importComplete.set(false);
         //importComplete.addListener(listener);
-        completedFile.addListener(listener);
+        //completedFile.addListener(listener);
+        status.addListener(listener);
 
         Platform.runLater(new Runnable(){
 
@@ -78,11 +84,11 @@ public class HtmlImporter {
                             System.out.println("document set");
                             Document doc = engine.getDocument();
                             try {
-								setDocument(doc);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+                                setDocument(doc);
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
                         }
                     }});
 
@@ -100,13 +106,22 @@ public class HtmlImporter {
 
                 //engine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
                 System.out.println("loading " + htmlFile.getAbsolutePath());
-               
+
                 //engine.load("file:///" + htmlFile.getAbsolutePath());	// TODO verify url on linux
                 System.out.println("uri " + htmlFile.toURI().toString());
-                engine.load(htmlFile.toURI().toString());	
+                engine.load(htmlFile.toURI().toString());
             }});
     }
 
+    /**
+     * assume to work in temp dir
+     *
+     * @param document
+     * @param tag
+     * @param attribute
+     * @param relativeSubdir
+     * @param absTargetDir
+     */
     private void fixReferences(Document document, String tag, String attribute, String relativeSubdir, String absTargetDir){
         // copy referenced files and fix references
 
@@ -120,7 +135,7 @@ public class HtmlImporter {
                     attr.getNodeValue().startsWith("https:") ||
                     attr.getNodeValue().startsWith("//") ||
                     attr.getNodeValue().isEmpty()){
-                	// TODO: fetch remote files
+                    // TODO: fetch remote files
                     System.out.println(tag + ": skip url '" + attr.getNodeValue() + "'");
                     continue;
                 }
@@ -139,10 +154,11 @@ public class HtmlImporter {
                 Path dest = FileSystems.getDefault().getPath(absTargetDir, relativeSubdir, src.toFile().getName());
                 if(src.toFile().exists()){
                     try {
-                    	if(!dest.getParent().toFile().exists()){
-                    		dest.getParent().toFile().mkdirs();
-                    	}
-                    	
+                        if(!dest.getParent().toFile().exists()){
+                            dest.getParent().toFile().mkdirs();
+                            //dest.getParent().toFile().deleteOnExit();
+                        }
+
                         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
                         attr.setTextContent(relativeSubdir + "/" + src.getFileName());
                     } catch (IOException e) {
@@ -227,7 +243,7 @@ public class HtmlImporter {
             for(Path entry: subfiles) {
                 addJarEntry(dir, entry.toFile(), target);
             }
-
+            subfiles.close();
             target.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -235,12 +251,12 @@ public class HtmlImporter {
     }
 
     private void setDocument(Document document) throws IOException {
-    	
+
         // TODO: do this in background
-    	
+
         doc = document;
 
-        String hash;
+        //String hash;
 
         try {
             hash = getFileHash(originalFile);
@@ -249,18 +265,29 @@ public class HtmlImporter {
             return;
         }
 
+        try {
+            if(Database.getInstance().isRecipeExists(hash)){
+                System.out.println("already exist in database");
+                return;
+            }
+        } catch (SQLException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+            return;
+        }
+
         // remove garbage
         removeElements(doc, "script");
         removeElements(doc, "noscript");
-        
+
         Path tempDir;
-        
-    	tempDir = Files.createTempDirectory("cookbook");
-    	tempDir.toFile().deleteOnExit();
-		
+
+        tempDir = Files.createTempDirectory("cookbook");
+        tempDir.toFile().deleteOnExit();
+
         fixReferences(doc, "img", "src", hash, tempDir.toString());
         fixReferences(doc, "link", "href", hash, tempDir.toString());
-        
+
         // extract plaintext for db fulltext search
         NodeList nodes = doc.getElementsByTagName("body");
         if(nodes.getLength() < 1){
@@ -278,8 +305,8 @@ public class HtmlImporter {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
-        
+
+
         // TODO broken encoding for 1251 file
         // http://weblogs.java.net/blog/fabriziogiudici/archive/2012/02/12/xslt-xhtml-jdk6-jdk7-madness
         HTMLSerializer sr = new HTMLSerializer(new OutputFormat(doc));
@@ -294,17 +321,33 @@ public class HtmlImporter {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        
+
         // pack all to a single file
         // http://stackoverflow.com/questions/1281229/how-to-use-jaroutputstream-to-create-a-jar-file
         packJar(tempDir.toString(), hash);
-        
-        // TODO: put to database
 
-        importComplete.set(true);
-        completedFile.set(p.toFile().getAbsolutePath());
+        // TODO: put to database
+        File jarfile = new File(tempDir.toString() + File.separator + hash + ".jar");
+        try {
+            Database.getInstance().addRecipe(hash, jarfile, "recipe");
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // delete dir recursively
+        //Files.deleteIfExists(tempDir);
+        Util.deleteRecursively(tempDir.toFile());
+
+//        importComplete.set(true);
+        //completedFile.set(p.toFile().getAbsolutePath());
+        status.set(Status.Complete);
     }
-        
+
+    public String getHash(){
+    	return hash;
+    }
+    
     private String getFileHash(File file) throws IOException, NoSuchAlgorithmException
     {
         // http://www.mkyong.com/java/java-sha-hashing-example/
@@ -321,14 +364,14 @@ public class HtmlImporter {
 
         fis.close();
         byte[] mdbytes = md.digest();
-        
+
         //convert the byte to hex format method 1
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < mdbytes.length; i++) {
 //        	String s = Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1);
 
-        	//sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-        	sb.append(String.format("%02x", mdbytes[i]));
+            //sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+            sb.append(String.format("%02x", mdbytes[i]));
         }
 
         System.out.println("Hex format : " + sb.toString());

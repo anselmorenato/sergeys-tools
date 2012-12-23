@@ -1,11 +1,13 @@
 package org.sergeys.cookbook.logic;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -104,4 +106,50 @@ public class Database {
         }
     }
 
+    public boolean isRecipeExists(String hash){
+    	try {
+			PreparedStatement pst = getConnection().prepareStatement("select id from recipes where hash = ?");
+			pst.setString(1, hash);
+			ResultSet rs = pst.executeQuery();
+			if(rs.next()){
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return false;
+    }
+    
+    public void addRecipe(String hash, File jarfile, String title){
+    	try {
+			PreparedStatement pst = getConnection().prepareStatement(
+					"insert into recipes (hash, title, packedfile, filesize) " +
+					"values (?, ?, ?, ?)");
+			pst.setString(1, hash);
+			pst.setString(2, title);
+			InputStream is = new FileInputStream(jarfile);
+			pst.setBinaryStream(3, is);
+			pst.setLong(4, jarfile.length());
+			
+			pst.executeUpdate();
+			
+			is.close();
+			
+			ResultSet rs = pst.getGeneratedKeys();
+//			ResultSetMetaData meta = rs.getMetaData();
+//			int count = meta.getColumnCount();
+			while(rs.next()){
+				//System.out.println("inserted " + rs.getObject(1));
+				System.out.println("inserted " + rs.getLong(1));
+			}
+			
+			pst.close();							
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
 }

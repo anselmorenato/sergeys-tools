@@ -2,7 +2,6 @@ package org.sergeys.cookbook.ui;
 
 import java.io.File;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Arrays;
 
 import javafx.animation.Interpolator;
@@ -27,18 +26,17 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import org.sergeys.cookbook.logic.Database;
 import org.sergeys.cookbook.logic.HtmlImporter;
+import org.sergeys.cookbook.logic.HtmlImporter.Status;
 import org.sergeys.cookbook.logic.Settings;
 
-public class MainController implements ChangeListener<String> {
+public class MainController {
 
     @FXML private TreeView<String> tree;
     @FXML private WebView webview;
@@ -59,7 +57,7 @@ public class MainController implements ChangeListener<String> {
         double pos = Settings.getInstance().getWinDividerPosition();
         System.out.println("set " + pos);
         
-        splitter.setDividerPosition(0, pos);        
+//        splitter.setDividerPosition(0, pos);        
         System.out.println("actual " + splitter.getDividerPositions()[0]);
         
         splitter.layout();
@@ -92,7 +90,7 @@ public class MainController implements ChangeListener<String> {
 					System.out.println("visible");
 					double pos = Settings.getInstance().getWinDividerPosition();
 			        System.out.println("set " + pos);			        
-			        splitter.setDividerPosition(0, pos);        
+//			        splitter.setDividerPosition(0, pos);        
 				}
 				
 			}});
@@ -165,8 +163,20 @@ public class MainController implements ChangeListener<String> {
         File file = fc.showOpenDialog(stage);
         if(file != null){
         	Settings.getInstance().setLastFilechooserLocation(file.getParent());
-        	HtmlImporter imp = new HtmlImporter();
-        	imp.Import(file, this);
+        	final HtmlImporter imp = new HtmlImporter();
+        	imp.Import(file, new ChangeListener<HtmlImporter.Status>() {
+
+				@Override
+				public void changed(
+						ObservableValue<? extends Status> observable,
+						Status oldValue, Status newValue) {
+					// TODO Auto-generated method stub
+					
+					if(newValue == Status.Complete){
+						System.out.println("completed import of " + imp.getHash());
+					}
+				}
+			});
         }
 //    	
 //    	double pos = Settings.getInstance().getWinDividerPosition();
@@ -202,10 +212,11 @@ public class MainController implements ChangeListener<String> {
         tree.setRoot(treeRoot);
         treeRoot.setExpanded(true);
 
-        WebEngine webEngine = webview.getEngine();
+        // TODO open last file
+//        WebEngine webEngine = webview.getEngine();
 
         try{
-            webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
+            //webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
             //webEngine.load("http://java.oracle.com");
         }
         catch(Exception ex){
@@ -214,9 +225,9 @@ public class MainController implements ChangeListener<String> {
 
         double pos = Settings.getInstance().getWinDividerPosition();
         System.out.println("createsample set " + pos);			        
-        splitter.setDividerPosition(0, pos);        
+//        splitter.setDividerPosition(0, pos);        
         
-        test();
+//        test();
     }
 
     public void onMenuHelpAbout(ActionEvent e){
@@ -294,23 +305,4 @@ public class MainController implements ChangeListener<String> {
         )).build().play();
     }
 
-
-    public void test(){
-        //HtmlImporter imp = new HtmlImporter();
-        //imp.Import(new File("D:/workspace/CookBook/samplefiles/2.html"), "d:/tmp/recipes", this);
-        //imp.Import(new File("D:/workspace/CookBook/samplefiles/ie-crevetka Рис с овощами.htm"), "d:/tmp/recipes", this);
-        try {
-            Database.getInstance();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void changed(ObservableValue<? extends String> observable,
-            String oldValue, String newValue) {
-
-        webview.getEngine().load("file:///" + newValue);
-    }
 }
