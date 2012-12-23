@@ -10,6 +10,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.TimelineBuilder;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -18,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
@@ -32,23 +35,80 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import org.sergeys.cookbook.logic.Database;
+import org.sergeys.cookbook.logic.HtmlImporter;
+import org.sergeys.cookbook.logic.Settings;
 
 public class MainController implements ChangeListener<String> {
 
     @FXML private TreeView<String> tree;
     @FXML private WebView webview;
     @FXML private AnchorPane pane;
-
+    @FXML private StackPane modalDimmer;
+    @FXML private SplitPane splitter;
+    
     private Stage stage;
     private FileChooser fc;
     private Image appIcon;
     private Stage dialogStage;
-    @FXML private StackPane modalDimmer;
-
+        
     public void initialize(){
+    	// called by convention
+    	// http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
         System.out.println("init");
+        
+        double pos = Settings.getInstance().getWinDividerPosition();
+        System.out.println("set " + pos);
+        
+        splitter.setDividerPosition(0, pos);        
+        System.out.println("actual " + splitter.getDividerPositions()[0]);
+        
+        splitter.layout();
+        
+        splitter.getDividers().get(0).positionProperty().addListener(new ChangeListener<Number>(){
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
+				// TODO Auto-generated method stub
+				System.out.println("changed to " + newValue);				
+			}});
+        
+        splitter.getDividers().get(0).positionProperty().addListener(new InvalidationListener(){
+
+			@Override
+			public void invalidated(Observable arg0) {
+				// TODO Auto-generated method stub
+				System.out.println("invalidated");
+			}});
+                
+        
+        pane.visibleProperty().addListener(new ChangeListener<Boolean>(){
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0,
+					Boolean arg1, Boolean arg2) {
+				// TODO Auto-generated method stub
+				if(arg2){
+					System.out.println("visible");
+					double pos = Settings.getInstance().getWinDividerPosition();
+			        System.out.println("set " + pos);			        
+			        splitter.setDividerPosition(0, pos);        
+				}
+				
+			}});
     }
 
+    public void applySettings(){
+//    	double pos = Settings.getInstance().getWinDividerPosition();
+//        splitter.setDividerPositions(pos, 1.0 - pos);
+    }
+    
+    public void collectSettings(){
+    	double pos[] = splitter.getDividerPositions();
+    	System.out.println("collect " + pos[0]);
+    	Settings.getInstance().setWinDividerPosition(pos[0]);
+    }
+    
     public Image getAppIcon(){
         if(appIcon == null){
             appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));	// amor.png BPFolderRecipesGreen.png
@@ -65,7 +125,12 @@ public class MainController implements ChangeListener<String> {
     public void onMenuOpenAction(ActionEvent e){
 
         if(fc == null){
-            fc = new FileChooser();
+            fc = new FileChooser();            
+        }
+        
+        File prev = new File(Settings.getInstance().getLastFilechooserLocation());
+        if(prev.exists()){
+        	fc.setInitialDirectory(prev);
         }
 
         // http://java-buddy.blogspot.com/2012/03/javafx-20-disable-ower-window-for.html
@@ -73,10 +138,12 @@ public class MainController implements ChangeListener<String> {
         File file = fc.showOpenDialog(stage);
 
         if (file != null) {
+        	Settings.getInstance().setLastFilechooserLocation(file.getParent());
             String path = file.getAbsolutePath();
             System.out.println(path);
             try{
-                webview.getEngine().load("file:///" + path);
+                //webview.getEngine().load("file:///" + path);
+            	webview.getEngine().load(file.toURI().toString());
             }
             catch(Exception ex){
                 ex.printStackTrace();
@@ -84,6 +151,28 @@ public class MainController implements ChangeListener<String> {
         }
     }
 
+    public void onMenuImport(ActionEvent e){
+    	
+        if(fc == null){
+            fc = new FileChooser();            
+        }
+        
+        File prev = new File(Settings.getInstance().getLastFilechooserLocation());
+        if(prev.exists()){
+        	fc.setInitialDirectory(prev);
+        }
+
+        File file = fc.showOpenDialog(stage);
+        if(file != null){
+        	Settings.getInstance().setLastFilechooserLocation(file.getParent());
+        	HtmlImporter imp = new HtmlImporter();
+        	imp.Import(file, this);
+        }
+//    	
+//    	double pos = Settings.getInstance().getWinDividerPosition();
+//        System.out.println("set " + pos);        
+//        splitter.setDividerPosition(0, pos);
+    }
 
     public void createSampleData(Stage stage){
 
@@ -123,6 +212,10 @@ public class MainController implements ChangeListener<String> {
             ex.printStackTrace();
         }
 
+        double pos = Settings.getInstance().getWinDividerPosition();
+        System.out.println("createsample set " + pos);			        
+        splitter.setDividerPosition(0, pos);        
+        
         test();
     }
 
@@ -207,11 +300,11 @@ public class MainController implements ChangeListener<String> {
         //imp.Import(new File("D:/workspace/CookBook/samplefiles/2.html"), "d:/tmp/recipes", this);
         //imp.Import(new File("D:/workspace/CookBook/samplefiles/ie-crevetka Рис с овощами.htm"), "d:/tmp/recipes", this);
         try {
-			Database.getInstance();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            Database.getInstance();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override

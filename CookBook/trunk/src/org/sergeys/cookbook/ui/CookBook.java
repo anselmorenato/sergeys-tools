@@ -20,6 +20,7 @@ import org.sergeys.cookbook.logic.Settings;
 public class CookBook extends Application {
 	
 	Stage primaryStage;
+	MainController controller;
 	
 	@Override
 	public void start(final Stage stage) {
@@ -38,25 +39,27 @@ public class CookBook extends Application {
 			FXMLLoader fxmlLoader = new FXMLLoader(location);
 
 			Pane root = (Pane)fxmlLoader.load();
-			MainController controller = (MainController)fxmlLoader.getController();
+			controller = (MainController)fxmlLoader.getController();
 			
 			primaryStage.setTitle("CookBook");
 			//primaryStage.setScene(new Scene(root, 800, 500));			
 			primaryStage.setScene(new Scene(root));
 			primaryStage.getIcons().add(controller.getAppIcon());
-						
+			
+			controller.applySettings();
+			
 			primaryStage.setX(Settings.getInstance().getWinPosition().getWidth());
 			primaryStage.setY(Settings.getInstance().getWinPosition().getHeight());
 			primaryStage.setWidth(Settings.getInstance().getWinSize().getWidth());
 			primaryStage.setHeight(Settings.getInstance().getWinSize().getHeight());											
-			
+									
 			primaryStage.setOnHiding(new EventHandler<WindowEvent>(){
 				@Override
 				public void handle(WindowEvent event) {					
 					saveWinPosition();
 				}});
 			
-			primaryStage.show();
+			primaryStage.show();						
 			
 			controller.createSampleData(primaryStage);						
 		} catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
@@ -70,13 +73,14 @@ public class CookBook extends Application {
 		// called before main stage closing events
 		super.stop();
 				
-//		Settings.save();
+		Settings.save();
 	}
 	
 	private void saveWinPosition(){
 		// save window location, stage should be still shown
 		Settings.getInstance().getWinPosition().setSize(primaryStage.getX(), primaryStage.getY());
-		Settings.getInstance().getWinSize().setSize(primaryStage.getWidth(), primaryStage.getHeight());	
+		Settings.getInstance().getWinSize().setSize(primaryStage.getWidth(), primaryStage.getHeight());
+		controller.collectSettings();
 		
 		try {
 			Settings.save();

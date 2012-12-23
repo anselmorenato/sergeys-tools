@@ -19,6 +19,8 @@ public class Settings {
 	
     public static final String SETTINGS_PATH = ".CookBook";    
     public static final String SETTINGS_FILE = "settings.xml";
+    
+    public static final String RECIPES_SUBDIR = "recipes";
 
     private static String settingsDirPath;
     private static String settingsFilePath;
@@ -26,6 +28,8 @@ public class Settings {
     private Properties resources = new Properties();
     private Dimension winPosition = new Dimension();
     private Dimension winSize = new Dimension();
+    private double winDividerPosition = 0;
+    private String lastFilechooserLocation = "";
     
     private static Settings instance = new Settings();
 
@@ -142,6 +146,22 @@ public class Settings {
 
 	public void setWinSize(Dimension winSize) {
 		this.winSize = winSize;
+	}
+
+	public double getWinDividerPosition() {
+		return winDividerPosition;
+	}
+
+	public void setWinDividerPosition(double winDividerPosition) {
+		this.winDividerPosition = winDividerPosition;
+	}
+
+	public String getLastFilechooserLocation() {
+		return lastFilechooserLocation;
+	}
+
+	public void setLastFilechooserLocation(String lastFilechooserLocation) {
+		this.lastFilechooserLocation = lastFilechooserLocation;
 	}
 
 

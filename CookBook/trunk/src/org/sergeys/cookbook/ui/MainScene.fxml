@@ -9,7 +9,6 @@
 <?import javafx.scene.web.*?>
 <?scenebuilder-stylesheet test.css?>
 
-
 <AnchorPane id="rootid" fx:id="pane" prefHeight="409.0" prefWidth="670.0" styleClass="root" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.ui.MainController">
   <!-- TODO Add Nodes -->
   <children>
@@ -18,6 +17,7 @@
         <Menu mnemonicParsing="false" text="File">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#onMenuOpenAction" text="Open ..." />
+            <MenuItem mnemonicParsing="false" onAction="#onMenuImport" text="Import ..." />
             <MenuItem mnemonicParsing="false" onAction="#onMenuCloseAction" text="Exit" />
           </items>
         </Menu>
@@ -33,21 +33,20 @@
         </Menu>
       </menus>
     </MenuBar>
-    <SplitPane dividerPositions="0.4375" focusTraversable="true" prefHeight="359.0" prefWidth="642.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="36.0">
+    <SplitPane fx:id="splitter" dividerPositions="0.5" focusTraversable="true" prefHeight="359.0" prefWidth="642.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="36.0">
       <items>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+        <AnchorPane maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
           <children>
-            <TreeView fx:id="tree" prefHeight="331.0" prefWidth="250.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="13.0" />
+            <TreeView fx:id="tree" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="331.0" prefWidth="250.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="13.0" />
           </children>
         </AnchorPane>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+        <AnchorPane maxHeight="-1.0" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
           <children>
-            <WebView fx:id="webview" prefHeight="357.0" prefWidth="357.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <WebView fx:id="webview" prefHeight="357.0" prefWidth="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
           </children>
         </AnchorPane>
       </items>
     </SplitPane>
-
   </children>
   <stylesheets>
     <URL value="@test.css" />
