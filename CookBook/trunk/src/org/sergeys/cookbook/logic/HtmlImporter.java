@@ -28,6 +28,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker.State;
 import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 import org.apache.xml.serialize.HTMLSerializer;
 import org.apache.xml.serialize.OutputFormat;
@@ -49,9 +50,9 @@ public class HtmlImporter {
     SimpleObjectProperty<Status> status = new SimpleObjectProperty<Status>();
 
     public HtmlImporter(){
-    	status.set(Status.Unknown);
+        status.set(Status.Unknown);
     }
-    
+
     private void removeElements(Document doc, String tag){
         NodeList nodes = doc.getElementsByTagName(tag);
         while(nodes.getLength() > 0){
@@ -61,10 +62,10 @@ public class HtmlImporter {
         }
     }
 
-    public void Import(final File htmlFile, ChangeListener<Status> listener){
-    	
-    	status.set(Status.InProgress);
-    	
+    public void Import(final File htmlFile, ChangeListener<Status> listener, final WebEngine engine){
+
+        status.set(Status.InProgress);
+
         originalFile = htmlFile;
         destinationDir = Settings.getSettingsDirPath() + File.separator + Settings.RECIPES_SUBDIR;
         File dir = new File(destinationDir);
@@ -81,16 +82,19 @@ public class HtmlImporter {
 //
 //            @Override
 //            public void run() {
-                final WebEngine engine = new WebEngine();
+
+        // looks like visible webview' engine works
+                //final WebEngine engine = new WebEngine();
                 
 
+        // TODO this remains and react on loading new document in external engine
                 engine.documentProperty().addListener(new ChangeListener<Document>(){
                     @Override
                     public void changed(
                             ObservableValue<? extends Document> observable,
                             Document oldValue, Document newValue) {
 
-                    	System.out.println("location " + engine.getLocation());
+                        System.out.println("location " + engine.getLocation());
                         if(newValue != null){
                             System.out.println("document not null");
                             Document doc = engine.getDocument();
@@ -102,14 +106,14 @@ public class HtmlImporter {
                             }
                         }
                         else{
-                        	System.out.println("document changed but is null");
-//                        	Document doc = engine.getDocument();
-//                        	if(doc == null){
-//                        		System.out.println("still null");
-//                        	}
-//                        	else{
-//                        		System.out.println("not null");
-//                        	}                        	
+                            System.out.println("document changed but is null");
+//                            Document doc = engine.getDocument();
+//                            if(doc == null){
+//                                System.out.println("still null");
+//                            }
+//                            else{
+//                                System.out.println("not null");
+//                            }
                         }
                     }});
 
@@ -121,15 +125,15 @@ public class HtmlImporter {
                                     // javadoc says get document here
 //                                    Document doc = engine.getDocument();
 //                                    if(doc != null){
-//	                                    try {
-//	                                        setDocument(doc);
-//	                                    } catch (IOException e) {
-//	                                        // TODO Auto-generated catch block
-//	                                        e.printStackTrace();
-//	                                    }
+//                                        try {
+//                                            setDocument(doc);
+//                                        } catch (IOException e) {
+//                                            // TODO Auto-generated catch block
+//                                            e.printStackTrace();
+//                                        }
 //                                    }
 //                                    else{
-//                                    	System.out.println("worker succeeded but document is null");                                    	
+//                                        System.out.println("worker succeeded but document is null");
 //                                    }
                                 }
                                 else{
@@ -140,23 +144,23 @@ public class HtmlImporter {
 
                 engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
 
-					@Override
-					public void changed(
-							ObservableValue<? extends Throwable> observable,
-							Throwable oldValue, Throwable newValue) {
-						// TODO Auto-generated method stub
-						System.out.println("exception received: " + newValue.getMessage());
-						newValue.printStackTrace();
-					}
-				});
-                                
-                
-                
+                    @Override
+                    public void changed(
+                            ObservableValue<? extends Throwable> observable,
+                            Throwable oldValue, Throwable newValue) {
+                        // TODO Auto-generated method stub
+                        System.out.println("exception received: " + newValue.getMessage());
+                        newValue.printStackTrace();
+                    }
+                });
+
+
+
                 System.out.println("loading " + htmlFile.getAbsolutePath());
 
                 //engine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
                 //engine.load("file:///D:/workspace/CookBook/samplefiles/1.html");
-                //engine.load("file:///" + htmlFile.getAbsolutePath());	// TODO verify url on linux
+                //engine.load("file:///" + htmlFile.getAbsolutePath());    // TODO verify url on linux
                 System.out.println("uri " + htmlFile.toURI().toString());
                 engine.load(htmlFile.toURI().toString());
 //            }});
@@ -379,9 +383,9 @@ public class HtmlImporter {
         String title = "unknown";
         nodes = doc.getElementsByTagName("title");
         if(nodes.getLength() > 0){
-        	title = nodes.item(0).getTextContent();
+            title = nodes.item(0).getTextContent();
         }
-        
+
         // TODO: put to database
         File jarfile = new File(tempDir.toString() + File.separator + hash + ".jar");
         try {
@@ -402,9 +406,9 @@ public class HtmlImporter {
     }
 
     public String getHash(){
-    	return hash;
+        return hash;
     }
-    
+
     private String getFileHash(File file) throws IOException, NoSuchAlgorithmException
     {
         // http://www.mkyong.com/java/java-sha-hashing-example/
@@ -425,7 +429,7 @@ public class HtmlImporter {
         //convert the byte to hex format method 1
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < mdbytes.length; i++) {
-//        	String s = Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1);
+//            String s = Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1);
 
             //sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
             sb.append(String.format("%02x", mdbytes[i]));
