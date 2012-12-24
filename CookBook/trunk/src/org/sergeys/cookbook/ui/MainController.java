@@ -5,6 +5,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -37,6 +38,7 @@ import javafx.util.Duration;
 import org.sergeys.cookbook.logic.Database;
 import org.sergeys.cookbook.logic.HtmlImporter;
 import org.sergeys.cookbook.logic.HtmlImporter.Status;
+import org.sergeys.cookbook.logic.Recipe;
 import org.sergeys.cookbook.logic.RecipeLibrary;
 import org.sergeys.cookbook.logic.Settings;
 import org.sergeys.cookbook.logic.Tag;
@@ -63,7 +65,7 @@ public class MainController {
         RecipeLibrary.getInstance().validate();
         
         TreeItem<String> treeRoot = new TreeItem<String>("All recipes");
-        tree.setShowRoot(true);
+        tree.setShowRoot(false);
         tree.setRoot(treeRoot);
         treeRoot.setExpanded(true);
         
@@ -260,6 +262,28 @@ public class MainController {
         )).build().play();
     }
 
+    private void buildSubtree(TreeItem<String> item, Tag tag){
+    	try {
+    		
+    		List<Tag> tags = Database.getInstance().getChildrenTags(tag.getVal());
+    		for(Tag t: tags){
+    			TreeItem<String> titem = new TreeItem<String>(t.getVal());
+    			item.getChildren().add(titem);
+    			buildSubtree(titem, t);
+    		}
+    		
+			List<Recipe> recipes = Database.getInstance().getRecipesByTag(tag.getVal());
+			for(Recipe r: recipes){
+				TreeItem<String> ritem = new TreeItem<String>(r.getTitle());
+				item.getChildren().add(ritem);
+			}			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
     private void buildTree(){
     	
     	tree.getRoot().getChildren().clear();
@@ -267,7 +291,9 @@ public class MainController {
     	try {
 			ArrayList<Tag> tags = Database.getInstance().getRootTags();
 			for(Tag t: tags){
-				tree.getRoot().getChildren().add(new TreeItem<String>(t.getVal()));
+				TreeItem<String> item = new TreeItem<String>(t.getVal());
+				tree.getRoot().getChildren().add(item);
+				buildSubtree(item, t);
 			}
 				
 		} catch (SQLException e) {

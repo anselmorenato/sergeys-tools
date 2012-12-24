@@ -335,11 +335,17 @@ public class HtmlImporter {
         // http://stackoverflow.com/questions/1281229/how-to-use-jaroutputstream-to-create-a-jar-file
         packJar(tempDir.toString(), hash);
 
+        String title = "unknown";
+        nodes = doc.getElementsByTagName("title");
+        if(nodes.getLength() > 0){
+        	title = nodes.item(0).getTextContent();
+        }
+        
         // TODO: put to database
         File jarfile = new File(tempDir.toString() + File.separator + hash + ".jar");
         try {
-            Database.getInstance().addRecipe(hash, jarfile, "recipe");
-            Database.getInstance().updateRecipeTags(hash, Arrays.asList("kjdfn", "sdb", "bdrb"));
+            Database.getInstance().addRecipe(hash, jarfile, title);
+            Database.getInstance().updateRecipeTags(hash, Arrays.asList("—упы", "ќвощи", "–ис", "ћ€со"));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -9,3 +9,7 @@ This is an EclipseFX project
 - tag synonyms, merge same tags to one
 - mass import, by file mask
 - unpacked recipes in two-level dir structure
+- save and import currently viewed page as new recipe
+- mark recently added recipes in the tree
+- save last tree state, all expanded/collapsed nodes
+- quick text filter in tree

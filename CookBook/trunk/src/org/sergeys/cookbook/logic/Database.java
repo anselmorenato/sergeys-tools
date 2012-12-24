@@ -311,7 +311,7 @@ public class Database {
     }
 
     /**
-     * Create all missing tags
+     * Create tags that are missing from given list
      */
     private void validateTags(List<String> tags){
         try {

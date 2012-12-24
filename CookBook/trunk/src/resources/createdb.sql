@@ -13,6 +13,7 @@ create table recipes(
     title varchar(1024),
     packedfile blob,
     filesize bigint not null
+    -- dateadded
 );
 
 create unique index uq_recipes on recipes(hash);
