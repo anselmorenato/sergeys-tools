@@ -45,12 +45,16 @@ public class HtmlImporter {
 //    SimpleStringProperty completedFile = new SimpleStringProperty();
     String hash;
 
+    private WebEngine importEngine;    // stucks here, do not stuck in controller. Some objects seem to die during processing, need to keep listeners and engine
+
     public enum Status { Unknown, InProgress, Complete };
 
     SimpleObjectProperty<Status> status = new SimpleObjectProperty<Status>();
 
     public HtmlImporter(){
         status.set(Status.Unknown);
+
+        importEngine = new WebEngine();
     }
 
     private void removeElements(Document doc, String tag){
@@ -62,7 +66,7 @@ public class HtmlImporter {
         }
     }
 
-    public void Import(final File htmlFile, ChangeListener<Status> listener, final WebEngine engine){
+    public void Import(final File htmlFile, ChangeListener<Status> listener){
 
         status.set(Status.InProgress);
 
@@ -85,19 +89,19 @@ public class HtmlImporter {
 
         // looks like visible webview' engine works
                 //final WebEngine engine = new WebEngine();
-                
+
 
         // TODO this remains and react on loading new document in external engine
-                engine.documentProperty().addListener(new ChangeListener<Document>(){
+                importEngine.documentProperty().addListener(new ChangeListener<Document>(){
                     @Override
                     public void changed(
                             ObservableValue<? extends Document> observable,
                             Document oldValue, Document newValue) {
 
-                        System.out.println("location " + engine.getLocation());
+                        System.out.println("location " + importEngine.getLocation());
                         if(newValue != null){
                             System.out.println("document not null");
-                            Document doc = engine.getDocument();
+                            Document doc = importEngine.getDocument();
                             try {
                                 setDocument(doc);
                             } catch (IOException e) {
@@ -117,7 +121,7 @@ public class HtmlImporter {
                         }
                     }});
 
-                engine.getLoadWorker().stateProperty().addListener(
+                importEngine.getLoadWorker().stateProperty().addListener(
                         new ChangeListener<State>() {
                             public void changed(ObservableValue<? extends State> ov, State oldState, State newState) {
                                 if (newState == State.SUCCEEDED) {
@@ -142,7 +146,7 @@ public class HtmlImporter {
                             }
                         });
 
-                engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
+                importEngine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
 
                     @Override
                     public void changed(
@@ -162,7 +166,7 @@ public class HtmlImporter {
                 //engine.load("file:///D:/workspace/CookBook/samplefiles/1.html");
                 //engine.load("file:///" + htmlFile.getAbsolutePath());    // TODO verify url on linux
                 System.out.println("uri " + htmlFile.toURI().toString());
-                engine.load(htmlFile.toURI().toString());
+                importEngine.load(htmlFile.toURI().toString());
 //            }});
     }
 

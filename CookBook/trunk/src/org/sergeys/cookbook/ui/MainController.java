@@ -29,6 +29,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -50,96 +51,98 @@ public class MainController {
     @FXML private AnchorPane pane;
     @FXML private StackPane modalDimmer;
     @FXML private SplitPane splitter;
-    
+
     private Stage stage;
     private FileChooser fc;
     private Image appIcon;
     private Stage dialogStage;
-        
+
+    //private WebEngine importEngine;
+
     public void initialize(){
-    	// called by convention
-    	// http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
+        // called by convention
+        // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
         System.out.println("init");
-        
+
         // TODO call in background
         RecipeLibrary.getInstance().validate();
-        
+
         TreeItem<String> treeRoot = new TreeItem<String>("All recipes");
         tree.setShowRoot(false);
         tree.setRoot(treeRoot);
         treeRoot.setExpanded(true);
-        
+
         buildTree();
-        
+
         // http://docs.oracle.com/javafx/2/ui_controls/tree-view.htm#BABDEADA
-//        tree.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {			
-//			@Override
-//			public TreeCell<String> call(TreeView<String> arg0) {
-//				
-//				return new TextFieldTreeCellImpl();
-//			}
-//		});
-        
+//        tree.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
+//            @Override
+//            public TreeCell<String> call(TreeView<String> arg0) {
+//
+//                return new TextFieldTreeCellImpl();
+//            }
+//        });
+
         double pos = Settings.getInstance().getWinDividerPosition();
         System.out.println("set " + pos);
-        
-//        splitter.setDividerPosition(0, pos);        
+
+//        splitter.setDividerPosition(0, pos);
         System.out.println("actual " + splitter.getDividerPositions()[0]);
-        
+
 //        splitter.layout();
-        
+
         splitter.getDividers().get(0).positionProperty().addListener(new ChangeListener<Number>(){
 
-			@Override
-			public void changed(ObservableValue<? extends Number> observable,
-					Number oldValue, Number newValue) {
-				// TODO Auto-generated method stub
-				System.out.println("changed to " + newValue);				
-			}});
-        
+            @Override
+            public void changed(ObservableValue<? extends Number> observable,
+                    Number oldValue, Number newValue) {
+                // TODO Auto-generated method stub
+                System.out.println("changed to " + newValue);
+            }});
+
         splitter.getDividers().get(0).positionProperty().addListener(new InvalidationListener(){
 
-			@Override
-			public void invalidated(Observable arg0) {
-				// TODO Auto-generated method stub
-				System.out.println("invalidated");
-			}});
-                
-        
+            @Override
+            public void invalidated(Observable arg0) {
+                // TODO Auto-generated method stub
+                System.out.println("invalidated");
+            }});
+
+
         pane.visibleProperty().addListener(new ChangeListener<Boolean>(){
 
-			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0,
-					Boolean arg1, Boolean arg2) {
-				// TODO Auto-generated method stub
-				if(arg2){
-					System.out.println("visible");
-					double pos = Settings.getInstance().getWinDividerPosition();
-			        System.out.println("set " + pos);			        
-//			        splitter.setDividerPosition(0, pos);        
-				}
-				
-			}});
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0,
+                    Boolean arg1, Boolean arg2) {
+                // TODO Auto-generated method stub
+                if(arg2){
+                    System.out.println("visible");
+                    double pos = Settings.getInstance().getWinDividerPosition();
+                    System.out.println("set " + pos);
+//                    splitter.setDividerPosition(0, pos);
+                }
+
+            }});
     }
 
     public void myInit(Stage stage){
         this.stage = stage;
     }
-    
+
     public void applySettings(){
-//    	double pos = Settings.getInstance().getWinDividerPosition();
+//        double pos = Settings.getInstance().getWinDividerPosition();
 //        splitter.setDividerPositions(pos, 1.0 - pos);
     }
-    
+
     public void collectSettings(){
-    	double pos[] = splitter.getDividerPositions();
-    	System.out.println("collect " + pos[0]);
-    	Settings.getInstance().setWinDividerPosition(pos[0]);
+        double pos[] = splitter.getDividerPositions();
+        System.out.println("collect " + pos[0]);
+        Settings.getInstance().setWinDividerPosition(pos[0]);
     }
-    
+
     public Image getAppIcon(){
         if(appIcon == null){
-            appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));	// amor.png BPFolderRecipesGreen.png
+            appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));    // amor.png BPFolderRecipesGreen.png
         }
 
         return appIcon;
@@ -153,12 +156,12 @@ public class MainController {
     public void onMenuOpenAction(ActionEvent e){
 
         if(fc == null){
-            fc = new FileChooser();            
+            fc = new FileChooser();
         }
-        
+
         File prev = new File(Settings.getInstance().getLastFilechooserLocation());
         if(prev.exists()){
-        	fc.setInitialDirectory(prev);
+            fc.setInitialDirectory(prev);
         }
 
         // http://java-buddy.blogspot.com/2012/03/javafx-20-disable-ower-window-for.html
@@ -166,12 +169,12 @@ public class MainController {
         File file = fc.showOpenDialog(stage);
 
         if (file != null) {
-        	Settings.getInstance().setLastFilechooserLocation(file.getParent());
+            Settings.getInstance().setLastFilechooserLocation(file.getParent());
             String path = file.getAbsolutePath();
             System.out.println(path);
             try{
                 //webview.getEngine().load("file:///" + path);
-            	webview.getEngine().load(file.toURI().toString());
+                webview.getEngine().load(file.toURI().toString());
             }
             catch(Exception ex){
                 ex.printStackTrace();
@@ -180,10 +183,10 @@ public class MainController {
     }
 
     public void onMenuImport(ActionEvent e){
-    	doImport();
-//    	
-//    	double pos = Settings.getInstance().getWinDividerPosition();
-//        System.out.println("set " + pos);        
+        doImport();
+//
+//        double pos = Settings.getInstance().getWinDividerPosition();
+//        System.out.println("set " + pos);
 //        splitter.setDividerPosition(0, pos);
     }
 
@@ -263,119 +266,125 @@ public class MainController {
     }
 
     private void buildSubtree(TreeItem<String> item, Tag tag){
-    	try {
-    		
-    		List<Tag> tags = Database.getInstance().getChildrenTags(tag.getVal());
-    		for(Tag t: tags){
-    			TreeItem<String> titem = new TreeItem<String>(t.getVal());
-    			item.getChildren().add(titem);
-    			buildSubtree(titem, t);
-    		}
-    		
-			List<Recipe> recipes = Database.getInstance().getRecipesByTag(tag.getVal());
-			for(Recipe r: recipes){
-				TreeItem<String> ritem = new TreeItem<String>(r.getTitle());
-				item.getChildren().add(ritem);
-			}			
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+
+            List<Tag> tags = Database.getInstance().getChildrenTags(tag.getVal());
+            for(Tag t: tags){
+                TreeItem<String> titem = new TreeItem<String>(t.getVal());
+                item.getChildren().add(titem);
+                buildSubtree(titem, t);
+            }
+
+            List<Recipe> recipes = Database.getInstance().getRecipesByTag(tag.getVal());
+            for(Recipe r: recipes){
+                TreeItem<String> ritem = new TreeItem<String>(r.getTitle());
+                item.getChildren().add(ritem);
+            }
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
-    
+
     private void buildTree(){
-    	
-    	tree.getRoot().getChildren().clear();
-    	
-    	try {
-			ArrayList<Tag> tags = Database.getInstance().getRootTags();
-			for(Tag t: tags){
-				TreeItem<String> item = new TreeItem<String>(t.getVal());
-				tree.getRoot().getChildren().add(item);
-				buildSubtree(item, t);
-			}
-				
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+        tree.getRoot().getChildren().clear();
+
+        try {
+            ArrayList<Tag> tags = Database.getInstance().getRootTags();
+            for(Tag t: tags){
+                TreeItem<String> item = new TreeItem<String>(t.getVal());
+                tree.getRoot().getChildren().add(item);
+                buildSubtree(item, t);
+            }
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
-    
+
     private void doImport(){
         if(fc == null){
-            fc = new FileChooser();            
+            fc = new FileChooser();
         }
-        
+
         File prev = new File(Settings.getInstance().getLastFilechooserLocation());
         if(prev.exists()){
-        	fc.setInitialDirectory(prev);
+            fc.setInitialDirectory(prev);
         }
 
         final File file = fc.showOpenDialog(stage);
         if(file != null){
-        	Settings.getInstance().setLastFilechooserLocation(file.getParent());
-        	
-//        	Platform.runLater(new Runnable() {
-//				
-//				@Override
-//				public void run() {
-					
-		        	final HtmlImporter imp = new HtmlImporter();
-		        	imp.Import(file, new ChangeListener<HtmlImporter.Status>() {
+            Settings.getInstance().setLastFilechooserLocation(file.getParent());
 
-						@Override
-						public void changed(
-								ObservableValue<? extends Status> observable,
-								Status oldValue, Status newValue) {
-							// TODO Auto-generated method stub
-							
-							if(newValue == Status.Complete){
-								System.out.println("completed import of " + imp.getHash());
-								
-								RecipeLibrary.getInstance().validate();
-								
-								buildTree();
-							}
-							else{
-								System.out.println("importer status " + newValue);
-							}
-						}
-					}, webview.getEngine());					
-//				}
-//			});
-        	
+            //if(importEngine == null){    // remove listeners
+//                importEngine = new WebEngine();    // sometimes stucks
+            //}
 
-        }    	
+
+
+//            Platform.runLater(new Runnable() {
+//
+//                @Override
+//                public void run() {
+
+                    final HtmlImporter imp = new HtmlImporter();
+                    imp.Import(file, new ChangeListener<HtmlImporter.Status>() {
+
+                        @Override
+                        public void changed(
+                                ObservableValue<? extends Status> observable,
+                                Status oldValue, Status newValue) {
+                            // TODO Auto-generated method stub
+
+                            if(newValue == Status.Complete){
+                                System.out.println("completed import of " + imp.getHash());
+
+                                RecipeLibrary.getInstance().validate();
+
+                                buildTree();
+                            }
+                            else{
+                                System.out.println("importer status " + newValue);
+                            }
+                        }
+                    });
+//                }
+//            });
+
+
+        }
     }
-    
-    
+
+
 //    private class TextFieldTreeCellImpl
 //    extends TreeCell<String>
 //    {
 //
-//		@Override
-//		public void cancelEdit() {
-//			// TODO Auto-generated method stub
-//			super.cancelEdit();
-//		}
+//        @Override
+//        public void cancelEdit() {
+//            // TODO Auto-generated method stub
+//            super.cancelEdit();
+//        }
 //
-//		@Override
-//		public void commitEdit(String newValue) {
-//			// TODO Auto-generated method stub
-//			super.commitEdit(newValue);
-//		}
+//        @Override
+//        public void commitEdit(String newValue) {
+//            // TODO Auto-generated method stub
+//            super.commitEdit(newValue);
+//        }
 //
-//		@Override
-//		public void startEdit() {
-//			// TODO Auto-generated method stub
-//			super.startEdit();
-//		}
-//    	
+//        @Override
+//        public void startEdit() {
+//            // TODO Auto-generated method stub
+//            super.startEdit();
+//        }
+//
 //    }
 
 // ===============
-    
+
     public void createSampleData(){
 
         TreeItem<String> treeRoot = new TreeItem<String>("Root node");
@@ -414,9 +423,9 @@ public class MainController {
         }
 
         double pos = Settings.getInstance().getWinDividerPosition();
-        System.out.println("createsample set " + pos);			        
-//        splitter.setDividerPosition(0, pos);        
-        
+        System.out.println("createsample set " + pos);
+//        splitter.setDividerPosition(0, pos);
+
 //        test();
     }
 
