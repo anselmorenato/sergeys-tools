@@ -26,6 +26,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker.State;
 import javafx.scene.web.WebEngine;
 
 import org.apache.xml.serialize.HTMLSerializer;
@@ -76,11 +77,12 @@ public class HtmlImporter {
         //completedFile.addListener(listener);
         status.addListener(listener);
 
-        Platform.runLater(new Runnable(){
-
-            @Override
-            public void run() {
+//        Platform.runLater(new Runnable(){
+//
+//            @Override
+//            public void run() {
                 final WebEngine engine = new WebEngine();
+                
 
                 engine.documentProperty().addListener(new ChangeListener<Document>(){
                     @Override
@@ -88,8 +90,9 @@ public class HtmlImporter {
                             ObservableValue<? extends Document> observable,
                             Document oldValue, Document newValue) {
 
+                    	System.out.println("location " + engine.getLocation());
                         if(newValue != null){
-                            System.out.println("document set");
+                            System.out.println("document not null");
                             Document doc = engine.getDocument();
                             try {
                                 setDocument(doc);
@@ -98,27 +101,65 @@ public class HtmlImporter {
                                 e.printStackTrace();
                             }
                         }
+                        else{
+                        	System.out.println("document changed but is null");
+//                        	Document doc = engine.getDocument();
+//                        	if(doc == null){
+//                        		System.out.println("still null");
+//                        	}
+//                        	else{
+//                        		System.out.println("not null");
+//                        	}                        	
+                        }
                     }});
 
-//                engine.getLoadWorker().stateProperty().addListener(
-//                        new ChangeListener<State>() {
-//                            public void changed(ObservableValue<? extends State> ov, State oldState, State newState) {
-//                                if (newState == State.SUCCEEDED) {
-//                                    System.out.println("worker succeeded");
-//                                }
-//                                else{
-//                                    System.out.println("document load failed: " + newState);
-//                                }
-//                            }
-//                        });
+                engine.getLoadWorker().stateProperty().addListener(
+                        new ChangeListener<State>() {
+                            public void changed(ObservableValue<? extends State> ov, State oldState, State newState) {
+                                if (newState == State.SUCCEEDED) {
+                                    System.out.println("worker succeeded");
+                                    // javadoc says get document here
+//                                    Document doc = engine.getDocument();
+//                                    if(doc != null){
+//	                                    try {
+//	                                        setDocument(doc);
+//	                                    } catch (IOException e) {
+//	                                        // TODO Auto-generated catch block
+//	                                        e.printStackTrace();
+//	                                    }
+//                                    }
+//                                    else{
+//                                    	System.out.println("worker succeeded but document is null");                                    	
+//                                    }
+                                }
+                                else{
+                                    System.out.println("document load failed: " + newState);
+                                }
+                            }
+                        });
 
-                //engine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
+                engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
+
+					@Override
+					public void changed(
+							ObservableValue<? extends Throwable> observable,
+							Throwable oldValue, Throwable newValue) {
+						// TODO Auto-generated method stub
+						System.out.println("exception received: " + newValue.getMessage());
+						newValue.printStackTrace();
+					}
+				});
+                                
+                
+                
                 System.out.println("loading " + htmlFile.getAbsolutePath());
 
+                //engine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
+                //engine.load("file:///D:/workspace/CookBook/samplefiles/1.html");
                 //engine.load("file:///" + htmlFile.getAbsolutePath());	// TODO verify url on linux
                 System.out.println("uri " + htmlFile.toURI().toString());
                 engine.load(htmlFile.toURI().toString());
-            }});
+//            }});
     }
 
     /**

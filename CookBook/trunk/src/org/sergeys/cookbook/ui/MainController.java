@@ -312,30 +312,40 @@ public class MainController {
         	fc.setInitialDirectory(prev);
         }
 
-        File file = fc.showOpenDialog(stage);
+        final File file = fc.showOpenDialog(stage);
         if(file != null){
         	Settings.getInstance().setLastFilechooserLocation(file.getParent());
-        	final HtmlImporter imp = new HtmlImporter();
-        	imp.Import(file, new ChangeListener<HtmlImporter.Status>() {
-
-				@Override
-				public void changed(
-						ObservableValue<? extends Status> observable,
-						Status oldValue, Status newValue) {
-					// TODO Auto-generated method stub
+        	
+//        	Platform.runLater(new Runnable() {
+//				
+//				@Override
+//				public void run() {
 					
-					if(newValue == Status.Complete){
-						System.out.println("completed import of " + imp.getHash());
-						
-						RecipeLibrary.getInstance().validate();
-						
-						buildTree();
-					}
-					else{
-						System.out.println("importer status " + newValue);
-					}
-				}
-			});
+		        	final HtmlImporter imp = new HtmlImporter();
+		        	imp.Import(file, new ChangeListener<HtmlImporter.Status>() {
+
+						@Override
+						public void changed(
+								ObservableValue<? extends Status> observable,
+								Status oldValue, Status newValue) {
+							// TODO Auto-generated method stub
+							
+							if(newValue == Status.Complete){
+								System.out.println("completed import of " + imp.getHash());
+								
+								RecipeLibrary.getInstance().validate();
+								
+								buildTree();
+							}
+							else{
+								System.out.println("importer status " + newValue);
+							}
+						}
+					});					
+//				}
+//			});
+        	
+
         }    	
     }
     
