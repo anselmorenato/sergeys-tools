@@ -12,8 +12,8 @@ create table recipes(
     hash varchar(64) not null,    -- sha-256 digest
     title varchar(1024),
     packedfile blob,
-    filesize bigint not null
-    -- dateadded
+    filesize bigint not null,
+    dateadded bigint not null
 );
 
 create unique index uq_recipes on recipes(hash);
@@ -22,7 +22,8 @@ drop table if exists tags;
 create table tags(
     id identity,
     parentid bigint,    -- == identity == Long
-    val varchar(128) not null
+    val varchar(128) not null,
+    displayorder int not null
 );
 
 create unique index uq_tags on tags(val);
@@ -37,4 +38,4 @@ create unique index uq_recipetags on recipetags(recipeid, tagid);
 
 insert into properties (property, val) values ('version', '1');
 
-insert into tags (val) values ('Other');
+insert into tags (val, displayorder) values ('Other', 99999);

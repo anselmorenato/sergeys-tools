@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.h2.tools.RunScript;
@@ -131,13 +132,14 @@ public class Database {
 
         try {
             PreparedStatement pst = getConnection().prepareStatement(
-                    "insert into recipes (hash, title, packedfile, filesize) " +
-                    "values (?, ?, ?, ?)");
+                    "insert into recipes (hash, title, packedfile, filesize, dateadded) " +
+                    "values (?, ?, ?, ?, ?)");
             pst.setString(1, hash);
             pst.setString(2, title);
             InputStream is = new FileInputStream(jarfile);
             pst.setBinaryStream(3, is);
             pst.setLong(4, jarfile.length());
+            pst.setLong(5, new Date().getTime());
 
             pst.executeUpdate();
 
@@ -234,7 +236,7 @@ public class Database {
 
         try {
             Statement st = getConnection().createStatement();
-            ResultSet rs = st.executeQuery("select id, parentid, val from tags where parentid is null order by val");
+            ResultSet rs = st.executeQuery("select id, parentid, val from tags where parentid is null order by displayorder, val");
             while(rs.next()){
                 Tag t = new Tag();
                 t.setId(rs.getLong("id"));
@@ -316,15 +318,17 @@ public class Database {
     private void validateTags(List<String> tags){
         try {
             PreparedStatement pstCheck = getConnection().prepareStatement("select id from tags where val = ?");
-            PreparedStatement pstAdd = getConnection().prepareStatement("insert into tags (val) values (?)");
+            PreparedStatement pstAdd = getConnection().prepareStatement("insert into tags (val, displayorder) values (?, ?)");
 
             getConnection().setAutoCommit(false);
 
+            //int i = 1;
             for(String tag: tags){
                 pstCheck.setString(1, tag);
                 ResultSet rs = pstCheck.executeQuery();
                 if(!rs.next()){
                     pstAdd.setString(1, tag);
+                    pstAdd.setInt(2, 1);
                     pstAdd.addBatch();
                 }
             }
@@ -374,4 +378,29 @@ public class Database {
             e.printStackTrace();
         }
     }
+    
+    public ArrayList<String> getRecipeTags(String hash){
+        ArrayList<String> tags = new ArrayList<>();
+
+        try {
+            PreparedStatement pst = getConnection().prepareStatement(
+                    "select val from tags t" +
+                    " left join recipetags rt on rt.tagid = t.id" +
+                    " left join recipes r on r.id = rt.recipeid" +
+                    " where r.hash = ?");
+            pst.setString(1, hash);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){                
+                tags.add(rs.getString("val"));
+            }
+
+            pst.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return tags;
+    }
+
 }

@@ -2,6 +2,7 @@
 
 <?import java.lang.*?>
 <?import java.net.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.Scene?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -46,8 +47,17 @@
               <children>
                 <Label styleClass="about-label" text="Tags" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                 <Label styleClass="about-label" text="Title" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
-                <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                <TextArea prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <TextField fx:id="title" onKeyTyped="#onTitleChanged" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <TextArea fx:id="tags" onKeyTyped="#onTagsChanged" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="2.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+                  <children>
+                    <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#onButtonSave" text="Save" visible="true" />
+                    <Button fx:id="buttonRevert" mnemonicParsing="false" onAction="#onButtonRevert" text="Revert" />
+                  </children>
+                  <padding>
+                    <Insets right="2.0" top="2.0" />
+                  </padding>
+                </HBox>
               </children>
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="238.0" minWidth="10.0" prefWidth="51.0" />

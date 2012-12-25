@@ -22,13 +22,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker.State;
 import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 
 import org.apache.xml.serialize.HTMLSerializer;
 import org.apache.xml.serialize.OutputFormat;
@@ -51,10 +49,14 @@ public class HtmlImporter {
 
     SimpleObjectProperty<Status> status = new SimpleObjectProperty<Status>();
 
-    public HtmlImporter(){
+    public HtmlImporter(ChangeListener<Status> importListener){
         status.set(Status.Unknown);
 
         importEngine = new WebEngine();
+        status.addListener(importListener);
+        importEngine.documentProperty().addListener(docListener);
+        importEngine.getLoadWorker().stateProperty().addListener(workerListener);
+        importEngine.getLoadWorker().exceptionProperty().addListener(exceptionListener);
     }
 
     private void removeElements(Document doc, String tag){
@@ -66,7 +68,72 @@ public class HtmlImporter {
         }
     }
 
-    public void Import(final File htmlFile, ChangeListener<Status> listener){
+    private ChangeListener<Document> docListener = new ChangeListener<Document>(){
+        @Override
+        public void changed(
+                ObservableValue<? extends Document> observable,
+                Document oldValue, Document newValue) {
+
+            System.out.println("location " + importEngine.getLocation());
+            if(newValue != null){
+                System.out.println("document not null");
+                Document doc = importEngine.getDocument();
+                try {
+                    setDocument(doc);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            else{
+                System.out.println("document changed but is null");
+//                Document doc = engine.getDocument();
+//                if(doc == null){
+//                    System.out.println("still null");
+//                }
+//                else{
+//                    System.out.println("not null");
+//                }
+            }
+        }};
+    
+    private ChangeListener<State> workerListener = new ChangeListener<State>() {
+        public void changed(ObservableValue<? extends State> ov, State oldState, State newState) {
+            if (newState == State.SUCCEEDED) {
+                System.out.println("worker succeeded");
+                // javadoc says get document here
+//                Document doc = engine.getDocument();
+//                if(doc != null){
+//                    try {
+//                        setDocument(doc);
+//                    } catch (IOException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+//                }
+//                else{
+//                    System.out.println("worker succeeded but document is null");
+//                }
+            }
+            else{
+                System.out.println("document load failed: " + newState);
+            }
+        }
+    };
+        
+    private ChangeListener<Throwable> exceptionListener = new ChangeListener<Throwable>() {
+
+        @Override
+        public void changed(
+                ObservableValue<? extends Throwable> observable,
+                Throwable oldValue, Throwable newValue) {
+            // TODO Auto-generated method stub
+            System.out.println("exception received: " + newValue.getMessage());
+            newValue.printStackTrace();
+        }
+    };
+    
+    public void Import(final File htmlFile){
 
         status.set(Status.InProgress);
 
@@ -76,98 +143,14 @@ public class HtmlImporter {
         if(!dir.exists()){
             dir.mkdirs();
         }
+               
+        System.out.println("loading " + htmlFile.getAbsolutePath());
 
-        //importComplete.set(false);
-        //importComplete.addListener(listener);
-        //completedFile.addListener(listener);
-        status.addListener(listener);
-
-//        Platform.runLater(new Runnable(){
-//
-//            @Override
-//            public void run() {
-
-        // looks like visible webview' engine works
-                //final WebEngine engine = new WebEngine();
-
-
-        // TODO this remains and react on loading new document in external engine
-                importEngine.documentProperty().addListener(new ChangeListener<Document>(){
-                    @Override
-                    public void changed(
-                            ObservableValue<? extends Document> observable,
-                            Document oldValue, Document newValue) {
-
-                        System.out.println("location " + importEngine.getLocation());
-                        if(newValue != null){
-                            System.out.println("document not null");
-                            Document doc = importEngine.getDocument();
-                            try {
-                                setDocument(doc);
-                            } catch (IOException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                        }
-                        else{
-                            System.out.println("document changed but is null");
-//                            Document doc = engine.getDocument();
-//                            if(doc == null){
-//                                System.out.println("still null");
-//                            }
-//                            else{
-//                                System.out.println("not null");
-//                            }
-                        }
-                    }});
-
-                importEngine.getLoadWorker().stateProperty().addListener(
-                        new ChangeListener<State>() {
-                            public void changed(ObservableValue<? extends State> ov, State oldState, State newState) {
-                                if (newState == State.SUCCEEDED) {
-                                    System.out.println("worker succeeded");
-                                    // javadoc says get document here
-//                                    Document doc = engine.getDocument();
-//                                    if(doc != null){
-//                                        try {
-//                                            setDocument(doc);
-//                                        } catch (IOException e) {
-//                                            // TODO Auto-generated catch block
-//                                            e.printStackTrace();
-//                                        }
-//                                    }
-//                                    else{
-//                                        System.out.println("worker succeeded but document is null");
-//                                    }
-                                }
-                                else{
-                                    System.out.println("document load failed: " + newState);
-                                }
-                            }
-                        });
-
-                importEngine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
-
-                    @Override
-                    public void changed(
-                            ObservableValue<? extends Throwable> observable,
-                            Throwable oldValue, Throwable newValue) {
-                        // TODO Auto-generated method stub
-                        System.out.println("exception received: " + newValue.getMessage());
-                        newValue.printStackTrace();
-                    }
-                });
-
-
-
-                System.out.println("loading " + htmlFile.getAbsolutePath());
-
-                //engine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
-                //engine.load("file:///D:/workspace/CookBook/samplefiles/1.html");
-                //engine.load("file:///" + htmlFile.getAbsolutePath());    // TODO verify url on linux
-                System.out.println("uri " + htmlFile.toURI().toString());
-                importEngine.load(htmlFile.toURI().toString());
-//            }});
+        //engine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
+        //engine.load("file:///D:/workspace/CookBook/samplefiles/1.html");
+        //engine.load("file:///" + htmlFile.getAbsolutePath());    // TODO verify url on linux
+        System.out.println("uri " + htmlFile.toURI().toString());
+        importEngine.load(htmlFile.toURI().toString());
     }
 
     /**
@@ -390,7 +373,7 @@ public class HtmlImporter {
             title = nodes.item(0).getTextContent();
         }
 
-        // TODO: put to database
+        // put to database
         File jarfile = new File(tempDir.toString() + File.separator + hash + ".jar");
         try {
             Database.getInstance().addRecipe(hash, jarfile, title);
@@ -400,12 +383,8 @@ public class HtmlImporter {
             e.printStackTrace();
         }
 
-        // delete dir recursively
-        //Files.deleteIfExists(tempDir);
         Util.deleteRecursively(tempDir.toFile());
 
-//        importComplete.set(true);
-        //completedFile.set(p.toFile().getAbsolutePath());
         status.set(Status.Complete);
     }
 

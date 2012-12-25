@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javafx.animation.Interpolator;
@@ -22,14 +21,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -43,21 +45,39 @@ import org.sergeys.cookbook.logic.Recipe;
 import org.sergeys.cookbook.logic.RecipeLibrary;
 import org.sergeys.cookbook.logic.Settings;
 import org.sergeys.cookbook.logic.Tag;
+import org.sergeys.cookbook.ui.RecipeTreeValue.Type;
 
 public class MainController {
 
-    @FXML private TreeView<String> tree;
+    @FXML private TreeView<RecipeTreeValue> tree;
     @FXML private WebView webview;
     @FXML private AnchorPane pane;
     @FXML private StackPane modalDimmer;
     @FXML private SplitPane splitter;
+    @FXML private TextField title;
+    @FXML private TextArea tags;
+    @FXML private Button buttonSave;
+    @FXML private Button buttonRevert;
 
     private Stage stage;
     private FileChooser fc;
     private Image appIcon;
     private Stage dialogStage;
 
-    //private WebEngine importEngine;
+    ChangeListener<TreeItem<RecipeTreeValue>> treeListener = new ChangeListener<TreeItem<RecipeTreeValue>>(){
+
+        @Override
+        public void changed(
+                ObservableValue<? extends TreeItem<RecipeTreeValue>> observable,
+                TreeItem<RecipeTreeValue> oldValue,
+                TreeItem<RecipeTreeValue> newValue) {
+            // TODO Auto-generated method stub
+            if(newValue != null){
+                if(newValue.getValue().getType() == Type.Recipe){
+                	setRecipe(newValue.getValue().getRecipe());                	
+                }
+            }
+        }};
 
     public void initialize(){
         // called by convention
@@ -67,10 +87,15 @@ public class MainController {
         // TODO call in background
         RecipeLibrary.getInstance().validate();
 
-        TreeItem<String> treeRoot = new TreeItem<String>("All recipes");
+        buttonSave.setVisible(false);
+    	buttonRevert.setVisible(false);
+        
+        TreeItem<RecipeTreeValue> treeRoot = new TreeItem<RecipeTreeValue>();
         tree.setShowRoot(false);
         tree.setRoot(treeRoot);
         treeRoot.setExpanded(true);
+
+        tree.getSelectionModel().selectedItemProperty().addListener(treeListener);
 
         buildTree();
 
@@ -224,6 +249,29 @@ public class MainController {
         }
     }
 
+    public void onTitleChanged(KeyEvent e){
+    	buttonSave.setVisible(true);
+    	buttonRevert.setVisible(true);
+    }
+
+    public void onTagsChanged(KeyEvent e){
+    	buttonSave.setVisible(true);
+    	buttonRevert.setVisible(true);
+    }
+
+    public void onButtonSave(ActionEvent e){
+    	buttonSave.setVisible(false);
+    	buttonRevert.setVisible(false);
+    }
+
+    public void onButtonRevert(ActionEvent e){
+    	if(currentRecipe != null){
+    		setTitle(currentRecipe);
+    	}
+    	
+    	buttonSave.setVisible(false);
+    	buttonRevert.setVisible(false);
+    }
 
     /**
      * Show the given node as a floating dialog over the whole application, with
@@ -265,19 +313,23 @@ public class MainController {
         )).build().play();
     }
 
-    private void buildSubtree(TreeItem<String> item, Tag tag){
+
+
+    private void buildSubtree(TreeItem<RecipeTreeValue> item, Tag tag){
         try {
 
             List<Tag> tags = Database.getInstance().getChildrenTags(tag.getVal());
             for(Tag t: tags){
-                TreeItem<String> titem = new TreeItem<String>(t.getVal());
+                TreeItem<RecipeTreeValue> titem = new TreeItem<RecipeTreeValue>();
+                titem.setValue(new RecipeTreeValue(t));
                 item.getChildren().add(titem);
                 buildSubtree(titem, t);
             }
 
             List<Recipe> recipes = Database.getInstance().getRecipesByTag(tag.getVal());
             for(Recipe r: recipes){
-                TreeItem<String> ritem = new TreeItem<String>(r.getTitle());
+                TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>();
+                ritem.setValue(new RecipeTreeValue(r));
                 item.getChildren().add(ritem);
             }
 
@@ -294,7 +346,9 @@ public class MainController {
         try {
             ArrayList<Tag> tags = Database.getInstance().getRootTags();
             for(Tag t: tags){
-                TreeItem<String> item = new TreeItem<String>(t.getVal());
+                //TreeItem<String> item = new TreeItem<String>(t.getVal());
+                TreeItem<RecipeTreeValue> item = new TreeItem<RecipeTreeValue>();
+                item.setValue(new RecipeTreeValue(t));
                 tree.getRoot().getChildren().add(item);
                 buildSubtree(item, t);
             }
@@ -304,6 +358,29 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
+    private HtmlImporter importer;
+
+    private ChangeListener<HtmlImporter.Status> importListener = new ChangeListener<HtmlImporter.Status>() {
+
+        @Override
+        public void changed(
+                ObservableValue<? extends Status> observable,
+                Status oldValue, Status newValue) {
+            // TODO Auto-generated method stub
+
+            if(newValue == Status.Complete){
+                System.out.println("completed import of " + importer.getHash());
+
+                RecipeLibrary.getInstance().validate();
+
+                buildTree();
+            }
+            else{
+                System.out.println("importer status " + newValue);
+            }
+        }
+    };
 
     private void doImport(){
         if(fc == null){
@@ -319,43 +396,44 @@ public class MainController {
         if(file != null){
             Settings.getInstance().setLastFilechooserLocation(file.getParent());
 
-            //if(importEngine == null){    // remove listeners
-//                importEngine = new WebEngine();    // sometimes stucks
-            //}
+            if(importer == null){
+                importer = new HtmlImporter(importListener);
+            }
 
-
-
-//            Platform.runLater(new Runnable() {
-//
-//                @Override
-//                public void run() {
-
-                    final HtmlImporter imp = new HtmlImporter();
-                    imp.Import(file, new ChangeListener<HtmlImporter.Status>() {
-
-                        @Override
-                        public void changed(
-                                ObservableValue<? extends Status> observable,
-                                Status oldValue, Status newValue) {
-                            // TODO Auto-generated method stub
-
-                            if(newValue == Status.Complete){
-                                System.out.println("completed import of " + imp.getHash());
-
-                                RecipeLibrary.getInstance().validate();
-
-                                buildTree();
-                            }
-                            else{
-                                System.out.println("importer status " + newValue);
-                            }
-                        }
-                    });
-//                }
-//            });
-
-
+            importer.Import(file);
         }
+    }
+    
+    private Recipe currentRecipe;
+    
+    private void setRecipe(Recipe recipe){
+    	currentRecipe = recipe;
+    	
+        String filename = Settings.getSettingsDirPath() + File.separator + Settings.RECIPES_SUBDIR +
+                File.separator + recipe.getHash() + ".html";
+        webview.getEngine().load(new File(filename).toURI().toString());
+
+        setTitle(recipe);
+    }
+    
+    private void setTitle(Recipe recipe){
+    	title.setText(recipe.getTitle());
+    	
+		try {
+			List<String> t = Database.getInstance().getRecipeTags(recipe.getHash());
+			StringBuilder sb = new StringBuilder();
+	    	for(String s: t){
+	    		if(sb.length() > 0){
+	    			sb.append(", ");
+	    		}
+	    		sb.append(s);
+	    	}
+	    	tags.setText(sb.toString());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
     }
 
 
@@ -387,29 +465,29 @@ public class MainController {
 
     public void createSampleData(){
 
-        TreeItem<String> treeRoot = new TreeItem<String>("Root node");
-
-        treeRoot.getChildren().addAll(Arrays.asList(
-                new TreeItem<String>("Child Node 1"),
-                new TreeItem<String>("Child Node 2"),
-                new TreeItem<String>("Child Node 3")));
-
-
-        treeRoot.getChildren().get(2).getChildren().addAll(Arrays.asList(
-                new TreeItem<String>("Child Node 4"),
-                new TreeItem<String>("Child Node 5"),
-                new TreeItem<String>("Child Node 6"),
-                new TreeItem<String>("Child Node 7"),
-                new TreeItem<String>("Child Node 8"),
-                new TreeItem<String>("Child Node 9"),
-                new TreeItem<String>("Child Node 10"),
-                new TreeItem<String>("Child Node 11"),
-                new TreeItem<String>("Child Node 12")));
-
-
-        tree.setShowRoot(true);
-        tree.setRoot(treeRoot);
-        treeRoot.setExpanded(true);
+//        TreeItem<String> treeRoot = new TreeItem<String>("Root node");
+//
+//        treeRoot.getChildren().addAll(Arrays.asList(
+//                new TreeItem<String>("Child Node 1"),
+//                new TreeItem<String>("Child Node 2"),
+//                new TreeItem<String>("Child Node 3")));
+//
+//
+//        treeRoot.getChildren().get(2).getChildren().addAll(Arrays.asList(
+//                new TreeItem<String>("Child Node 4"),
+//                new TreeItem<String>("Child Node 5"),
+//                new TreeItem<String>("Child Node 6"),
+//                new TreeItem<String>("Child Node 7"),
+//                new TreeItem<String>("Child Node 8"),
+//                new TreeItem<String>("Child Node 9"),
+//                new TreeItem<String>("Child Node 10"),
+//                new TreeItem<String>("Child Node 11"),
+//                new TreeItem<String>("Child Node 12")));
+//
+//
+//        tree.setShowRoot(true);
+//        tree.setRoot(treeRoot);
+//        treeRoot.setExpanded(true);
 
         // TODO open last file
 //        WebEngine webEngine = webview.getEngine();
