@@ -1,5 +1,5 @@
 .root{
-    -fx-background-image: url('../../../../images/bluShadow.jpg');   
+    -fx-background-image: url('../../../../images/bluShadow.jpg');
 }
 
 .red-bg{
@@ -13,4 +13,12 @@
 .about-label{
     -fx-font: bold 16 serif;
     -fx-text-fill: white;
+}
+
+.buttonSave{
+    -fx-graphic: url('../../../../images/button_ok.png');
+}
+
+.buttonRevert{
+    -fx-graphic: url('../../../../images/undo.png');
 }

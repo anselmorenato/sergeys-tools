@@ -236,12 +236,17 @@ public class Database {
 
         try {
             Statement st = getConnection().createStatement();
-            ResultSet rs = st.executeQuery("select id, parentid, val from tags where parentid is null order by displayorder, val");
+            ResultSet rs = st.executeQuery(
+                    "select id, parentid, val, specialid" +
+                    " from tags where parentid is null" +
+                    " order by displayorder, val");
             while(rs.next()){
                 Tag t = new Tag();
                 t.setId(rs.getLong("id"));
                 t.setParentid(rs.getLong("parentid"));
                 t.setVal(rs.getString("val"));
+                int i = rs.getInt("specialid");	// 0 if null
+                t.setSpecialid(i);
                 tags.add(t);
             }
 
@@ -284,6 +289,33 @@ public class Database {
         return tags;
     }
 
+    public ArrayList<Recipe> getRecipesWithoutTags(){
+        ArrayList<Recipe> recipes = new ArrayList<>();
+
+        Statement st;
+        try {
+            st = getConnection().createStatement();
+            ResultSet rs = st.executeQuery(
+                    "select hash, title from recipes r" +
+                    " left join recipetags rt on rt.recipeid = r.id" +
+                    " where rt.tagid is null order by title");
+
+            while(rs.next()){
+                Recipe r = new Recipe();
+                r.setHash(rs.getString("hash"));
+                r.setTitle(rs.getString("title"));
+                recipes.add(r);
+            }
+
+            st.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+        return recipes;
+    }
 
     public ArrayList<Recipe> getRecipesByTag(String tag){
         ArrayList<Recipe> recipes = new ArrayList<>();
@@ -293,7 +325,7 @@ public class Database {
                     "select hash, title from recipes r" +
                     " left join recipetags rt on rt.recipeid = r.id" +
                     " left join tags t on t.id = rt.tagid" +
-                    " where t.val = ?");
+                    " where t.val = ? order by title");
             pst.setString(1, tag);
             ResultSet rs = pst.executeQuery();
             while(rs.next()){
@@ -378,7 +410,7 @@ public class Database {
             e.printStackTrace();
         }
     }
-    
+
     public ArrayList<String> getRecipeTags(String hash){
         ArrayList<String> tags = new ArrayList<>();
 
@@ -387,10 +419,11 @@ public class Database {
                     "select val from tags t" +
                     " left join recipetags rt on rt.tagid = t.id" +
                     " left join recipes r on r.id = rt.recipeid" +
-                    " where r.hash = ?");
+                    " where r.hash = ?" +
+                    " order by val");
             pst.setString(1, hash);
             ResultSet rs = pst.executeQuery();
-            while(rs.next()){                
+            while(rs.next()){
                 tags.add(rs.getString("val"));
             }
 
@@ -403,4 +436,17 @@ public class Database {
         return tags;
     }
 
+    public void updateRecipe(String hash, String newTitle){
+        try {
+            PreparedStatement pst = getConnection().prepareStatement(
+                    "update recipes set title = ? where hash = ?");
+            pst.setString(1, newTitle);
+            pst.setString(2, hash);
+            pst.executeUpdate();
+            pst.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

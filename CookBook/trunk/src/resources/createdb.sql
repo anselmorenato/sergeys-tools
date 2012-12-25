@@ -23,7 +23,8 @@ create table tags(
     id identity,
     parentid bigint,    -- == identity == Long
     val varchar(128) not null,
-    displayorder int not null
+    displayorder int not null,
+    specialid int
 );
 
 create unique index uq_tags on tags(val);
@@ -38,4 +39,4 @@ create unique index uq_recipetags on recipetags(recipeid, tagid);
 
 insert into properties (property, val) values ('version', '1');
 
-insert into tags (val, displayorder) values ('Other', 99999);
+insert into tags (val, displayorder, specialid) values ('other', 99999, 1);

@@ -5,6 +5,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -15,6 +17,8 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -33,6 +37,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -41,6 +46,7 @@ import javafx.util.Duration;
 import org.sergeys.cookbook.logic.Database;
 import org.sergeys.cookbook.logic.HtmlImporter;
 import org.sergeys.cookbook.logic.HtmlImporter.Status;
+import org.sergeys.cookbook.logic.MassImportTask;
 import org.sergeys.cookbook.logic.Recipe;
 import org.sergeys.cookbook.logic.RecipeLibrary;
 import org.sergeys.cookbook.logic.Settings;
@@ -74,7 +80,7 @@ public class MainController {
             // TODO Auto-generated method stub
             if(newValue != null){
                 if(newValue.getValue().getType() == Type.Recipe){
-                	setRecipe(newValue.getValue().getRecipe());                	
+                    setRecipe(newValue.getValue().getRecipe());
                 }
             }
         }};
@@ -88,8 +94,8 @@ public class MainController {
         RecipeLibrary.getInstance().validate();
 
         buttonSave.setVisible(false);
-    	buttonRevert.setVisible(false);
-        
+        buttonRevert.setVisible(false);
+
         TreeItem<RecipeTreeValue> treeRoot = new TreeItem<RecipeTreeValue>();
         tree.setShowRoot(false);
         tree.setRoot(treeRoot);
@@ -215,6 +221,10 @@ public class MainController {
 //        splitter.setDividerPosition(0, pos);
     }
 
+    public void onMenuMassImport(ActionEvent e){
+    	doMassImport();
+    }
+
     public void onMenuHelpAbout(ActionEvent e){
         // http://stackoverflow.com/questions/8309981/how-to-create-and-show-common-dialog-error-warning-confirmation-in-javafx-2
         // http://java-buddy.blogspot.com/2012/02/dialog-with-close-button.html
@@ -250,27 +260,44 @@ public class MainController {
     }
 
     public void onTitleChanged(KeyEvent e){
-    	buttonSave.setVisible(true);
-    	buttonRevert.setVisible(true);
+        buttonSave.setVisible(true);
+        buttonRevert.setVisible(true);
     }
 
     public void onTagsChanged(KeyEvent e){
-    	buttonSave.setVisible(true);
-    	buttonRevert.setVisible(true);
+        buttonSave.setVisible(true);
+        buttonRevert.setVisible(true);
     }
 
     public void onButtonSave(ActionEvent e){
-    	buttonSave.setVisible(false);
-    	buttonRevert.setVisible(false);
+        try {
+            Database.getInstance().updateRecipe(currentRecipe.getHash(), title.getText().trim());
+
+            String tagarray[] = tags.getText().split("[,;]");
+            ArrayList<String> taglist = new ArrayList<>();
+            for(String t: tagarray){
+                taglist.add(t.trim().toLowerCase());
+            }
+
+            Database.getInstance().updateRecipeTags(currentRecipe.getHash(), taglist);
+
+            buttonSave.setVisible(false);
+            buttonRevert.setVisible(false);
+
+            buildTree();
+        } catch (SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
     }
 
     public void onButtonRevert(ActionEvent e){
-    	if(currentRecipe != null){
-    		setTitle(currentRecipe);
-    	}
-    	
-    	buttonSave.setVisible(false);
-    	buttonRevert.setVisible(false);
+        if(currentRecipe != null){
+            setTitle(currentRecipe);
+        }
+
+        buttonSave.setVisible(false);
+        buttonRevert.setVisible(false);
     }
 
     /**
@@ -315,7 +342,16 @@ public class MainController {
 
 
 
-    private void buildSubtree(TreeItem<RecipeTreeValue> item, Tag tag){
+    /**
+     *
+     * @param item
+     * @param tag
+     * @return true if any children were added
+     */
+    private boolean buildSubtree(TreeItem<RecipeTreeValue> item, Tag tag){
+
+        boolean hasChildren = false;
+
         try {
 
             List<Tag> tags = Database.getInstance().getChildrenTags(tag.getVal());
@@ -324,6 +360,8 @@ public class MainController {
                 titem.setValue(new RecipeTreeValue(t));
                 item.getChildren().add(titem);
                 buildSubtree(titem, t);
+
+                hasChildren = true;
             }
 
             List<Recipe> recipes = Database.getInstance().getRecipesByTag(tag.getVal());
@@ -331,12 +369,16 @@ public class MainController {
                 TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>();
                 ritem.setValue(new RecipeTreeValue(r));
                 item.getChildren().add(ritem);
+
+                hasChildren = true;
             }
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        return hasChildren;
     }
 
     private void buildTree(){
@@ -349,8 +391,21 @@ public class MainController {
                 //TreeItem<String> item = new TreeItem<String>(t.getVal());
                 TreeItem<RecipeTreeValue> item = new TreeItem<RecipeTreeValue>();
                 item.setValue(new RecipeTreeValue(t));
-                tree.getRoot().getChildren().add(item);
-                buildSubtree(item, t);
+
+                if(t.getSpecialid() == Tag.SPECIAL_OTHER){
+                    List<Recipe> recipes = Database.getInstance().getRecipesWithoutTags();
+                    for(Recipe r: recipes){
+                        TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>();
+                        ritem.setValue(new RecipeTreeValue(r));
+                        item.getChildren().add(ritem);
+                    }
+                    tree.getRoot().getChildren().add(item);
+                }
+                else{
+                    if(buildSubtree(item, t)){
+                        tree.getRoot().getChildren().add(item);
+                    }
+                }
             }
 
         } catch (SQLException e) {
@@ -404,36 +459,83 @@ public class MainController {
         }
     }
     
-    private Recipe currentRecipe;
+    ExecutorService executor;
     
-    private void setRecipe(Recipe recipe){
-    	currentRecipe = recipe;
+    ChangeListener<Number> taskListener = new ChangeListener<Number>() {
+
+		@Override
+		public void changed(ObservableValue<? extends Number> observable,
+				Number oldValue, Number newValue) {
+			// TODO Auto-generated method stub
+			System.out.println("progress " + newValue);
+		}
+	};
+    
+	EventHandler<WorkerStateEvent> taskHandler = new EventHandler<WorkerStateEvent>() {
+
+		@Override
+		public void handle(WorkerStateEvent event) {
+			// TODO Auto-generated method stub
+			System.out.println("task done");
+			
+            RecipeLibrary.getInstance().validate();
+            buildTree();
+		}}; 
+	
+	HtmlImporter massImporter;
+		
+    private void doMassImport(){
     	
+    	DirectoryChooser dc = new DirectoryChooser();
+    	final File dir = dc.showDialog(stage);
+    	if(dir == null){
+    		return;
+    	}
+    	        
+        massImporter = new HtmlImporter();
+                    	    	
+    	Task<Void> task = new MassImportTask(dir, massImporter);
+			
+		task.progressProperty().addListener(taskListener);		
+		task.setOnSucceeded(taskHandler);
+			
+		if(executor == null){
+			executor = Executors.newCachedThreadPool();
+		}
+		
+		executor.execute(task);
+    }
+
+    private Recipe currentRecipe;
+
+    private void setRecipe(Recipe recipe){
+        currentRecipe = recipe;
+
         String filename = Settings.getSettingsDirPath() + File.separator + Settings.RECIPES_SUBDIR +
                 File.separator + recipe.getHash() + ".html";
         webview.getEngine().load(new File(filename).toURI().toString());
 
         setTitle(recipe);
     }
-    
+
     private void setTitle(Recipe recipe){
-    	title.setText(recipe.getTitle());
-    	
-		try {
-			List<String> t = Database.getInstance().getRecipeTags(recipe.getHash());
-			StringBuilder sb = new StringBuilder();
-	    	for(String s: t){
-	    		if(sb.length() > 0){
-	    			sb.append(", ");
-	    		}
-	    		sb.append(s);
-	    	}
-	    	tags.setText(sb.toString());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
+        title.setText(recipe.getTitle());
+
+        try {
+            List<String> t = Database.getInstance().getRecipeTags(recipe.getHash());
+            StringBuilder sb = new StringBuilder();
+            for(String s: t){
+                if(sb.length() > 0){
+                    sb.append(", ");
+                }
+                sb.append(s);
+            }
+            tags.setText(sb.toString());
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
 

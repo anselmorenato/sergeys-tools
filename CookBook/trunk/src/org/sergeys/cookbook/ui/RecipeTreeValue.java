@@ -46,6 +46,18 @@ public class RecipeTreeValue {
 
 	@Override
 	public String toString() {
-		return (type == Type.Recipe) ? recipe.getTitle() : tag.getVal();
+		
+		if(type == Type.Recipe){
+			return recipe.getTitle();
+		}
+		else{
+			String t = tag.getVal();
+			if(t.length() > 1){
+				return t.substring(0, 1).toUpperCase() + t.substring(1);
+			}
+			else{
+				return t;
+			}			 
+		}				 
 	}
 }

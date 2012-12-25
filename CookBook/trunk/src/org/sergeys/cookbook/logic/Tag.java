@@ -1,32 +1,44 @@
 package org.sergeys.cookbook.logic;
 
 public class Tag {
-	private long id;
-	private long parentid;
-	private String val;
-	
-	public long getId() {
-		return id;
-	}
-	
-	public void setId(long id) {
-		this.id = id;
-	}
 
-	public long getParentid() {
-		return parentid;
-	}
+    public static final int SPECIAL_OTHER = 1;
 
-	public void setParentid(long parentid) {
-		this.parentid = parentid;
-	}
+    private long id;
+    private long parentid;
+    private String val;
+    private Integer specialid;
 
-	public String getVal() {
-		return val;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public void setVal(String val) {
-		this.val = val;
-	}
-	
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getParentid() {
+        return parentid;
+    }
+
+    public void setParentid(long parentid) {
+        this.parentid = parentid;
+    }
+
+    public String getVal() {
+        return val;
+    }
+
+    public void setVal(String val) {
+        this.val = val;
+    }
+
+    public Integer getSpecialid() {
+        return specialid;
+    }
+
+    public void setSpecialid(Integer specialid) {
+        this.specialid = specialid;
+    }
+
 }

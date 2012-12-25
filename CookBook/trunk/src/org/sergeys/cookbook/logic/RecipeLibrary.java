@@ -31,7 +31,7 @@ public class RecipeLibrary {
 			for(Recipe r: recipes){
 				File f = new File(Settings.getRecipeLibraryPath() + File.separator + r.getHash() + ".html");
 				if(!f.exists()){
-					System.out.println("not unpacked " + f);
+//					System.out.println("not unpacked " + f);
 					
 					File temp = File.createTempFile("cookbook", ".jar");
 					temp.deleteOnExit();
