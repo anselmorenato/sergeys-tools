@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 
 import org.sergeys.cookbook.logic.HtmlImporter.Status;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -35,25 +36,44 @@ public class MassImportTask extends Task<Void> implements ChangeListener<HtmlImp
 			}
 		});
 						
-		System.out.println("found to import " + files.length);
+		System.out.println("> found to import " + files.length);
 		
 		int count = 0;
-		for(String file: files){
+		for(final String file: files){
 			updateProgress(count++, files.length);
-			System.out.println(file);
-			canContinue = false;
+						
+			synchronized (sync) {
+            	canContinue = false;;
+            }
+			System.out.println("> import " + file);
 			
-			System.out.println("import...");
-            importer.Import(new File(directory.getAbsolutePath() + File.separator + file));
+			Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+
+					importer.Import(new File(directory.getAbsolutePath() + File.separator + file));
+				}
+			});
+            //importer.Import(new File(directory.getAbsolutePath() + File.separator + file));
         
             boolean cont = false;
-            synchronized (sync) {
-            	cont = canContinue;
-            }
-            
-            if(!cont){
-            	System.out.println("waiting...");
-            	Thread.sleep(500);
+            int waitcount = 0;
+            while(!cont){
+	            synchronized (sync) {
+	            	cont = canContinue;
+	            }
+	            
+	            if(!cont){
+	            	System.out.println("> waiting " + waitcount);
+	            	Thread.sleep(500);
+	            }
+	            
+	            waitcount++;
+	            
+	            if(waitcount > 15){
+	            	break;
+	            }
             }
 		}
 				
@@ -63,11 +83,19 @@ public class MassImportTask extends Task<Void> implements ChangeListener<HtmlImp
 	@Override
 	public void changed(ObservableValue<? extends Status> observable,
 			Status oldValue, Status newValue) {
-		// TODO Auto-generated method stub
 	
-		System.out.println("status in task " + newValue);
+		//System.out.println("> status in task " + newValue);
 		synchronized (sync) {
-			canContinue = (newValue == Status.Complete);
+			if(newValue == Status.Complete || 
+			   newValue == Status.AlreadyExist || 
+			   newValue == Status.Failed){
+				
+				canContinue = true;
+				//System.out.println("> can continue");
+			}
+			else{
+				canContinue = false;
+			}
 		}
 		
 	}

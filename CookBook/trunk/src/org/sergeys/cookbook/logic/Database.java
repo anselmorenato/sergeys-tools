@@ -298,7 +298,7 @@ public class Database {
             ResultSet rs = st.executeQuery(
                     "select hash, title from recipes r" +
                     " left join recipetags rt on rt.recipeid = r.id" +
-                    " where rt.tagid is null order by title");
+                    " where rt.tagid is null order by dateadded");
 
             while(rs.next()){
                 Recipe r = new Recipe();
@@ -325,7 +325,7 @@ public class Database {
                     "select hash, title from recipes r" +
                     " left join recipetags rt on rt.recipeid = r.id" +
                     " left join tags t on t.id = rt.tagid" +
-                    " where t.val = ? order by title");
+                    " where t.val = ? order by dateadded");
             pst.setString(1, tag);
             ResultSet rs = pst.executeQuery();
             while(rs.next()){

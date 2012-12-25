@@ -21,7 +21,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -34,44 +33,53 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+/**
+ * Must be used in javafx application thread
+ *
+ * @author sergeys
+ *
+ */
 @SuppressWarnings("deprecation")
 public class HtmlImporter {
     File originalFile;
     Document doc;
     String destinationDir;
-//    SimpleBooleanProperty importComplete = new SimpleBooleanProperty();
-//    SimpleStringProperty completedFile = new SimpleStringProperty();
     String hash;
 
-    private WebEngine importEngine;    // stucks here, do not stuck in controller. Some objects seem to die during processing, need to keep listeners and engine
+    private WebEngine importEngine;
 
-    public enum Status { Unknown, InProgress, Complete };
+    public enum Status { Unknown, InProgress, Complete, AlreadyExist, Failed };
 
     SimpleObjectProperty<Status> status = new SimpleObjectProperty<Status>();
 
     public HtmlImporter(){
         status.set(Status.Unknown);
 
-        importEngine = new WebEngine();        
-        importEngine.documentProperty().addListener(docListener);
-        importEngine.getLoadWorker().stateProperty().addListener(workerListener);
-        importEngine.getLoadWorker().exceptionProperty().addListener(exceptionListener);
-    }    
-    
-    public HtmlImporter(ChangeListener<Status> importListener){
-        status.set(Status.Unknown);
-
         importEngine = new WebEngine();
-        status.addListener(importListener);
-        importEngine.documentProperty().addListener(docListener);
+        //importEngine.documentProperty().addListener(docListener);
         importEngine.getLoadWorker().stateProperty().addListener(workerListener);
         importEngine.getLoadWorker().exceptionProperty().addListener(exceptionListener);
+
+//        importEngine.getLoadWorker().messageProperty().addListener(new ChangeListener<String>() {
+//
+//            @Override
+//            public void changed(ObservableValue<? extends String> observable,
+//                    String oldValue, String newValue) {
+
+//                System.out.println("== " + newValue);
+//            }
+//        });
+    }
+
+    public HtmlImporter(ChangeListener<Status> importListener)  {
+    	this();        
+        status.addListener(importListener);        
     }
 
     public SimpleObjectProperty<Status> statusProperty(){
-    	return status;
+        return status;
     }
-    
+
     private void removeElements(Document doc, String tag){
         NodeList nodes = doc.getElementsByTagName(tag);
         while(nodes.getLength() > 0){
@@ -81,40 +89,33 @@ public class HtmlImporter {
         }
     }
 
-    private ChangeListener<Document> docListener = new ChangeListener<Document>(){
-        @Override
-        public void changed(
-                ObservableValue<? extends Document> observable,
-                Document oldValue, Document newValue) {
-
-//            System.out.println("location " + importEngine.getLocation());
-            if(newValue != null){
-                System.out.println("document not null");
-//                Document doc = importEngine.getDocument();
-//                try {
-//                    setDocument(doc);
-//                } catch (IOException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-            }
-            else{
-                System.out.println("document changed but is null");
-//                Document doc = engine.getDocument();
-//                if(doc == null){
-//                    System.out.println("still null");
-//                }
-//                else{
-//                    System.out.println("not null");
-//                }
-            }
-        }};
+//    private ChangeListener<Document> docListener = new ChangeListener<Document>(){
+//        @Override
+//        public void changed(
+//                ObservableValue<? extends Document> observable,
+//                Document oldValue, Document newValue) {
+//
+////            System.out.println("location " + importEngine.getLocation());
+//            if(newValue != null){
+////                System.out.println("document not null");
+////                Document doc = importEngine.getDocument();
+////                try {
+////                    setDocument(doc);
+////                } catch (IOException e) {
+////                    // TODO Auto-generated catch block
+////                    e.printStackTrace();
+////                }
+//            }
+//            else{
+////                System.out.println("document changed but is null");
+//            }
+//        }};
 
     private ChangeListener<State> workerListener = new ChangeListener<State>() {
         public void changed(ObservableValue<? extends State> ov, State oldState, State newState) {
             if (newState == State.SUCCEEDED) {
-                System.out.println("worker succeeded");
-                // javadoc says get document here                
+//                System.out.println("document load SUCCEEDED");
+                // javadoc says get document here
                 Document doc = importEngine.getDocument();
                 if(doc != null){
                     try {
@@ -129,10 +130,10 @@ public class HtmlImporter {
                 }
             }
             else if (newState == State.CANCELLED){
-            	System.out.println("document load CANCELLED: " + importEngine.getLocation());
+                System.out.println("document load CANCELLED: " + importEngine.getLocation());
             }
             else{
-                System.out.println("document load failed: " + newState);
+//                System.out.println("document load: " + newState);
             }
         }
     };
@@ -160,19 +161,14 @@ public class HtmlImporter {
             dir.mkdirs();
         }
 
-//        System.out.println("loading " + htmlFile.getAbsolutePath());
+        importEngine.load(htmlFile.toURI().toString());
 
-        //engine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
-        //engine.load("file:///D:/workspace/CookBook/samplefiles/1.html");
-        //engine.load("file:///" + htmlFile.getAbsolutePath());    // TODO verify url on linux
-//        System.out.println("uri " + htmlFile.toURI().toString());
-                
-        Platform.runLater(new Runnable() {			
-			@Override
-			public void run() {
-				importEngine.load(htmlFile.toURI().toString());
-			}
-		});        
+//        Platform.runLater(new Runnable() {
+//			@Override
+//			public void run() {
+//				importEngine.load(htmlFile.toURI().toString());
+//			}
+//		});
     }
 
     /**
@@ -325,17 +321,20 @@ public class HtmlImporter {
             hash = getFileHash(originalFile);
         } catch (NoSuchAlgorithmException | IOException e2) {
             e2.printStackTrace();
+            status.set(Status.Failed);
             return;
         }
 
         try {
             if(Database.getInstance().isRecipeExists(hash)){
                 System.out.println("already exist in database");
+                status.set(Status.AlreadyExist);
                 return;
             }
         } catch (SQLException e2) {
             // TODO Auto-generated catch block
             e2.printStackTrace();
+            status.set(Status.Failed);
             return;
         }
 
@@ -355,6 +354,7 @@ public class HtmlImporter {
         NodeList nodes = doc.getElementsByTagName("body");
         if(nodes.getLength() < 1){
             System.out.println("body not found");
+            status.set(Status.Failed);
             return;
         }
 
@@ -366,6 +366,7 @@ public class HtmlImporter {
             wr.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            status.set(Status.Failed);
             e.printStackTrace();
         }
 
@@ -382,6 +383,7 @@ public class HtmlImporter {
 //            System.out.println("file written");
         } catch (IOException e1) {
             // TODO Auto-generated catch block
+            status.set(Status.Failed);
             e1.printStackTrace();
         }
 
@@ -402,6 +404,7 @@ public class HtmlImporter {
             //Database.getInstance().updateRecipeTags(hash, Arrays.asList("супы", "овощи", "рис", "мясо"));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
+            status.set(Status.Failed);
             e.printStackTrace();
         }
 

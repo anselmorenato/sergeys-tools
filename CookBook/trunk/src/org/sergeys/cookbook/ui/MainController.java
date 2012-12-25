@@ -467,7 +467,7 @@ public class MainController {
 		public void changed(ObservableValue<? extends Number> observable,
 				Number oldValue, Number newValue) {
 			// TODO Auto-generated method stub
-			System.out.println("progress " + newValue);
+			System.out.println("- progress " + newValue);
 		}
 	};
     
@@ -476,7 +476,7 @@ public class MainController {
 		@Override
 		public void handle(WorkerStateEvent event) {
 			// TODO Auto-generated method stub
-			System.out.println("task done");
+			System.out.println("- task done");
 			
             RecipeLibrary.getInstance().validate();
             buildTree();
@@ -491,7 +491,8 @@ public class MainController {
     	if(dir == null){
     		return;
     	}
-    	        
+    	    
+    	System.out.println("- create importer");
         massImporter = new HtmlImporter();
                     	    	
     	Task<Void> task = new MassImportTask(dir, massImporter);
@@ -503,6 +504,7 @@ public class MainController {
 			executor = Executors.newCachedThreadPool();
 		}
 		
+		System.out.println("- submit task");
 		executor.execute(task);
     }
 
