@@ -32,6 +32,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -366,8 +367,8 @@ public class MainController {
 
             List<Recipe> recipes = Database.getInstance().getRecipesByTag(tag.getVal());
             for(Recipe r: recipes){
-                TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>();
-                ritem.setValue(new RecipeTreeValue(r));
+                //TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(r), new ImageView(recipeIcon));
+            	TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(r));
                 item.getChildren().add(ritem);
 
                 hasChildren = true;
@@ -381,22 +382,37 @@ public class MainController {
         return hasChildren;
     }
 
+    private Image tagIcon;
+    private Image recipeIcon;
+    private Image favIcon;
+    
     private void buildTree(){
 
         tree.getRoot().getChildren().clear();
 
+        if(tagIcon == null){
+        	tagIcon = new Image(getClass().getResourceAsStream("/images/folder_yellow.png"));
+        	recipeIcon = new Image(getClass().getResourceAsStream("/images/free_icon.png"));
+        	favIcon = new Image(getClass().getResourceAsStream("/images/metacontact_online.png"));
+        }
+        
         try {
             ArrayList<Tag> tags = Database.getInstance().getRootTags();
             for(Tag t: tags){
-                //TreeItem<String> item = new TreeItem<String>(t.getVal());
-                TreeItem<RecipeTreeValue> item = new TreeItem<RecipeTreeValue>();
-                item.setValue(new RecipeTreeValue(t));
+
+            	TreeItem<RecipeTreeValue> item;
+            	if(t.getVal().equals("favorites")){
+            		item = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(t), new ImageView(favIcon));
+            	}
+            	else{
+            		item = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(t), new ImageView(tagIcon));
+            	}                                
 
                 if(t.getSpecialid() == Tag.SPECIAL_OTHER){
                     List<Recipe> recipes = Database.getInstance().getRecipesWithoutTags();
                     for(Recipe r: recipes){
-                        TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>();
-                        ritem.setValue(new RecipeTreeValue(r));
+                        //TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(r), new ImageView(recipeIcon));
+                    	TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(r));
                         item.getChildren().add(ritem);
                     }
                     tree.getRoot().getChildren().add(item);
