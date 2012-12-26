@@ -13,3 +13,4 @@ This is an EclipseFX project
 - mark recently added recipes in the tree
 - save last tree state, all expanded/collapsed nodes
 - quick text filter in tree
+- cancel background tasks on exit

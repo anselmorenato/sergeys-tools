@@ -126,20 +126,21 @@ public class Database {
         return false;
     }
 
-    public long addRecipe(String hash, File jarfile, String title){
+    public long addRecipe(String hash, File jarfile, String title, String originalfile){
 
         long id = 0;
 
         try {
             PreparedStatement pst = getConnection().prepareStatement(
-                    "insert into recipes (hash, title, packedfile, filesize, dateadded) " +
-                    "values (?, ?, ?, ?, ?)");
+                    "insert into recipes (hash, title, packedfile, filesize, dateadded, originalfilename) " +
+                    "values (?, ?, ?, ?, ?, ?)");
             pst.setString(1, hash);
             pst.setString(2, title);
             InputStream is = new FileInputStream(jarfile);
             pst.setBinaryStream(3, is);
             pst.setLong(4, jarfile.length());
             pst.setLong(5, new Date().getTime());
+            pst.setString(6, originalfile);
 
             pst.executeUpdate();
 

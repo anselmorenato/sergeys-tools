@@ -16,6 +16,7 @@ import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -115,11 +116,11 @@ public class HtmlImporter {
         public void changed(ObservableValue<? extends State> ov, State oldState, State newState) {
             if (newState == State.SUCCEEDED) {
 //                System.out.println("document load SUCCEEDED");
-                // javadoc says get document here
+                
                 Document doc = importEngine.getDocument();
                 if(doc != null){
                     try {
-                        setDocument(doc);
+                        setDocument(doc);                    	
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -150,11 +151,33 @@ public class HtmlImporter {
         }
     };
 
-    public void Import(final File htmlFile){
+    public void importFile(final File htmlFile){
 
         status.set(Status.InProgress);
 
         originalFile = htmlFile;
+        
+        try {
+            hash = getFileHash(originalFile);
+        } catch (NoSuchAlgorithmException | IOException e2) {
+            e2.printStackTrace();
+            status.set(Status.Failed);
+            return;
+        }
+
+        try {
+            if(Database.getInstance().isRecipeExists(hash)){
+                System.out.println("already exist in database");
+                status.set(Status.AlreadyExist);
+                return;
+            }
+        } catch (SQLException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+            status.set(Status.Failed);
+            return;
+        }        
+        
         destinationDir = Settings.getSettingsDirPath() + File.separator + Settings.RECIPES_SUBDIR;
         File dir = new File(destinationDir);
         if(!dir.exists()){
@@ -311,32 +334,7 @@ public class HtmlImporter {
 
     private void setDocument(Document document) throws IOException {
 
-        // TODO: do this in background
-
         doc = document;
-
-        //String hash;
-
-        try {
-            hash = getFileHash(originalFile);
-        } catch (NoSuchAlgorithmException | IOException e2) {
-            e2.printStackTrace();
-            status.set(Status.Failed);
-            return;
-        }
-
-        try {
-            if(Database.getInstance().isRecipeExists(hash)){
-                System.out.println("already exist in database");
-                status.set(Status.AlreadyExist);
-                return;
-            }
-        } catch (SQLException e2) {
-            // TODO Auto-generated catch block
-            e2.printStackTrace();
-            status.set(Status.Failed);
-            return;
-        }
 
         // remove garbage
         removeElements(doc, "script");
@@ -387,21 +385,22 @@ public class HtmlImporter {
             e1.printStackTrace();
         }
 
-        // pack all to a single file
-        // http://stackoverflow.com/questions/1281229/how-to-use-jaroutputstream-to-create-a-jar-file
-        packJar(tempDir.toString(), hash);
-
         String title = "unknown";
         nodes = doc.getElementsByTagName("title");
         if(nodes.getLength() > 0){
             title = nodes.item(0).getTextContent();
         }
+        
+        // pack all to a single file
+        // http://stackoverflow.com/questions/1281229/how-to-use-jaroutputstream-to-create-a-jar-file
+        packJar(tempDir.toString(), hash);
 
         // put to database
         File jarfile = new File(tempDir.toString() + File.separator + hash + ".jar");
         try {
-            Database.getInstance().addRecipe(hash, jarfile, title);
-            //Database.getInstance().updateRecipeTags(hash, Arrays.asList("супы", "овощи", "рис", "мясо"));
+            Database.getInstance().addRecipe(hash, jarfile, title, originalFile.getAbsolutePath());
+            List<String> suggestedTags = RecipeLibrary.getInstance().suggestTags(title);
+            Database.getInstance().updateRecipeTags(hash, suggestedTags);
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             status.set(Status.Failed);
@@ -412,7 +411,7 @@ public class HtmlImporter {
 
         status.set(Status.Complete);
     }
-
+    
     public String getHash(){
         return hash;
     }

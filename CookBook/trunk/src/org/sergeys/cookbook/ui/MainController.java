@@ -455,7 +455,7 @@ public class MainController {
                 importer = new HtmlImporter(importListener);
             }
 
-            importer.Import(file);
+            importer.importFile(file);
         }
     }
     
