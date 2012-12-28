@@ -1,5 +1,6 @@
 - webstart app similar to mweather
-
+- peer-to-peer functionality to reduce load to metar servers
+- user translations for cities, translation server, peer-to-peer?
 - download weather photos from google/bing images
 
 language codes: http://www.loc.gov/standards/iso639-2/php/English_list.php
