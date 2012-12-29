@@ -3,6 +3,9 @@
   require_once("settings.inc.php");
   require_once("header.inc.php");
 ?>
+
+<script src="http://www.java.com/js/deployJava.js"></script>
+
 Привет.
 <br/>
 <br/>
@@ -13,6 +16,42 @@
 <a href="http://baccara.livejournal.com">baccara</a>
 <br/>
 <br/>
+<br/>
+
+<!--  img src="cookbook/largeicon.png" -->
+<h2>Cook Book</h2>
+<br>
+<p>
+Сборник рецептов. Можно импортировать сохраненные веб-страницы,
+расставлять тэги типа там "супы", "овощи", "курятина", "favorites" и потом
+удобно всё это просматривать.
+
+<p>
+Должно работать на Windows, Linux, MacOS X.
+
+<p>
+Требования: JavaFX 2.2 и выше, 32 или 64 бит. Java 1.7 имеет FX в комплекте, для 1.6 можно добавить FX дополнительно.
+Рекомендуется последняя версия Java 1.7.
+<p>
+<br>
+
+<script>
+    var dir = location.href.substring(0, location.href.lastIndexOf('/')+1);
+    var url = dir + "cookbook/cookbook.jnlp";
+    deployJava.createWebStartLaunchButton(url, '1.7.0');
+</script>
+<br/>
+
+<div class="note">
+(<a href='cookbook/cookbook.jnlp'>прямая ссылка</a>)
+</div>
+
+
+<br>
+<br>
+<br>
+
+
 
 <h2>Web Cache Digger</h2>
 <br>
@@ -27,8 +66,6 @@
 <p>
 <br>
 
-Запустить:
-<script src="http://www.java.com/js/deployJava.js"></script>
     <script>
         // using JavaScript to get location of JNLP file relative to HTML page
         var dir = location.href.substring(0, location.href.lastIndexOf('/')+1);
@@ -38,6 +75,8 @@
 <br>
 <br>
 <br>
+
+
 <h2>Cover Finder</h2>
 <br>
 <p>
@@ -55,8 +94,7 @@
 <p>
 <br>
 
-Запустить:
-<!-- <script src="http://www.java.com/js/deployJava.js"></script> -->
+
     <script>
         // using JavaScript to get location of JNLP file relative to HTML page
         var dir = location.href.substring(0, location.href.lastIndexOf('/')+1);
