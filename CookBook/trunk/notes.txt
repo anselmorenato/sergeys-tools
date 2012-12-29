@@ -1,9 +1,9 @@
 This is an EclipseFX project
 
-- downloads with wget
 - editor
 - copy-paste to html, save external images locally
 - share recipes via xmpp
+- share recipes p2p if possible, lookup via my server
 - build tree from tags with drag-n-drop, sort tags by total count
 - favorites
 - tag synonyms, merge same tags to one
@@ -11,6 +11,5 @@ This is an EclipseFX project
 - unpacked recipes in two-level dir structure
 - save and import currently viewed page as new recipe
 - mark recently added recipes in the tree
-- save last tree state, all expanded/collapsed nodes
 - quick text filter in tree
 - cancel background tasks on exit

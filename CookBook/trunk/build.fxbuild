@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <anttasks:AntTask xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:anttasks="http://at.bestsolution.efxclipse.tooling.jdt/1.0" buildDirectory="${workspace}/CookBook/build">
-  <deploy>
+  <deploy embedjnlp="true" height="500" includeDT="true" width="800">
     <application name="CookBook" mainclass="org.sergeys.cookbook.ui.CookBook" version="1.0"/>
     <info vendor="sergeys"/>
   </deploy>

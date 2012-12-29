@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="all">
+
+    <property name="properties.file" value="build.properties" />
+	
+    <target name="all" depends="init, test, prepare, deploy">
+    </target>
+
+    <target name="init">
+        <property file="${properties.file}">
+        </property>
+    </target>
+
+	<target name="test">
+		<echo message="workspace is: ${workspace.dir}" />
+		<echo message="project is: ${project.dir}" />
+    </target>
+	
+    <target name="prepare">
+        <mkdir dir="${build.dir}" />
+    	
+        <copy file="cookbook.jnlp" tofile="${build.dir}/cookbook.jnlp" overwrite="true">
+        </copy>
+
+    	<replace file="${build.dir}/cookbook.jnlp">
+    	    <replacefilter token="%REVISION%" value="${revision}"/>
+			<replacefilter token="%URL%" value="${webstart.url}"/>
+        </replace>
+    	
+    	<!-- watch correct file extension here -->
+        <copy file="${appicon}" tofile="${build.dir}/largeicon.png" overwrite="true">
+        </copy>
+    	
+    	<copy todir="${build.dir}">
+    		<fileset dir="${project.dir}/build/dist">
+    	    </fileset>
+		</copy>
+    	
+    	<move file="${build.dir}/CookBook.jar" tofile="${build.dir}/CookBook.${revision}.jar"></move>       
+    </target>
+    	
+    <target name="deploy">
+    	<mkdir dir="${deploy.dir}" />
+    	
+    	<delete>
+    		<fileset dir="${deploy.dir}">
+    		</fileset>
+    	</delete>
+
+    	<copy todir="${deploy.dir}">
+    		<fileset dir="${build.dir}">
+    	    </fileset>
+		</copy>
+    	    	
+    </target>
+</project>
+	
