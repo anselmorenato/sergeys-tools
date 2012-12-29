@@ -9,6 +9,8 @@
     <target name="init">
         <property file="${properties.file}">
         </property>
+    	<property file="${project.dir}/src/resources/settings.properties">
+		</property>
     </target>
 
     <target name="builddir">
@@ -53,7 +55,7 @@
         </copy>
 
         <replace file="${build.dir}/cookbook.jnlp">
-            <replacefilter token="%REVISION%" value="${revision}"/>
+            <replacefilter token="%REVISION%" value="${version}"/>
             <replacefilter token="%URL%" value="${webstart.url}"/>
         </replace>
 
@@ -61,16 +63,13 @@
         <copy file="${appicon}" tofile="${build.dir}/largeicon.png" overwrite="true">
         </copy>
 
+    	<echo message="Collect fxbuild output:" />
         <copy todir="${build.dir}" verbose="true">
             <fileset dir="${project.dir}/build/dist">
             </fileset>
         </copy>
 
-        <move file="${build.dir}/CookBook.jar" tofile="${build.dir}/CookBook.${revision}.jar"></move>
-
-        <!-- signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}"
-            jar="${build.dir}/CookBook.${revision}.jar" verbose="false">
-        </signjar -->
+        <move file="${build.dir}/CookBook.jar" tofile="${build.dir}/CookBook.${version}.jar"></move>
 
         <signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" verbose="false">
             <fileset dir="${build.dir}">
@@ -93,6 +92,6 @@
             </fileset>
         </copy>
 
-        <echo message="revision ${revision}, deployed for ${webstart.url}" />
+        <echo message="version ${version}, deployed for ${webstart.url}" />
     </target>
 </project>

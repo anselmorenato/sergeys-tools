@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 import javafx.geometry.Rectangle2D;
@@ -148,6 +150,28 @@ public class Settings {
 		winPosition.setSize(bounds.getWidth() / 4, bounds.getHeight() / 4);
 	}
 
+    public Date getCurrentVersion(){
+
+        String ver = resources.getProperty("version", "");
+
+        String[] tokens = ver.split("-");
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(0);
+        cal.set(Integer.valueOf(tokens[0]),
+                Integer.valueOf(tokens[1]) - 1,    // month is 0 bazed
+                Integer.valueOf(tokens[2]),
+                Integer.valueOf(tokens[3]),
+                Integer.valueOf(tokens[4]));
+        Date date = cal.getTime();
+
+        return date;
+    }
+	
+    public Properties getResources(){ 
+    	return resources;
+    }
+	
 	public Dimension getWinPosition() {
 		return winPosition;
 	}

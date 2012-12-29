@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="296.0" prefWidth="517.0" styleClass="red-bg" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.ui.DialogController">
+<AnchorPane prefHeight="296.0" prefWidth="517.0" styleClass="red-bg" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.ui.AboutController">
   <!-- TODO Add Nodes -->
   <children>
     <Label prefHeight="33.0" prefWidth="489.0" styleClass="about-label" text="CookBook © svs 2012" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
@@ -19,7 +19,18 @@
       <tabs>
         <Tab text="About">
           <content>
-            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <VBox alignment="CENTER" prefHeight="145.0" prefWidth="489.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0">
+                  <children>
+                    <Label fx:id="lblProduct" alignment="CENTER_LEFT" contentDisplay="LEFT" text="product" />
+                    <Label fx:id="lblVersion" text="version" />
+                    <Label fx:id="lblAuthor" text="author" />
+                    <Label fx:id="lblJava" text="java" />
+                  </children>
+                </VBox>
+              </children>
+            </AnchorPane>
           </content>
         </Tab>
         <Tab text="System">

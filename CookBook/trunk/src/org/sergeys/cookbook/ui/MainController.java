@@ -174,7 +174,8 @@ public class MainController {
 
     public Image getAppIcon(){
         if(appIcon == null){
-            appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));    // amor.png BPFolderRecipesGreen.png
+            appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));  
+        	//appIcon = new Image(getClass().getResourceAsStream("/images/BPFolderRecipesGreen.png"));
         }
 
         return appIcon;
@@ -391,9 +392,14 @@ public class MainController {
         tree.getRoot().getChildren().clear();
 
         if(tagIcon == null){
+        	try{
         	tagIcon = new Image(getClass().getResourceAsStream("/images/folder_yellow.png"));
-        	recipeIcon = new Image(getClass().getResourceAsStream("/images/free_icon.png"));
+        	//recipeIcon = new Image(getClass().getResourceAsStream("/images/free_icon.png"));
         	favIcon = new Image(getClass().getResourceAsStream("/images/metacontact_online.png"));
+        	}
+        	catch(Exception ex){
+        		ex.printStackTrace();
+        	}
         }
         
         try {

@@ -8,15 +8,10 @@ public class DialogController {
     private Stage stage;
 
     public void initialize(){
-        System.out.println("DialogController init");
+        //System.out.println("DialogController init");
     }
 
-    public void onClose(ActionEvent e){
-    	
-//    	if(e.getSource() instanceof Button){
-//    		Button b = (Button)e.getSource();    		
-//    	}
-    	
+    public void onClose(ActionEvent e){    	
         if(stage != null){
             stage.close();
         }
