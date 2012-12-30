@@ -18,10 +18,10 @@ import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
 public class Settings {
-	
-    public static final String SETTINGS_PATH = ".CookBook";    
+
+    public static final String SETTINGS_PATH = ".CookBook";
     public static final String SETTINGS_FILE = "settings.xml";
-    
+
     public static final String RECIPES_SUBDIR = "recipes";
 
     private static String settingsDirPath;
@@ -33,7 +33,7 @@ public class Settings {
     private Dimension winSize = new Dimension();
     private double winDividerPosition = 0;
     private String lastFilechooserLocation = "";
-    
+
     private static Settings instance = new Settings();
 
     static{
@@ -45,12 +45,12 @@ public class Settings {
         if(!dir.exists()){
             dir.mkdirs();
         }
-        
+
         dir = new File(recipeLibraryPath);
         if(!dir.exists()){
             dir.mkdirs();
         }
-        
+
         load();
     }
 
@@ -63,18 +63,18 @@ public class Settings {
         return instance;
     }
 
-	public static String getSettingsDirPath() {
-		return settingsDirPath;
-	}
+    public static String getSettingsDirPath() {
+        return settingsDirPath;
+    }
 
-	public static void setSettingsDirPath(String settingsDirPath) {
-		Settings.settingsDirPath = settingsDirPath;
-	}
-	
-	public static String getRecipeLibraryPath() {
-		return recipeLibraryPath;
-	}
-	
+    public static void setSettingsDirPath(String settingsDirPath) {
+        Settings.settingsDirPath = settingsDirPath;
+    }
+
+    public static String getRecipeLibraryPath() {
+        return recipeLibraryPath;
+    }
+
     public static void save() throws FileNotFoundException{
 
 //        instance.savedVersion = instance.getCurrentVersion();
@@ -143,12 +143,12 @@ public class Settings {
 
     }
 
-	private void setDefaults() {
-		Rectangle2D bounds = Screen.getPrimary().getBounds();
-		
-		winSize.setSize(bounds.getWidth() / 2, bounds.getHeight() / 2);
-		winPosition.setSize(bounds.getWidth() / 4, bounds.getHeight() / 4);
-	}
+    private void setDefaults() {
+        Rectangle2D bounds = Screen.getPrimary().getBounds();
+
+        winSize.setSize(bounds.getWidth() / 2, bounds.getHeight() / 2);
+        winPosition.setSize(bounds.getWidth() / 4, bounds.getHeight() / 4);
+    }
 
     public Date getCurrentVersion(){
 
@@ -167,42 +167,42 @@ public class Settings {
 
         return date;
     }
-	
-    public Properties getResources(){ 
-    	return resources;
+
+    public Properties getResources(){
+        return resources;
     }
-	
-	public Dimension getWinPosition() {
-		return winPosition;
-	}
 
-	public void setWinPosition(Dimension winPosition) {
-		this.winPosition = winPosition;
-	}
+    public Dimension getWinPosition() {
+        return winPosition;
+    }
 
-	public Dimension getWinSize() {
-		return winSize;
-	}
+    public void setWinPosition(Dimension winPosition) {
+        this.winPosition = winPosition;
+    }
 
-	public void setWinSize(Dimension winSize) {
-		this.winSize = winSize;
-	}
+    public Dimension getWinSize() {
+        return winSize;
+    }
 
-	public double getWinDividerPosition() {
-		return winDividerPosition;
-	}
+    public void setWinSize(Dimension winSize) {
+        this.winSize = winSize;
+    }
 
-	public void setWinDividerPosition(double winDividerPosition) {
-		this.winDividerPosition = winDividerPosition;
-	}
+    public double getWinDividerPosition() {
+        return winDividerPosition;
+    }
 
-	public String getLastFilechooserLocation() {
-		return lastFilechooserLocation;
-	}
+    public void setWinDividerPosition(double winDividerPosition) {
+        this.winDividerPosition = winDividerPosition;
+    }
 
-	public void setLastFilechooserLocation(String lastFilechooserLocation) {
-		this.lastFilechooserLocation = lastFilechooserLocation;
-	}
+    public String getLastFilechooserLocation() {
+        return lastFilechooserLocation;
+    }
+
+    public void setLastFilechooserLocation(String lastFilechooserLocation) {
+        this.lastFilechooserLocation = lastFilechooserLocation;
+    }
 
 
 }

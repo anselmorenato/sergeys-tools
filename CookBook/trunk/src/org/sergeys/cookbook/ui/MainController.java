@@ -2,7 +2,6 @@ package org.sergeys.cookbook.ui;
 
 import java.io.File;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -287,7 +286,7 @@ public class MainController {
             buttonRevert.setVisible(false);
 
             buildTree();
-        } catch (SQLException e1) {
+        } catch (Exception e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
@@ -375,7 +374,7 @@ public class MainController {
                 hasChildren = true;
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -430,7 +429,7 @@ public class MainController {
                 }
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -555,7 +554,7 @@ public class MainController {
                 sb.append(s);
             }
             tags.setText(sb.toString());
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

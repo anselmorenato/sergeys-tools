@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -17,7 +16,7 @@ import java.util.concurrent.Executors;
 import javafx.concurrent.Task;
 
 
-public class RecipeLibrary {
+public final class RecipeLibrary {
 
     private static Object instanceLock = new Object();
     private static RecipeLibrary instance;
@@ -64,7 +63,7 @@ public class RecipeLibrary {
         return instance;
     }
 
-    ExecutorService executor;
+    private ExecutorService executor;
 
     public void validate(){
         try {
@@ -107,7 +106,7 @@ public class RecipeLibrary {
 //					temp.delete();
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

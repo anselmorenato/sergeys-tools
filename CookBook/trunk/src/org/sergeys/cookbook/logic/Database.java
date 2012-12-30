@@ -25,12 +25,12 @@ public final class Database {
     private static Database instance;
 
     // singleton
-    private Database() throws SQLException
+    private Database() throws Exception
     {
         upgradeOrCreateIfNeeded();
     }
 
-    public static Database getInstance() throws SQLException
+    public static Database getInstance() throws Exception
     {
         synchronized (instanceLock) {
             if(instance == null){
@@ -54,18 +54,21 @@ public final class Database {
         return connection;
     }
 
-    private void upgrade()
+    private void upgrade() throws SQLException, IOException
     {
-        Statement st;
+        Statement st = null;
+        ResultSet rs = null;
+        InputStream in = null;
         try {
             st = getConnection().createStatement();
-            ResultSet rs = st.executeQuery("select val from properties where property='version'");
+            rs = st.executeQuery("select val from properties where property='version'");
             rs.next();
             String version = rs.getString("val");
+            //rs.close();
             int ver = Integer.valueOf(version);
 
             // apply all existing upgrades
-            InputStream in = getClass().getResourceAsStream("/resources/upgrade" + ver + ".sql");
+            in = getClass().getResourceAsStream("/resources/upgrade" + ver + ".sql");
             while(in != null){
                 RunScript.execute(getConnection(), new InputStreamReader(in));
                 in.close();
@@ -73,8 +76,8 @@ public final class Database {
                 ver++;
                 in = getClass().getResourceAsStream("/resources/upgrade" + ver + ".sql");
             }
-
-            st.close();
+            
+            //st.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -82,9 +85,20 @@ public final class Database {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        finally{
+        	if(in != null){
+        		in.close();
+        	}
+        	if(rs != null){
+        		rs.close();
+        	}
+        	if(st != null){
+        		st.close();
+        	}
+        }
     }
 
-    private void upgradeOrCreateIfNeeded() throws SQLException {
+    private void upgradeOrCreateIfNeeded() throws Exception {
 
         File dir = new File(Settings.getSettingsDirPath());
         if(!dir.exists()){
@@ -106,7 +120,7 @@ public final class Database {
             // apply upgrades
             upgrade();
 
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             throw e;
         }
         finally{

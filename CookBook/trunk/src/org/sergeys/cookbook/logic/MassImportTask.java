@@ -57,16 +57,16 @@ public class MassImportTask extends Task<Void> implements ChangeListener<HtmlImp
                 @Override
                 public void run() {
 
-                	try{
-                		importer.importFile(new File(directory.getAbsolutePath() + File.separator + file));
-                	}
-                	catch(Exception ex){
-                		System.out.println("> importer failed");
-                		ex.printStackTrace();
-                		synchronized (sync) {
+                    try{
+                        importer.importFile(new File(directory.getAbsolutePath() + File.separator + file));
+                    }
+                    catch(Exception ex){
+                        System.out.println("> importer failed");
+                        ex.printStackTrace();
+                        synchronized (sync) {
                             canContinue = true;
                         }
-                	}
+                    }
                 }
             });
             //importer.Import(new File(directory.getAbsolutePath() + File.separator + file));

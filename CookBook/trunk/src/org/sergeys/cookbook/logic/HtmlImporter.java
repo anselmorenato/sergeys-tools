@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -51,7 +50,7 @@ public class HtmlImporter {
 
     public enum Status { Unknown, InProgress, Complete, AlreadyExist, Failed };
 
-    SimpleObjectProperty<Status> status = new SimpleObjectProperty<Status>();
+    private SimpleObjectProperty<Status> status = new SimpleObjectProperty<Status>();
 
     public HtmlImporter(){
         status.set(Status.Unknown);
@@ -73,20 +72,20 @@ public class HtmlImporter {
     }
 
     public HtmlImporter(ChangeListener<Status> importListener){
-    	this();
-        status.addListener(importListener);        
+        this();
+        status.addListener(importListener);
     }
 
     public SimpleObjectProperty<Status> statusProperty(){
         return status;
     }
 
-    private void removeElements(Document doc, String tag){
-        NodeList nodes = doc.getElementsByTagName(tag);
+    private void removeElements(Document document, String tag){
+        NodeList nodes = document.getElementsByTagName(tag);
         while(nodes.getLength() > 0){
             org.w3c.dom.Node n = nodes.item(0);
             n.getParentNode().removeChild(n);
-            nodes = doc.getElementsByTagName(tag);
+            nodes = document.getElementsByTagName(tag);
         }
     }
 
@@ -116,11 +115,11 @@ public class HtmlImporter {
         public void changed(ObservableValue<? extends State> ov, State oldState, State newState) {
             if (newState == State.SUCCEEDED) {
 //                System.out.println("document load SUCCEEDED");
-                
+
                 Document doc = importEngine.getDocument();
                 if(doc != null){
                     try {
-                        setDocument(doc);                    	
+                        setDocument(doc);
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -133,9 +132,9 @@ public class HtmlImporter {
             else if (newState == State.CANCELLED){
                 System.out.println("document load CANCELLED: " + importEngine.getLocation());
             }
-            else{
-//                System.out.println("document load: " + newState);
-            }
+//            else{
+////                System.out.println("document load: " + newState);
+//            }
         }
     };
 
@@ -156,7 +155,7 @@ public class HtmlImporter {
         status.set(Status.InProgress);
 
         originalFile = htmlFile;
-        
+
         try {
             hash = getFileHash(originalFile);
         } catch (NoSuchAlgorithmException | IOException e2) {
@@ -171,13 +170,13 @@ public class HtmlImporter {
                 status.set(Status.AlreadyExist);
                 return;
             }
-        } catch (SQLException e2) {
+        } catch (Exception e2) {
             // TODO Auto-generated catch block
             e2.printStackTrace();
             status.set(Status.Failed);
             return;
-        }        
-        
+        }
+
         destinationDir = Settings.getSettingsDirPath() + File.separator + Settings.RECIPES_SUBDIR;
         File dir = new File(destinationDir);
         if(!dir.exists()){
@@ -292,16 +291,18 @@ public class HtmlImporter {
         while (true)
         {
           int count = in.read(buffer);
-          if (count == -1)
+          if (count == -1){
             break;
+          }
           target.write(buffer, 0, count);
         }
         target.closeEntry();
       }
       finally
       {
-        if (in != null)
+        if (in != null){
           in.close();
+        }
       }
     }
 
@@ -390,7 +391,7 @@ public class HtmlImporter {
         if(nodes.getLength() > 0){
             title = nodes.item(0).getTextContent();
         }
-        
+
         // pack all to a single file
         // http://stackoverflow.com/questions/1281229/how-to-use-jaroutputstream-to-create-a-jar-file
         packJar(tempDir.toString(), hash);
@@ -401,7 +402,7 @@ public class HtmlImporter {
             Database.getInstance().addRecipe(hash, jarfile, title, originalFile.getAbsolutePath());
             List<String> suggestedTags = RecipeLibrary.getInstance().suggestTags(title);
             Database.getInstance().updateRecipeTags(hash, suggestedTags);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             status.set(Status.Failed);
             e.printStackTrace();
@@ -411,7 +412,7 @@ public class HtmlImporter {
 
         status.set(Status.Complete);
     }
-    
+
     public String getHash(){
         return hash;
     }

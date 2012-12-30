@@ -21,14 +21,14 @@ import org.sergeys.cookbook.logic.Settings;
 
 public class AboutController extends DialogController
 {
-    @FXML Label lblProduct;
-    @FXML Label lblVersion;
-    @FXML Label lblAuthor;
-    @FXML Label lblJava;
+    @FXML private Label lblProduct;
+    @FXML private Label lblVersion;
+    @FXML private Label lblAuthor;
+    @FXML private Label lblJava;
 
-    @FXML TableView<SystemProperty> tableProps;
-    
-    @FXML WebView webLibs;
+    @FXML private TableView<SystemProperty> tableProps;
+
+    @FXML private WebView webLibs;
 
     public void initialize(){
         super.initialize();
@@ -76,10 +76,10 @@ public class AboutController extends DialogController
         col.setText("Value");
 
         tableProps.getColumns().add(col);
-        
-        String url = getClass().getResource("/resources/libraries.html").toString(); 
+
+        String url = getClass().getResource("/resources/libraries.html").toString();
         WebEngine engine = webLibs.getEngine();
-        engine.load(url);        
+        engine.load(url);
     }
 
     public class SystemProperty{
