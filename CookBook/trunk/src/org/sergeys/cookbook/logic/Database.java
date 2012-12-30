@@ -151,11 +151,11 @@ public final class Database {
             is.close();
 
             ResultSet rs = pst.getGeneratedKeys();
-//			ResultSetMetaData meta = rs.getMetaData();
-//			int count = meta.getColumnCount();
-//			while(rs.next()){
-//				System.out.println("inserted " + rs.getLong(1));
-//			}
+//ResultSetMetaData meta = rs.getMetaData();
+//int count = meta.getColumnCount();
+//while(rs.next()){
+//System.out.println("inserted " + rs.getLong(1));
+//}
 
             if(rs.next()){
                 id = rs.getLong(1);

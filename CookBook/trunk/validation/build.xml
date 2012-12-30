@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="all">
 
+    <property name="checkstyle.config" value="my_sun_checks.xml" />
+    <property name="checkstyle.out" value="checkstyle-result.xml" />
+    <property name="findbugs.home" value="f:/bin/findbugs-2.0.2" />
+    <property name="checkstyle.home" value="f:/bin/checkstyle-5.6" />
+
     <taskdef name="findbugs"
             classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
             classpath="f:/bin/findbugs-2.0.2/lib/findbugs-ant.jar" />
 
     <taskdef resource="checkstyletask.properties"
              classpath="f:/bin/checkstyle-5.6/checkstyle-5.6-all.jar"/>
-
-    <property name="findbugs.home" value="f:/bin/findbugs-2.0.2" />
-    <property name="checkstyle.home" value="f:/bin/checkstyle-5.6" />
-    <property name="checkstyle.out" value="checkstyle-result.xml" />
 
     <target name="all" depends="init, findbugs, checkstyle">
     </target>
@@ -29,20 +30,11 @@
         </findbugs>
     </target>
 
-    <target name="checkstyle1">
-        <checkstyle config="${checkstyle.home}/sun_checks.xml">
-            <classpath>
-                <fileset dir="${checkstyle.home}" includes="**/*.jar"></fileset>
-            </classpath>
-          <fileset dir="../src" includes="**/*.java"/>
-          <formatter type="plain"/>
-          <formatter type="xml" toFile="${checkstyle.out}"/>
-        </checkstyle>
-    </target>
-
     <target name="checkstyle" depends="clean-checkstyle">
-        <checkstyle config="sun_checks.xml" failonviolation="false">
+        <echo message="checkstyle config is ${checkstyle.config}"></echo>
+        <checkstyle config="${checkstyle.config}" failonviolation="false">
           <fileset dir="../src" includes="**/*.java"/>
+          <!-- formatter type="plain"/ -->
           <formatter type="xml" toFile="${checkstyle.out}"/>
         </checkstyle>
     </target>

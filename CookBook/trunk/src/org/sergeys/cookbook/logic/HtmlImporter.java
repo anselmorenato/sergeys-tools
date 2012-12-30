@@ -42,10 +42,10 @@ import org.w3c.dom.NodeList;
  */
 @SuppressWarnings("deprecation")
 public class HtmlImporter {
-    File originalFile;
-    Document doc;
-    String destinationDir;
-    String hash;
+    private File originalFile;
+    private Document doc;
+    private String destinationDir;
+    private String hash;
 
     private WebEngine importEngine;
 
@@ -72,8 +72,8 @@ public class HtmlImporter {
 //        });
     }
 
-    public HtmlImporter(ChangeListener<Status> importListener)  {
-    	this();        
+    public HtmlImporter(ChangeListener<Status> importListener){
+    	this();
         status.addListener(importListener);        
     }
 
