@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="all">
 
-	<taskdef name="findbugs"
-	        classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
-	        classpath="f:/bin/findbugs-2.0.2/lib/findbugs-ant.jar" />
-	
-	<taskdef resource="checkstyletask.properties"
-	         classpath="f:/bin/checkstyle-5.6/checkstyle-5.6-all.jar"/>
-	
+    <taskdef name="findbugs"
+            classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+            classpath="f:/bin/findbugs-2.0.2/lib/findbugs-ant.jar" />
+
+    <taskdef resource="checkstyletask.properties"
+             classpath="f:/bin/checkstyle-5.6/checkstyle-5.6-all.jar"/>
+
     <property name="findbugs.home" value="f:/bin/findbugs-2.0.2" />
-	<property name="checkstyle.home" value="f:/bin/checkstyle-5.6" />
+    <property name="checkstyle.home" value="f:/bin/checkstyle-5.6" />
+    <property name="checkstyle.out" value="checkstyle-result.xml" />
 
     <target name="all" depends="init, findbugs, checkstyle">
     </target>
@@ -19,36 +20,42 @@
         </property>
     </target>
 
-   
-    <target name="findbugs">
 
-    	<delete file="findbugs.xml"></delete>
-        <findbugs home="${findbugs.home}" output="xml:withMessages" outputFile="findbugs.xml">                        
+    <target name="findbugs" depends="clean-findbugs">
+        <findbugs home="${findbugs.home}" output="xml:withMessages" outputFile="findbugs.xml">
             <class location="../bin" />
-        	<auxClasspath path="../lib/h2-1.3.170.jar;../lib/xercesImpl.jar;c:/program files/java/jdk1.7.0_10/jre/lib/jfxrt.jar" />        	
-        	<sourcePath path="../src" />
+            <auxClasspath path="../lib/h2-1.3.170.jar;../lib/xercesImpl.jar;c:/program files/java/jdk1.7.0_10/jre/lib/jfxrt.jar" />
+            <sourcePath path="../src" />
         </findbugs>
     </target>
 
-	<target name="checkstyle1">
-		<checkstyle config="${checkstyle.home}/sun_checks.xml">
-			<classpath>
-				<fileset dir="${checkstyle.home}" includes="**/*.jar"></fileset>
-			</classpath>
-		  <fileset dir="../src" includes="**/*.java"/>
-		  <formatter type="plain"/>
-		  <formatter type="xml" toFile="checkstyle_errors.xml"/>
-		</checkstyle>		
-	</target>
+    <target name="checkstyle1">
+        <checkstyle config="${checkstyle.home}/sun_checks.xml">
+            <classpath>
+                <fileset dir="${checkstyle.home}" includes="**/*.jar"></fileset>
+            </classpath>
+          <fileset dir="../src" includes="**/*.java"/>
+          <formatter type="plain"/>
+          <formatter type="xml" toFile="${checkstyle.out}"/>
+        </checkstyle>
+    </target>
 
-	<target name="checkstyle">
-		<delete file="checkstyle_errors.xml"></delete>
-		<checkstyle config="sun_checks.xml" failonviolation="false">
-			
-		  <fileset dir="../src" includes="**/*.java"/>
-		  
-		  <formatter type="xml" toFile="checkstyle_errors.xml"/>
-		</checkstyle>		
-	</target>
-	
+    <target name="checkstyle" depends="clean-checkstyle">
+        <checkstyle config="sun_checks.xml" failonviolation="false">
+          <fileset dir="../src" includes="**/*.java"/>
+          <formatter type="xml" toFile="${checkstyle.out}"/>
+        </checkstyle>
+    </target>
+
+    <target name="clean-checkstyle" depends="init">
+        <delete file="${checkstyle.out}"></delete>
+    </target>
+
+    <target name="clean-findbugs" depends="init">
+        <delete file="findbugs.xml"></delete>
+    </target>
+
+    <target name="clean" depends="clean-checkstyle, clean-findbugs">
+    </target>
+
 </project>

@@ -41,7 +41,7 @@
 
     <!-- Checks that a package-info.java file exists for each package.     -->
     <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage -->
-    <module name="JavadocPackage"/>
+<!--     <module name="JavadocPackage"/> -->
 
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
@@ -79,10 +79,10 @@
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
-        <module name="JavadocMethod"/>
-        <module name="JavadocType"/>
-        <module name="JavadocVariable"/>
-        <module name="JavadocStyle"/>
+<!--         <module name="JavadocMethod"/> -->
+<!--         <module name="JavadocType"/> -->
+<!--         <module name="JavadocVariable"/> -->
+<!--         <module name="JavadocStyle"/> -->
 
 
         <!-- Checks for Naming Conventions.                  -->
@@ -108,7 +108,7 @@
 
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
-        <module name="LineLength"/>
+<!--         <module name="LineLength"/> -->
         <module name="MethodLength"/>
         <module name="ParameterNumber"/>
 
@@ -124,7 +124,7 @@
         <module name="ParenPad"/>
         <module name="TypecastParenPad"/>
         <module name="WhitespaceAfter"/>
-        <module name="WhitespaceAround"/>
+<!--         <module name="WhitespaceAround"/> -->
 
 
         <!-- Modifier Checks                                    -->
@@ -137,15 +137,16 @@
         <!-- See http://checkstyle.sf.net/config_blocks.html -->
         <module name="AvoidNestedBlocks"/>
         <module name="EmptyBlock"/>
-        <module name="LeftCurly"/>
+<!--         <module name="LeftCurly"/> -->
         <module name="NeedBraces"/>
-        <module name="RightCurly"/>
+<!--         <module name="RightCurly"/> -->
 
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
         <module name="AvoidInlineConditionals"/>
-        <module name="DoubleCheckedLocking"/>    <!-- MY FAVOURITE -->
+        
+        <!-- module name="DoubleCheckedLocking"/ -->    <!-- MY FAVOURITE -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="HiddenField"/>

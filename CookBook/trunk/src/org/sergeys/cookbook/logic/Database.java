@@ -18,18 +18,20 @@ import java.util.List;
 
 import org.h2.tools.RunScript;
 
-public class Database {
+public final class Database {
     private static final String FILENAME = "cookbook";
 
     private static Object instanceLock = new Object();
     private static Database instance;
 
     // singleton
-    private Database() throws SQLException{
+    private Database() throws SQLException
+    {
         upgradeOrCreateIfNeeded();
     }
 
-    public static Database getInstance() throws SQLException{
+    public static Database getInstance() throws SQLException
+    {
         synchronized (instanceLock) {
             if(instance == null){
                 instance = new Database();
@@ -41,7 +43,8 @@ public class Database {
 
     private Connection connection;
 
-    protected Connection getConnection() throws SQLException{
+    protected Connection getConnection() throws SQLException
+    {
         if(connection == null || connection.isClosed()){
             String url = String.format("jdbc:h2:%s/%s", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
             //String url = String.format("jdbc:h2:%s/%s;JMX=TRUE", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
@@ -51,7 +54,8 @@ public class Database {
         return connection;
     }
 
-    private void upgrade(){
+    private void upgrade()
+    {
         Statement st;
         try {
             st = getConnection().createStatement();
@@ -61,13 +65,13 @@ public class Database {
             int ver = Integer.valueOf(version);
 
             // apply all existing upgrades
-            InputStream in = getClass().getResourceAsStream("/resources/upgrade"+ver+".sql");
+            InputStream in = getClass().getResourceAsStream("/resources/upgrade" + ver + ".sql");
             while(in != null){
                 RunScript.execute(getConnection(), new InputStreamReader(in));
                 in.close();
                 System.out.println("Upgraded database from version " + ver);
                 ver++;
-                in = getClass().getResourceAsStream("/resources/upgrade"+ver+".sql");
+                in = getClass().getResourceAsStream("/resources/upgrade" + ver + ".sql");
             }
 
             st.close();
