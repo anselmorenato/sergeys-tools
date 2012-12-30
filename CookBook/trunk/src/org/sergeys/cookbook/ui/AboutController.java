@@ -14,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 import org.sergeys.cookbook.logic.Settings;
 
@@ -25,6 +27,8 @@ public class AboutController extends DialogController
     @FXML Label lblJava;
 
     @FXML TableView<SystemProperty> tableProps;
+    
+    @FXML WebView webLibs;
 
     public void initialize(){
         super.initialize();
@@ -72,6 +76,10 @@ public class AboutController extends DialogController
         col.setText("Value");
 
         tableProps.getColumns().add(col);
+        
+        String url = getClass().getResource("/resources/libraries.html").toString(); 
+        WebEngine engine = webLibs.getEngine();
+        engine.load(url);        
     }
 
     public class SystemProperty{

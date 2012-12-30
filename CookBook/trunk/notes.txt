@@ -16,4 +16,6 @@ This is an EclipseFX project
 
 
 
+http://www.zenjava.com/2012/11/24/from-zero-to-javafx-in-5-minutes/
+
 http://htmlcleaner.sourceforge.net/javause.php

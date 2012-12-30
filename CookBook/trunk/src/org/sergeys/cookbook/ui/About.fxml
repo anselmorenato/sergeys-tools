@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
 
 <AnchorPane prefHeight="296.0" prefWidth="517.0" styleClass="red-bg" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.ui.AboutController">
   <!-- TODO Add Nodes -->
@@ -57,7 +58,11 @@
         </Tab>
         <Tab text="Libraries">
           <content>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+              <children>
+                <WebView fx:id="webLibs" prefHeight="145.0" prefWidth="517.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+              </children>
+            </AnchorPane>
           </content>
         </Tab>
       </tabs>
