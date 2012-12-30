@@ -174,8 +174,8 @@ public class MainController {
 
     public Image getAppIcon(){
         if(appIcon == null){
-            appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));  
-        	//appIcon = new Image(getClass().getResourceAsStream("/images/BPFolderRecipesGreen.png"));
+            appIcon = new Image(getClass().getResourceAsStream("/images/amor.png"));
+            //appIcon = new Image(getClass().getResourceAsStream("/images/BPFolderRecipesGreen.png"));
         }
 
         return appIcon;
@@ -224,7 +224,7 @@ public class MainController {
     }
 
     public void onMenuMassImport(ActionEvent e){
-    	doMassImport();
+        doMassImport();
     }
 
     public void onMenuHelpAbout(ActionEvent e){
@@ -369,7 +369,7 @@ public class MainController {
             List<Recipe> recipes = Database.getInstance().getRecipesByTag(tag.getVal());
             for(Recipe r: recipes){
                 //TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(r), new ImageView(recipeIcon));
-            	TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(r));
+                TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(r));
                 item.getChildren().add(ritem);
 
                 hasChildren = true;
@@ -384,41 +384,41 @@ public class MainController {
     }
 
     private Image tagIcon;
-    private Image recipeIcon;
+//    private Image recipeIcon;
     private Image favIcon;
-    
+
     private void buildTree(){
 
         tree.getRoot().getChildren().clear();
 
         if(tagIcon == null){
-        	try{
-        	tagIcon = new Image(getClass().getResourceAsStream("/images/folder_yellow.png"));
-        	//recipeIcon = new Image(getClass().getResourceAsStream("/images/free_icon.png"));
-        	favIcon = new Image(getClass().getResourceAsStream("/images/metacontact_online.png"));
-        	}
-        	catch(Exception ex){
-        		ex.printStackTrace();
-        	}
+            try{
+            tagIcon = new Image(getClass().getResourceAsStream("/images/folder_yellow.png"));
+            //recipeIcon = new Image(getClass().getResourceAsStream("/images/free_icon.png"));
+            favIcon = new Image(getClass().getResourceAsStream("/images/metacontact_online.png"));
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+            }
         }
-        
+
         try {
             ArrayList<Tag> tags = Database.getInstance().getRootTags();
             for(Tag t: tags){
 
-            	TreeItem<RecipeTreeValue> item;
-            	if(t.getVal().equals("favorites")){
-            		item = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(t), new ImageView(favIcon));
-            	}
-            	else{
-            		item = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(t), new ImageView(tagIcon));
-            	}                                
+                TreeItem<RecipeTreeValue> item;
+                if(t.getVal().equals("favorites")){
+                    item = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(t), new ImageView(favIcon));
+                }
+                else{
+                    item = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(t), new ImageView(tagIcon));
+                }
 
                 if(t.getSpecialid() == Tag.SPECIAL_OTHER){
                     List<Recipe> recipes = Database.getInstance().getRecipesWithoutTags();
                     for(Recipe r: recipes){
                         //TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(r), new ImageView(recipeIcon));
-                    	TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(r));
+                        TreeItem<RecipeTreeValue> ritem = new TreeItem<RecipeTreeValue>(new RecipeTreeValue(r));
                         item.getChildren().add(ritem);
                     }
                     tree.getRoot().getChildren().add(item);
@@ -480,54 +480,54 @@ public class MainController {
             importer.importFile(file);
         }
     }
-    
+
     ExecutorService executor;
-    
+
     ChangeListener<Number> taskListener = new ChangeListener<Number>() {
 
-		@Override
-		public void changed(ObservableValue<? extends Number> observable,
-				Number oldValue, Number newValue) {
-			// TODO Auto-generated method stub
-			System.out.println("- progress " + newValue);
-		}
-	};
-    
-	EventHandler<WorkerStateEvent> taskHandler = new EventHandler<WorkerStateEvent>() {
+        @Override
+        public void changed(ObservableValue<? extends Number> observable,
+                Number oldValue, Number newValue) {
+            // TODO Auto-generated method stub
+            System.out.println("- progress " + newValue);
+        }
+    };
 
-		@Override
-		public void handle(WorkerStateEvent event) {
-			// TODO Auto-generated method stub
-			System.out.println("- task done");
-			
+    EventHandler<WorkerStateEvent> taskHandler = new EventHandler<WorkerStateEvent>() {
+
+        @Override
+        public void handle(WorkerStateEvent event) {
+            // TODO Auto-generated method stub
+            System.out.println("- task done");
+
             RecipeLibrary.getInstance().validate();
             buildTree();
-		}}; 
-	
-	HtmlImporter massImporter;
-		
+        }};
+
+    HtmlImporter massImporter;
+
     private void doMassImport(){
-    	
-    	DirectoryChooser dc = new DirectoryChooser();
-    	final File dir = dc.showDialog(stage);
-    	if(dir == null){
-    		return;
-    	}
-    	    
-    	System.out.println("- create importer");
+
+        DirectoryChooser dc = new DirectoryChooser();
+        final File dir = dc.showDialog(stage);
+        if(dir == null){
+            return;
+        }
+
+        System.out.println("- create importer");
         massImporter = new HtmlImporter();
-                    	    	
-    	Task<Void> task = new MassImportTask(dir, massImporter);
-			
-		task.progressProperty().addListener(taskListener);		
-		task.setOnSucceeded(taskHandler);
-			
-		if(executor == null){
-			executor = Executors.newCachedThreadPool();
-		}
-		
-		System.out.println("- submit task");
-		executor.execute(task);
+
+        Task<Void> task = new MassImportTask(dir, massImporter);
+
+        task.progressProperty().addListener(taskListener);
+        task.setOnSucceeded(taskHandler);
+
+        if(executor == null){
+            executor = Executors.newCachedThreadPool();
+        }
+
+        System.out.println("- submit task");
+        executor.execute(task);
     }
 
     private Recipe currentRecipe;

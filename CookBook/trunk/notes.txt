@@ -13,3 +13,7 @@ This is an EclipseFX project
 - mark recently added recipes in the tree
 - quick text filter in tree
 - cancel background tasks on exit
+
+
+
+http://htmlcleaner.sourceforge.net/javause.php
