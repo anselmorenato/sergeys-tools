@@ -4,4 +4,4 @@ d:
 cd \workspace\svs.bugz.org.ua
 %WINSCP% /console /script=winscp.txt
 
-pause
+: pause
