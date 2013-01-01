@@ -24,22 +24,32 @@
 }
 
 
-.scroll-bar:horizontal .increment-button, 
-.scroll-bar:horizontal .decrement-button{    
-    -fx-padding: 8px;
+.scroll-bar:horizontal .increment-button,
+.scroll-bar:horizontal .decrement-button{
+    -fx-padding: 6px;
 }
-.scroll-bar:vertical .increment-button, 
+.scroll-bar:vertical .increment-button,
 .scroll-bar:vertical .decrement-button{
-    
-    -fx-padding: 8px;
+
+    -fx-padding: 6px;
 }
 
-.scroll-pane > * > .scroll-bar:horizontal .increment-button, 
+.scroll-pane > * > .scroll-bar:horizontal .increment-button,
 .scroll-pane > * > .scroll-bar:horizontal .decrement-button{
-    -fx-padding: 8px;
+    -fx-padding: 6px;
 }
 
-.scroll-pane > * > .scroll-bar:vertical .increment-button, 
+.scroll-pane > * > .scroll-bar:vertical .increment-button,
 .scroll-pane > * > .scroll-bar:vertical .decrement-button{
-    -fx-padding: 8px;
+    -fx-padding: 6px;
+}
+
+.web-view > * > .scroll-bar:horizontal .increment-button,
+.web-view > * > .scroll-bar:horizontal .decrement-button{
+    -fx-padding: 6px;
+}
+
+.web-view > * > .scroll-bar:vertical .increment-button,
+.web-view > * > .scroll-bar:vertical .decrement-button{
+    -fx-padding: 6px;
 }

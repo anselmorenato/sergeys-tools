@@ -13,6 +13,8 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.LogManager;
 
 import javafx.application.Platform;
@@ -41,7 +43,8 @@ public class Settings {
 
     private static Settings instance = new Settings();
 
-    private static Logger log;// = LoggerFactory.getLogger(MainController.class);
+    private static Logger log;
+    private static ExecutorService executor;
 
     static{
         settingsDirPath = System.getProperty("user.home") + File.separator + SETTINGS_PATH;
@@ -77,12 +80,14 @@ public class Settings {
             }
 
             LogManager.getLogManager().readConfiguration(new FileInputStream(logproperties));
-            log = LoggerFactory.getLogger("cookbook");
+            log = LoggerFactory.getLogger("cookbook");            
         }
         catch(IOException ex){
             ex.printStackTrace();
         }
 
+        executor = Executors.newCachedThreadPool();
+        
         load();
     }
 
@@ -177,6 +182,10 @@ public class Settings {
         return log;
     }
 
+    public static ExecutorService getExecutor(){
+        return executor;
+    }    
+    
     private void setDefaults() {
         Rectangle2D bounds = Screen.getPrimary().getBounds();
 
@@ -239,4 +248,11 @@ public class Settings {
     }
 
 
+	@Override
+	protected void finalize() throws Throwable {
+//		executor.shutdown();
+//		log.debug("shutdown executor"); ??
+		
+		super.finalize();
+}
 }

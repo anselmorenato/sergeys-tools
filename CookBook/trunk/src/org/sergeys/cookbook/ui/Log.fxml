@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane prefHeight="314.0" prefWidth="438.0" styleClass="red-bg" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.ui.LogController">
+  <!-- TODO Add Nodes -->
+  <bottom>
+    <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="418.0">
+      <children>
+        <Button mnemonicParsing="false" onAction="#onClose" text="Close" />
+      </children>
+      <padding>
+        <Insets top="10.0" />
+      </padding>
+    </HBox>
+  </bottom>
+  <center>
+    <TextArea fx:id="logTextarea" editable="false" prefWidth="200.0" wrapText="true" />
+  </center>
+  <padding>
+    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+  </padding>
+  <stylesheets>
+    <URL value="@style.css" />
+  </stylesheets>
+</BorderPane>

@@ -4,8 +4,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -118,7 +116,7 @@ public class MainController {
 //            }
 //        });
 
-        double pos = Settings.getInstance().getWinDividerPosition();
+//        double pos = Settings.getInstance().getWinDividerPosition();
 //        System.out.println("set " + pos);
 
 //        splitter.setDividerPosition(0, pos);
@@ -152,7 +150,7 @@ public class MainController {
 
                 if(arg2){
 //                    System.out.println("visible");
-                    double pos = Settings.getInstance().getWinDividerPosition();
+//                    double pos = Settings.getInstance().getWinDividerPosition();
 //                    System.out.println("set " + pos);
 //                    splitter.setDividerPosition(0, pos);
                 }
@@ -230,6 +228,33 @@ public class MainController {
         doMassImport();
     }
 
+    private Stage dialogLog;
+
+    public void onMenuHelpLog(ActionEvent e){
+        if(dialogLog == null){
+
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Log.fxml"));
+                Pane root = (Pane)loader.load();
+                dialogLog = new Stage();
+                dialogLog.setTitle("CookBook");
+                dialogLog.initModality(Modality.NONE);
+                dialogLog.setScene(new Scene(root, 500, 300));
+                dialogLog.initOwner(stage);
+                dialogLog.getIcons().add(getAppIcon());
+
+                DialogController controller = loader.getController();
+                controller.setStage(dialogLog);
+            } catch (Exception ex) {
+                Settings.getLogger().error("", ex);
+            }
+        }
+
+        if(dialogLog != null){
+            dialogLog.show();
+        }
+    }
+
     public void onMenuHelpAbout(ActionEvent e){
         // http://stackoverflow.com/questions/8309981/how-to-create-and-show-common-dialog-error-warning-confirmation-in-javafx-2
         // http://java-buddy.blogspot.com/2012/02/dialog-with-close-button.html
@@ -259,7 +284,6 @@ public class MainController {
         }
         if(dialogStage != null){
             dialogStage.show();
-            //showModalMessage(dialogStage.sceneProperty().get().getRoot());
         }
     }
 
@@ -458,6 +482,7 @@ public class MainController {
     };
 
     private void doImport(){
+
         if(fc == null){
             fc = new FileChooser();
         }
@@ -479,7 +504,7 @@ public class MainController {
         }
     }
 
-    ExecutorService executor;
+//    ExecutorService executor;
 
     ChangeListener<Number> taskListener = new ChangeListener<Number>() {
 
@@ -495,9 +520,6 @@ public class MainController {
 
         @Override
         public void handle(WorkerStateEvent event) {
-
-            //System.out.println("- task done");
-
             RecipeLibrary.getInstance().validate();
             buildTree();
         }};
@@ -512,20 +534,15 @@ public class MainController {
             return;
         }
 
-//        System.out.println("- create importer");
         massImporter = new HtmlImporter();
 
+        Settings.getLogger().debug("mass import");
         Task<Void> task = new MassImportTask(dir, massImporter);
 
         task.progressProperty().addListener(taskListener);
         task.setOnSucceeded(taskHandler);
 
-        if(executor == null){
-            executor = Executors.newCachedThreadPool();
-        }
-
-//        System.out.println("- submit task");
-        executor.execute(task);
+        Settings.getExecutor().execute(task);
     }
 
     private Recipe currentRecipe;

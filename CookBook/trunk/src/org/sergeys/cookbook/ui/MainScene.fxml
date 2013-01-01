@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.web.*?>
-<?scenebuilder-stylesheet test.css?>
 
 <AnchorPane id="rootid" fx:id="pane" prefHeight="409.0" prefWidth="670.0" styleClass="root" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.ui.MainController">
   <!-- TODO Add Nodes -->
@@ -25,11 +24,13 @@
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
           <items>
-            <MenuItem mnemonicParsing="false" text="Delete" />
+            <MenuItem mnemonicParsing="false" text="Language" />
+            <MenuItem mnemonicParsing="false" text="Settings ..." />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
+            <MenuItem mnemonicParsing="false" onAction="#onMenuHelpLog" text="View Log ..." />
             <MenuItem mnemonicParsing="false" onAction="#onMenuHelpAbout" text="About ..." />
           </items>
         </Menu>
@@ -54,12 +55,12 @@
                   <children>
                     <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#onButtonSave" styleClass="buttonSave" text="Save" visible="true">
                       <stylesheets>
-                        <URL value="@test.css" />
+                        <URL value="@style.css" />
                       </stylesheets>
                     </Button>
                     <Button fx:id="buttonRevert" mnemonicParsing="false" onAction="#onButtonRevert" styleClass="buttonRevert" text="Revert">
                       <stylesheets>
-                        <URL value="@test.css" />
+                        <URL value="@style.css" />
                       </stylesheets>
                     </Button>
                   </children>
@@ -86,6 +87,6 @@
     </SplitPane>
   </children>
   <stylesheets>
-    <URL value="@test.css" />
+    <URL value="@style.css" />
   </stylesheets>
 </AnchorPane>

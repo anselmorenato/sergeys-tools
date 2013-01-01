@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 
 public class DialogController {
 
-    private Stage stage;
+    protected Stage stage;
 
     public void initialize(){
         //System.out.println("DialogController init");

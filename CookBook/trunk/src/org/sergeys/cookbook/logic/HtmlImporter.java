@@ -162,8 +162,8 @@ public class HtmlImporter {
         }
 
         try {
-            if(Database.getInstance().isRecipeExists(hash)){
-                Settings.getLogger().debug("already exist in database");
+            if(Database.getInstance().isRecipeExists(hash)){                
+                Settings.getLogger().info("recipe with this hash already exist in database");
                 status.set(Status.AlreadyExist);
                 return;
             }

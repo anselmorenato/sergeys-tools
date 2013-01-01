@@ -10,8 +10,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javafx.concurrent.Task;
 
@@ -62,18 +60,17 @@ public final class RecipeLibrary {
         return instance;
     }
 
-    private ExecutorService executor;
-
     public void validate(){
         try {
             ArrayList<Recipe> recipes = Database.getInstance().getAllRecipes();
             for(final Recipe r: recipes){
-                File f = new File(Settings.getRecipeLibraryPath() + File.separator + r.getHash() + ".html");
+                final File f = new File(Settings.getRecipeLibraryPath() + File.separator + r.getHash() + ".html");
                 if(!f.exists()){
 
                     Task<Void> task = new Task<Void>() {
                         @Override
                         protected Void call() throws Exception {
+                            Settings.getLogger().debug("unpacking " + f.getAbsolutePath());
                             File temp = File.createTempFile("cookbook", ".jar");
                             temp.deleteOnExit();
 
@@ -86,20 +83,7 @@ public final class RecipeLibrary {
                         }
                     };
 
-                    if(executor == null){
-                        executor = Executors.newCachedThreadPool();
-                    }
-
-                    executor.execute(task);
-
-//					File temp = File.createTempFile("cookbook", ".jar");
-//					temp.deleteOnExit();
-//
-//					Database.getInstance().extractRecipeFile(r.getHash(), temp);
-//
-//					Util.unpackJar(temp, Settings.getRecipeLibraryPath());
-//
-//					temp.delete();
+                    Settings.getExecutor().execute(task);
                 }
             }
         } catch (Exception e) {
@@ -108,7 +92,7 @@ public final class RecipeLibrary {
     }
 
     public List<String> suggestTags(String phrase){
-        //ArrayList<String> tags = new ArrayList<>();
+
         Hashtable<String, String> tags = new Hashtable<>();
 
         String[] words = phrase.split("[\\n\\r\\t\\p{Space}\\p{Punct}]");

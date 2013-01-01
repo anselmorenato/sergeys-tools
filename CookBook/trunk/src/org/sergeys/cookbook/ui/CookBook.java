@@ -89,7 +89,11 @@ public class CookBook extends Application {
     public static void main(String[] args) {
     	
     	Settings.getLogger().info("application start");
-    	
+//    	Settings.getLogger().debug("debug");
+//    	Settings.getLogger().error("error");
+//    	Settings.getLogger().trace("trace");
+//    	Settings.getLogger().warn("warn");    	
+    	    	
         launch(args);
     }
 }
