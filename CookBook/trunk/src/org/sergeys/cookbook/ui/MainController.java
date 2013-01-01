@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -245,6 +247,7 @@ public class MainController {
 
                 DialogController controller = loader.getController();
                 controller.setStage(dialogLog);
+                
             } catch (Exception ex) {
                 Settings.getLogger().error("", ex);
             }
@@ -511,7 +514,7 @@ public class MainController {
         @Override
         public void changed(ObservableValue<? extends Number> observable,
                 Number oldValue, Number newValue) {
-
+        	Settings.getLogger().info("task progress " + newValue);
 //            System.out.println("- progress " + newValue);
         }
     };
@@ -520,11 +523,13 @@ public class MainController {
 
         @Override
         public void handle(WorkerStateEvent event) {
+        	Settings.getLogger().info("task complete");
             RecipeLibrary.getInstance().validate();
             buildTree();
         }};
 
     HtmlImporter massImporter;
+    ExecutorService executor;
 
     private void doMassImport(){
 
@@ -542,7 +547,12 @@ public class MainController {
         task.progressProperty().addListener(taskListener);
         task.setOnSucceeded(taskHandler);
 
-        Settings.getExecutor().execute(task);
+        if(executor == null){
+        	//executor = Executors.newSingleThreadExecutor();
+        	executor = Executors.newCachedThreadPool();
+        }
+        
+        executor.execute(task);	// TODO app hangs for some time on app exit
     }
 
     private Recipe currentRecipe;

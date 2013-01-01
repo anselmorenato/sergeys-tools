@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.concurrent.Task;
 
@@ -60,6 +62,8 @@ public final class RecipeLibrary {
         return instance;
     }
 
+    ExecutorService executor;
+    
     public void validate(){
         try {
             ArrayList<Recipe> recipes = Database.getInstance().getAllRecipes();
@@ -82,8 +86,12 @@ public final class RecipeLibrary {
                             return null;
                         }
                     };
-
-                    Settings.getExecutor().execute(task);
+                    
+                    if(executor == null){
+                    	executor = Executors.newSingleThreadExecutor();
+                    }
+                    
+                    executor.execute(task);
                 }
             }
         } catch (Exception e) {

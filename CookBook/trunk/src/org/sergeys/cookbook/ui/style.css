@@ -1,9 +1,5 @@
 .root{
     -fx-background-image: url('../../../../images/bluShadow.jpg');
-
-    SB_scrollbar-track: derive(-fx-color, 27.5%);
-    SB_scrollbar-thumb: derive(-fx-color, -26.3%);
-    SB_scrollbar-corner-border: derive(SB_scrollbar-track, -10%);
 }
 
 .red-bg{
@@ -43,7 +39,7 @@
 .scroll-pane > * > .scroll-bar:vertical .decrement-button{
     -fx-padding: 6px;
 }
-
+/*
 .web-view > * > .scroll-bar:horizontal .increment-button,
 .web-view > * > .scroll-bar:horizontal .decrement-button{
     -fx-padding: 6px;
@@ -53,3 +49,4 @@
 .web-view > * > .scroll-bar:vertical .decrement-button{
     -fx-padding: 6px;
 }
+*/
