@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="all">
+
+    <property name="properties.file" value="build.properties" />
+
+    <target name="all" depends="init, builddir, prepare, deploy">
+    </target>
+
+    <target name="init">
+        <property file="${properties.file}">
+        </property>
+    	<property file="${project.dir}/src/resources/settings.properties">
+		</property>
+    </target>
+
+    <target name="builddir">
+        <mkdir dir="${build.dir}" />
+
+        <delete>
+            <fileset dir="${build.dir}" excludes=".keystore">
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="test">
+        <echo message="workspace is: ${workspace.dir}" />
+        <echo message="project is: ${project.dir}" />
+    </target>
+
+    <target name="check-key">
+        <available file="${keystore.file}" property="keystore.file.exists">
+        </available>
+    </target>
+
+    <target name="key" depends="check-key" unless="keystore.file.exists">
+        <echo message="Create new key file: ${keystore.file}" />
+        <genkey keystore="${keystore.file}" alias="${keystore.alias}" validity="365" storepass="${keystore.password}">
+            <dname>
+                <param name="CN" value="Sergey Selivanov" />
+                <param name="OU" value="Home" />
+                <param name="O" value="Sergey Selivanov" />
+                <param name="C" value="UA" />
+                <param name="L" value="Kharkov" />
+                <!--
+                <param name="EmailAddress" value="sergey.selivanov@gmail.com" />
+                -->
+            </dname>
+        </genkey>
+    </target>
+
+
+    <target name="prepare" depends="key">
+
+        <copy file="mweather.jnlp" tofile="${build.dir}/mweather.jnlp" overwrite="true">
+        </copy>
+
+        <replace file="${build.dir}/mweather.jnlp">
+            <replacefilter token="%REVISION%" value="${version}"/>
+            <replacefilter token="%URL%" value="${webstart.url}"/>
+        </replace>
+
+        <!-- watch correct file extension here -->
+        <copy file="${appicon}" tofile="${build.dir}/largeicon.png" overwrite="true">
+        </copy>
+
+    	<echo message="Collect fxbuild output:" />
+        <copy todir="${build.dir}" verbose="true">
+            <fileset dir="${project.dir}/build/dist">
+            </fileset>
+        </copy>
+
+        <move file="${build.dir}/MetarWeather.jar" tofile="${build.dir}/MetarWeather.${version}.jar"></move>
+
+        <signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" verbose="false">
+            <fileset dir="${build.dir}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </signjar>
+
+    </target>
+
+    <target name="deploy">
+        <mkdir dir="${deploy.dir}" />
+
+        <delete>
+            <fileset dir="${deploy.dir}">
+            </fileset>
+        </delete>
+
+        <copy todir="${deploy.dir}">
+            <fileset dir="${build.dir}" excludes=".keystore">
+            </fileset>
+        </copy>
+
+        <echo message="version ${version}, deployed for ${webstart.url}" />
+    </target>
+</project>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <anttasks:AntTask xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:anttasks="http://at.bestsolution.efxclipse.tooling.jdt/1.0" buildDirectory="${workspace}/MetarWeather/build">
   <deploy>
-    <application name="MetarWeather"/>
-    <info/>
+    <application name="MetarWeather" mainclass="org.sergeys.mweather.ui.MetarWeather" version="1.0"/>
+    <info vendor="sergeys"/>
   </deploy>
   <signjar/>
 </anttasks:AntTask>

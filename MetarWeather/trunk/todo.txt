@@ -1,4 +1,4 @@
-- webstart app similar to mweather
+- javafx webstart app similar to mweather
 - peer-to-peer functionality to reduce load to metar servers
 - user translations for cities, translation server, peer-to-peer?
 - download weather photos from google/bing images

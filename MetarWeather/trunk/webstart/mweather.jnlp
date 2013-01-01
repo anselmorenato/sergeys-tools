@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" codebase="%URL%" href="mweather.jnlp">
+
+  <information>
+    <title>METAR Weather</title>
+    <vendor>Sergey Selivanov</vendor>
+    <description>METAR Weather application</description>
+    <offline-allowed/>
+	<icon href="%URL%/largeicon.png" kind="default"/>
+	
+    <shortcut online="true" install="false">
+      <desktop/>
+      <menu submenu="Webstart Utilities"/>
+    </shortcut>
+    
+	<homepage href="%URL%"></homepage>
+  </information>
+  
+  <security>
+  	<all-permissions/>
+  </security>
+  
+  <resources>
+    <j2se version="1.7+" href="http://java.sun.com/products/autodl/j2se"/>
+
+    <jar href="MetarWeather.%REVISION%.jar" download="eager" />
+
+
+  </resources>
+  
+  <javafx-desc main-class="org.sergeys.mweather.ui.MetarWeather" />
+  
+  <update check="background"/>
+</jnlp>
