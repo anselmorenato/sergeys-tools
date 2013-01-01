@@ -17,9 +17,8 @@ public abstract class Util {
             }
         }
 
-//		System.out.println("deleting " + file);
         if(!file.delete()){
-            System.out.println("not deleted " + file);
+            Settings.getLogger().info("not deleted " + file);
             file.deleteOnExit();
         }
     }
@@ -48,8 +47,7 @@ public abstract class Util {
 
             jis.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 }

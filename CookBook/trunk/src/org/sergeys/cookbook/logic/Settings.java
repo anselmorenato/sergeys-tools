@@ -13,9 +13,14 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.LogManager;
 
+import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Settings {
 
@@ -36,6 +41,8 @@ public class Settings {
 
     private static Settings instance = new Settings();
 
+    private static Logger log;// = LoggerFactory.getLogger(MainController.class);
+
     static{
         settingsDirPath = System.getProperty("user.home") + File.separator + SETTINGS_PATH;
         settingsFilePath = settingsDirPath + File.separator + SETTINGS_FILE;
@@ -49,6 +56,31 @@ public class Settings {
         dir = new File(recipeLibraryPath);
         if(!dir.exists()){
             dir.mkdirs();
+        }
+
+        // init logging
+        try{
+            String logproperties = settingsDirPath + File.separator + "logging.properties";
+            if(!new File(logproperties).exists()){
+
+                InputStream is = instance.getClass().getResourceAsStream("/resources/logging.properties");
+                if(is != null){
+                    byte[] buf = new byte[20480];
+                    FileOutputStream fos = new FileOutputStream(logproperties);
+                    int count = 0;
+                    while((count = is.read(buf)) > 0){
+                        fos.write(buf, 0, count);
+                    }
+                    fos.close();
+                    is.close();
+                }
+            }
+
+            LogManager.getLogManager().readConfiguration(new FileInputStream(logproperties));
+            log = LoggerFactory.getLogger("cookbook");
+        }
+        catch(IOException ex){
+            ex.printStackTrace();
         }
 
         load();
@@ -107,8 +139,7 @@ public class Settings {
             try {
                 is = new FileInputStream(settingsFilePath);
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Settings.getLogger().error("", e);
             }
 
             XMLDecoder decoder = new XMLDecoder(is);
@@ -126,9 +157,9 @@ public class Settings {
         InputStream is = Settings.class.getResourceAsStream("/resources/settings.properties");
         try {
             instance.resources.load(is);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            Settings.getLogger().error("failed to load properties, exit", e);
+            Platform.exit();
         }
         finally{
             try {
@@ -136,11 +167,14 @@ public class Settings {
                     is.close();
                 }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Settings.getLogger().error("", e);
             }
         }
 
+    }
+
+    public static Logger getLogger(){
+        return log;
     }
 
     private void setDefaults() {

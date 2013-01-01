@@ -15,6 +15,9 @@ This is an EclipseFX project
 - cancel background tasks on exit
 
 
+http://stackoverflow.com/questions/11242847/is-drag-and-drop-supported-by-treeitem
+autoresize issues: http://www.drdobbs.com/jvm/a-javafx-custom-container/232200699
+
 
 http://www.zenjava.com/2012/11/24/from-zero-to-javafx-in-5-minutes/
 

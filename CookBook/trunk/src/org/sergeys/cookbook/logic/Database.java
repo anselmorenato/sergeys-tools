@@ -72,18 +72,14 @@ public final class Database {
             while(in != null){
                 RunScript.execute(getConnection(), new InputStreamReader(in));
                 in.close();
-                System.out.println("Upgraded database from version " + ver);
+                Settings.getLogger().info("Upgraded database from version " + ver);
                 ver++;
                 in = getClass().getResourceAsStream("/resources/upgrade" + ver + ".sql");
             }
             
             //st.close();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (SQLException | IOException e) {
+            Settings.getLogger().error("failed to upgrade db", e);
         }
         finally{
         	if(in != null){
@@ -137,8 +133,7 @@ public final class Database {
                 return true;
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
         return false;
@@ -177,8 +172,7 @@ public final class Database {
 
             pst.close();
         } catch (SQLException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("failed to add recipe", e);
         }
 
         return id;
@@ -200,8 +194,7 @@ public final class Database {
 
             st.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
         return recipes;
@@ -245,8 +238,7 @@ public final class Database {
 //				is.close();
             }
         } catch (SQLException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 
@@ -271,8 +263,7 @@ public final class Database {
 
             st.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
         return tags;
@@ -301,8 +292,7 @@ public final class Database {
 
             pst.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
         return tags;
@@ -328,8 +318,7 @@ public final class Database {
 
             st.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
 
@@ -356,8 +345,7 @@ public final class Database {
 
             pst.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
         return recipes;
@@ -393,8 +381,7 @@ public final class Database {
             getConnection().setAutoCommit(true);
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 
@@ -425,8 +412,7 @@ public final class Database {
 
             pst.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 
@@ -448,8 +434,7 @@ public final class Database {
 
             pst.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
         return tags;
@@ -464,8 +449,7 @@ public final class Database {
             pst.executeUpdate();
             pst.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 }

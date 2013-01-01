@@ -1,19 +1,16 @@
 package org.sergeys.cookbook.ui;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URL;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.sergeys.cookbook.logic.Settings;
 
@@ -28,8 +25,6 @@ public class CookBook extends Application {
         this.primaryStage = stage;
 
         try {
-
-            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 
             // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
 
@@ -64,9 +59,9 @@ public class CookBook extends Application {
             controller.myInit(primaryStage);
 
             //controller.createSampleData();
-        } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            Settings.getLogger().error("failed to start primary stage, exit application", e);
+            Platform.exit();
         }
     }
 
@@ -87,12 +82,14 @@ public class CookBook extends Application {
         try {
             Settings.save();
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("failed to save settings", e);
         }
     }
 
     public static void main(String[] args) {
+    	
+    	Settings.getLogger().info("application start");
+    	
         launch(args);
     }
 }

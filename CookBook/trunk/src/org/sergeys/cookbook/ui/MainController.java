@@ -52,8 +52,12 @@ import org.sergeys.cookbook.logic.RecipeLibrary;
 import org.sergeys.cookbook.logic.Settings;
 import org.sergeys.cookbook.logic.Tag;
 import org.sergeys.cookbook.ui.RecipeTreeValue.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MainController {
+
+    private static final Logger log = LoggerFactory.getLogger(MainController.class);
 
     @FXML private TreeView<RecipeTreeValue> tree;
     @FXML private WebView webview;
@@ -77,7 +81,7 @@ public class MainController {
                 ObservableValue<? extends TreeItem<RecipeTreeValue>> observable,
                 TreeItem<RecipeTreeValue> oldValue,
                 TreeItem<RecipeTreeValue> newValue) {
-            // TODO Auto-generated method stub
+
             if(newValue != null){
                 if(newValue.getValue().getType() == Type.Recipe){
                     setRecipe(newValue.getValue().getRecipe());
@@ -88,7 +92,7 @@ public class MainController {
     public void initialize(){
         // called by convention
         // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
-        System.out.println("init");
+        log.info("init");
 
         // TODO call in background
         RecipeLibrary.getInstance().validate();
@@ -115,10 +119,10 @@ public class MainController {
 //        });
 
         double pos = Settings.getInstance().getWinDividerPosition();
-        System.out.println("set " + pos);
+//        System.out.println("set " + pos);
 
 //        splitter.setDividerPosition(0, pos);
-        System.out.println("actual " + splitter.getDividerPositions()[0]);
+//        System.out.println("actual " + splitter.getDividerPositions()[0]);
 
 //        splitter.layout();
 
@@ -127,16 +131,16 @@ public class MainController {
             @Override
             public void changed(ObservableValue<? extends Number> observable,
                     Number oldValue, Number newValue) {
-                // TODO Auto-generated method stub
-                System.out.println("changed to " + newValue);
+
+//                System.out.println("changed to " + newValue);
             }});
 
         splitter.getDividers().get(0).positionProperty().addListener(new InvalidationListener(){
 
             @Override
             public void invalidated(Observable arg0) {
-                // TODO Auto-generated method stub
-                System.out.println("invalidated");
+
+//                System.out.println("invalidated");
             }});
 
 
@@ -145,11 +149,11 @@ public class MainController {
             @Override
             public void changed(ObservableValue<? extends Boolean> arg0,
                     Boolean arg1, Boolean arg2) {
-                // TODO Auto-generated method stub
+
                 if(arg2){
-                    System.out.println("visible");
+//                    System.out.println("visible");
                     double pos = Settings.getInstance().getWinDividerPosition();
-                    System.out.println("set " + pos);
+//                    System.out.println("set " + pos);
 //                    splitter.setDividerPosition(0, pos);
                 }
 
@@ -167,7 +171,7 @@ public class MainController {
 
     public void collectSettings(){
         double pos[] = splitter.getDividerPositions();
-        System.out.println("collect " + pos[0]);
+//        System.out.println("collect " + pos[0]);
         Settings.getInstance().setWinDividerPosition(pos[0]);
     }
 
@@ -181,7 +185,7 @@ public class MainController {
     }
 
     public void onMenuCloseAction(ActionEvent e){
-        System.out.println("exit");
+        Settings.getLogger().info("application exit");
         Platform.exit();
     }
 
@@ -202,14 +206,14 @@ public class MainController {
 
         if (file != null) {
             Settings.getInstance().setLastFilechooserLocation(file.getParent());
-            String path = file.getAbsolutePath();
-            System.out.println(path);
+            //String path = file.getAbsolutePath();
+
             try{
                 //webview.getEngine().load("file:///" + path);
                 webview.getEngine().load(file.toURI().toString());
             }
             catch(Exception ex){
-                ex.printStackTrace();
+                Settings.getLogger().error("", e);
             }
         }
     }
@@ -231,7 +235,6 @@ public class MainController {
         // http://java-buddy.blogspot.com/2012/02/dialog-with-close-button.html
         if(dialogStage == null){
             try{
-                System.out.println("creating dialog");
 
                 URL location = getClass().getResource("About.fxml");
                 FXMLLoader loader = new FXMLLoader(location);
@@ -251,7 +254,7 @@ public class MainController {
 
             }
             catch(Exception ex){
-                ex.printStackTrace();
+                Settings.getLogger().error("", ex);
             }
         }
         if(dialogStage != null){
@@ -287,8 +290,7 @@ public class MainController {
 
             buildTree();
         } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 
@@ -375,8 +377,7 @@ public class MainController {
             }
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
         return hasChildren;
@@ -397,7 +398,7 @@ public class MainController {
             favIcon = new Image(getClass().getResourceAsStream("/images/metacontact_online.png"));
             }
             catch(Exception ex){
-                ex.printStackTrace();
+                Settings.getLogger().error("", ex);
             }
         }
 
@@ -430,8 +431,7 @@ public class MainController {
             }
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 
@@ -443,17 +443,16 @@ public class MainController {
         public void changed(
                 ObservableValue<? extends Status> observable,
                 Status oldValue, Status newValue) {
-            // TODO Auto-generated method stub
 
             if(newValue == Status.Complete){
-                System.out.println("completed import of " + importer.getHash());
+//                System.out.println("completed import of " + importer.getHash());
 
                 RecipeLibrary.getInstance().validate();
 
                 buildTree();
             }
             else{
-                System.out.println("importer status " + newValue);
+//                System.out.println("importer status " + newValue);
             }
         }
     };
@@ -487,8 +486,8 @@ public class MainController {
         @Override
         public void changed(ObservableValue<? extends Number> observable,
                 Number oldValue, Number newValue) {
-            // TODO Auto-generated method stub
-            System.out.println("- progress " + newValue);
+
+//            System.out.println("- progress " + newValue);
         }
     };
 
@@ -496,8 +495,8 @@ public class MainController {
 
         @Override
         public void handle(WorkerStateEvent event) {
-            // TODO Auto-generated method stub
-            System.out.println("- task done");
+
+            //System.out.println("- task done");
 
             RecipeLibrary.getInstance().validate();
             buildTree();
@@ -513,7 +512,7 @@ public class MainController {
             return;
         }
 
-        System.out.println("- create importer");
+//        System.out.println("- create importer");
         massImporter = new HtmlImporter();
 
         Task<Void> task = new MassImportTask(dir, massImporter);
@@ -525,7 +524,7 @@ public class MainController {
             executor = Executors.newCachedThreadPool();
         }
 
-        System.out.println("- submit task");
+//        System.out.println("- submit task");
         executor.execute(task);
     }
 
@@ -555,81 +554,9 @@ public class MainController {
             }
             tags.setText(sb.toString());
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
-    }
-
-
-//    private class TextFieldTreeCellImpl
-//    extends TreeCell<String>
-//    {
-//
-//        @Override
-//        public void cancelEdit() {
-//            // TODO Auto-generated method stub
-//            super.cancelEdit();
-//        }
-//
-//        @Override
-//        public void commitEdit(String newValue) {
-//            // TODO Auto-generated method stub
-//            super.commitEdit(newValue);
-//        }
-//
-//        @Override
-//        public void startEdit() {
-//            // TODO Auto-generated method stub
-//            super.startEdit();
-//        }
-//
-//    }
-
-// ===============
-
-    public void createSampleData(){
-
-//        TreeItem<String> treeRoot = new TreeItem<String>("Root node");
-//
-//        treeRoot.getChildren().addAll(Arrays.asList(
-//                new TreeItem<String>("Child Node 1"),
-//                new TreeItem<String>("Child Node 2"),
-//                new TreeItem<String>("Child Node 3")));
-//
-//
-//        treeRoot.getChildren().get(2).getChildren().addAll(Arrays.asList(
-//                new TreeItem<String>("Child Node 4"),
-//                new TreeItem<String>("Child Node 5"),
-//                new TreeItem<String>("Child Node 6"),
-//                new TreeItem<String>("Child Node 7"),
-//                new TreeItem<String>("Child Node 8"),
-//                new TreeItem<String>("Child Node 9"),
-//                new TreeItem<String>("Child Node 10"),
-//                new TreeItem<String>("Child Node 11"),
-//                new TreeItem<String>("Child Node 12")));
-//
-//
-//        tree.setShowRoot(true);
-//        tree.setRoot(treeRoot);
-//        treeRoot.setExpanded(true);
-
-        // TODO open last file
-//        WebEngine webEngine = webview.getEngine();
-
-        try{
-            //webEngine.load("file:///D:/workspace/CookBook/samplefiles/2.html");
-            //webEngine.load("http://java.oracle.com");
-        }
-        catch(Exception ex){
-            ex.printStackTrace();
-        }
-
-        double pos = Settings.getInstance().getWinDividerPosition();
-        System.out.println("createsample set " + pos);
-//        splitter.setDividerPosition(0, pos);
-
-//        test();
     }
 
 }

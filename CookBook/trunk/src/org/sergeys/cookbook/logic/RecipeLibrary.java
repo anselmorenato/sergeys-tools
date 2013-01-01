@@ -48,8 +48,7 @@ public final class RecipeLibrary {
                 }
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 
@@ -78,8 +77,6 @@ public final class RecipeLibrary {
                             File temp = File.createTempFile("cookbook", ".jar");
                             temp.deleteOnExit();
 
-                            System.out.println("extracting " + r.getHash());
-
                             Database.getInstance().extractRecipeFile(r.getHash(), temp);
 
                             Util.unpackJar(temp, Settings.getRecipeLibraryPath());
@@ -93,7 +90,6 @@ public final class RecipeLibrary {
                         executor = Executors.newCachedThreadPool();
                     }
 
-                    System.out.println("- submit task");
                     executor.execute(task);
 
 //					File temp = File.createTempFile("cookbook", ".jar");
@@ -107,8 +103,7 @@ public final class RecipeLibrary {
                 }
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 

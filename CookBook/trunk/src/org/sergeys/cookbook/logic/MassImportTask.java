@@ -36,8 +36,6 @@ public class MassImportTask extends Task<Void> implements ChangeListener<HtmlImp
             }
         });
 
-        System.out.println("> found to import " + files.length);
-
         int count = 0;
         for(final String file: files){
 
@@ -51,7 +49,6 @@ public class MassImportTask extends Task<Void> implements ChangeListener<HtmlImp
             synchronized (sync) {
                 canContinue = false;
             }
-            System.out.println("> import " + file);
 
             Platform.runLater(new Runnable() {
                 @Override
@@ -61,8 +58,7 @@ public class MassImportTask extends Task<Void> implements ChangeListener<HtmlImp
                         importer.importFile(new File(directory.getAbsolutePath() + File.separator + file));
                     }
                     catch(Exception ex){
-                        System.out.println("> importer failed");
-                        ex.printStackTrace();
+                        Settings.getLogger().error("", ex);
                         synchronized (sync) {
                             canContinue = true;
                         }
@@ -79,7 +75,7 @@ public class MassImportTask extends Task<Void> implements ChangeListener<HtmlImp
                 }
 
                 if(!cont){
-                    System.out.println("> waiting " + waitcount);
+                    
                     try{
                         Thread.sleep(500);
                     }

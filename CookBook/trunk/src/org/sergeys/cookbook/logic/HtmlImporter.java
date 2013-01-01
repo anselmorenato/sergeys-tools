@@ -102,7 +102,7 @@ public class HtmlImporter {
 ////                try {
 ////                    setDocument(doc);
 ////                } catch (IOException e) {
-////                    // TODO Auto-generated catch block
+////                    
 ////                    e.printStackTrace();
 ////                }
 //            }
@@ -121,16 +121,15 @@ public class HtmlImporter {
                     try {
                         setDocument(doc);
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        Settings.getLogger().error("", e);
                     }
                 }
                 else{
-                    System.out.println("worker succeeded but document is null");
+                    Settings.getLogger().debug("worker succeeded but document is null");
                 }
             }
             else if (newState == State.CANCELLED){
-                System.out.println("document load CANCELLED: " + importEngine.getLocation());
+                Settings.getLogger().debug("document load CANCELLED: " + importEngine.getLocation());
             }
 //            else{
 ////                System.out.println("document load: " + newState);
@@ -144,9 +143,7 @@ public class HtmlImporter {
         public void changed(
                 ObservableValue<? extends Throwable> observable,
                 Throwable oldValue, Throwable newValue) {
-            // TODO Auto-generated method stub
-            System.out.println("exception received: " + newValue.getMessage());
-            newValue.printStackTrace();
+            Settings.getLogger().error("import engine load worker got exception", newValue);
         }
     };
 
@@ -159,20 +156,19 @@ public class HtmlImporter {
         try {
             hash = getFileHash(originalFile);
         } catch (NoSuchAlgorithmException | IOException e2) {
-            e2.printStackTrace();
+            Settings.getLogger().error("", e2);
             status.set(Status.Failed);
             return;
         }
 
         try {
             if(Database.getInstance().isRecipeExists(hash)){
-                System.out.println("already exist in database");
+                Settings.getLogger().debug("already exist in database");
                 status.set(Status.AlreadyExist);
                 return;
             }
         } catch (Exception e2) {
-            // TODO Auto-generated catch block
-            e2.printStackTrace();
+            Settings.getLogger().error("", e2);
             status.set(Status.Failed);
             return;
         }
@@ -224,7 +220,7 @@ public class HtmlImporter {
                 try {
                     srcName = URLDecoder.decode(attr.getNodeValue(), "UTF-8");
                 } catch (UnsupportedEncodingException | DOMException e1) {
-                    e1.printStackTrace();
+                    Settings.getLogger().error("", e1);
                     continue;
                 }
 
@@ -242,14 +238,12 @@ public class HtmlImporter {
                         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
                         attr.setTextContent(relativeSubdir + "/" + src.getFileName());
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        System.out.println("failed to copy on '" + attr.getNodeValue() + "'");
-                        e.printStackTrace();
+                        Settings.getLogger().error("failed to copy on '" + attr.getNodeValue() + "'", e);
                     }
                     //attr.setTextContent(hash);
                 }
                 else{
-                    System.out.println("nonexistent path " + src);
+                    Settings.getLogger().debug("nonexistent path " + src);
                 }
             }
         }
@@ -329,7 +323,7 @@ public class HtmlImporter {
             subfiles.close();
             target.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 
@@ -352,7 +346,7 @@ public class HtmlImporter {
         // extract plaintext for db fulltext search
         NodeList nodes = doc.getElementsByTagName("body");
         if(nodes.getLength() < 1){
-            System.out.println("body not found");
+            Settings.getLogger().debug("body not found");
             status.set(Status.Failed);
             return;
         }
@@ -364,9 +358,8 @@ public class HtmlImporter {
             wr.write(bodytext);
             wr.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+        	Settings.getLogger().error("", e);
             status.set(Status.Failed);
-            e.printStackTrace();
         }
 
 
@@ -381,9 +374,8 @@ public class HtmlImporter {
             fos.close();
 //            System.out.println("file written");
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
+        	Settings.getLogger().error("", e1);
             status.set(Status.Failed);
-            e1.printStackTrace();
         }
 
         String title = "unknown";
@@ -403,9 +395,8 @@ public class HtmlImporter {
             List<String> suggestedTags = RecipeLibrary.getInstance().suggestTags(title);
             Database.getInstance().updateRecipeTags(hash, suggestedTags);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+        	Settings.getLogger().error("", e);
             status.set(Status.Failed);
-            e.printStackTrace();
         }
 
         Util.deleteRecursively(tempDir.toFile());
