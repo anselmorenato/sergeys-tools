@@ -13,7 +13,8 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.LogManager;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
@@ -40,6 +41,8 @@ public class Settings {
     private String lastFilechooserLocation = "";
 
     private static Settings instance = new Settings();
+    private static ExecutorService executor = Executors.newCachedThreadPool();
+    private static ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
 
     private static Logger log;
 
@@ -58,12 +61,37 @@ public class Settings {
             dir.mkdirs();
         }
 
-        // init logging
+        // init java logging
+//        try{
+//            String logproperties = settingsDirPath + File.separator + "logging.properties";
+//            if(!new File(logproperties).exists()){
+//
+//                InputStream is = Settings.class.getResourceAsStream("/resources/logging.properties");
+//                if(is != null){
+//                    byte[] buf = new byte[20480];
+//                    FileOutputStream fos = new FileOutputStream(logproperties);
+//                    int count = 0;
+//                    while((count = is.read(buf)) > 0){
+//                        fos.write(buf, 0, count);
+//                    }
+//                    fos.close();
+//                    is.close();
+//                }
+//            }
+//
+//            LogManager.getLogManager().readConfiguration(new FileInputStream(logproperties));
+//
+//        }
+//        catch(IOException ex){
+//            ex.printStackTrace();
+//        }
+
+        // log4j
         try{
-            String logproperties = settingsDirPath + File.separator + "logging.properties";
+            String logproperties = settingsDirPath + File.separator + "log4j.properties";
             if(!new File(logproperties).exists()){
 
-                InputStream is = instance.getClass().getResourceAsStream("/resources/logging.properties");
+                InputStream is = Settings.class.getResourceAsStream("/resources/log4j.properties");
                 if(is != null){
                     byte[] buf = new byte[20480];
                     FileOutputStream fos = new FileOutputStream(logproperties);
@@ -76,13 +104,19 @@ public class Settings {
                 }
             }
 
-            LogManager.getLogManager().readConfiguration(new FileInputStream(logproperties));
-            log = LoggerFactory.getLogger("cookbook");            
+            //System.setProperty("log4j.debug", "true");
+            String conf = settingsDirPath + File.separator + "log4j.properties";
+            File confFile = new File(conf);
+            System.setProperty("log4j.configuration", confFile.toURI().toString());
+            System.setProperty("log4j.log.dir", settingsDirPath);
         }
         catch(IOException ex){
             ex.printStackTrace();
-        }        
-        
+        }
+
+        // slf4j logging
+        log = LoggerFactory.getLogger("cookbook");
+
         load();
     }
 
@@ -173,10 +207,39 @@ public class Settings {
 
     }
 
+//    public static void reconfigureLogger(){
+////    	String logproperties = settingsDirPath + File.separator + "logging.properties";
+////    	try {
+////			LogManager.getLogManager().readConfiguration(new FileInputStream(logproperties));
+////			log = LoggerFactory.getLogger("cookbook");
+////		} catch (SecurityException | IOException e) {
+////			e.printStackTrace();
+////		}
+//
+//    	try {
+//			LogManager.getLogManager().readConfiguration();
+//		} catch (SecurityException | IOException e) {
+//			e.printStackTrace();
+//		}
+//    }
+
     public static Logger getLogger(){
         return log;
     }
-    
+
+    public static ExecutorService getExecutor(){
+        return executor;
+    }
+
+    public static ExecutorService getSingleExecutor(){
+        return singleExecutor;
+    }
+
+    public static void shutdown(){
+        singleExecutor.shutdown();
+        executor.shutdown();
+    }
+
     private void setDefaults() {
         Rectangle2D bounds = Screen.getPrimary().getBounds();
 
@@ -239,11 +302,11 @@ public class Settings {
     }
 
 
-	@Override
-	protected void finalize() throws Throwable {
+    @Override
+    protected void finalize() throws Throwable {
 //		executor.shutdown();
 //		log.debug("shutdown executor"); ??
-		
-		super.finalize();
+
+        super.finalize();
 }
 }

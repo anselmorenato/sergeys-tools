@@ -25,7 +25,7 @@ public class CookBook extends Application {
         this.primaryStage = stage;
 
         try {
-
+        	        	
             // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
 
             URL location = getClass().getResource("MainScene.fxml");
@@ -69,7 +69,10 @@ public class CookBook extends Application {
     public void stop() throws Exception {
         // called before main stage closing events
         super.stop();
-
+        
+        Settings.shutdown();
+        Settings.getLogger().info("application exit");
+                
         Settings.save();
     }
 

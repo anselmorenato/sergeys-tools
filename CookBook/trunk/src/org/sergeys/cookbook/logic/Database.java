@@ -76,21 +76,21 @@ public final class Database {
                 ver++;
                 in = getClass().getResourceAsStream("/resources/upgrade" + ver + ".sql");
             }
-            
+
             //st.close();
         } catch (SQLException | IOException e) {
             Settings.getLogger().error("failed to upgrade db", e);
         }
         finally{
-        	if(in != null){
-        		in.close();
-        	}
-        	if(rs != null){
-        		rs.close();
-        	}
-        	if(st != null){
-        		st.close();
-        	}
+            if(in != null){
+                in.close();
+            }
+            if(rs != null){
+                rs.close();
+            }
+            if(st != null){
+                st.close();
+            }
         }
     }
 
@@ -142,14 +142,15 @@ public final class Database {
     public long addRecipe(String hash, File jarfile, String title, String originalfile){
 
         long id = 0;
-
+        PreparedStatement pst = null;
+        InputStream is = null;
         try {
-            PreparedStatement pst = getConnection().prepareStatement(
+             pst = getConnection().prepareStatement(
                     "insert into recipes (hash, title, packedfile, filesize, dateadded, originalfilename) " +
                     "values (?, ?, ?, ?, ?, ?)");
             pst.setString(1, hash);
             pst.setString(2, title);
-            InputStream is = new FileInputStream(jarfile);
+            is = new FileInputStream(jarfile);
             pst.setBinaryStream(3, is);
             pst.setLong(4, jarfile.length());
             pst.setLong(5, new Date().getTime());
@@ -173,6 +174,14 @@ public final class Database {
             pst.close();
         } catch (SQLException | IOException e) {
             Settings.getLogger().error("failed to add recipe", e);
+        }
+        finally{
+            try {
+                is.close();
+                pst.close();
+            } catch (SQLException | IOException e) {
+                Settings.getLogger().error("", e);
+            }
         }
 
         return id;
