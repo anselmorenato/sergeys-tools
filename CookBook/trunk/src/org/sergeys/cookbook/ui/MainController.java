@@ -50,12 +50,8 @@ import org.sergeys.cookbook.logic.RecipeLibrary;
 import org.sergeys.cookbook.logic.Settings;
 import org.sergeys.cookbook.logic.Tag;
 import org.sergeys.cookbook.ui.RecipeTreeValue.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MainController {
-
-    private static final Logger log = LoggerFactory.getLogger(MainController.class);
 
     @FXML private TreeView<RecipeTreeValue> tree;
     @FXML private WebView webview;
@@ -90,7 +86,7 @@ public class MainController {
     public void initialize(){
         // called by convention
         // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
-        log.info("init");
+        Settings.getLogger().info("maincontroller initialize");
 
         // TODO call in background
         RecipeLibrary.getInstance().validate();
@@ -246,7 +242,7 @@ public class MainController {
 
                 DialogController controller = loader.getController();
                 controller.setStage(dialogLog);
-                
+
             } catch (Exception ex) {
                 Settings.getLogger().error("", ex);
             }
@@ -513,7 +509,7 @@ public class MainController {
         @Override
         public void changed(ObservableValue<? extends Number> observable,
                 Number oldValue, Number newValue) {
-        	Settings.getLogger().info("task progress " + newValue);
+            Settings.getLogger().info("task progress " + newValue);
 //            System.out.println("- progress " + newValue);
         }
     };
@@ -522,7 +518,7 @@ public class MainController {
 
         @Override
         public void handle(WorkerStateEvent event) {
-        	Settings.getLogger().info("task complete");
+            Settings.getLogger().info("task complete");
             RecipeLibrary.getInstance().validate();
             buildTree();
         }};
@@ -550,7 +546,7 @@ public class MainController {
 //        	//executor = Executors.newSingleThreadExecutor();
 //        	executor = Executors.newCachedThreadPool();
 //        }
-//        
+//
 //        executor.execute(task);
         Settings.getSingleExecutor().execute(task);
     }

@@ -25,7 +25,11 @@ public class CookBook extends Application {
         this.primaryStage = stage;
 
         try {
-        	        	
+
+            Settings.getLogger().info("application start");
+//            Settings.reconfigureLogger(); // try to workaround webstart
+//            Settings.getLogger().info("after reconfigure");
+
             // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
 
             URL location = getClass().getResource("MainScene.fxml");
@@ -69,10 +73,10 @@ public class CookBook extends Application {
     public void stop() throws Exception {
         // called before main stage closing events
         super.stop();
-        
+
         Settings.shutdown();
         Settings.getLogger().info("application exit");
-                
+
         Settings.save();
     }
 
@@ -90,13 +94,13 @@ public class CookBook extends Application {
     }
 
     public static void main(String[] args) {
-    	
-    	Settings.getLogger().info("application start");
+
+        Settings.getLogger().info("application start");
 //    	Settings.getLogger().debug("debug");
 //    	Settings.getLogger().error("error");
 //    	Settings.getLogger().trace("trace");
-//    	Settings.getLogger().warn("warn");    	
-    	    	
+//    	Settings.getLogger().warn("warn");
+
         launch(args);
     }
 }

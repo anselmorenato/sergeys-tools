@@ -104,7 +104,7 @@ public class Settings {
                 }
             }
 
-            //System.setProperty("log4j.debug", "true");
+            System.setProperty("log4j.debug", "true");
             String conf = settingsDirPath + File.separator + "log4j.properties";
             File confFile = new File(conf);
             System.setProperty("log4j.configuration", confFile.toURI().toString());
@@ -216,11 +216,14 @@ public class Settings {
 ////			e.printStackTrace();
 ////		}
 //
-//    	try {
-//			LogManager.getLogManager().readConfiguration();
-//		} catch (SecurityException | IOException e) {
-//			e.printStackTrace();
-//		}
+////    	try {
+////			LogManager.getLogManager().readConfiguration();
+////		} catch (SecurityException | IOException e) {
+////			e.printStackTrace();
+////		}
+//
+//    	// slf4j logging
+//        log = LoggerFactory.getLogger("cookbook");
 //    }
 
     public static Logger getLogger(){
