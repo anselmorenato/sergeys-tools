@@ -86,7 +86,7 @@ public class MainController {
     public void initialize(){
         // called by convention
         // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
-        Settings.getLogger().info("maincontroller initialize");
+        //Settings.getLogger().debug("maincontroller initialize");
 
         // TODO call in background
         RecipeLibrary.getInstance().validate();

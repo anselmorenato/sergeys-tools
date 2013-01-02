@@ -17,8 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javafx.application.Platform;
-import javafx.geometry.Rectangle2D;
-import javafx.stage.Screen;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +102,7 @@ public class Settings {
                 }
             }
 
-            System.setProperty("log4j.debug", "true");
+            //System.setProperty("log4j.debug", "true");
             String conf = settingsDirPath + File.separator + "log4j.properties";
             File confFile = new File(conf);
             System.setProperty("log4j.configuration", confFile.toURI().toString());
@@ -244,10 +242,21 @@ public class Settings {
     }
 
     private void setDefaults() {
-        Rectangle2D bounds = Screen.getPrimary().getBounds();
-
-        winSize.setSize(bounds.getWidth() / 2, bounds.getHeight() / 2);
-        winPosition.setSize(bounds.getWidth() / 4, bounds.getHeight() / 4);
+//    	
+//    	try{
+//	    	Screen primary = Screen.getPrimary();	// this causes exception and breaks all next fx ui    	
+//	        Rectangle2D bounds = primary.getBounds();
+//	        winSize.setSize(bounds.getWidth() / 2, bounds.getHeight() / 2);
+//	        winPosition.setSize(bounds.getWidth() / 4, bounds.getHeight() / 4);
+//    	}
+//    	catch(Exception ex){
+//    		log.error("failed to get primary screen", ex);
+//    		winSize.setSize(800.0, 600.0);
+//    		winPosition.setSize(50.0, 50.0);
+//    	}
+    	
+		winSize.setSize(800.0, 600.0);
+		winPosition.setSize(50.0, 50.0);    	
     }
 
     public Date getCurrentVersion(){
@@ -303,13 +312,4 @@ public class Settings {
     public void setLastFilechooserLocation(String lastFilechooserLocation) {
         this.lastFilechooserLocation = lastFilechooserLocation;
     }
-
-
-    @Override
-    protected void finalize() throws Throwable {
-//		executor.shutdown();
-//		log.debug("shutdown executor"); ??
-
-        super.finalize();
-}
 }

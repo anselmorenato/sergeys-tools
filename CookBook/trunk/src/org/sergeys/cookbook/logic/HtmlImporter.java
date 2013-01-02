@@ -180,13 +180,6 @@ public class HtmlImporter {
         }
 
         importEngine.load(htmlFile.toURI().toString());
-
-//        Platform.runLater(new Runnable() {
-//			@Override
-//			public void run() {
-//				importEngine.load(htmlFile.toURI().toString());
-//			}
-//		});
     }
 
     /**
@@ -213,6 +206,7 @@ public class HtmlImporter {
                     attr.getNodeValue().isEmpty()){
                     // TODO: fetch remote files
 //                    System.out.println(tag + ": skip url '" + attr.getNodeValue() + "'");
+                	Settings.getLogger().debug(tag + ": skip url '" + attr.getNodeValue() + "'");
                     continue;
                 }
 
@@ -331,6 +325,9 @@ public class HtmlImporter {
 
         doc = document;
 
+        String encoding = doc.getInputEncoding();
+        Settings.getLogger().debug("doc encoding " + encoding);
+        
         // remove garbage
         removeElements(doc, "script");
         removeElements(doc, "noscript");
@@ -365,7 +362,10 @@ public class HtmlImporter {
 
         // TODO broken encoding for 1251 file
         // http://weblogs.java.net/blog/fabriziogiudici/archive/2012/02/12/xslt-xhtml-jdk6-jdk7-madness
-        HTMLSerializer sr = new HTMLSerializer(new OutputFormat(doc));
+        OutputFormat of = new OutputFormat(doc);
+        Settings.getLogger().debug("orig outputformat encoding " + of.getEncoding());
+        of.setEncoding(encoding);
+        HTMLSerializer sr = new HTMLSerializer(of);
         try {
             p = FileSystems.getDefault().getPath(tempDir.toString(), hash + ".html");
             FileOutputStream fos = new FileOutputStream(p.toFile());
