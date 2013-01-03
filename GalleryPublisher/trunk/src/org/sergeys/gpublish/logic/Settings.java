@@ -166,4 +166,20 @@ public class Settings {
 		this.lastFilechooserLocation = lastFilechooserLocation;
 	}
 
+	public Dimension getWinPosition() {
+		return winPosition;
+	}
+
+	public void setWinPosition(Dimension winPosition) {
+		this.winPosition = winPosition;
+	}
+
+	public Dimension getWinSize() {
+		return winSize;
+	}
+
+	public void setWinSize(Dimension winSize) {
+		this.winSize = winSize;
+	}
+
 }

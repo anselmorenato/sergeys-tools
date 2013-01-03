@@ -1,11 +1,15 @@
 package org.sergeys.gpublish.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -39,9 +43,23 @@ public class MainWindow {
         Settings.getLogger().debug("main window init");
 
         frame = new JFrame();
-        frame.setBounds(100, 100, 450, 300);
+        frame.setBounds(
+        		Settings.getInstance().getWinPosition().width,
+        		Settings.getInstance().getWinPosition().height,
+        		Settings.getInstance().getWinSize().width,
+        		Settings.getInstance().getWinSize().height);
+        
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        //frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);	// http://stackoverflow.com/questions/258099/how-to-close-a-java-swing-application-from-the-code        
+        
+             
+        frame.addWindowListener(new WindowAdapter() {
+        	@Override
+            public void windowClosing(WindowEvent e) {             
+                doExit();
+            }
+		});
+        
         JMenuBar menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
 
@@ -53,8 +71,6 @@ public class MainWindow {
             public void actionPerformed(ActionEvent e) {
                 doExit();
             }
-
-
         });
         mnFile.add(mntmExit);
 
@@ -143,8 +159,20 @@ public class MainWindow {
     }
 
     protected void doExit() {
-        // TODO Auto-generated method stub
-
+        Settings.getLogger().debug("application exit");
+        
+        Settings.getInstance().setWinPosition(new Dimension(frame.getX(), frame.getY()));
+        Settings.getInstance().setWinSize(new Dimension(frame.getWidth(), frame.getHeight()));
+        
+        try {
+			Settings.save();
+		} catch (FileNotFoundException e) {
+			Settings.getLogger().error("failed to save settings", e);
+		}
+        
+        frame.setVisible(false);
+        frame.dispose();
+        System.exit(0);
     }
 
     public JFrame getFrame(){
