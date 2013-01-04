@@ -26,7 +26,8 @@ public class Settings {
 	private Dimension winPosition = new Dimension();
 	private Dimension winSize = new Dimension();
 
-	private String lastFilechooserLocation = "";
+	private String lastImagesFolder = "";
+	private String lastWebFolder = "";
 
 	private static Settings instance = new Settings();
 
@@ -65,8 +66,12 @@ public class Settings {
 			// System.setProperty("log4j.debug", "true");
 			String conf = settingsDirPath + File.separator + "log4j.properties";
 			File confFile = new File(conf);
-			System.setProperty("log4j.configuration", confFile.toURI()
-					.toString());
+			if(confFile.exists()){
+				System.setProperty("log4j.configuration", confFile.toURI().toString());
+			}
+			else{
+				
+			}
 			System.setProperty("log4j.log.dir", settingsDirPath);
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -123,6 +128,11 @@ public class Settings {
 			XMLDecoder decoder = new XMLDecoder(is);
 			instance = (Settings) decoder.readObject();
 			decoder.close();
+			try {
+				is.close();
+			} catch (IOException e) {
+				Settings.getLogger().error("", e);
+			}
 		} else {
 			instance.setDefaults();
 		}
@@ -133,7 +143,7 @@ public class Settings {
 			instance.resources.load(is);
 		} catch (Exception e) {
 			Settings.getLogger().error("failed to load properties, exit", e);
-			System.exit(1);
+//			System.exit(1);	// this will close java console, comment for now
 		} finally {
 			try {
 				if (is != null) {
@@ -158,14 +168,6 @@ public class Settings {
 
 	}
 
-	public String getLastFilechooserLocation() {
-		return lastFilechooserLocation;
-	}
-
-	public void setLastFilechooserLocation(String lastFilechooserLocation) {
-		this.lastFilechooserLocation = lastFilechooserLocation;
-	}
-
 	public Dimension getWinPosition() {
 		return winPosition;
 	}
@@ -180,6 +182,22 @@ public class Settings {
 
 	public void setWinSize(Dimension winSize) {
 		this.winSize = winSize;
+	}
+
+	public String getLastImagesFolder() {
+		return lastImagesFolder;
+	}
+
+	public void setLastImagesFolder(String lastImagesFolder) {
+		this.lastImagesFolder = lastImagesFolder;
+	}
+
+	public String getLastWebFolder() {
+		return lastWebFolder;
+	}
+
+	public void setLastWebFolder(String lastWebFolder) {
+		this.lastWebFolder = lastWebFolder;
 	}
 
 }

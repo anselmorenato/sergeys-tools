@@ -3,23 +3,24 @@
 
     <property name="properties.file" value="build.properties" />
 
-    <target name="all" depends="init, builddir, prepare, deploy">
+    <target name="all" depends="init, builddir, compile, pack, collectAll, deploy">
     </target>
 
     <target name="init">
         <property file="${properties.file}">
         </property>
-    	<property file="${project.dir}/src/resources/settings.properties">
-		</property>
+        <property file="${project.dir}/src/resources/settings.properties">
+        </property>
     </target>
 
-    <target name="builddir">
-        <mkdir dir="${build.dir}" />
+    <target name="builddir" depends="init">
 
-        <delete>
-            <fileset dir="${build.dir}" excludes=".keystore">
-            </fileset>
-        </delete>
+        <delete dir="${build.dir}" verbose="false"/>
+    	
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.dir}/bin" />
+    	<mkdir dir="${build.dir}/webstart" />
+    	<mkdir dir="${build.dir}/webstart/lib" />
     </target>
 
     <target name="test">
@@ -41,38 +42,53 @@
                 <param name="O" value="Sergey Selivanov" />
                 <param name="C" value="UA" />
                 <param name="L" value="Kharkov" />
-                <!--
-                <param name="EmailAddress" value="sergey.selivanov@gmail.com" />
-                -->
             </dname>
         </genkey>
     </target>
 
+    <target name="compile" depends="init, builddir">
+        <javac srcdir="${project.dir}/src"
+         destdir="${build.dir}/bin"
+         debug="on" includeantruntime="false" optimize="yes" source="1.6" target="1.6">
+            <classpath>
+                <fileset dir="${project.dir}/lib" includes="*.jar"></fileset>
+            </classpath>
+            </javac>
+    </target>
 
-    <target name="prepare" depends="key">
+	<target name="pack" depends="compile">
+		<jar destfile="${build.dir}/webstart/GalleryPublisher.jar">
+			<fileset dir="${build.dir}/bin" includes="**/*.class"></fileset>
+			<fileset dir="${project.dir}/src" includes="images/*"></fileset>
+			<fileset dir="${project.dir}/src" includes="resources/*"></fileset>
+		</jar>
+	</target>
+	
+    <target name="collectAll" depends="key, compile">
 
-        <copy file="cookbook.jnlp" tofile="${build.dir}/cookbook.jnlp" overwrite="true">
+        <copy file="gallerypublisher.jnlp" tofile="${build.dir}/webstart/gallerypublisher.jnlp" overwrite="true">
         </copy>
 
-        <replace file="${build.dir}/cookbook.jnlp">
+        <replace file="${build.dir}/webstart/gallerypublisher.jnlp">
             <replacefilter token="%REVISION%" value="${version}"/>
             <replacefilter token="%URL%" value="${webstart.url}"/>
+            <replacefilter token="%APPICON%" value="${appicon.file}"/>
         </replace>
 
-        <!-- watch correct file extension here -->
-        <copy file="${appicon}" tofile="${build.dir}/largeicon.png" overwrite="true">
+        <copy file="${appicon}" tofile="${build.dir}/webstart/${appicon.file}" overwrite="true">
         </copy>
 
-    	<echo message="Collect fxbuild output:" />
-        <copy todir="${build.dir}" verbose="true">
-            <fileset dir="${project.dir}/build/dist">
+        <echo message="Copy libs:" />
+        <copy todir="${build.dir}/webstart/lib" verbose="true">
+            <fileset dir="${project.dir}/lib" includes="**/*.jar">
             </fileset>
         </copy>
 
-        <move file="${build.dir}/CookBook.jar" tofile="${build.dir}/CookBook.${version}.jar"></move>
+        <move file="${build.dir}/webstart/GalleryPublisher.jar" 
+        	tofile="${build.dir}/webstart/GalleryPublisher.${version}.jar"></move>
 
         <signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" verbose="false">
-            <fileset dir="${build.dir}">
+            <fileset dir="${build.dir}/webstart">
                 <include name="**/*.jar"/>
             </fileset>
         </signjar>
@@ -88,7 +104,7 @@
         </delete>
 
         <copy todir="${deploy.dir}">
-            <fileset dir="${build.dir}" excludes=".keystore">
+            <fileset dir="${build.dir}/webstart">
             </fileset>
         </copy>
 

@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -42,7 +43,12 @@ public class MainWindow implements ClipboardOwner {
      * Create the application.
      */
     public MainWindow() {
-        initialize();
+    	try{
+    		initialize();
+    	}
+    	catch(Exception ex){
+    		Settings.getLogger().error("failed to init main window", ex);
+    	}
     }
 
     /**
@@ -84,7 +90,7 @@ public class MainWindow implements ClipboardOwner {
                 doExit();
             }
 		});
-        
+                
         JMenuBar menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
 
@@ -206,6 +212,9 @@ public class MainWindow implements ClipboardOwner {
         });
         panelBottom.add(btnClear);
         panelBottom.add(btnClipboard);
+        
+        textFieldImagesFolder.setText(Settings.getInstance().getLastImagesFolder());
+        textFieldWebFolder.setText(Settings.getInstance().getLastWebFolder());
     }
 
     protected void doClear() {
@@ -239,13 +248,11 @@ public class MainWindow implements ClipboardOwner {
 	}
 
 	protected void doGenerateHtml() {
-		// TODO Auto-generated method stub
-		
+		textPaneHtml.setText("here goes generated html");		
 	}
 
 	protected void doAbout() {
-        // TODO Auto-generated method stub
-
+        JOptionPane.showMessageDialog(frame, "TODO: about");
     }
 
     protected void doExit() {
@@ -253,6 +260,9 @@ public class MainWindow implements ClipboardOwner {
         
         Settings.getInstance().setWinPosition(new Dimension(frame.getX(), frame.getY()));
         Settings.getInstance().setWinSize(new Dimension(frame.getWidth(), frame.getHeight()));
+        
+        Settings.getInstance().setLastImagesFolder(textFieldImagesFolder.getText());
+        Settings.getInstance().setLastWebFolder(textFieldWebFolder.getText());
         
         try {
 			Settings.save();

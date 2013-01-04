@@ -10,6 +10,11 @@ public class GalleryPublisher {
      * Launch the application.
      */
     public static void main(String[] args) {
+    	
+    	Settings.getLogger().debug("main start");
+    	
+    	try{
+    	
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -29,6 +34,11 @@ public class GalleryPublisher {
                 }
             }
         });
+        
+    	}
+    	catch(Exception ex){
+    		Settings.getLogger().error("sudden death", ex);
+    	}
     }
 
 }
