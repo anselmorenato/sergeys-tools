@@ -1,1 +1,15 @@
 http://russos.livejournal.com/991863.html
+
+
+===========
+Further possible improvements:
+
+- use only original images, generate resized images using standard java classes
+- use only original images, generate resized images using external convertor program in batch mode
+- upload files via FTP
+- post to livejournal using LJ API
+- use some kind of templates for html
+- preview html like in semagic
+
+- upload files with SCP, other protocols
+- post to other sites
