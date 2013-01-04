@@ -18,6 +18,38 @@
 <br/>
 <br/>
 
+<h2>Gallery Publisher</h2>
+<br>
+<p>
+
+Обработчик картинок для <a href="http://russos.livejournal.com/991863.html">http://russos.livejournal.com/991863.html</a>
+
+
+<p>
+Должно работать на Windows, Linux, MacOS X, далее везде, где есть стандартная Java SE 1.6.
+
+<p>
+Требования: Java 1.6 и выше, 32 или 64 бит.
+<p>
+<br>
+
+
+<script>
+    var dir = location.href.substring(0, location.href.lastIndexOf('/')+1);
+    var url = dir + "gp/gallerypublisher.jnlp";
+    deployJava.createWebStartLaunchButton(url, '1.6.0');
+</script>
+<br/>
+
+<div class="note">
+(<a href='gp/gallerypublisher.jnlp'>прямая ссылка</a>)
+</div>
+
+<br>
+<br>
+<br>
+
+
 <!--  img src="cookbook/largeicon.png" -->
 <h2>Cook Book</h2>
 <br>
@@ -30,8 +62,9 @@
 Должно работать на Windows, Linux, MacOS X.
 
 <p>
-Требования: JavaFX 2.2 и выше, 32 или 64 бит. Java 1.7 имеет FX в комплекте, для 1.6 можно добавить FX дополнительно.
-Рекомендуется последняя версия Java 1.7.
+Требования: JavaFX 2.2 и выше, 32 или 64 бит. Java SE 1.7 имеет FX в комплекте, для 1.6 можно руками добавить поддержку FX дополнительно.
+<p>
+Рекомендуется самая последняя версия Java 1.7 (FX начали включать где-то с ревизии 06, нужно уточнить).
 <p>
 <br>
 
@@ -73,6 +106,10 @@
         deployJava.createWebStartLaunchButton(url, '1.6.0');
     </script>
 <br>
+<div class="note">
+(<a href='wcd/wcd.jnlp'>прямая ссылка</a>)
+</div>
+
 <br>
 <br>
 
@@ -102,28 +139,37 @@
         deployJava.createWebStartLaunchButton(url, '1.6.0');
     </script>
 <br>
+<div class="note">
+(<a href='cf/cf.jnlp'>прямая ссылка</a>)
+</div>
+
 <br>
 <br>
 
 <h2>Another way</h2>
 <br>
-Если оранжевая кнопка почему-то не сработает, тогда делаем по-другому.
+Если оранжевая кнопка почему-то не сработает (отключен JavaSript, например), тогда делаем по-другому.
+<p>
 Если не уверены, что java установлена, сходите на <a href="http://java.com">http://java.com</a> и проверьте:
 <p>
+<br/>
 <a href="http://java.com/en/download/installed.jsp?detect=jre&try=1">Проверить</a>
+<br/>
+<br/>
 <p>
 оттуда же её и установите, если что.
 <p>
 <br/>
-Если java установлена, запускайте приложения через прямые ссылки:
+После установки попробуйте оранжевые кнопочки снова. Если опять что-то не так, запускайте приложения через прямые ссылки.
+<p>
+Если браузер будет спрашивать, чем открывать файлы типа .jnlp, нужно найти программку по имени javaws из комплекта Java (Java Runtime Environment, JRE).
+<p>
+Для Windows это будет где-то в районе C:\Program Files\Java\jre7\bin\javaws.exe.
 <p>
 <br/>
-<a href="wcd/wcd.jnlp">WebCacheDigger</a>
-<br/>
-<br/>
-<p>
-<a href="cf/cf.jnlp">CoverFinder</a>
-<br/>
+Если в дальнейшем не предполагаете регулярно пользоваться поддержкой Java в браузере, рекомендую выключить Java-плагин
+в настройках браузера для пущей безопасности, был вроде когда-то случай с уязвимостью. Относится, кстати, ко всем плагинам,
+рекомендую отключать всё неиспользуемое.
 <p>
 
 
