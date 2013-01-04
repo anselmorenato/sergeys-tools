@@ -3,14 +3,12 @@
 
     <property name="properties.file" value="build.properties" />
 
-    <target name="all" depends="init, builddir, compile, pack, collectAll, deploy">
+    <target name="all" depends="init, test, builddir, compile, pack, collectAll">
     </target>
 
     <target name="init">
-        <property file="${properties.file}">
-        </property>
-        <property file="${project.dir}/src/resources/settings.properties">
-        </property>
+        <property file="${properties.file}"></property>
+        <property file="${project.dir}/src/resources/settings.properties"></property>
     </target>
 
     <target name="builddir" depends="init">
@@ -49,7 +47,7 @@
     <target name="compile" depends="init, builddir">
         <javac srcdir="${project.dir}/src"
          destdir="${build.dir}/bin"
-         debug="on" includeantruntime="false" optimize="yes" source="1.6" target="1.6">
+         debug="off" includeantruntime="false" optimize="yes" source="1.6" target="1.6">
             <classpath>
                 <fileset dir="${project.dir}/lib" includes="*.jar"></fileset>
             </classpath>
@@ -57,10 +55,20 @@
     </target>
 
 	<target name="pack" depends="compile">
-		<jar destfile="${build.dir}/webstart/GalleryPublisher.jar">
+		<jar destfile="${build.dir}/webstart/GalleryPublisher.jar" index="yes">
 			<fileset dir="${build.dir}/bin" includes="**/*.class"></fileset>
 			<fileset dir="${project.dir}/src" includes="images/*"></fileset>
 			<fileset dir="${project.dir}/src" includes="resources/*"></fileset>
+			<manifest>
+				<!-- optional, just to try -->
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Main-Class" value="org/sergeys/gpublish/ui/GalleryPublisher"/>
+				<attribute name="Class-Path" value="lib/log4j-1.2.17.jar lib/slf4j-api-1.7.2.jar lib/slf4j-log4j12-1.7.2.jar"/>
+				<attribute name="Sealed" value="true"/>
+				<attribute name="implementation-vendor" value="sergeys"/>
+				<attribute name="implementation-title" value="Gallery Publisher"/>
+				<attribute name="implementation-version" value="1.0"/>
+			</manifest>
 		</jar>
 	</target>
 	
@@ -69,14 +77,14 @@
         <copy file="gallerypublisher.jnlp" tofile="${build.dir}/webstart/gallerypublisher.jnlp" overwrite="true">
         </copy>
 
+        <copy file="${appicon}" tofile="${build.dir}/webstart/${appicon.file}" overwrite="true">
+        </copy>
+
         <replace file="${build.dir}/webstart/gallerypublisher.jnlp">
             <replacefilter token="%REVISION%" value="${version}"/>
             <replacefilter token="%URL%" value="${webstart.url}"/>
             <replacefilter token="%APPICON%" value="${appicon.file}"/>
         </replace>
-
-        <copy file="${appicon}" tofile="${build.dir}/webstart/${appicon.file}" overwrite="true">
-        </copy>
 
         <echo message="Copy libs:" />
         <copy todir="${build.dir}/webstart/lib" verbose="true">
@@ -95,7 +103,7 @@
 
     </target>
 
-    <target name="deploy">
+    <target name="deploy" depends="init">
         <mkdir dir="${deploy.dir}" />
 
         <delete>

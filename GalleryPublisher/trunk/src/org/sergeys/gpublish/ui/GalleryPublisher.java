@@ -12,9 +12,7 @@ public class GalleryPublisher {
     public static void main(String[] args) {
     	
     	Settings.getLogger().debug("main start");
-    	
-    	try{
-    	
+    	    	
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -33,12 +31,7 @@ public class GalleryPublisher {
                     Settings.getLogger().error("failed to create main window", e);
                 }
             }
-        });
-        
-    	}
-    	catch(Exception ex){
-    		Settings.getLogger().error("sudden death", ex);
-    	}
+        });            	
     }
 
 }

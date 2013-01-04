@@ -23,7 +23,7 @@ public class DirSelectorDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 
-	DirTreePanel dirTreePanel;
+	private DirTreePanel dirTreePanel;
 	
 	/**
 	 * Create the dialog.
