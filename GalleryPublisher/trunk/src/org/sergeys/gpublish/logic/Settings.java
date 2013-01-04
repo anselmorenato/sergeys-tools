@@ -26,8 +26,11 @@ public class Settings {
 	private Dimension winPosition = new Dimension();
 	private Dimension winSize = new Dimension();
 
-	private String lastImagesFolder = "";
-	private String lastWebFolder = "";
+	private String srcPostImagesFolder = "";
+	private String srcWallpapersFolder = "";
+	private String dstWallpapersFolder = "";
+	private String webPrefixPostImages = "";
+	private String webPrefixWallpapers = "";
 
 	private static Settings instance = new Settings();
 
@@ -101,7 +104,7 @@ public class Settings {
 		Settings.settingsDirPath = settingsDirPath;
 	}
 
-	public static Logger getLogger() {
+	public static synchronized Logger getLogger() {
 		return logger;
 	}
 
@@ -184,20 +187,45 @@ public class Settings {
 		this.winSize = winSize;
 	}
 
-	public String getLastImagesFolder() {
-		return lastImagesFolder;
+	public String getSrcPostImagesFolder() {
+		return srcPostImagesFolder;
 	}
 
-	public void setLastImagesFolder(String lastImagesFolder) {
-		this.lastImagesFolder = lastImagesFolder;
+	public void setSrcPostImagesFolder(String srcPostImagesFolder) {
+		this.srcPostImagesFolder = srcPostImagesFolder;
 	}
 
-	public String getLastWebFolder() {
-		return lastWebFolder;
+	public String getSrcWallpapersFolder() {
+		return srcWallpapersFolder;
 	}
 
-	public void setLastWebFolder(String lastWebFolder) {
-		this.lastWebFolder = lastWebFolder;
+	public void setSrcWallpapersFolder(String srcWallpapersFolder) {
+		this.srcWallpapersFolder = srcWallpapersFolder;
 	}
+
+	public String getDstWallpapersFolder() {
+		return dstWallpapersFolder;
+	}
+
+	public void setDstWallpapersFolder(String dstWallpapersFolder) {
+		this.dstWallpapersFolder = dstWallpapersFolder;
+	}
+
+	public String getWebPrefixPostImages() {
+		return webPrefixPostImages;
+	}
+
+	public void setWebPrefixPostImages(String webPrefixPostImages) {
+		this.webPrefixPostImages = webPrefixPostImages;
+	}
+
+	public String getWebPrefixWallpapers() {
+		return webPrefixWallpapers;
+	}
+
+	public void setWebPrefixWallpapers(String webPrefixWallpapers) {
+		this.webPrefixWallpapers = webPrefixWallpapers;
+	}
+
 
 }

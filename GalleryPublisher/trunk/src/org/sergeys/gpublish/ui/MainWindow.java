@@ -30,8 +30,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SwingWorker.StateValue;
 import javax.swing.UIManager;
 
+import org.sergeys.gpublish.logic.RenamerWorker;
 import org.sergeys.gpublish.logic.Settings;
 
 public class MainWindow implements ClipboardOwner {
@@ -189,6 +191,7 @@ public class MainWindow implements ClipboardOwner {
         panelTop.add(lblNewLabel1, gbc_lblNewLabel1);
 
         textFieldSrcPostImagesFolder = new JTextField();
+        textFieldSrcPostImagesFolder.setEditable(false);
         GridBagConstraints gbc_textFieldSrcPostImagesFolder = new GridBagConstraints();
         gbc_textFieldSrcPostImagesFolder.fill = GridBagConstraints.BOTH;
         gbc_textFieldSrcPostImagesFolder.insets = new Insets(0, 0, 5, 5);
@@ -220,6 +223,7 @@ public class MainWindow implements ClipboardOwner {
                                 panelTop.add(lblWebFolder, gbc_lblWebFolder);
 
                         textFieldSrcRawWpFolder = new JTextField();
+                        textFieldSrcRawWpFolder.setEditable(false);
                         GridBagConstraints gbc_textFieldSrcRawWpFolder = new GridBagConstraints();
                         gbc_textFieldSrcRawWpFolder.insets = new Insets(0, 0, 5, 5);
                         gbc_textFieldSrcRawWpFolder.fill = GridBagConstraints.HORIZONTAL;
@@ -227,7 +231,7 @@ public class MainWindow implements ClipboardOwner {
                         gbc_textFieldSrcRawWpFolder.gridy = 1;
                         panelTop.add(textFieldSrcRawWpFolder, gbc_textFieldSrcRawWpFolder);
                         textFieldSrcRawWpFolder.setColumns(10);
-                        textFieldSrcRawWpFolder.setText(Settings.getInstance().getLastWebFolder());
+                        
 
                 JButton btnSelectSrcWallpapers = new JButton("...");
                 btnSelectSrcWallpapers.addActionListener(new ActionListener() {
@@ -251,6 +255,7 @@ public class MainWindow implements ClipboardOwner {
         panelTop.add(lblNewLabel, gbc_lblNewLabel);
 
         textFieldDstWpFolder = new JTextField();
+        textFieldDstWpFolder.setEditable(false);
         GridBagConstraints gbc_textFieldDstWpFolder = new GridBagConstraints();
         gbc_textFieldDstWpFolder.insets = new Insets(0, 0, 5, 5);
         gbc_textFieldDstWpFolder.fill = GridBagConstraints.HORIZONTAL;
@@ -306,8 +311,7 @@ public class MainWindow implements ClipboardOwner {
         panelTop.add(textFieldWpWebPrefix, gbc_textFieldWpWebPrefix);
         textFieldWpWebPrefix.setColumns(10);
 
-        textFieldSrcPostImagesFolder.setText(Settings.getInstance()
-                .getLastImagesFolder());
+        
 
                 JButton btnGenerateHtml = new JButton("Generate HTML");
                 btnGenerateHtml.addActionListener(new ActionListener() {
@@ -354,9 +358,19 @@ public class MainWindow implements ClipboardOwner {
             }
         });
         panelBottom.add(btnViewLog);
+        
+        setInitialValues();
     }
 
-
+    private void setInitialValues(){
+    	textFieldSrcPostImagesFolder.setText(Settings.getInstance().getSrcPostImagesFolder());    	
+        textFieldSrcRawWpFolder.setText(Settings.getInstance().getSrcWallpapersFolder());
+        textFieldDstWpFolder.setText(Settings.getInstance().getDstWallpapersFolder());
+        textFieldPostImagesWebPrefix.setText(Settings.getInstance().getWebPrefixPostImages());
+        textFieldWpWebPrefix.setText(Settings.getInstance().getWebPrefixWallpapers());            	
+    }
+    
+    
     private DirSelectorDialog dirSelector;
 
     private enum DirectoryType { PostImages, SourceWallpapers, TargetWallpapers };
@@ -377,12 +391,15 @@ public class MainWindow implements ClipboardOwner {
                 	switch(dirType){
                 	case PostImages:
                 		textFieldSrcPostImagesFolder.setText(path);
+                        Settings.getInstance().setSrcPostImagesFolder(textFieldSrcPostImagesFolder.getText());                                                
                 		break;
                 	case SourceWallpapers:
                 		textFieldSrcRawWpFolder.setText(path);
+                		Settings.getInstance().setSrcWallpapersFolder(textFieldSrcRawWpFolder.getText());
                 		break;
                 	case TargetWallpapers:
                 		textFieldDstWpFolder.setText(path);
+                		Settings.getInstance().setDstWallpapersFolder(textFieldDstWpFolder.getText());
                 		break;
                 	}
                     
@@ -429,29 +446,53 @@ public class MainWindow implements ClipboardOwner {
 
     protected void doGenerateHtml() {
 
+    	// update settings, dir selectors already ipdated
+        Settings.getInstance().setWebPrefixPostImages(textFieldPostImagesWebPrefix.getText());
+        Settings.getInstance().setWebPrefixWallpapers(textFieldWpWebPrefix.getText());
 
+        // TODO invoke worker
+        RenamerWorker worker = new RenamerWorker(this);
+        worker.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if("state".equals(evt.getPropertyName())){
+					if((StateValue)evt.getNewValue() == StateValue.DONE){
+						doWorkerDone();
+					}
+					Settings.getLogger().debug(evt.getNewValue().toString());
+					
+				}
 
-        textPaneHtml.setText("here goes generated html");
+//				disabledPanel.setEnabled(true);
+//				textPaneHtml.setText("here goes generated html");
+			}
+		});
 
+        worker.execute();
         disabledPanel.setEnabled(false);
     }
 
-    protected void doAbout() {
+    protected void doWorkerDone() {		
+    	disabledPanel.setEnabled(true);		
+	}
+
+	protected void doAbout() {
         JOptionPane.showMessageDialog(frame, "TODO: about 1");
     }
 
     protected void doExit() {
         Settings.getLogger().debug("application exit");
 
-        Settings.getInstance().setWinPosition(
-                new Dimension(frame.getX(), frame.getY()));
-        Settings.getInstance().setWinSize(
-                new Dimension(frame.getWidth(), frame.getHeight()));
+        Settings.getInstance().setWinPosition(new Dimension(frame.getX(), frame.getY()));
+        Settings.getInstance().setWinSize(new Dimension(frame.getWidth(), frame.getHeight()));
 
-        Settings.getInstance().setLastImagesFolder(
-                textFieldSrcPostImagesFolder.getText());
-        Settings.getInstance().setLastWebFolder(textFieldSrcRawWpFolder.getText());
-
+        Settings.getInstance().setSrcPostImagesFolder(textFieldSrcPostImagesFolder.getText());
+        Settings.getInstance().setSrcWallpapersFolder(textFieldSrcRawWpFolder.getText());
+        Settings.getInstance().setDstWallpapersFolder(textFieldDstWpFolder.getText());
+        Settings.getInstance().setWebPrefixPostImages(textFieldPostImagesWebPrefix.getText());
+        Settings.getInstance().setWebPrefixWallpapers(textFieldWpWebPrefix.getText());
+        
         try {
             Settings.save();
         } catch (FileNotFoundException e) {
@@ -471,5 +512,9 @@ public class MainWindow implements ClipboardOwner {
     public void lostOwnership(Clipboard arg0, Transferable arg1) {
         // do nothing
     }
+
+	public JTextPane getTextPaneHtml() {
+		return textPaneHtml;
+	}
 
 }
