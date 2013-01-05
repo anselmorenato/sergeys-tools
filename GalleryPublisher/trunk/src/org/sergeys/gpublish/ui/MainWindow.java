@@ -28,6 +28,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingWorker.StateValue;
@@ -329,8 +330,11 @@ public class MainWindow implements ClipboardOwner {
         contentPanel.add(panelCenter, BorderLayout.CENTER);
         panelCenter.setLayout(new BorderLayout(0, 0));
 
+        
+        
         textPaneHtml = new JTextPane();
-        panelCenter.add(textPaneHtml);
+        JScrollPane scrollPane = new JScrollPane(textPaneHtml);
+        panelCenter.add(scrollPane);
 
         JPanel panelBottom = new JPanel();
         contentPanel.add(panelBottom, BorderLayout.SOUTH);
@@ -429,9 +433,6 @@ public class MainWindow implements ClipboardOwner {
 
     }
 
-    protected void doCancelBackgroundWork() {
-        disabledPanel.setEnabled(true);
-    }
 
     protected void doClear() {
         textPaneHtml.setText("");
@@ -444,14 +445,15 @@ public class MainWindow implements ClipboardOwner {
         clipboard.setContents(stringSelection, this);
     }
 
+    private RenamerWorker worker;
+    
     protected void doGenerateHtml() {
 
     	// update settings, dir selectors already ipdated
         Settings.getInstance().setWebPrefixPostImages(textFieldPostImagesWebPrefix.getText());
         Settings.getInstance().setWebPrefixWallpapers(textFieldWpWebPrefix.getText());
-
-        // TODO invoke worker
-        RenamerWorker worker = new RenamerWorker(this);
+        
+        worker = new RenamerWorker(this);
         worker.addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
@@ -460,23 +462,25 @@ public class MainWindow implements ClipboardOwner {
 					if((StateValue)evt.getNewValue() == StateValue.DONE){
 						doWorkerDone();
 					}
-					Settings.getLogger().debug(evt.getNewValue().toString());
-					
+					Settings.getLogger().debug("worker state: " + evt.getNewValue().toString());					
 				}
-
-//				disabledPanel.setEnabled(true);
-//				textPaneHtml.setText("here goes generated html");
 			}
 		});
 
-        worker.execute();
         disabledPanel.setEnabled(false);
+        worker.execute();                        
     }
 
     protected void doWorkerDone() {		
+    	// just reenables panel. Textarea is updated from worker class.
     	disabledPanel.setEnabled(true);		
 	}
 
+    protected void doCancelBackgroundWork() {
+    	worker.cancel(false);
+        disabledPanel.setEnabled(true);
+    }
+    
 	protected void doAbout() {
         JOptionPane.showMessageDialog(frame, "TODO: about 1");
     }
