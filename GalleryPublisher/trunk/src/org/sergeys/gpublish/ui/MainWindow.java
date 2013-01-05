@@ -64,14 +64,12 @@ public class MainWindow implements ClipboardOwner {
      * Initialize the contents of the frame.
      */
     private void initialize() {
-        Settings.getLogger().debug("main window init");
 
         // looks like old name is used in 1.6 on macosx and this not works
         // UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 
         try {
-            UIManager
-                    .setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception ex) {
             Settings.getLogger().error("failed to set lookandfeel", ex);
         }
@@ -233,7 +231,7 @@ public class MainWindow implements ClipboardOwner {
                         gbc_textFieldSrcRawWpFolder.gridy = 1;
                         panelTop.add(textFieldSrcRawWpFolder, gbc_textFieldSrcRawWpFolder);
                         textFieldSrcRawWpFolder.setColumns(10);
-                        
+
 
                 JButton btnSelectSrcWallpapers = new JButton("...");
                 btnSelectSrcWallpapers.addActionListener(new ActionListener() {
@@ -313,7 +311,7 @@ public class MainWindow implements ClipboardOwner {
         panelTop.add(textFieldWpWebPrefix, gbc_textFieldWpWebPrefix);
         textFieldWpWebPrefix.setColumns(10);
 
-        
+
 
                 JButton btnGenerateHtml = new JButton("Generate HTML");
                 btnGenerateHtml.addActionListener(new ActionListener() {
@@ -331,8 +329,8 @@ public class MainWindow implements ClipboardOwner {
         contentPanel.add(panelCenter, BorderLayout.CENTER);
         panelCenter.setLayout(new BorderLayout(0, 0));
 
-        
-        
+
+
         textPaneHtml = new JTextPane();
         JScrollPane scrollPane = new JScrollPane(textPaneHtml);
         panelCenter.add(scrollPane);
@@ -363,27 +361,25 @@ public class MainWindow implements ClipboardOwner {
             }
         });
         panelBottom.add(btnViewLog);
-        
+
         setInitialValues();
     }
 
     private void setInitialValues(){
-    	textFieldSrcPostImagesFolder.setText(Settings.getInstance().getSrcPostImagesFolder());    	
+        textFieldSrcPostImagesFolder.setText(Settings.getInstance().getSrcPostImagesFolder());
         textFieldSrcRawWpFolder.setText(Settings.getInstance().getSrcWallpapersFolder());
         textFieldDstWpFolder.setText(Settings.getInstance().getDstWallpapersFolder());
         textFieldPostImagesWebPrefix.setText(Settings.getInstance().getWebPrefixPostImages());
-        textFieldWpWebPrefix.setText(Settings.getInstance().getWebPrefixWallpapers());            	
+        textFieldWpWebPrefix.setText(Settings.getInstance().getWebPrefixWallpapers());
     }
-    
-    
+
     private DirSelectorDialog dirSelector;
 
     private enum DirectoryType { PostImages, SourceWallpapers, TargetWallpapers };
-    
-    // kinda ugly wrapper
+
     private void selectDirHelper(final DirectoryType dirType){
         if (dirSelector == null) {
-            dirSelector = new DirSelectorDialog(frame);            
+            dirSelector = new DirSelectorDialog(frame);
             dirSelector.setLocationRelativeTo(frame);
         }
 
@@ -391,98 +387,94 @@ public class MainWindow implements ClipboardOwner {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals(DirSelectorDialog.DIRECTORY_SELECTED)) {
-                	
-                	String path = evt.getNewValue().toString();
-                	switch(dirType){
-                	case PostImages:
-                		textFieldSrcPostImagesFolder.setText(path);
-                        Settings.getInstance().setSrcPostImagesFolder(textFieldSrcPostImagesFolder.getText());                                                
-                		break;
-                	case SourceWallpapers:
-                		textFieldSrcRawWpFolder.setText(path);
-                		Settings.getInstance().setSrcWallpapersFolder(textFieldSrcRawWpFolder.getText());
-                		break;
-                	case TargetWallpapers:
-                		textFieldDstWpFolder.setText(path);
-                		Settings.getInstance().setDstWallpapersFolder(textFieldDstWpFolder.getText());
-                		break;
-                	}
-                    
+
+                    String path = evt.getNewValue().toString();
+                    switch(dirType){
+                    case PostImages:
+                        textFieldSrcPostImagesFolder.setText(path);
+                        Settings.getInstance().setSrcPostImagesFolder(textFieldSrcPostImagesFolder.getText());
+                        break;
+                    case SourceWallpapers:
+                        textFieldSrcRawWpFolder.setText(path);
+                        Settings.getInstance().setSrcWallpapersFolder(textFieldSrcRawWpFolder.getText());
+                        break;
+                    case TargetWallpapers:
+                        textFieldDstWpFolder.setText(path);
+                        Settings.getInstance().setDstWallpapersFolder(textFieldDstWpFolder.getText());
+                        break;
+                    }
                 }
             }
-        }; 
-        
-        dirSelector.addPropertyChangeListener(DirSelectorDialog.DIRECTORY_SELECTED, listener);        
+        };
+
+        dirSelector.addPropertyChangeListener(DirSelectorDialog.DIRECTORY_SELECTED, listener);
         dirSelector.setVisible(true);	// waits for closing
         dirSelector.removePropertyChangeListener(DirSelectorDialog.DIRECTORY_SELECTED, listener);
     }
-    
+
     protected void doSelectSrcImageFolder() {
-    	selectDirHelper(DirectoryType.PostImages);
+        selectDirHelper(DirectoryType.PostImages);
     }
 
     protected void doSelectDstWallpapers() {
-    	selectDirHelper(DirectoryType.TargetWallpapers);
+        selectDirHelper(DirectoryType.TargetWallpapers);
     }
 
     protected void doSelectSrcWallpapers() {
-    	selectDirHelper(DirectoryType.SourceWallpapers);
+        selectDirHelper(DirectoryType.SourceWallpapers);
     }
 
     protected void doViewLog() {
-    	JOptionPane.showMessageDialog(frame, "TODO: see logfile here: " + Settings.getSettingsDirPath() + File.separator + "log.txt");
-
+        JOptionPane.showMessageDialog(frame, "TODO: see logfile here: " + Settings.getSettingsDirPath() + File.separator + "log.txt");
     }
-
 
     protected void doClear() {
         textPaneHtml.setText("");
     }
 
     protected void doCopyToClipboard() {
-        StringSelection stringSelection = new StringSelection(
-                textPaneHtml.getText());
+        StringSelection stringSelection = new StringSelection(textPaneHtml.getText());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, this);
     }
 
     private RenamerWorker worker;
-    
+
     protected void doGenerateHtml() {
 
-    	// update settings, dir selectors already ipdated
+        // update settings, dir selectors already ipdated
         Settings.getInstance().setWebPrefixPostImages(textFieldPostImagesWebPrefix.getText());
         Settings.getInstance().setWebPrefixWallpapers(textFieldWpWebPrefix.getText());
-        
+
         worker = new RenamerWorker(this);
         worker.addPropertyChangeListener(new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if("state".equals(evt.getPropertyName())){
-					if((StateValue)evt.getNewValue() == StateValue.DONE){
-						doWorkerDone();
-					}
-					Settings.getLogger().debug("worker state: " + evt.getNewValue().toString());					
-				}
-			}
-		});
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if("state".equals(evt.getPropertyName())){
+                    if((StateValue)evt.getNewValue() == StateValue.DONE){
+                        doWorkerDone();
+                    }
+                    Settings.getLogger().debug("worker state: " + evt.getNewValue().toString());
+                }
+            }
+        });
 
         disabledPanel.setEnabled(false);
-        worker.execute();                        
+        worker.execute();
     }
 
-    protected void doWorkerDone() {		
-    	// just reenables panel. Textarea is updated from worker class.
-    	disabledPanel.setEnabled(true);		
-	}
-
-    protected void doCancelBackgroundWork() {
-    	worker.cancel(false);
+    protected void doWorkerDone() {
+        // just reenables panel. Textarea is updated from worker class.
         disabledPanel.setEnabled(true);
     }
-    
-	protected void doAbout() {
+
+    protected void doCancelBackgroundWork() {
+        worker.cancel(false);
+        disabledPanel.setEnabled(true);
+    }
+
+    protected void doAbout() {
         JOptionPane.showMessageDialog(frame, "TODO: about\nJan 5");
     }
 
@@ -497,7 +489,7 @@ public class MainWindow implements ClipboardOwner {
         Settings.getInstance().setDstWallpapersFolder(textFieldDstWpFolder.getText());
         Settings.getInstance().setWebPrefixPostImages(textFieldPostImagesWebPrefix.getText());
         Settings.getInstance().setWebPrefixWallpapers(textFieldWpWebPrefix.getText());
-        
+
         try {
             Settings.save();
         } catch (FileNotFoundException e) {
@@ -518,8 +510,8 @@ public class MainWindow implements ClipboardOwner {
         // do nothing
     }
 
-	public JTextPane getTextPaneHtml() {
-		return textPaneHtml;
-	}
+    public JTextPane getTextPaneHtml() {
+        return textPaneHtml;
+    }
 
 }

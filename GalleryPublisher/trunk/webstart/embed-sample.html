@@ -1,0 +1,31 @@
+<html>
+<head>
+</head>
+<body>
+
+
+<script src="http://www.java.com/js/deployJava.js"></script>
+
+
+<!-- 
+	recommended way
+	http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/createWebStartLaunchButtonFunction.html
+-->
+
+<script>
+    var dir = location.href.substring(0, location.href.lastIndexOf('/')+1);
+    var url = dir + "gp/gallerypublisher.jnlp";
+    deployJava.createWebStartLaunchButton(url, '1.6.0');
+</script>
+<br/>
+
+<!-- fallback direct link when javascript is disabled for example -->
+
+<div class="note">
+(<a href='gp/gallerypublisher.jnlp'>direct link</a>)
+</div>
+
+
+
+</body>
+</html>

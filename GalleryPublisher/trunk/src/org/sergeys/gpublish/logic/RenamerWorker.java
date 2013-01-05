@@ -27,7 +27,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
     private HashMap<String, ArrayList<String>> wallpaperMap = new HashMap<String, ArrayList<String>>();
 
     private int warningCount = 0;
-    
+
     public RenamerWorker(MainWindow mainWindow){
         this.mainWindow = mainWindow;
     }
@@ -67,8 +67,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         // sort by resolutions
         TreeMap<Integer, File> sortedDirs = new TreeMap<Integer, File>();
         for(File dir: subdirs){
-        	String dirname = dir.getName().toLowerCase();
-        	
+            String dirname = dir.getName().toLowerCase();
+
             if(dirname.equals(dstFolderName)){
                 Settings.getLogger().info("Target dir found as subdir, skipped: " + dir);
                 continue;
@@ -81,18 +81,18 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             }
 
             String[] dirnametokens = dirname.split("[-xX]");	// regexp: any of these chars is a separator
-            
+
             sortedDirs.put(Integer.valueOf(dirnametokens[1]), dir);
-            
-            Settings.getLogger().info("Found wallpaper dir " + dir);            
+
+            Settings.getLogger().info("Found wallpaper dir " + dir);
         }
-        
+
         for(File dir: sortedDirs.values()){
 
             String[] dirnametokens = dir.getName().split("[-xX]");	// regexp: any of these chars is a separator
 
             String resolution = dirnametokens[1] + "x" + dirnametokens[2];
-            
+
             // find and copy all wallpaper files
 
             File[] files = dir.listFiles(FileFilters.OnlyFiles);
@@ -112,10 +112,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                 }
 
                 String[] filenametokens = file.getName().split("\\.");	// name.ext
-//				if(filenametokens.length != 2){ // assume exactly one dot allowed in the name!
-//					Settings.getLogger().info("File must have only one dot in the name, skipped: " + file.getAbsolutePath());
-//					continue;
-//				}
+
                 String targetname = filenametokens[0] + "-" + resolution + "." + filenametokens[1];
                 File targetfile = new File(wpDstFolder.getAbsolutePath() + File.separator +  targetname);
                 copyFile(file, targetfile);
@@ -123,7 +120,6 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                 putWallpaper(file.getName(), resolution);
 
                 Settings.getLogger().info("Copied " + targetfile.getAbsolutePath());
-//sbHtml.append("copied " + targetfile + "\n");
             }
 
 //			try{
@@ -137,15 +133,15 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         // post image files and html
         File[] files = postImagesDir.listFiles(FileFilters.OnlyFiles);
 
-        // order files
+        // sort files
         TreeMap<String, File> sortedFiles = new TreeMap<String, File>();
         for(File file: files){
-        	
-        	if(file.getName().matches("^\\w+-\\d+-b\\.\\w+$")){
-                Settings.getLogger().debug("Panorama found, skipped: " + file.getAbsolutePath());                
+
+            if(file.getName().matches("^\\w+-\\d+-b\\.\\w+$")){
+                Settings.getLogger().debug("Panorama found, skipped: " + file.getAbsolutePath());
                 continue;
             }
-        	
+
             if(!file.getName().matches("^\\w+-\\d+\\.\\w+$")){
                 Settings.getLogger().warn("File name does not match pattern name-01.ext, skipped: " + file.getAbsolutePath());
                 warningCount++;
@@ -156,8 +152,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             String refinedNumber = Integer.valueOf(filenametokens[1]).toString();
 
             if(sortedFiles.containsKey(refinedNumber)){
-                Settings.getLogger().warn("Duplicated file number " + refinedNumber + " for " + sortedFiles.get(refinedNumber) + " and " +
-                        file + ", second file skipped");
+                Settings.getLogger().warn("Duplicated file number " + refinedNumber + " for " + sortedFiles.get(refinedNumber) + " and " + file + ", second file skipped");
                 warningCount++;
             }
             else{
@@ -169,33 +164,27 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         for(File file: sortedFiles.values()){
             String filename = file.getName();
             String[] filenametokens = filename.split("\\.");
-//			if(filenametokens.length != 2){
-//				Settings.getLogger().info("File must have only one dot in the name, skipped: " + file.getAbsolutePath());
-//				continue;
-//			}
 
             Settings.getLogger().info("Found " + file.getAbsolutePath());
-//sbHtml.append("found " + file + "\n");
-
 
             String template;
             String text;
 
             String panoramaName = filenametokens[0] + "-b." + filenametokens[1];
             if(new File(file.getParent() + File.separator + panoramaName).exists()){
-            	// panorama
+                // panorama
                 if(count == 0){
                     // 1st foto in the post without number
-                	template = "\n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a><b>\n.::кликабельно::.</b>\n\n";
+                    template = "\n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a><b>\n.::кликабельно::.</b>\n\n";
                 }
                 else{
                     template = "%1$s. \n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a><b>\n.::кликабельно::.</b>\n\n";
                 }
 
                 text = String.format(template, count,
-                		Settings.getInstance().getWebPrefixPostImages() + "/" + panoramaName,
-                		Settings.getInstance().getWebPrefixPostImages() + "/" + filename);
-            	
+                        Settings.getInstance().getWebPrefixPostImages() + "/" + panoramaName,
+                        Settings.getInstance().getWebPrefixPostImages() + "/" + filename);
+
             }
             else{
                 if(count == 0){
@@ -206,38 +195,38 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                     template = "%1$s. \n\n<img src=\"%2$s\" border=\"0\">\n\n";
                 }
 
-                text = String.format(template, count, Settings.getInstance().getWebPrefixPostImages() + "/" + filename);            	
+                text = String.format(template, count, Settings.getInstance().getWebPrefixPostImages() + "/" + filename);
             }
-            
+
 
             sbHtml.append(text);
 
             // wallpapers
             if(wallpaperMap.containsKey(filename)){
-            	StringBuilder sbWp = new StringBuilder();
-            	String templateWp = "<a href=\"%1$s\">%2$s</a>";
+                StringBuilder sbWp = new StringBuilder();
+                String templateWp = "<a href=\"%1$s\">%2$s</a>";
                 for(String resolution: wallpaperMap.get(filename)){
-                	
-                	// verify again that wallpaper really exist
-                	String wpFilename = filenametokens[0] + "-" + resolution + "." + filenametokens[1];
-                	String wpFilepath = Settings.getInstance().getDstWallpapersFolder() + File.separator + wpFilename; 
-                	if(!new File(wpFilepath).exists()){
-                		Settings.getLogger().error("Wallpaper file must exist but not found for some reason: " + wpFilepath);
-                		return ExitCode.Error;
-                	}
-                	
-                	if(sbWp.length() > 0){
-                		//sbWp.append("&nbsp;|&nbsp;");
-                		sbWp.append(" | ");
-                	}
-                	
-                	String textWp = String.format(templateWp,
-                			Settings.getInstance().getWebPrefixWallpapers() + "/" + wpFilename,
-                			resolution);
-                	
+
+                    // verify again that wallpaper really exist
+                    String wpFilename = filenametokens[0] + "-" + resolution + "." + filenametokens[1];
+                    String wpFilepath = Settings.getInstance().getDstWallpapersFolder() + File.separator + wpFilename;
+                    if(!new File(wpFilepath).exists()){
+                        Settings.getLogger().error("Wallpaper file must exist but not found for some reason: " + wpFilepath);
+                        return ExitCode.Error;
+                    }
+
+                    if(sbWp.length() > 0){
+                        //sbWp.append("&nbsp;|&nbsp;");
+                        sbWp.append(" | ");
+                    }
+
+                    String textWp = String.format(templateWp,
+                            Settings.getInstance().getWebPrefixWallpapers() + "/" + wpFilename,
+                            resolution);
+
                     sbWp.append(textWp);	// no newline here
                 }
-                
+
                 sbHtml.append("<b>ќбои:</b> " + sbWp + "\n\n");
             }
 
@@ -283,9 +272,9 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         } catch (InterruptedException e) {
             Settings.getLogger().error("", e);
         } catch (ExecutionException e) {
-        	Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e);
         } catch (CancellationException e) {
-        	Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e);
         }
     }
 

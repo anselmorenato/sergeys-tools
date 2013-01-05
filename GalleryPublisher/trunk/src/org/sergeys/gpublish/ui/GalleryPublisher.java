@@ -10,28 +10,27 @@ public class GalleryPublisher {
      * Launch the application.
      */
     public static void main(String[] args) {
+
+    	Settings.getLogger().debug("application start");
     	
-    	Settings.getLogger().debug("main start");
-    	    	
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
                     MainWindow window = new MainWindow();
-                    
+
                     // set actual location here, to not to confuse eclipse windowbuilder editor
                     window.getFrame().setBounds(
-                    		Settings.getInstance().getWinPosition().width,
-                    		Settings.getInstance().getWinPosition().height,
-                    		Settings.getInstance().getWinSize().width,
-                    		Settings.getInstance().getWinSize().height);
+                            Settings.getInstance().getWinPosition().width,
+                            Settings.getInstance().getWinPosition().height,
+                            Settings.getInstance().getWinSize().width,
+                            Settings.getInstance().getWinSize().height);
 
-                    
                     window.getFrame().setVisible(true);
                 } catch (Exception e) {
                     Settings.getLogger().error("failed to create main window", e);
                 }
             }
-        });            	
+        });
     }
 
 }
