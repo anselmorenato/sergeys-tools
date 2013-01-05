@@ -112,6 +112,13 @@ public class Settings {
 		// TODO screen center
 		winSize.setSize(800.0, 600.0);
 		winPosition.setSize(50.0, 50.0);
+		
+		srcPostImagesFolder = "E:\\Untitled Export\\web";
+		srcWallpapersFolder = "E:\\Untitled Export\\wp";
+		dstWallpapersFolder = "E:\\Untitled Export\\wp\\wp-ready";
+		webPrefixPostImages = "http://russos.ru/img";
+		webPrefixWallpapers = "http://russos.ru/wp";
+		
 	}
 
 	/**

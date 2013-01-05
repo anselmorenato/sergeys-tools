@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.SwingWorker;
 
@@ -16,6 +18,9 @@ public class RenamerWorker extends SwingWorker<Void, Integer> {
 	private MainWindow mainWindow;
 	private StringBuilder sbHtml = new StringBuilder();
 	
+	// filename without ext -> list of resolutions; "sokol-05" -> ["1024x768", "1280x1024"]
+	private HashMap<String, ArrayList<String>> wallpaperMap = new HashMap<String, ArrayList<String>>();
+	
 	public RenamerWorker(MainWindow mainWindow){
 		this.mainWindow = mainWindow;
 	}
@@ -24,19 +29,31 @@ public class RenamerWorker extends SwingWorker<Void, Integer> {
 	protected Void doInBackground() throws Exception {
 		// this method runs in background thread, cannot update ui controls here
 				
+		// copy wallpapers
+		
+		// check that folders actually exist
 		File wpDstFolder = new File(Settings.getInstance().getDstWallpapersFolder());
 		if(!wpDstFolder.exists() || !wpDstFolder.isDirectory()){
-			Settings.getLogger().error("Folder do not exist or file is not a folder: " + wpDstFolder);
+			Settings.getLogger().error("Dir does not exist or file is not a dir: " + wpDstFolder);
 			return null;
 		}				
 		
 		File wpSrcFolder = new File(Settings.getInstance().getSrcWallpapersFolder());
 		if(!wpSrcFolder.exists() || !wpSrcFolder.isDirectory()){
-			Settings.getLogger().error("Folder do not exist or file is not a folder: " + wpSrcFolder);
+			Settings.getLogger().error("Dir does not exist or file is not a dir: " + wpSrcFolder);
+			return null;
 		}
 		
+		File postImagesDir = new File(Settings.getInstance().getSrcPostImagesFolder());
+		if(!postImagesDir.exists() || !postImagesDir.isDirectory()){
+			Settings.getLogger().error("Dir does not exist or file is not a dir: " + wpSrcFolder);
+			return null;
+		}		
+		
 		String dstFolderName = wpDstFolder.getName().toLowerCase();			
-			
+		
+		// find and process all wallpaper subdirs
+		
 		File[] subdirs = wpSrcFolder.listFiles(new FileFilter() {			
 			@Override
 			public boolean accept(File file) {				
@@ -44,8 +61,10 @@ public class RenamerWorker extends SwingWorker<Void, Integer> {
 			}
 		});		
 
+		
 		for(File dir: subdirs){
 						
+			// need to check this periodically and terminate when requested
 			if(isCancelled()){
 				Settings.getLogger().debug("I am cancelled");
 				return null;
@@ -54,23 +73,25 @@ public class RenamerWorker extends SwingWorker<Void, Integer> {
 			String dirname = dir.getName().toLowerCase(); 
 			
 			if(dirname.equals(dstFolderName)){
-				Settings.getLogger().debug("Skipping target dir: " + dir.getName());
+				Settings.getLogger().debug("Target dir found as subdir, skipped: " + dir.getName());
 				continue;
 			}
 			
 			
-			String[] dirnametokens = dirname.split("[-xX]");
+			String[] dirnametokens = dirname.split("[-xX]");	// regexp: any of these chars is a separator
 			if(dirnametokens.length != 3 
 					|| !dirnametokens[0].equals("wp") 
-					|| !dirnametokens[1].matches("^\\d+$")
+					|| !dirnametokens[1].matches("^\\d+$")	// regexp: one or more digits
 					|| !dirnametokens[2].matches("^\\d+$")){
 				Settings.getLogger().info("Dir does not match pattern wp-0123x456, skipped: " + dir.getName());
 				continue;
 			}
 			
 			Settings.getLogger().info("Found " + dir);
-sbHtml.append(dir + "\n");			
+sbHtml.append("found dir " + dir + "\n");			
 			
+			// find and copy all wallpaper files
+
 			File[] files = dir.listFiles(new FileFilter() {				
 				@Override
 				public boolean accept(File file) {					
@@ -79,9 +100,16 @@ sbHtml.append(dir + "\n");
 			});
 			
 			for(File file: files){
-				String[] filenametokens = file.getName().split("\\.");	// assume only one dot in the name!
-				if(filenametokens.length != 2){
-					Settings.getLogger().info("File has unexpected name, skipped: " + file.getAbsolutePath());
+				
+				// need to check this periodically and terminate when requested
+				if(isCancelled()){
+					Settings.getLogger().debug("I am cancelled");
+					return null;
+				}
+				
+				String[] filenametokens = file.getName().split("\\.");	
+				if(filenametokens.length != 2){ // assume exactly one dot allowed in the name!
+					Settings.getLogger().info("File must have only one dot in the name, skipped: " + file.getAbsolutePath());
 					continue;
 				}
 				String targetname = filenametokens[0] + "-" + dirnametokens[1] + "x" + dirnametokens[2] + "." + filenametokens[1]; 						
@@ -89,17 +117,31 @@ sbHtml.append(dir + "\n");
 				copyFile(file, targetfile);
 				
 				Settings.getLogger().info("Copied " + targetfile.getAbsolutePath());
-sbHtml.append(targetfile + "\n");				
+sbHtml.append("copied " + targetfile + "\n");				
 			}
 			
-			
-			
-			
-			
-			
-			
-			
 			//Thread.sleep(100);
+		}
+		
+		// post image files and html
+		File[] files = postImagesDir.listFiles(new FileFilter() {				
+			@Override
+			public boolean accept(File file) {					
+				return file.isFile();
+			}
+		});
+		
+		for(File file: files){
+			String filename = file.getName();
+			String[] filenametokens = filename.split("\\.");
+			if(filenametokens.length != 2){
+				Settings.getLogger().info("File must have only one dot in the name, skipped: " + file.getAbsolutePath());
+				continue;
+			}
+			
+			Settings.getLogger().info("Found " + file.getAbsolutePath());
+sbHtml.append("found " + file + "\n");				
+			
 		}
 						
 		return null;

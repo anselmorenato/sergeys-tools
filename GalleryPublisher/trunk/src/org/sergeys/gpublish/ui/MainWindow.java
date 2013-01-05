@@ -16,6 +16,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.swing.ImageIcon;
@@ -214,7 +215,7 @@ public class MainWindow implements ClipboardOwner {
         gbc_btnSelectSrcPostImages.gridy = 0;
         panelTop.add(btnSelectSrcPostImages, gbc_btnSelectSrcPostImages);
 
-                                JLabel lblWebFolder = new JLabel("Source folder with raw wallpapers:");
+                                JLabel lblWebFolder = new JLabel("Source folder with raw wallpaper subfolders:");
                                 GridBagConstraints gbc_lblWebFolder = new GridBagConstraints();
                                 gbc_lblWebFolder.anchor = GridBagConstraints.EAST;
                                 gbc_lblWebFolder.insets = new Insets(0, 0, 5, 5);
@@ -429,7 +430,7 @@ public class MainWindow implements ClipboardOwner {
     }
 
     protected void doViewLog() {
-        // TODO Auto-generated method stub
+    	JOptionPane.showMessageDialog(frame, "TODO: see logfile here: " + Settings.getSettingsDirPath() + File.separator + "log.txt");
 
     }
 
@@ -482,7 +483,7 @@ public class MainWindow implements ClipboardOwner {
     }
     
 	protected void doAbout() {
-        JOptionPane.showMessageDialog(frame, "TODO: about 1");
+        JOptionPane.showMessageDialog(frame, "TODO: about\nJan 5");
     }
 
     protected void doExit() {

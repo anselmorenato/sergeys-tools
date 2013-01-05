@@ -1,5 +1,14 @@
 http://russos.livejournal.com/991863.html
 
+===========
+Source folder with post images
+Source folder with raw wallpapers
+Target folder for renamed wallpapers
+Web prefix for post images
+Web prefix for wallpapers
+
+
+
 
 ===========
 Further possible improvements:
@@ -10,6 +19,8 @@ Further possible improvements:
 - post to livejournal using LJ API
 - use some kind of templates for html
 - preview html like in semagic
+- localization
+- selectable look-and-feel
 
 - upload files with SCP, other protocols
 - post to other sites

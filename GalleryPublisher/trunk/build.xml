@@ -47,7 +47,7 @@
     <target name="compile" depends="init, builddir">
         <javac srcdir="${project.dir}/src"
          destdir="${build.dir}/bin"
-         debug="off" includeantruntime="false" optimize="yes" source="1.6" target="1.6">
+         debug="on" includeantruntime="false" optimize="yes" source="1.6" target="1.6">
             <classpath>
                 <fileset dir="${project.dir}/lib" includes="*.jar"></fileset>
             </classpath>
@@ -61,6 +61,7 @@
 			<fileset dir="${project.dir}/src" includes="resources/*"></fileset>
 			<manifest>
 				<!-- optional, just to try -->
+				<!--
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Main-Class" value="org/sergeys/gpublish/ui/GalleryPublisher"/>
 				<attribute name="Class-Path" value="lib/log4j-1.2.17.jar lib/slf4j-api-1.7.2.jar lib/slf4j-log4j12-1.7.2.jar"/>
@@ -68,13 +69,14 @@
 				<attribute name="implementation-vendor" value="sergeys"/>
 				<attribute name="implementation-title" value="Gallery Publisher"/>
 				<attribute name="implementation-version" value="1.0"/>
+				-->
 			</manifest>
 		</jar>
 	</target>
 	
     <target name="collectAll" depends="key, compile">
 
-        <copy file="gallerypublisher.jnlp" tofile="${build.dir}/webstart/gallerypublisher.jnlp" overwrite="true">
+        <copy file="${project.dir}/webstart/gallerypublisher.jnlp" tofile="${build.dir}/webstart/gallerypublisher.jnlp" overwrite="true">
         </copy>
 
         <copy file="${appicon}" tofile="${build.dir}/webstart/${appicon.file}" overwrite="true">
