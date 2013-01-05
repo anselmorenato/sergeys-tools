@@ -23,7 +23,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
     private MainWindow mainWindow;
     private StringBuilder sbHtml = new StringBuilder();
 
-    // filename without ext -> list of resolutions; "sokol-05" -> ["1024x768", "1280x1024"]
+    // filename -> list of resolutions; "sokol-05.jpg" -> ["1024x768", "1280x1024"]
     private HashMap<String, ArrayList<String>> wallpaperMap = new HashMap<String, ArrayList<String>>();
 
     private int warningCount = 0;
@@ -64,16 +64,11 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
         File[] subdirs = wpSrcFolder.listFiles(FileFilters.OnlyDirs);
 
+        // sort by resolutions
+        TreeMap<Integer, File> sortedDirs = new TreeMap<Integer, File>();
         for(File dir: subdirs){
-
-            // need to check this periodically and terminate when requested
-            if(isCancelled()){
-                Settings.getLogger().debug("I am cancelled");
-                return ExitCode.Cancelled;
-            }
-
-            String dirname = dir.getName().toLowerCase();
-
+        	String dirname = dir.getName().toLowerCase();
+        	
             if(dirname.equals(dstFolderName)){
                 Settings.getLogger().info("Target dir found as subdir, skipped: " + dir);
                 continue;
@@ -86,19 +81,18 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             }
 
             String[] dirnametokens = dirname.split("[-xX]");	// regexp: any of these chars is a separator
-//			if(dirnametokens.length != 3
-//					|| !dirnametokens[0].equals("wp")
-//					|| !dirnametokens[1].matches("^\\d+$")	// regexp: one or more digits
-//					|| !dirnametokens[2].matches("^\\d+$")){
-//				Settings.getLogger().info("Dir does not match pattern wp-0123x456, skipped: " + dir.getName());
-//				continue;
-//			}
+            
+            sortedDirs.put(Integer.valueOf(dirnametokens[1]), dir);
+            
+            Settings.getLogger().info("Found wallpaper dir " + dir);            
+        }
+        
+        for(File dir: sortedDirs.values()){
+
+            String[] dirnametokens = dir.getName().split("[-xX]");	// regexp: any of these chars is a separator
 
             String resolution = dirnametokens[1] + "x" + dirnametokens[2];
-
-            Settings.getLogger().info("Found " + dir);
-//sbHtml.append("found dir " + dir + "\n");
-
+            
             // find and copy all wallpaper files
 
             File[] files = dir.listFiles(FileFilters.OnlyFiles);
@@ -126,7 +120,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                 File targetfile = new File(wpDstFolder.getAbsolutePath() + File.separator +  targetname);
                 copyFile(file, targetfile);
 
-                putWallpaper(filenametokens[0], resolution);
+                putWallpaper(file.getName(), resolution);
 
                 Settings.getLogger().info("Copied " + targetfile.getAbsolutePath());
 //sbHtml.append("copied " + targetfile + "\n");
@@ -146,6 +140,12 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         // order files
         TreeMap<String, File> sortedFiles = new TreeMap<String, File>();
         for(File file: files){
+        	
+        	if(file.getName().matches("^\\w+-\\d+-b\\.\\w+$")){
+                Settings.getLogger().debug("Panorama found, skipped: " + file.getAbsolutePath());                
+                continue;
+            }
+        	
             if(!file.getName().matches("^\\w+-\\d+\\.\\w+$")){
                 Settings.getLogger().warn("File name does not match pattern name-01.ext, skipped: " + file.getAbsolutePath());
                 warningCount++;
@@ -179,25 +179,66 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
 
             String template;
+            String text;
 
-            // TODO panoramas
-            if(count == 0){
-                // 1st foto in the post without number
-                template = "\n\n<img src=\"%2$s\" border=\"0\">\n\n";
+            String panoramaName = filenametokens[0] + "-b." + filenametokens[1];
+            if(new File(file.getParent() + File.separator + panoramaName).exists()){
+            	// panorama
+                if(count == 0){
+                    // 1st foto in the post without number
+                	template = "\n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a><b>\n.::кликабельно::.</b>\n\n";
+                }
+                else{
+                    template = "%1$s. \n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a><b>\n.::кликабельно::.</b>\n\n";
+                }
+
+                text = String.format(template, count,
+                		Settings.getInstance().getWebPrefixPostImages() + "/" + panoramaName,
+                		Settings.getInstance().getWebPrefixPostImages() + "/" + filename);
+            	
             }
             else{
-                template = "%1$s. \n\n<img src=\"%2$s\" border=\"0\">\n\n";
-            }
+                if(count == 0){
+                    // 1st foto in the post without number
+                    template = "\n\n<img src=\"%2$s\" border=\"0\">\n\n";
+                }
+                else{
+                    template = "%1$s. \n\n<img src=\"%2$s\" border=\"0\">\n\n";
+                }
 
-            String text = String.format(template, count, Settings.getInstance().getWebPrefixPostImages() + "/" + filename);
+                text = String.format(template, count, Settings.getInstance().getWebPrefixPostImages() + "/" + filename);            	
+            }
+            
 
             sbHtml.append(text);
 
             // wallpapers
-            if(wallpaperMap.containsKey(filenametokens[0])){
-                for(String resolution: wallpaperMap.get(filenametokens[0])){
-                    sbHtml.append(resolution + "\n");
+            if(wallpaperMap.containsKey(filename)){
+            	StringBuilder sbWp = new StringBuilder();
+            	String templateWp = "<a href=\"%1$s\">%2$s</a>";
+                for(String resolution: wallpaperMap.get(filename)){
+                	
+                	// verify again that wallpaper really exist
+                	String wpFilename = filenametokens[0] + "-" + resolution + "." + filenametokens[1];
+                	String wpFilepath = Settings.getInstance().getDstWallpapersFolder() + File.separator + wpFilename; 
+                	if(!new File(wpFilepath).exists()){
+                		Settings.getLogger().error("Wallpaper file must exist but not found for some reason: " + wpFilepath);
+                		return ExitCode.Error;
+                	}
+                	
+                	if(sbWp.length() > 0){
+                		//sbWp.append("&nbsp;|&nbsp;");
+                		sbWp.append(" | ");
+                	}
+                	
+                	String textWp = String.format(templateWp,
+                			Settings.getInstance().getWebPrefixWallpapers() + "/" + wpFilename,
+                			resolution);
+                	
+                    sbWp.append(textWp);	// no newline here
                 }
+                
+                sbHtml.append("<b>Обои:</b> " + sbWp + "\n\n");
             }
 
 
@@ -231,27 +272,21 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                     JOptionPane.showMessageDialog(mainWindow.getFrame(), "Got some warnings, please check log file.");
                     break;
                 case Cancelled:
-                    JOptionPane.showMessageDialog(mainWindow.getFrame(), "worker cancelled");
+                    //JOptionPane.showMessageDialog(mainWindow.getFrame(), "worker cancelled");
                     break;
                 case Error:
-                    JOptionPane.showMessageDialog(mainWindow.getFrame(), "Processing failed, please see log file.");
+                    JOptionPane.showMessageDialog(mainWindow.getFrame(), "Processing failed, please check log file.");
                     break;
                 default:
                     break;
             }
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        	Settings.getLogger().error("", e);
+        } catch (CancellationException e) {
+        	Settings.getLogger().error("", e);
         }
-        catch (CancellationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-
     }
 
     private void putWallpaper(String filename, String resolution){
