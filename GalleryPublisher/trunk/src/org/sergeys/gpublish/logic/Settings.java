@@ -104,7 +104,8 @@ public class Settings {
 		Settings.settingsDirPath = settingsDirPath;
 	}
 
-	public static synchronized Logger getLogger() {
+	//public static synchronized Logger getLogger() {
+	public static Logger getLogger() {
 		return logger;
 	}
 
