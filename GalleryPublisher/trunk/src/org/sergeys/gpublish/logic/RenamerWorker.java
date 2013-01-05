@@ -54,7 +54,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
         File postImagesDir = new File(Settings.getInstance().getSrcPostImagesFolder());
         if(!postImagesDir.exists() || !postImagesDir.isDirectory()){
-            Settings.getLogger().error("Dir does not exist or file is not a dir: " + wpSrcFolder);
+            Settings.getLogger().error("Dir does not exist or file is not a dir: " + postImagesDir);
             return ExitCode.Error;
         }
 
