@@ -16,7 +16,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.swing.ImageIcon;
@@ -27,7 +26,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -424,8 +422,16 @@ public class MainWindow implements ClipboardOwner {
         selectDirHelper(DirectoryType.SourceWallpapers);
     }
 
+    private LogfileDialog logWindow;
+    
     protected void doViewLog() {
-        JOptionPane.showMessageDialog(frame, "TODO: see logfile here: " + Settings.getSettingsDirPath() + File.separator + "log.txt");
+
+        if(logWindow == null){
+        	logWindow = new LogfileDialog(frame);
+        	//logWindow.setLocationRelativeTo(frame);
+        }
+        
+        logWindow.setVisible(true);
     }
 
     protected void doClear() {
@@ -474,8 +480,15 @@ public class MainWindow implements ClipboardOwner {
         disabledPanel.setEnabled(true);
     }
 
+    private AboutDialog aboutDlg;
+    
     protected void doAbout() {
-        JOptionPane.showMessageDialog(frame, "TODO: about\nJan 5");
+    	if(aboutDlg == null){
+    		aboutDlg = new AboutDialog(frame);
+    		aboutDlg.setLocationRelativeTo(frame);
+    	}
+    	
+    	aboutDlg.setVisible(true);        
     }
 
     protected void doExit() {

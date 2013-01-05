@@ -14,13 +14,13 @@
     <target name="builddir" depends="init">
 
         <delete dir="${build.dir}" verbose="false"/>
-    	
+
         <mkdir dir="${build.dir}" />
         <mkdir dir="${build.dir}/bin" />
-    	<mkdir dir="${build.dir}/webstart" />
-    	<mkdir dir="${build.dir}/webstart/lib" />
-    	<mkdir dir="${build.dir}/standalone" />
-    	<mkdir dir="${build.dir}/standalone/lib" />
+        <mkdir dir="${build.dir}/webstart" />
+        <mkdir dir="${build.dir}/webstart/lib" />
+        <mkdir dir="${build.dir}/standalone" />
+        <mkdir dir="${build.dir}/standalone/lib" />
     </target>
 
     <target name="test">
@@ -56,31 +56,30 @@
             </javac>
     </target>
 
-	<target name="pack" depends="compile">
-		<jar destfile="${build.dir}/GalleryPublisher.jar" index="yes">
-			<fileset dir="${build.dir}/bin" includes="**/*.class"></fileset>
-			<fileset dir="${project.dir}/src" includes="images/*"></fileset>
-			<fileset dir="${project.dir}/src" includes="resources/*"></fileset>
-			<manifest>
-				<attribute name="Built-By" value="${user.name}"/>
-				<attribute name="Main-Class" value="org/sergeys/gpublish/ui/GalleryPublisher"/>
-								
-				<!--
-				<attribute name="Sealed" value="true"/>
-				<attribute name="implementation-vendor" value="sergeys"/>
-				<attribute name="implementation-title" value="Gallery Publisher"/>
-				<attribute name="implementation-version" value="1.0"/>				
-				
-				does not work for some reason:
-				<attribute name="Class-Path" value="lib/log4j-1.2.17.jar lib/slf4j-api-1.7.2.jar lib/slf4j-log4j12-1.7.2.jar"/>								
-				-->
-			</manifest>
-		</jar>
-	</target>
-	
-	<target name="webstart" depends="key, pack">
-    	<echo message="webstart" />
-    	
+    <target name="pack" depends="compile">
+        <jar destfile="${build.dir}/GalleryPublisher.jar" index="yes">
+            <fileset dir="${build.dir}/bin" includes="**/*.class"></fileset>
+            <fileset dir="${project.dir}/src" includes="images/*"></fileset>
+            <fileset dir="${project.dir}/src" includes="resources/*"></fileset>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="org/sergeys/gpublish/ui/GalleryPublisher"/>
+                <!--
+                <attribute name="Sealed" value="true"/>
+                <attribute name="implementation-vendor" value="sergeys"/>
+                <attribute name="implementation-title" value="Gallery Publisher"/>
+                <attribute name="implementation-version" value="1.0"/>
+
+                does not work for some reason:
+                <attribute name="Class-Path" value="lib/log4j-1.2.17.jar lib/slf4j-api-1.7.2.jar lib/slf4j-log4j12-1.7.2.jar"/>
+                -->
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="webstart" depends="key, pack">
+        <echo message="webstart" />
+
         <copy file="${project.dir}/webstart/gallerypublisher.jnlp" tofile="${build.dir}/webstart/gallerypublisher.jnlp" overwrite="true">
         </copy>
 
@@ -98,32 +97,32 @@
             </fileset>
         </copy>
 
-        <copy file="${build.dir}/GalleryPublisher.jar" 
-        	tofile="${build.dir}/webstart/GalleryPublisher.${version}.jar"></copy>
+        <copy file="${build.dir}/GalleryPublisher.jar"
+            tofile="${build.dir}/webstart/GalleryPublisher.${version}.jar"></copy>
 
         <signjar keystore="${keystore.file}" alias="${keystore.alias}" storepass="${keystore.password}" verbose="false">
             <fileset dir="${build.dir}/webstart">
                 <include name="**/*.jar"/>
             </fileset>
-        </signjar>		
-	</target>
-	
-	<target name="standalone" depends="pack">
-    	<echo message="standalone" />
-    	
-    	<copy file="${build.dir}/GalleryPublisher.jar" todir="${build.dir}/standalone"></copy>    	    	
-    	
+        </signjar>
+    </target>
+
+    <target name="standalone" depends="pack">
+        <echo message="standalone" />
+
+        <copy file="${build.dir}/GalleryPublisher.jar" todir="${build.dir}/standalone"></copy>
+
         <copy todir="${build.dir}/standalone/lib" verbose="true">
             <fileset dir="${project.dir}/lib" includes="**/*.jar"></fileset>
         </copy>
-    	
-    	<copy todir="${build.dir}/standalone">
-    		<fileset dir="${project.dir}/standalone" includes="**/*"></fileset>
-    	</copy>
-		
-	</target>
-	
-    <target name="collectAll" depends="webstart, standalone">    	
+
+        <copy todir="${build.dir}/standalone">
+            <fileset dir="${project.dir}/standalone" includes="**/*"></fileset>
+        </copy>
+
+    </target>
+
+    <target name="collectAll" depends="webstart, standalone">
     </target>
 
     <target name="deploy" depends="init">
