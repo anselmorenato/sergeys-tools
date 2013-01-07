@@ -32,7 +32,7 @@
         </available>
     </target>
 
-    <target name="key" depends="check-key" unless="keystore.file.exists">
+    <target name="genkey" depends="check-key" unless="keystore.file.exists">
         <echo message="Create new key file: ${keystore.file}" />
         <genkey keystore="${keystore.file}" alias="${keystore.alias}" validity="365" storepass="${keystore.password}">
             <dname>
@@ -49,7 +49,7 @@
     </target>
 
 
-    <target name="prepare" depends="key">
+    <target name="prepare" depends="genkey">
 
         <copy file="cookbook.jnlp" tofile="${build.dir}/cookbook.jnlp" overwrite="true">
         </copy>

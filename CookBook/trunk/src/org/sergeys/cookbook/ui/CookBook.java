@@ -27,8 +27,6 @@ public class CookBook extends Application {
         try {
 
             Settings.getLogger().info("application start");
-//            Settings.reconfigureLogger(); // try to workaround webstart
-//            Settings.getLogger().info("after reconfigure");
 
             // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
 
