@@ -12,7 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
@@ -42,7 +42,7 @@ public class Settings {
     private static Settings instance = new Settings();
 
     private static Logger logger;
-    
+
     private Properties htmltemplates = new Properties();
 
     static {
@@ -90,25 +90,25 @@ public class Settings {
 
         // extract html templates
         try{
-	        String templatesfile = settingsDirPath + File.separator + HTMLTEMPLATES_FILE;
-	        if (!new File(templatesfile).exists()) {
-	            InputStream is = Settings.class.getResourceAsStream("/resources/" + HTMLTEMPLATES_FILE);
-	            if (is != null) {
-	                byte[] buf = new byte[20480];
-	                FileOutputStream fos = new FileOutputStream(templatesfile);				
-	                int count = 0;
-	                while ((count = is.read(buf)) > 0) {
-	                    fos.write(buf, 0, count);
-	                }
-	                fos.close();
-	                is.close();
-	            }
-	        }
+            String templatesfile = settingsDirPath + File.separator + HTMLTEMPLATES_FILE;
+            if (!new File(templatesfile).exists()) {
+                InputStream is = Settings.class.getResourceAsStream("/resources/" + HTMLTEMPLATES_FILE);
+                if (is != null) {
+                    byte[] buf = new byte[20480];
+                    FileOutputStream fos = new FileOutputStream(templatesfile);
+                    int count = 0;
+                    while ((count = is.read(buf)) > 0) {
+                        fos.write(buf, 0, count);
+                    }
+                    fos.close();
+                    is.close();
+                }
+            }
         }
         catch(Exception ex){
-        	logger.error("failed to extract html templates", ex);
+            logger.error("failed to extract html templates", ex);
         }
-        
+
         load();
     }
 
@@ -189,33 +189,33 @@ public class Settings {
 
         // read html templates
         try {
-			BufferedReader br = new BufferedReader(
-			        new InputStreamReader(
-			                new FileInputStream(settingsDirPath + File.separator + HTMLTEMPLATES_FILE), 
-			                StandardCharsets.UTF_8));
-			                //Charset.forName("win-1251"));
-			String line;
-			while((line = br.readLine()) != null){
-				if(!line.isEmpty() && !line.startsWith("#")){
-					String[] tokens = line.split("==");
-					if(tokens.length == 2){
-						String noescapes = tokens[1].replace("\\n", "\n");
-						noescapes = noescapes.replace("\\\"", "\"");
-						instance.htmltemplates.put(tokens[0], noescapes);
-					}
-					else if(tokens.length == 2){
-						instance.htmltemplates.put(tokens[0], "");
-					}
-					else{
-						logger.warn("invalid html template line, ignored: " + line);
-					}
-				}				 
-			}
-			
-			br.close();
-		} catch (IOException e) {
-			logger.error("failed to load html templates", e);
-		}
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(
+                            new FileInputStream(settingsDirPath + File.separator + HTMLTEMPLATES_FILE),
+                            //StandardCharsets.UTF_8));	// since 1.7!
+                            Charset.forName("utf-8")));
+            String line;
+            while((line = br.readLine()) != null){
+                if(!line.isEmpty() && !line.startsWith("#")){
+                    String[] tokens = line.split("==");
+                    if(tokens.length == 2){
+                        String noescapes = tokens[1].replace("\\n", "\n");
+                        noescapes = noescapes.replace("\\\"", "\"");
+                        instance.htmltemplates.put(tokens[0], noescapes);
+                    }
+                    else if(tokens.length == 2){
+                        instance.htmltemplates.put(tokens[0], "");
+                    }
+                    else{
+                        logger.warn("invalid html template line, ignored: " + line);
+                    }
+                }
+            }
+
+            br.close();
+        } catch (IOException e) {
+            logger.error("failed to load html templates", e);
+        }
     }
 
     public static void save() throws FileNotFoundException {
@@ -247,14 +247,14 @@ public class Settings {
         return date;
     }
 
-    public String getHtmlTemplate(String key){ 
-    	return htmltemplates.containsKey(key) ? htmltemplates.getProperty(key) : "[[[ template not found for " + key + " ]]]";
-    }    
-    
+    public String getHtmlTemplate(String key){
+        return htmltemplates.containsKey(key) ? htmltemplates.getProperty(key) : "[[[ template not found for " + key + " ]]]";
+    }
+
     public Properties getResources(){
         return resources;
     }
-    
+
     public Dimension getWinPosition() {
         return winPosition;
     }
@@ -309,5 +309,5 @@ public class Settings {
 
     public void setWebPrefixWallpapers(String webPrefixWallpapers) {
         this.webPrefixWallpapers = webPrefixWallpapers;
-    }   
+    }
 }
