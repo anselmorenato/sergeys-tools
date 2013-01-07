@@ -34,7 +34,7 @@ public class LogfileDialog extends JDialog {
     public LogfileDialog(JFrame owner) {
         super(owner);
 
-        setTitle("Log - " + Settings.getSettingsDirPath() + File.separator + "log.txt");
+        setTitle("Log - " + Settings.getSettingsDirPath() + File.separator + Settings.LOG_FILE);
 
         setBounds(0, 0, 600, 400);
 
@@ -94,7 +94,7 @@ public class LogfileDialog extends JDialog {
             Style styleDebug = textPane.addStyle("debug", null);
             StyleConstants.setForeground(styleDebug, Color.gray);
 
-            BufferedReader br = new BufferedReader(new FileReader(Settings.getSettingsDirPath() + File.separator + "log.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(Settings.getSettingsDirPath() + File.separator + Settings.LOG_FILE));
             String str;
             while((str = br.readLine()) != null){
                 if(str.startsWith("ERR")){

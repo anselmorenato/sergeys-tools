@@ -1,0 +1,30 @@
+#
+#	Note key-value separator is '==', not '='
+#	For format string syntax, see http://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html#syntax
+#
+#	put \n for newline, \" to escape doublequotes
+#
+
+# regular photos: %1 photo number, %2 photo url
+# 1st photo in the post displayed without number, skip %1 placeholder
+
+firstphoto==\n<img src=\"%2$s\" border=\"0\">\n\n
+nextphoto==%1$s. \n<img src=\"%2$s\" border=\"0\">\n\n
+
+# panoramas: %1 photo number, %2 panorama picture url, %3 photo url
+# if 1st photo in the post then without number
+
+firstphoto.panorama==\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a>\n<b>.::кликабельно::.</b>\n\n
+nextphoto.panorama==%1$s. \n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a>\n<b>.::кликабельно::.</b>\n\n
+
+# single wallpaper element: %1 wallpaper url, %2 resolution string
+
+wallpaper==<a href=\"%1$s\">%2$s</a>
+wallpaper.separator==&nbsp;|&nbsp;
+
+# wrapper at %1 includes all single wp elements separated by wallpaper.separator
+
+wallpaper.wrapper==<b>Обои:</b> %1$s\n\n
+
+ljcut.start==<lj-cut text=\"Смотреть %1$s фотографий\">\n\n
+ljcut.end==</lj-cut>

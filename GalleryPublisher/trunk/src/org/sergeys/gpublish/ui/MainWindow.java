@@ -39,11 +39,11 @@ import org.sergeys.gpublish.logic.Settings;
 public class MainWindow implements ClipboardOwner {
 
     private JFrame frame;
-    private JTextField textFieldSrcPostImagesFolder;
-    private JTextField textFieldSrcRawWpFolder;
+    private JTextField textFieldSrcPostImagesDir;
+    private JTextField textFieldSrcRawWpDir;
     private JTextPane textPaneHtml;
     private DisabledPanel disabledPanel;
-    private JTextField textFieldDstWpFolder;
+    private JTextField textFieldDstWpDir;
     private JTextField textFieldPostImagesWebPrefix;
     private JTextField textFieldWpWebPrefix;
 
@@ -188,20 +188,20 @@ public class MainWindow implements ClipboardOwner {
         gbc_lblNewLabel1.gridy = 0;
         panelTop.add(lblNewLabel1, gbc_lblNewLabel1);
 
-        textFieldSrcPostImagesFolder = new JTextField();
-        textFieldSrcPostImagesFolder.setEditable(false);
-        GridBagConstraints gbc_textFieldSrcPostImagesFolder = new GridBagConstraints();
-        gbc_textFieldSrcPostImagesFolder.fill = GridBagConstraints.BOTH;
-        gbc_textFieldSrcPostImagesFolder.insets = new Insets(0, 0, 5, 5);
-        gbc_textFieldSrcPostImagesFolder.gridx = 1;
-        gbc_textFieldSrcPostImagesFolder.gridy = 0;
-        panelTop.add(textFieldSrcPostImagesFolder, gbc_textFieldSrcPostImagesFolder);
-        textFieldSrcPostImagesFolder.setColumns(10);
+        textFieldSrcPostImagesDir = new JTextField();
+        textFieldSrcPostImagesDir.setEditable(false);
+        GridBagConstraints gbc_textFieldSrcPostImagesDir = new GridBagConstraints();
+        gbc_textFieldSrcPostImagesDir.fill = GridBagConstraints.BOTH;
+        gbc_textFieldSrcPostImagesDir.insets = new Insets(0, 0, 5, 5);
+        gbc_textFieldSrcPostImagesDir.gridx = 1;
+        gbc_textFieldSrcPostImagesDir.gridy = 0;
+        panelTop.add(textFieldSrcPostImagesDir, gbc_textFieldSrcPostImagesDir);
+        textFieldSrcPostImagesDir.setColumns(10);
 
         JButton btnSelectSrcPostImages = new JButton("...");
         btnSelectSrcPostImages.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                doSelectSrcImageFolder();
+                doSelectSrcImageDir();
             }
         });
         GridBagConstraints gbc_btnSelectSrcPostImages = new GridBagConstraints();
@@ -211,24 +211,24 @@ public class MainWindow implements ClipboardOwner {
         gbc_btnSelectSrcPostImages.gridy = 0;
         panelTop.add(btnSelectSrcPostImages, gbc_btnSelectSrcPostImages);
 
-                                JLabel lblWebFolder = new JLabel("Source folder with raw wallpaper subfolders:");
-                                GridBagConstraints gbc_lblWebFolder = new GridBagConstraints();
-                                gbc_lblWebFolder.anchor = GridBagConstraints.EAST;
-                                gbc_lblWebFolder.insets = new Insets(0, 0, 5, 5);
-                                gbc_lblWebFolder.fill = GridBagConstraints.VERTICAL;
-                                gbc_lblWebFolder.gridx = 0;
-                                gbc_lblWebFolder.gridy = 1;
-                                panelTop.add(lblWebFolder, gbc_lblWebFolder);
+                                JLabel lblWebDir = new JLabel("Source folder with raw wallpaper subfolders:");
+                                GridBagConstraints gbc_lblWebDir = new GridBagConstraints();
+                                gbc_lblWebDir.anchor = GridBagConstraints.EAST;
+                                gbc_lblWebDir.insets = new Insets(0, 0, 5, 5);
+                                gbc_lblWebDir.fill = GridBagConstraints.VERTICAL;
+                                gbc_lblWebDir.gridx = 0;
+                                gbc_lblWebDir.gridy = 1;
+                                panelTop.add(lblWebDir, gbc_lblWebDir);
 
-                        textFieldSrcRawWpFolder = new JTextField();
-                        textFieldSrcRawWpFolder.setEditable(false);
-                        GridBagConstraints gbc_textFieldSrcRawWpFolder = new GridBagConstraints();
-                        gbc_textFieldSrcRawWpFolder.insets = new Insets(0, 0, 5, 5);
-                        gbc_textFieldSrcRawWpFolder.fill = GridBagConstraints.HORIZONTAL;
-                        gbc_textFieldSrcRawWpFolder.gridx = 1;
-                        gbc_textFieldSrcRawWpFolder.gridy = 1;
-                        panelTop.add(textFieldSrcRawWpFolder, gbc_textFieldSrcRawWpFolder);
-                        textFieldSrcRawWpFolder.setColumns(10);
+                        textFieldSrcRawWpDir = new JTextField();
+                        textFieldSrcRawWpDir.setEditable(false);
+                        GridBagConstraints gbc_textFieldSrcRawWpDir = new GridBagConstraints();
+                        gbc_textFieldSrcRawWpDir.insets = new Insets(0, 0, 5, 5);
+                        gbc_textFieldSrcRawWpDir.fill = GridBagConstraints.HORIZONTAL;
+                        gbc_textFieldSrcRawWpDir.gridx = 1;
+                        gbc_textFieldSrcRawWpDir.gridy = 1;
+                        panelTop.add(textFieldSrcRawWpDir, gbc_textFieldSrcRawWpDir);
+                        textFieldSrcRawWpDir.setColumns(10);
 
 
                 JButton btnSelectSrcWallpapers = new JButton("...");
@@ -252,15 +252,15 @@ public class MainWindow implements ClipboardOwner {
         gbc_lblNewLabel.gridy = 2;
         panelTop.add(lblNewLabel, gbc_lblNewLabel);
 
-        textFieldDstWpFolder = new JTextField();
-        textFieldDstWpFolder.setEditable(false);
-        GridBagConstraints gbc_textFieldDstWpFolder = new GridBagConstraints();
-        gbc_textFieldDstWpFolder.insets = new Insets(0, 0, 5, 5);
-        gbc_textFieldDstWpFolder.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textFieldDstWpFolder.gridx = 1;
-        gbc_textFieldDstWpFolder.gridy = 2;
-        panelTop.add(textFieldDstWpFolder, gbc_textFieldDstWpFolder);
-        textFieldDstWpFolder.setColumns(10);
+        textFieldDstWpDir = new JTextField();
+        textFieldDstWpDir.setEditable(false);
+        GridBagConstraints gbc_textFieldDstWpDir = new GridBagConstraints();
+        gbc_textFieldDstWpDir.insets = new Insets(0, 0, 5, 5);
+        gbc_textFieldDstWpDir.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldDstWpDir.gridx = 1;
+        gbc_textFieldDstWpDir.gridy = 2;
+        panelTop.add(textFieldDstWpDir, gbc_textFieldDstWpDir);
+        textFieldDstWpDir.setColumns(10);
 
         JButton btnSelectDstWallpapers = new JButton("...");
         btnSelectDstWallpapers.addActionListener(new ActionListener() {
@@ -364,9 +364,9 @@ public class MainWindow implements ClipboardOwner {
     }
 
     private void setInitialValues(){
-        textFieldSrcPostImagesFolder.setText(Settings.getInstance().getSrcPostImagesFolder());
-        textFieldSrcRawWpFolder.setText(Settings.getInstance().getSrcWallpapersFolder());
-        textFieldDstWpFolder.setText(Settings.getInstance().getDstWallpapersFolder());
+        textFieldSrcPostImagesDir.setText(Settings.getInstance().getSrcPostImagesDir());
+        textFieldSrcRawWpDir.setText(Settings.getInstance().getSrcWallpapersDir());
+        textFieldDstWpDir.setText(Settings.getInstance().getDstWallpapersDir());
         textFieldPostImagesWebPrefix.setText(Settings.getInstance().getWebPrefixPostImages());
         textFieldWpWebPrefix.setText(Settings.getInstance().getWebPrefixWallpapers());
     }
@@ -389,16 +389,16 @@ public class MainWindow implements ClipboardOwner {
                     String path = evt.getNewValue().toString();
                     switch(dirType){
                     case PostImages:
-                        textFieldSrcPostImagesFolder.setText(path);
-                        Settings.getInstance().setSrcPostImagesFolder(textFieldSrcPostImagesFolder.getText());
+                        textFieldSrcPostImagesDir.setText(path);
+                        Settings.getInstance().setSrcPostImagesDir(textFieldSrcPostImagesDir.getText());
                         break;
                     case SourceWallpapers:
-                        textFieldSrcRawWpFolder.setText(path);
-                        Settings.getInstance().setSrcWallpapersFolder(textFieldSrcRawWpFolder.getText());
+                        textFieldSrcRawWpDir.setText(path);
+                        Settings.getInstance().setSrcWallpapersDir(textFieldSrcRawWpDir.getText());
                         break;
                     case TargetWallpapers:
-                        textFieldDstWpFolder.setText(path);
-                        Settings.getInstance().setDstWallpapersFolder(textFieldDstWpFolder.getText());
+                        textFieldDstWpDir.setText(path);
+                        Settings.getInstance().setDstWallpapersDir(textFieldDstWpDir.getText());
                         break;
                     }
                 }
@@ -410,7 +410,7 @@ public class MainWindow implements ClipboardOwner {
         dirSelector.removePropertyChangeListener(DirSelectorDialog.DIRECTORY_SELECTED, listener);
     }
 
-    protected void doSelectSrcImageFolder() {
+    protected void doSelectSrcImageDir() {
         selectDirHelper(DirectoryType.PostImages);
     }
 
@@ -498,9 +498,9 @@ public class MainWindow implements ClipboardOwner {
         Settings.getInstance().setWinPosition(new Dimension(frame.getX(), frame.getY()));
         Settings.getInstance().setWinSize(new Dimension(frame.getWidth(), frame.getHeight()));
 
-        Settings.getInstance().setSrcPostImagesFolder(textFieldSrcPostImagesFolder.getText());
-        Settings.getInstance().setSrcWallpapersFolder(textFieldSrcRawWpFolder.getText());
-        Settings.getInstance().setDstWallpapersFolder(textFieldDstWpFolder.getText());
+        Settings.getInstance().setSrcPostImagesDir(textFieldSrcPostImagesDir.getText());
+        Settings.getInstance().setSrcWallpapersDir(textFieldSrcRawWpDir.getText());
+        Settings.getInstance().setDstWallpapersDir(textFieldDstWpDir.getText());
         Settings.getInstance().setWebPrefixPostImages(textFieldPostImagesWebPrefix.getText());
         Settings.getInstance().setWebPrefixWallpapers(textFieldWpWebPrefix.getText());
 

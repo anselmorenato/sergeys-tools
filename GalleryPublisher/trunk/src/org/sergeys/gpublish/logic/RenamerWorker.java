@@ -42,37 +42,37 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
         // check that folders actually exist
         // TODO rename folders to dirs
-        File wpDstFolder = new File(Settings.getInstance().getDstWallpapersFolder());
-        if(!wpDstFolder.exists() || !wpDstFolder.isDirectory()){
-            Settings.getLogger().error("Dir does not exist or file is not a dir: " + wpDstFolder);
+        File wpDstDir = new File(Settings.getInstance().getDstWallpapersDir());
+        if(!wpDstDir.exists() || !wpDstDir.isDirectory()){
+            Settings.getLogger().error("Dir does not exist or file is not a dir: " + wpDstDir);
             return ExitCode.Error;
         }
 
-        File wpSrcFolder = new File(Settings.getInstance().getSrcWallpapersFolder());
-        if(!wpSrcFolder.exists() || !wpSrcFolder.isDirectory()){
-            Settings.getLogger().error("Dir does not exist or file is not a dir: " + wpSrcFolder);
+        File wpSrcDir = new File(Settings.getInstance().getSrcWallpapersDir());
+        if(!wpSrcDir.exists() || !wpSrcDir.isDirectory()){
+            Settings.getLogger().error("Dir does not exist or file is not a dir: " + wpSrcDir);
             return ExitCode.Error;
         }
 
-        File postImagesDir = new File(Settings.getInstance().getSrcPostImagesFolder());
+        File postImagesDir = new File(Settings.getInstance().getSrcPostImagesDir());
         if(!postImagesDir.exists() || !postImagesDir.isDirectory()){
             Settings.getLogger().error("Dir does not exist or file is not a dir: " + postImagesDir);
             return ExitCode.Error;
         }
 
-        String dstFolderName = wpDstFolder.getName().toLowerCase();
+        String dstDirName = wpDstDir.getName().toLowerCase();
 
         // find and process all wallpaper subdirs
-        Settings.getLogger().info("Search for wallpaper subdirs in " + wpSrcFolder);
+        Settings.getLogger().info("Search for wallpaper subdirs in " + wpSrcDir);
 
-        File[] subdirs = wpSrcFolder.listFiles(FileFilters.OnlyDirs);
+        File[] subdirs = wpSrcDir.listFiles(FileFilters.OnlyDirs);
 
         // sort by resolutions
         TreeMap<Integer, File> sortedDirs = new TreeMap<Integer, File>();
         for(File dir: subdirs){
             String dirname = dir.getName().toLowerCase();
 
-            if(dirname.equals(dstFolderName)){
+            if(dirname.equals(dstDirName)){
                 Settings.getLogger().info("Target dir found as subdir, skipped: " + dir.getName());
                 continue;
             }
@@ -118,7 +118,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                 String[] filenametokens = file.getName().split("\\.");	// name.ext
 
                 String targetname = filenametokens[0] + "-" + resolution + "." + filenametokens[1];
-                File targetfile = new File(wpDstFolder.getAbsolutePath() + File.separator +  targetname);
+                File targetfile = new File(wpDstDir.getAbsolutePath() + File.separator +  targetname);
                 copyFile(file, targetfile);
 
                 putWallpaper(file.getName(), resolution);
@@ -166,6 +166,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             }
         }
 
+        // generate html
         int count = 0;
         for(File file: sortedFiles.values()){
             String filename = file.getName();
@@ -180,11 +181,13 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             if(new File(file.getParent() + File.separator + panoramaName).exists()){
                 // panorama
                 if(count == 0){
-                    // 1st foto in the post without number
-                    template = "\n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a>\n<b>.::кликабельно::.</b>\n\n";
+                    // 1st photo in the post without number
+                    //template = "\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a>\n<b>.::кликабельно::.</b>\n\n";
+                	template = Settings.getInstance().getHtmlTemplate("firstphoto.panorama");
                 }
                 else{
-                    template = "%1$s. \n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a>\n<b>.::кликабельно::.</b>\n\n";
+                    //template = "%1$s. \n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a>\n<b>.::кликабельно::.</b>\n\n";
+                    template = Settings.getInstance().getHtmlTemplate("nextphoto.panorama");
                 }
 
                 text = String.format(template, count,
@@ -194,11 +197,13 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             }
             else{
                 if(count == 0){
-                    // 1st foto in the post without number
-                    template = "\n\n<img src=\"%2$s\" border=\"0\">\n\n";
+                    // 1st photo in the post without number
+                    //template = "\n<img src=\"%2$s\" border=\"0\">\n\n";
+                    template = Settings.getInstance().getHtmlTemplate("firstphoto");
                 }
                 else{
-                    template = "%1$s. \n\n<img src=\"%2$s\" border=\"0\">\n\n";
+                    //template = "%1$s. \n<img src=\"%2$s\" border=\"0\">\n\n";
+                	template = Settings.getInstance().getHtmlTemplate("nextphoto");
                 }
 
                 text = String.format(template, count, Settings.getInstance().getWebPrefixPostImages() + "/" + filename);
@@ -210,12 +215,13 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             // wallpapers
             if(wallpaperMap.containsKey(filename)){
                 StringBuilder sbWp = new StringBuilder();
-                String templateWp = "<a href=\"%1$s\">%2$s</a>";
+                //String templateWp = "<a href=\"%1$s\">%2$s</a>";
+                String templateWp = Settings.getInstance().getHtmlTemplate("wallpaper");
                 for(String resolution: wallpaperMap.get(filename)){
 
                     // verify again that wallpaper really exist
                     String wpFilename = filenametokens[0] + "-" + resolution + "." + filenametokens[1];
-                    String wpFilepath = Settings.getInstance().getDstWallpapersFolder() + File.separator + wpFilename;
+                    String wpFilepath = Settings.getInstance().getDstWallpapersDir() + File.separator + wpFilename;
                     if(!new File(wpFilepath).exists()){
                         Settings.getLogger().error("Wallpaper file must exist but not found for some reason: " + wpFilepath);
                         return ExitCode.Error;
@@ -223,7 +229,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
                     if(sbWp.length() > 0){
                         //sbWp.append("&nbsp;|&nbsp;");
-                        sbWp.append(" | ");
+                        //sbWp.append(" | ");
+                        sbWp.append(Settings.getInstance().getHtmlTemplate("wallpaper.separator"));
                     }
 
                     String textWp = String.format(templateWp,
@@ -233,20 +240,24 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                     sbWp.append(textWp);	// no newline here
                 }
 
-                sbHtml.append("<b>Обои:</b> " + sbWp + "\n\n");
+                //sbHtml.append("<b>Обои:</b> " + sbWp + "\n\n");
+                template = Settings.getInstance().getHtmlTemplate("wallpaper.wrapper");
+                sbHtml.append(String.format(template, sbWp));
             }
 
 
             if(files.length > 1 && count == 0){
                 String strTotal = Integer.toString(sortedFiles.size() - 1);
-                sbHtml.append(String.format("<lj-cut text=\"Смотреть %s фотографий\">\n\n", strTotal));
+                //sbHtml.append(String.format("<lj-cut text=\"Смотреть %s фотографий\">\n\n", strTotal));
+                sbHtml.append(String.format(Settings.getInstance().getHtmlTemplate("ljcut.start"), strTotal));
             }
 
             count++;
         }
 
         if(files.length > 1){
-            sbHtml.append("</lj-cut>");
+            //sbHtml.append("</lj-cut>");
+        	sbHtml.append(Settings.getInstance().getHtmlTemplate("ljcut.end"));            
         }
 
         Settings.getLogger().debug("end background task");
