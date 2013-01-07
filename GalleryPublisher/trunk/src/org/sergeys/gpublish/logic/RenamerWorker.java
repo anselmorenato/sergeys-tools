@@ -36,6 +36,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
     protected ExitCode doInBackground() throws Exception {
         // this method runs in background thread, cannot update ui controls here
 
+    	Settings.getLogger().debug("start background task");
+    	
         // copy wallpapers
 
         // check that folders actually exist
@@ -61,6 +63,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         String dstFolderName = wpDstFolder.getName().toLowerCase();
 
         // find and process all wallpaper subdirs
+        Settings.getLogger().info("Search for wallpaper subdirs in " + wpSrcFolder);
 
         File[] subdirs = wpSrcFolder.listFiles(FileFilters.OnlyDirs);
 
@@ -70,12 +73,12 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             String dirname = dir.getName().toLowerCase();
 
             if(dirname.equals(dstFolderName)){
-                Settings.getLogger().info("Target dir found as subdir, skipped: " + dir);
+                Settings.getLogger().info("Target dir found as subdir, skipped: " + dir.getName());
                 continue;
             }
 
             if(!dirname.matches("^wp-\\d+[xX]\\d+$")){
-                Settings.getLogger().warn("Dir name does not match pattern wp-0123x456, skipped: " + dir);
+                Settings.getLogger().warn("Dir name does not match pattern wp-0123x456, skipped: " + dir.getName());
                 warningCount++;
                 continue;
             }
@@ -84,9 +87,10 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
             sortedDirs.put(Integer.valueOf(dirnametokens[1]), dir);
 
-            Settings.getLogger().info("Found wallpaper dir " + dir);
+            Settings.getLogger().info("Found wallpaper dir " + dir.getName());
         }
 
+        Settings.getLogger().info("Search, rename and copy wallpapers");
         for(File dir: sortedDirs.values()){
 
             String[] dirnametokens = dir.getName().split("[-xX]");	// regexp: any of these chars is a separator
@@ -119,7 +123,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
                 putWallpaper(file.getName(), resolution);
 
-                Settings.getLogger().info("Copied " + targetfile.getAbsolutePath());
+                Settings.getLogger().info("Copied " + targetfile.getName());
             }
 
 //			try{
@@ -131,6 +135,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         }
 
         // post image files and html
+        Settings.getLogger().info("Search and generate html for post images in " + postImagesDir);
         File[] files = postImagesDir.listFiles(FileFilters.OnlyFiles);
 
         // sort files
@@ -138,12 +143,12 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         for(File file: files){
 
             if(file.getName().matches("^\\w+-\\d+-b\\.\\w+$")){
-                Settings.getLogger().debug("Panorama found, skipped: " + file.getAbsolutePath());
+                Settings.getLogger().debug("Panorama found, skipped: " + file.getName());
                 continue;
             }
 
             if(!file.getName().matches("^\\w+-\\d+\\.\\w+$")){
-                Settings.getLogger().warn("File name does not match pattern name-01.ext, skipped: " + file.getAbsolutePath());
+                Settings.getLogger().warn("File name does not match pattern name-01.ext, skipped: " + file.getName());
                 warningCount++;
                 continue;
             }
@@ -152,7 +157,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             String refinedNumber = Integer.valueOf(filenametokens[1]).toString();
 
             if(sortedFiles.containsKey(refinedNumber)){
-                Settings.getLogger().warn("Duplicated file number " + refinedNumber + " for " + sortedFiles.get(refinedNumber) + " and " + file + ", second file skipped");
+                Settings.getLogger().warn("Duplicated file number " + refinedNumber + " for " + 
+                		sortedFiles.get(refinedNumber).getName() + " and " + file.getName() + ", second file skipped");
                 warningCount++;
             }
             else{
@@ -165,7 +171,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             String filename = file.getName();
             String[] filenametokens = filename.split("\\.");
 
-            Settings.getLogger().info("Found " + file.getAbsolutePath());
+            Settings.getLogger().info("Found " + file.getName());
 
             String template;
             String text;
@@ -175,10 +181,10 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                 // panorama
                 if(count == 0){
                     // 1st foto in the post without number
-                    template = "\n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a><b>\n.::кликабельно::.</b>\n\n";
+                    template = "\n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a>\n<b>.::кликабельно::.</b>\n\n";
                 }
                 else{
-                    template = "%1$s. \n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a><b>\n.::кликабельно::.</b>\n\n";
+                    template = "%1$s. \n\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a>\n<b>.::кликабельно::.</b>\n\n";
                 }
 
                 text = String.format(template, count,
@@ -243,6 +249,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             sbHtml.append("</lj-cut>");
         }
 
+        Settings.getLogger().debug("end background task");
+        
         return (warningCount == 0) ? ExitCode.SuccessClean : ExitCode.SuccessWarnings;
     }
 

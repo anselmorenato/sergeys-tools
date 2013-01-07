@@ -459,9 +459,10 @@ public class MainWindow implements ClipboardOwner {
             public void propertyChange(PropertyChangeEvent evt) {
                 if("state".equals(evt.getPropertyName())){
                     if((StateValue)evt.getNewValue() == StateValue.DONE){
+                    	Settings.getLogger().debug("worker done");
                         doWorkerDone();
                     }
-                    Settings.getLogger().debug("worker state: " + evt.getNewValue().toString());
+                    //Settings.getLogger().debug("worker state: " + evt.getNewValue().toString());
                 }
             }
         });
