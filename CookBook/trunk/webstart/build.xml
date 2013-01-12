@@ -3,14 +3,14 @@
 
     <property name="properties.file" value="build.properties" />
 
-    <target name="all" depends="init, builddir, prepare, deploy">
+    <target name="all" depends="init, compile, builddir, prepare, deploy">
     </target>
 
     <target name="init">
         <property file="${properties.file}">
         </property>
-    	<property file="${project.dir}/src/resources/settings.properties">
-		</property>
+        <property file="${project.dir}/src/resources/settings.properties">
+        </property>
     </target>
 
     <target name="builddir">
@@ -20,6 +20,10 @@
             <fileset dir="${build.dir}" excludes=".keystore">
             </fileset>
         </delete>
+    </target>
+
+    <target name="compile" depends="init">
+        <ant dir="${project.dir}/build"></ant>
     </target>
 
     <target name="test">
@@ -63,7 +67,7 @@
         <copy file="${appicon}" tofile="${build.dir}/largeicon.png" overwrite="true">
         </copy>
 
-    	<echo message="Collect fxbuild output:" />
+        <echo message="Collect fxbuild output:" />
         <copy todir="${build.dir}" verbose="true">
             <fileset dir="${project.dir}/build/dist">
             </fileset>

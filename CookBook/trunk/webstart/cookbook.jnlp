@@ -26,14 +26,14 @@
     <jar href="CookBook.%REVISION%.jar" download="eager" />
 
     <jar href="libs/h2-1.3.170.jar" download="eager" />
-    <jar href="libs/xercesImpl.jar" download="eager" />
-    <jar href="libs/slf4j-api-1.7.2.jar" download="eager" />
-    
-    <!-- jar href="libs/slf4j-jdk14-1.7.2.jar" download="eager" / -->
-    
-    <jar href="libs/slf4j-log4j12-1.7.2.jar" download="eager" />
     <jar href="libs/log4j-1.2.17.jar" download="eager" />
+    <jar href="libs/slf4j-api-1.7.2.jar" download="eager" />
+    <jar href="libs/slf4j-log4j12-1.7.2.jar" download="eager" />    
+    <jar href="libs/xercesImpl.jar" download="eager" />
     <jar href="libs/xml-apis-1.4.01.jar" download="eager" />
+        
+    <!-- jar href="libs/slf4j-jdk14-1.7.2.jar" download="eager" / -->
+
   </resources>
   
   <javafx-desc main-class="org.sergeys.cookbook.ui.CookBook" />
