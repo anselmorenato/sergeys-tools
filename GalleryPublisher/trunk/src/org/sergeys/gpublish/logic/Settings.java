@@ -16,6 +16,8 @@ import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.FileHandler;
+import java.util.logging.LogManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,101 +56,45 @@ public class Settings {
             dir.mkdirs();
         }
 
-        // extract settings for log4j
+        // settings for log4j
+//        extractResource("log4j.properties", false);
+//        System.setProperty("log4j.configuration", new File(settingsDirPath + File.separator + "log4j.properties").toURI().toString());
+//        System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
+
+        // settings for java logging
+        extractResource("logging.properties", false);
 
         try {
-            String logproperties = settingsDirPath + File.separator + "log4j.properties";
-            if (!new File(logproperties).exists()) {
+            File configfile = new File(settingsDirPath + File.separator + "logging.properties");
 
-                InputStream is = Settings.class.getResourceAsStream("/resources/log4j.properties");
-                if (is != null) {
-                    byte[] buf = new byte[20480];
-                    FileOutputStream fos = new FileOutputStream(logproperties);
-                    int count = 0;
-                    while ((count = is.read(buf)) > 0) {
-                        fos.write(buf, 0, count);
-                    }
-                    fos.close();
-                    is.close();
-                }
-            }
+            // this is enough for standalone app
+            System.setProperty("java.util.logging.config.file", configfile.getAbsolutePath());
 
-            // System.setProperty("log4j.debug", "true");
-            File confFile = new File(logproperties);
-            if(confFile.exists()){
-                System.setProperty("log4j.configuration", confFile.toURI().toString());
-                System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
-            }
-            else{
-                System.err.println("log4j config file not found at " + logproperties);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+            // TODO may be not necessary for webstart, verify this
+            FileInputStream fis = new FileInputStream(configfile);
+            LogManager.getLogManager().readConfiguration(fis);
+            fis.close();
 
-        // extract settings for java logging
+            // this is for webstart
+            // http://lopica.sourceforge.net/faq.html#config-logger
+            // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6207335
 
-        // looks like impossible to have java logging configurable under web start
-        // http://lopica.sourceforge.net/faq.html#config-logger
-/*
-        try {
-            String logproperties = settingsDirPath + File.separator + "logging.properties";
-            if (!new File(logproperties).exists()) {
+            //java.util.logging.Logger jl = LogManager.getLogManager().getLogger("gallerypublisher");
+            java.util.logging.Logger jl = LogManager.getLogManager().getLogger("");
 
-                InputStream is = Settings.class.getResourceAsStream("/resources/logging.properties");
-                if (is != null) {
-                    byte[] buf = new byte[20480];
-                    FileOutputStream fos = new FileOutputStream(logproperties);
-                    int count = 0;
-                    while ((count = is.read(buf)) > 0) {
-                        fos.write(buf, 0, count);
-                    }
-                    fos.close();
-                    is.close();
-                }
-            }
+            FileHandler fh = new FileHandler();
+            fh.setFormatter(new LogFormatter());
 
-            File confFile = new File(logproperties);
-            if(confFile.exists()){
-                // TODO webstart refuses to read this, try stream from url?
-                System.setProperty("java.util.logging.config.file", confFile.getAbsolutePath());
-
-                FileInputStream fis = new FileInputStream(confFile);
-                LogManager.getLogManager().readConfiguration(fis);
-                fis.close();
-            }
-            else{
-                System.err.println("logger config file not found at " + logproperties);
-            }
+            jl.addHandler(fh);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(System.err);
         }
-*/
 
         // slf4j logger
-
         logger = LoggerFactory.getLogger("gallerypublisher");
 
-        // extract html templates
-        try{
-            String templatesfile = settingsDirPath + File.separator + HTMLTEMPLATES_FILE;
-            if (!new File(templatesfile).exists()) {
-                InputStream is = Settings.class.getResourceAsStream("/resources/" + HTMLTEMPLATES_FILE);
-                if (is != null) {
-                    byte[] buf = new byte[20480];
-                    FileOutputStream fos = new FileOutputStream(templatesfile);
-                    int count = 0;
-                    while ((count = is.read(buf)) > 0) {
-                        fos.write(buf, 0, count);
-                    }
-                    fos.close();
-                    is.close();
-                }
-            }
-        }
-        catch(Exception ex){
-            logger.error("failed to extract html templates", ex);
-        }
+        // html templates
+        extractResource(HTMLTEMPLATES_FILE, false);
 
         load();
     }
@@ -172,6 +118,45 @@ public class Settings {
 
     public static void setSettingsDirPath(String settingsDirPath) {
         Settings.settingsDirPath = settingsDirPath;
+    }
+
+    /**
+     * Extracts file to the settings directory
+     *
+     * @param filename
+     * @param overwrite
+     */
+    private static void extractResource(String filename, boolean overwrite){
+
+        String targetfile = settingsDirPath + File.separator + filename;
+
+        try{
+
+            if(!overwrite && new File(targetfile).exists()){
+                return;
+            }
+
+            InputStream is = Settings.class.getResourceAsStream("/resources/" + filename);
+            if (is != null) {
+                byte[] buf = new byte[20480];
+                FileOutputStream fos = new FileOutputStream(targetfile);
+                int count = 0;
+                while ((count = is.read(buf)) > 0) {
+                    fos.write(buf, 0, count);
+                }
+                fos.close();
+                is.close();
+            }
+        }
+        catch(IOException ex){
+            if(logger != null){
+                logger.error("Failed to extract data to " + targetfile, ex);
+            }
+            else{
+                ex.printStackTrace(System.err);
+            }
+        }
+
     }
 
     private void setDefaults() {

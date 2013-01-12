@@ -3,7 +3,7 @@
 
     <property name="properties.file" value="build.properties" />
 		
-    <target name="all" depends="init, test, builddir, compile, pack, collectAll">
+    <target name="all" depends="init, test, builddir, compile, pack, collectAll, deploy">
     </target>
 
     <target name="init">
