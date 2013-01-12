@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.concurrent.CancellationException;
@@ -27,7 +26,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
     private StringBuilder sbHtml = new StringBuilder();
 
     // filename -> list of resolutions; "sokol-05.jpg" -> ["1024x768", "1280x1024"]
-    private HashMap<String, ArrayList<String>> wallpaperMap = new HashMap<String, ArrayList<String>>();
+    //private HashMap<String, ArrayList<String>> wallpaperMap = new HashMap<String, ArrayList<String>>();
+    private HashMap<String, TreeMap<Integer, String>> wallpaperMap = new HashMap<String, TreeMap<Integer,String>>();
 
     private int warningCount = 0;
 
@@ -69,7 +69,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
         File[] subdirs = wpSrcDir.listFiles(FileFilters.OnlyDirs);
 
-        // sort by resolutions
+        // sort by resolutions, actually no need to sort now
         TreeMap<Integer, File> sortedDirs = new TreeMap<Integer, File>();
         for(File dir: subdirs){
             String dirname = dir.getName().toLowerCase();
@@ -147,7 +147,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 	                	Settings.getLogger().info("Copied to " + targetfile.getName());
 	                }
 	                
-	                putWallpaper(file.getName(), resolution);
+	                //putWallpaper(file.getName(), resolution);
                 }
                 catch(Exception ex){
                 	Settings.getLogger().error("Failed to copy/move wallpaper " + file.getAbsolutePath(), ex);
@@ -163,12 +163,14 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 //			}
         }
 
+        // collect all wallpaper names in wp-ready
+        findAllWallpapers();
+        
         // post image files and html
         Settings.getLogger().info("Search and generate html for post images in " + postImagesDir);
         File[] files = postImagesDir.listFiles(FileFilters.OnlyFiles);
 
         // sort files
-        //TreeMap<String, File> sortedFiles = new TreeMap<String, File>();
         TreeMap<Integer, File> sortedFiles = new TreeMap<Integer, File>();
         for(File file: files){
 
@@ -250,7 +252,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                 StringBuilder sbWp = new StringBuilder();
                 //String templateWp = "<a href=\"%1$s\">%2$s</a>";
                 String templateWp = Settings.getInstance().getHtmlTemplate("wallpaper");
-                for(String resolution: wallpaperMap.get(filename)){
+                //for(String resolution: wallpaperMap.get(filename)){
+                for(String resolution: wallpaperMap.get(filename).values()){
 
                     // verify again that wallpaper really exist
                     String wpFilename = filenametokens[0] + "-" + resolution + "." + filenametokens[1];
@@ -330,15 +333,51 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         }
     }
 
+    private void findAllWallpapers(){
+    	//wallpaperMap = new HashMap<String, ArrayList<String>>();
+    	wallpaperMap = new HashMap<String, TreeMap<Integer,String>>();
+    	
+    	File[] wallpapers = new File(Settings.getInstance().getDstWallpapersDir()).listFiles(FileFilters.OnlyFiles);
+    	    	
+    	for(File wallpaper: wallpapers){
+    		String[] tokens = wallpaper.getName().split("[\\.-]");
+    		// restore original file name
+    		StringBuilder sb = new StringBuilder();
+    		for(int i = 0; i < tokens.length - 2; i++){
+    			if(i != 0){
+    				sb.append("-");
+    			}
+    			sb.append(tokens[i]);
+    		}
+    		
+    		sb.append(".").append(tokens[tokens.length - 1]);
+    		
+    		putWallpaper(sb.toString(), tokens[tokens.length - 2]);
+    	}    	    	 
+    }
+    
+    /**
+     * 
+     * @param filename like "sokol-05.jpg"
+     * @param resolution like "1024x768"
+     */
     private void putWallpaper(String filename, String resolution){
-        ArrayList<String> resolutions = wallpaperMap.get(filename);
+        //ArrayList<String> resolutions = wallpaperMap.get(filename);
+    	TreeMap<Integer, String> resolutions = wallpaperMap.get(filename);
         if(resolutions == null){
-            resolutions = new ArrayList<String>();
+            //resolutions = new ArrayList<String>();
+        	resolutions = new TreeMap<Integer, String>();
             wallpaperMap.put(filename, resolutions);
         }
 
-        if(!resolutions.contains(resolution)){
-            resolutions.add(resolution);
+//        if(!resolutions.contains(resolution)){
+//            resolutions.add(resolution);
+//        }
+        
+        // have resolutions sorted ascending
+        if(!resolutions.containsValue(resolution)){
+        	String[] tokens = resolution.split("[xX]");
+        	resolutions.put(Integer.valueOf(tokens[0]), resolution);
         }
     }
 
