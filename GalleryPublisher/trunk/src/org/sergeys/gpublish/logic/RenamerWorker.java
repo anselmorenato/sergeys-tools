@@ -18,6 +18,9 @@ import org.sergeys.gpublish.ui.MainWindow;
 
 public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> {
 
+	private final String FILE_REGEXP = "^[\\w-]+-\\d+\\.\\w+$"; 
+	private final String FILE_PANORAMA_REGEXP = "^[\\w-]+-\\d+-b\\.\\w+$";
+	
     public enum ExitCode { SuccessClean, SuccessWarnings, Error, Cancelled };
 
     private MainWindow mainWindow;
@@ -36,8 +39,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
     protected ExitCode doInBackground() throws Exception {
         // this method runs in background thread, cannot update ui controls here
 
-    	Settings.getLogger().debug("start background task");
-    	
+        Settings.getLogger().debug("start background task");
+
         // copy wallpapers
 
         // check that folders actually exist
@@ -109,8 +112,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                     return ExitCode.Cancelled;
                 }
 
-                if(!file.getName().matches("^\\w+-\\d+\\.\\w+$")){
-                    Settings.getLogger().warn("File name does not match pattern name-01.ext, skipped: " + file.getAbsolutePath());
+                if(!file.getName().matches(FILE_REGEXP)){
+                    Settings.getLogger().warn("File name does not match regexp " + FILE_REGEXP + ", skipped: " + file.getAbsolutePath());
                     warningCount++;
                     continue;
                 }
@@ -139,26 +142,30 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         File[] files = postImagesDir.listFiles(FileFilters.OnlyFiles);
 
         // sort files
-        TreeMap<String, File> sortedFiles = new TreeMap<String, File>();
+        //TreeMap<String, File> sortedFiles = new TreeMap<String, File>();
+        TreeMap<Integer, File> sortedFiles = new TreeMap<Integer, File>();
         for(File file: files){
 
-            if(file.getName().matches("^\\w+-\\d+-b\\.\\w+$")){
+            if(file.getName().matches(FILE_PANORAMA_REGEXP)){
                 Settings.getLogger().debug("Panorama found, skipped: " + file.getName());
                 continue;
             }
 
-            if(!file.getName().matches("^\\w+-\\d+\\.\\w+$")){
-                Settings.getLogger().warn("File name does not match pattern name-01.ext, skipped: " + file.getName());
+            if(!file.getName().matches(FILE_REGEXP)){
+                Settings.getLogger().warn("File name does not match regexp " + FILE_REGEXP + ", skipped: " + file.getName());
                 warningCount++;
                 continue;
             }
             String[] filenametokens = file.getName().split("[\\.-]");
 
-            String refinedNumber = Integer.valueOf(filenametokens[1]).toString();
+            //String refinedNumber = Integer.valueOf(filenametokens[1]).toString();
+            // number is the token before dot 
+            //String refinedNumber = Integer.valueOf(filenametokens[filenametokens.length - 1 - 1]).toString();
+            int refinedNumber = Integer.valueOf(filenametokens[filenametokens.length - 1 - 1]);
 
             if(sortedFiles.containsKey(refinedNumber)){
-                Settings.getLogger().warn("Duplicated file number " + refinedNumber + " for " + 
-                		sortedFiles.get(refinedNumber).getName() + " and " + file.getName() + ", second file skipped");
+                Settings.getLogger().warn("Duplicated file number " + refinedNumber + " for " +
+                        sortedFiles.get(refinedNumber).getName() + " and " + file.getName() + ", second file skipped");
                 warningCount++;
             }
             else{
@@ -183,7 +190,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                 if(count == 0){
                     // 1st photo in the post without number
                     //template = "\n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a>\n<b>.::кликабельно::.</b>\n\n";
-                	template = Settings.getInstance().getHtmlTemplate("firstphoto.panorama");
+                    template = Settings.getInstance().getHtmlTemplate("firstphoto.panorama");
                 }
                 else{
                     //template = "%1$s. \n<a href=\"%2$s\"><img src=\"%3$s\" border=\"0\"></a>\n<b>.::кликабельно::.</b>\n\n";
@@ -203,7 +210,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                 }
                 else{
                     //template = "%1$s. \n<img src=\"%2$s\" border=\"0\">\n\n";
-                	template = Settings.getInstance().getHtmlTemplate("nextphoto");
+                    template = Settings.getInstance().getHtmlTemplate("nextphoto");
                 }
 
                 text = String.format(template, count, Settings.getInstance().getWebPrefixPostImages() + "/" + filename);
@@ -257,11 +264,11 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
         if(files.length > 1){
             //sbHtml.append("</lj-cut>");
-        	sbHtml.append(Settings.getInstance().getHtmlTemplate("ljcut.end"));            
+            sbHtml.append(Settings.getInstance().getHtmlTemplate("ljcut.end"));
         }
 
         Settings.getLogger().debug("end background task");
-        
+
         return (warningCount == 0) ? ExitCode.SuccessClean : ExitCode.SuccessWarnings;
     }
 
