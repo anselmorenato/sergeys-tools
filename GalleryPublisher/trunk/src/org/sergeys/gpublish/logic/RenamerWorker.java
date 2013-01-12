@@ -95,6 +95,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         Settings.getLogger().info("Search, rename and copy wallpapers");
         for(File dir: sortedDirs.values()){
 
+        	Settings.getLogger().info("Processing " + dir.getName());
+        	
             String[] dirnametokens = dir.getName().split("[-xX]");	// regexp: any of these chars is a separator
 
             String resolution = dirnametokens[1] + "x" + dirnametokens[2];
@@ -121,11 +123,36 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
                 String targetname = filenametokens[0] + "-" + resolution + "." + filenametokens[1];
                 File targetfile = new File(wpDstDir.getAbsolutePath() + File.separator +  targetname);
-                copyFile(file, targetfile);
-
-                putWallpaper(file.getName(), resolution);
-
-                Settings.getLogger().info("Copied " + targetfile.getName());
+                
+                try{
+	                if(Settings.getInstance().isDeleteRawWallpapers()){
+	                	// move wallpaper
+	                	if(targetfile.exists()){
+	                		if(!targetfile.delete()){
+	                			Settings.getLogger().error("Failed to delete existing " + targetfile);
+		                		warningCount++;
+	                		}
+	                	}
+	                	if(file.renameTo(targetfile)){
+	                		Settings.getLogger().info("Moved to " + targetfile.getName());
+	                	}
+	                	else{
+	                		Settings.getLogger().error("Failed to rename " + file + " to " + targetfile);
+	                		warningCount++;
+	                	}
+	                }
+	                else{
+	                	// copy wallpaper
+	                	copyFile(file, targetfile);
+	                	Settings.getLogger().info("Copied to " + targetfile.getName());
+	                }
+	                
+	                putWallpaper(file.getName(), resolution);
+                }
+                catch(Exception ex){
+                	Settings.getLogger().error("Failed to copy/move wallpaper " + file.getAbsolutePath(), ex);
+                	warningCount++;
+                }
             }
 
 //			try{
@@ -178,7 +205,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             String filename = file.getName();
             String[] filenametokens = filename.split("\\.");
 
-            Settings.getLogger().info("Found for post " + file.getName());
+            Settings.getLogger().info("Found post image " + file.getName());
 
             String template;
             String text;

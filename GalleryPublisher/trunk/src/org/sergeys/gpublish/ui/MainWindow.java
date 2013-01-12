@@ -2,6 +2,7 @@ package org.sergeys.gpublish.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -12,6 +13,8 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
@@ -20,6 +23,7 @@ import java.io.FileNotFoundException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -309,19 +313,34 @@ public class MainWindow implements ClipboardOwner {
         panelTop.add(textFieldWpWebPrefix, gbc_textFieldWpWebPrefix);
         textFieldWpWebPrefix.setColumns(10);
 
+                JPanel panel = new JPanel();
+                FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+                flowLayout.setAlignment(FlowLayout.LEFT);
+                GridBagConstraints gbc_panel = new GridBagConstraints();
+                gbc_panel.insets = new Insets(0, 0, 5, 5);
+                gbc_panel.fill = GridBagConstraints.BOTH;
+                gbc_panel.gridx = 1;
+                gbc_panel.gridy = 5;
+                panelTop.add(panel, gbc_panel);
+
+                                chckbxDeleteRawWallpapers = new JCheckBox("Delete raw wallpapers");
+                                chckbxDeleteRawWallpapers.addItemListener(new ItemListener() {
+                                    public void itemStateChanged(ItemEvent e) {
+                                        doCheckboxDelete(e.getStateChange() == ItemEvent.SELECTED);
+                                    }
+                                });
+
+                                panel.add(chckbxDeleteRawWallpapers);
 
 
-                JButton btnGenerateHtml = new JButton("Generate HTML");
-                btnGenerateHtml.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent arg0) {
-                        doGenerateHtml();
-                    }
-                });
-                GridBagConstraints gbc_btnGenerateHtml = new GridBagConstraints();
-                gbc_btnGenerateHtml.insets = new Insets(0, 0, 5, 5);
-                gbc_btnGenerateHtml.gridx = 1;
-                gbc_btnGenerateHtml.gridy = 5;
-                panelTop.add(btnGenerateHtml, gbc_btnGenerateHtml);
+
+                                JButton btnGenerateHtml = new JButton("Generate HTML");
+                                panel.add(btnGenerateHtml);
+                                btnGenerateHtml.addActionListener(new ActionListener() {
+                                    public void actionPerformed(ActionEvent arg0) {
+                                        doGenerateHtml();
+                                    }
+                                });
 
         JPanel panelCenter = new JPanel();
         contentPanel.add(panelCenter, BorderLayout.CENTER);
@@ -369,6 +388,26 @@ public class MainWindow implements ClipboardOwner {
         textFieldDstWpDir.setText(Settings.getInstance().getDstWallpapersDir());
         textFieldPostImagesWebPrefix.setText(Settings.getInstance().getWebPrefixPostImages());
         textFieldWpWebPrefix.setText(Settings.getInstance().getWebPrefixWallpapers());
+        chckbxDeleteRawWallpapers.setSelected(Settings.getInstance().isDeleteRawWallpapers());
+    }
+
+    private void saveCurrentValues(){
+        Settings.getInstance().setWinPosition(new Dimension(frame.getX(), frame.getY()));
+        Settings.getInstance().setWinSize(new Dimension(frame.getWidth(), frame.getHeight()));
+
+        Settings.getInstance().setSrcPostImagesDir(textFieldSrcPostImagesDir.getText());
+        Settings.getInstance().setSrcWallpapersDir(textFieldSrcRawWpDir.getText());
+        Settings.getInstance().setDstWallpapersDir(textFieldDstWpDir.getText());
+        Settings.getInstance().setWebPrefixPostImages(textFieldPostImagesWebPrefix.getText());
+        Settings.getInstance().setWebPrefixWallpapers(textFieldWpWebPrefix.getText());
+
+        Settings.getInstance().setDeleteRawWallpapers(chckbxDeleteRawWallpapers.isSelected());
+
+        try {
+            Settings.save();
+        } catch (FileNotFoundException e) {
+            Settings.getLogger().error("failed to save settings", e);
+        }
     }
 
     private DirSelectorDialog dirSelector;
@@ -422,15 +461,19 @@ public class MainWindow implements ClipboardOwner {
         selectDirHelper(DirectoryType.SourceWallpapers);
     }
 
+    protected void doCheckboxDelete(boolean isSelected) {
+        Settings.getInstance().setDeleteRawWallpapers(isSelected);
+    }
+
     private LogfileDialog logWindow;
-    
+
     protected void doViewLog() {
 
         if(logWindow == null){
-        	logWindow = new LogfileDialog(frame);
-        	//logWindow.setLocationRelativeTo(frame);
+            logWindow = new LogfileDialog(frame);
+            //logWindow.setLocationRelativeTo(frame);
         }
-        
+
         logWindow.setVisible(true);
     }
 
@@ -459,7 +502,7 @@ public class MainWindow implements ClipboardOwner {
             public void propertyChange(PropertyChangeEvent evt) {
                 if("state".equals(evt.getPropertyName())){
                     if((StateValue)evt.getNewValue() == StateValue.DONE){
-                    	Settings.getLogger().debug("worker done");
+                        Settings.getLogger().debug("worker done");
                         doWorkerDone();
                     }
                     //Settings.getLogger().debug("worker state: " + evt.getNewValue().toString());
@@ -482,33 +525,21 @@ public class MainWindow implements ClipboardOwner {
     }
 
     private AboutDialog aboutDlg;
-    
+    private JCheckBox chckbxDeleteRawWallpapers;
+
     protected void doAbout() {
-    	if(aboutDlg == null){
-    		aboutDlg = new AboutDialog(frame);
-    		aboutDlg.setLocationRelativeTo(frame);
-    	}
-    	
-    	aboutDlg.setVisible(true);        
+        if(aboutDlg == null){
+            aboutDlg = new AboutDialog(frame);
+            aboutDlg.setLocationRelativeTo(frame);
+        }
+
+        aboutDlg.setVisible(true);
     }
 
     protected void doExit() {
         Settings.getLogger().debug("application exit");
 
-        Settings.getInstance().setWinPosition(new Dimension(frame.getX(), frame.getY()));
-        Settings.getInstance().setWinSize(new Dimension(frame.getWidth(), frame.getHeight()));
-
-        Settings.getInstance().setSrcPostImagesDir(textFieldSrcPostImagesDir.getText());
-        Settings.getInstance().setSrcWallpapersDir(textFieldSrcRawWpDir.getText());
-        Settings.getInstance().setDstWallpapersDir(textFieldDstWpDir.getText());
-        Settings.getInstance().setWebPrefixPostImages(textFieldPostImagesWebPrefix.getText());
-        Settings.getInstance().setWebPrefixWallpapers(textFieldWpWebPrefix.getText());
-
-        try {
-            Settings.save();
-        } catch (FileNotFoundException e) {
-            Settings.getLogger().error("failed to save settings", e);
-        }
+        saveCurrentValues();
 
         frame.setVisible(false);
         frame.dispose();

@@ -16,11 +16,11 @@ import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.FileHandler;
-import java.util.logging.LogManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+//import java.util.logging.FileHandler;
+//import java.util.logging.LogManager;
 
 public class Settings {
 
@@ -40,6 +40,7 @@ public class Settings {
     private String dstWallpapersDir = "";
     private String webPrefixPostImages = "";
     private String webPrefixWallpapers = "";
+    private boolean deleteRawWallpapers = false;
 
     private static Settings instance = new Settings();
 
@@ -57,38 +58,38 @@ public class Settings {
         }
 
         // settings for log4j
-//        extractResource("log4j.properties", false);
-//        System.setProperty("log4j.configuration", new File(settingsDirPath + File.separator + "log4j.properties").toURI().toString());
-//        System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
+        extractResource("log4j.properties", false);
+        System.setProperty("log4j.configuration", new File(settingsDirPath + File.separator + "log4j.properties").toURI().toString());
+        System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
 
         // settings for java logging
-        extractResource("logging.properties", false);
-
-        try {
-            File configfile = new File(settingsDirPath + File.separator + "logging.properties");
-
-            // this is enough for standalone app
-            System.setProperty("java.util.logging.config.file", configfile.getAbsolutePath());
-
-            // TODO may be not necessary for webstart, verify this
-            FileInputStream fis = new FileInputStream(configfile);
-            LogManager.getLogManager().readConfiguration(fis);
-            fis.close();
-
-            // this is for webstart
-            // http://lopica.sourceforge.net/faq.html#config-logger
-            // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6207335
-
-            //java.util.logging.Logger jl = LogManager.getLogManager().getLogger("gallerypublisher");
-            java.util.logging.Logger jl = LogManager.getLogManager().getLogger("");
-
-            FileHandler fh = new FileHandler();
-            fh.setFormatter(new LogFormatter());
-
-            jl.addHandler(fh);
-        } catch (Exception ex) {
-            ex.printStackTrace(System.err);
-        }
+//        extractResource("logging.properties", false);
+//
+//        try {
+//            File configfile = new File(settingsDirPath + File.separator + "logging.properties");
+//
+//            // this is enough for standalone app
+//            System.setProperty("java.util.logging.config.file", configfile.getAbsolutePath());
+//
+//            // TODO may be not necessary for webstart, verify this
+//            FileInputStream fis = new FileInputStream(configfile);
+//            LogManager.getLogManager().readConfiguration(fis);
+//            fis.close();
+//
+//            // this is for webstart
+//            // http://lopica.sourceforge.net/faq.html#config-logger
+//            // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6207335
+//
+//            //java.util.logging.Logger jl = LogManager.getLogManager().getLogger("gallerypublisher");
+//            java.util.logging.Logger jl = LogManager.getLogManager().getLogger("");
+//
+//            FileHandler fh = new FileHandler();
+//            fh.setFormatter(new LogFormatter());
+//
+//            jl.addHandler(fh);
+//        } catch (Exception ex) {
+//            ex.printStackTrace(System.err);
+//        }
 
         // slf4j logger
         logger = LoggerFactory.getLogger("gallerypublisher");
@@ -336,4 +337,12 @@ public class Settings {
     public void setWebPrefixWallpapers(String webPrefixWallpapers) {
         this.webPrefixWallpapers = webPrefixWallpapers;
     }
+
+	public boolean isDeleteRawWallpapers() {
+		return deleteRawWallpapers;
+	}
+
+	public void setDeleteRawWallpapers(boolean deleteRawWallpapers) {
+		this.deleteRawWallpapers = deleteRawWallpapers;
+	}
 }
