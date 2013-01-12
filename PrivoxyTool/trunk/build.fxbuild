@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<anttasks:AntTask xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:anttasks="http://at.bestsolution.efxclipse.tooling.jdt/1.0" buildDirectory="${workspace}/PrivoxyTool/build">
+  <deploy>
+    <application name="PrivoxyTool" mainclass="org.sergeys.privoxytool.ui.PrivoxyTool" version="1.0"/>
+    <info vendor="Sergey Selivanov"/>
+  </deploy>
+  <signjar/>
+</anttasks:AntTask>
