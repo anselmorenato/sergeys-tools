@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="487.0" prefWidth="768.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.privoxytool.ui.MainController">
+<BorderPane fx:id="pane" prefHeight="487.0" prefWidth="768.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.privoxytool.ui.MainController">
   <!-- TODO Add Nodes -->
+  <center>
+    <StackPane prefHeight="150.0" prefWidth="200.0" />
+  </center>
   <left>
-    <VBox prefHeight="200.0" prefWidth="100.0">
+    <VBox prefHeight="-1.0" prefWidth="-1.0" spacing="5.0">
       <children>
-        <Button mnemonicParsing="false" text="Button" />
-        <Button mnemonicParsing="false" text="Button" />
-        <Button mnemonicParsing="false" text="Button" />
+        <Button fx:id="btnLogAnalyzer" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Log Analyzer" VBox.vgrow="NEVER" />
+        <Button fx:id="btnUserActions" maxWidth="1.7976931348623157E308" minWidth="-1.0" mnemonicParsing="false" text="User Actions" />
+        <Button fx:id="btnConfiguration" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Configuration" />
       </children>
+      <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+      </padding>
     </VBox>
   </left>
   <top>

@@ -17,6 +17,9 @@ public class PrivoxyTool extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+    	
+    	Settings.getLogger().info("application start");
+    	
     	try{
     		URL location = getClass().getResource("Main.fxml");
             FXMLLoader loader = new FXMLLoader(location);
@@ -29,6 +32,7 @@ public class PrivoxyTool extends Application {
             primaryStage.setScene(new Scene(root));
             //primaryStage.getIcons().add(controller.getAppIcon());
 
+            controller.setStage(primaryStage);
             controller.applySettings();
 
 //            primaryStage.setX(Settings.getInstance().getWinPosition().getWidth());
@@ -40,6 +44,8 @@ public class PrivoxyTool extends Application {
                 @Override
                 public void handle(WindowEvent event) {
                     //saveWinPosition();
+                	
+                	Settings.getLogger().info("application exit");
                 }});
 
             primaryStage.show();

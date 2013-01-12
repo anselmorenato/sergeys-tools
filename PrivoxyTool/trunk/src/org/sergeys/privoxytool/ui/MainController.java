@@ -1,13 +1,30 @@
 package org.sergeys.privoxytool.ui;
 
-import org.sergeys.privoxytool.logic.Settings;
-
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 public class MainController {
 
+	private Stage stage;
+	
+	@FXML private BorderPane pane;
+	
+	@FXML private Button btnLogAnalyzer;
+	@FXML private Button btnUserActions;
+	@FXML private Button btnConfiguration;
+	
+	public void initialize(){
+        // called by convention
+	}
+	
+	public void setStage(Stage stage){
+		this.stage = stage;
+	}
+	
 	public Image getAppIcon() {
 		// TODO Auto-generated method stub
 		return null;
@@ -19,12 +36,14 @@ public class MainController {
 	}
 
     public void onMenuExit(ActionEvent e){
-    	doExit();
+    	//doExit();
+    	//pane.setVisible(false);
+    	stage.hide();
     }
     
-    private void doExit(){
-    	Settings.getLogger().info("application exit");        
-        Platform.exit();
-    }
+//    private void doExit(){
+//    	Settings.getLogger().info("application exit");        
+//        Platform.exit();
+//    }
 
 }
