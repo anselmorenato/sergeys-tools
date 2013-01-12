@@ -44,7 +44,6 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
         // copy wallpapers
 
         // check that folders actually exist
-        // TODO rename folders to dirs
         File wpDstDir = new File(Settings.getInstance().getDstWallpapersDir());
         if(!wpDstDir.exists() || !wpDstDir.isDirectory()){
             Settings.getLogger().error("Dir does not exist or file is not a dir: " + wpDstDir);
@@ -179,7 +178,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             String filename = file.getName();
             String[] filenametokens = filename.split("\\.");
 
-            Settings.getLogger().info("Found " + file.getName());
+            Settings.getLogger().info("Found for post " + file.getName());
 
             String template;
             String text;

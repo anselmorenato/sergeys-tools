@@ -55,6 +55,7 @@ public class Settings {
         }
 
         // extract settings for log4j
+
         try {
             String logproperties = settingsDirPath + File.separator + "log4j.properties";
             if (!new File(logproperties).exists()) {
@@ -73,18 +74,58 @@ public class Settings {
             }
 
             // System.setProperty("log4j.debug", "true");
-            String conf = settingsDirPath + File.separator + "log4j.properties";
-            File confFile = new File(conf);
+            File confFile = new File(logproperties);
             if(confFile.exists()){
                 System.setProperty("log4j.configuration", confFile.toURI().toString());
+                System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
             }
             else{
-
+                System.err.println("log4j config file not found at " + logproperties);
             }
-            System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
+        // extract settings for java logging
+
+        // looks like impossible to have java logging configurable under web start
+        // http://lopica.sourceforge.net/faq.html#config-logger
+/*
+        try {
+            String logproperties = settingsDirPath + File.separator + "logging.properties";
+            if (!new File(logproperties).exists()) {
+
+                InputStream is = Settings.class.getResourceAsStream("/resources/logging.properties");
+                if (is != null) {
+                    byte[] buf = new byte[20480];
+                    FileOutputStream fos = new FileOutputStream(logproperties);
+                    int count = 0;
+                    while ((count = is.read(buf)) > 0) {
+                        fos.write(buf, 0, count);
+                    }
+                    fos.close();
+                    is.close();
+                }
+            }
+
+            File confFile = new File(logproperties);
+            if(confFile.exists()){
+                // TODO webstart refuses to read this, try stream from url?
+                System.setProperty("java.util.logging.config.file", confFile.getAbsolutePath());
+
+                FileInputStream fis = new FileInputStream(confFile);
+                LogManager.getLogManager().readConfiguration(fis);
+                fis.close();
+            }
+            else{
+                System.err.println("logger config file not found at " + logproperties);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+*/
+
+        // slf4j logger
 
         logger = LoggerFactory.getLogger("gallerypublisher");
 

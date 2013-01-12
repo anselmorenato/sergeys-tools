@@ -2,7 +2,7 @@
 <project default="all">
 
     <property name="properties.file" value="build.properties" />
-
+		
     <target name="all" depends="init, test, builddir, compile, pack, collectAll">
     </target>
 
@@ -47,13 +47,19 @@
     </target>
 
     <target name="compile" depends="init, builddir">
-        <javac srcdir="${project.dir}/src"
-         destdir="${build.dir}/bin"
-         debug="on" includeantruntime="false" optimize="yes" source="1.6" target="1.6">
+        <javac 
+        	srcdir="${project.dir}/src" 
+         	destdir="${build.dir}/bin"
+         	debug="on" includeantruntime="false" source="1.6" target="1.6"
+        	
+        	fork="yes" executable="${javac.executable}"
+        	>
+        	
             <classpath>
-                <fileset dir="${project.dir}/lib" includes="*.jar"></fileset>
+                <!-- fileset dir="${project.dir}/lib" includes="*.jar"></fileset -->
+            	<fileset dir="${project.dir}/lib" includes="${libs}"></fileset>
             </classpath>
-            </javac>
+		</javac>
     </target>
 
     <target name="pack" depends="compile">
@@ -93,7 +99,7 @@
         </replace>
 
         <copy todir="${build.dir}/webstart/lib" verbose="true">
-            <fileset dir="${project.dir}/lib" includes="**/*.jar">
+            <fileset dir="${project.dir}/lib" includes="${libs}">
             </fileset>
         </copy>
 
@@ -113,7 +119,7 @@
         <copy file="${build.dir}/GalleryPublisher.jar" todir="${build.dir}/standalone"></copy>
 
         <copy todir="${build.dir}/standalone/lib" verbose="true">
-            <fileset dir="${project.dir}/lib" includes="**/*.jar"></fileset>
+            <fileset dir="${project.dir}/lib" includes="${libs}"></fileset>
         </copy>
 
         <copy todir="${build.dir}/standalone">

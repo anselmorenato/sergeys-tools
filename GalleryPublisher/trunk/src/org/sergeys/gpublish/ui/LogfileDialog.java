@@ -97,13 +97,13 @@ public class LogfileDialog extends JDialog {
             BufferedReader br = new BufferedReader(new FileReader(Settings.getSettingsDirPath() + File.separator + Settings.LOG_FILE));
             String str;
             while((str = br.readLine()) != null){
-                if(str.startsWith("ERR")){
+                if(str.startsWith("ERR") || str.startsWith("SEVERE")){
                     doc.insertString(doc.getLength(), str + "\n", styleError);
                 }
                 else if(str.startsWith("WARN")){
                     doc.insertString(doc.getLength(), str + "\n", styleWarning);
                 }
-                else if(str.startsWith("DEBUG")){
+                else if(str.startsWith("DEBUG") || str.startsWith("FINE")){	// FINER, FINEST
                     doc.insertString(doc.getLength(), str + "\n", styleDebug);
                 }
                 else{
