@@ -157,7 +157,6 @@ public class Settings {
                 ex.printStackTrace(System.err);
             }
         }
-
     }
 
     private void setDefaults() {
@@ -190,7 +189,9 @@ public class Settings {
             instance = (Settings) decoder.readObject();
             decoder.close();
             try {
-                is.close();
+            	if(is != null){
+            		is.close();
+            	}
             } catch (IOException e) {
                 Settings.getLogger().error("", e);
             }
