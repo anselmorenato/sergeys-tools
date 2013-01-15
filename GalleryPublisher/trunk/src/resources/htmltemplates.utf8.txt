@@ -24,7 +24,9 @@ wallpaper.separator==&nbsp;|&nbsp;
 
 # wrapper at %1 includes all single wp elements separated by wallpaper.separator
 
-wallpaper.wrapper==<b>Обои:</b> %1$s\n\n
+wallpaper.wrapper==<b>Обои:</b> %1$s\n
+
+photo.delimiter==\n
 
 ljcut.start==<lj-cut text=\"Смотреть %1$s фотографий\">\n\n
 ljcut.end==</lj-cut>

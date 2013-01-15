@@ -212,6 +212,8 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
             String template;
             String text;
 
+            // first goes photo itself or photo+panorama
+            
             String panoramaName = filenametokens[0] + "-b." + filenametokens[1];
             if(new File(file.getParent() + File.separator + panoramaName).exists()){
                 // panorama
@@ -247,7 +249,7 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
 
             sbHtml.append(text);
 
-            // wallpapers
+            // then go wallpapers if present
             if(wallpaperMap.containsKey(filename)){
                 StringBuilder sbWp = new StringBuilder();
                 //String templateWp = "<a href=\"%1$s\">%2$s</a>";
@@ -280,7 +282,10 @@ public class RenamerWorker extends SwingWorker<RenamerWorker.ExitCode, Integer> 
                 template = Settings.getInstance().getHtmlTemplate("wallpaper.wrapper");
                 sbHtml.append(String.format(template, sbWp));
             }
-
+            
+            // and separator between photos
+            template = Settings.getInstance().getHtmlTemplate("photo.delimiter");
+            sbHtml.append(template);
 
             if(files.length > 1 && count == 0){
                 String strTotal = Integer.toString(sortedFiles.size() - 1);
