@@ -28,5 +28,5 @@ wallpaper.wrapper==<b>Обои:</b> %1$s\n
 
 photo.delimiter==\n
 
-ljcut.start==<lj-cut text=\"Смотреть %1$s фотографий\">\n\n
-ljcut.end==</lj-cut>
+ljcut.start==<lj-cut text=\"Смотреть %1$s фотографий\">
+ljcut.end==</lj-cut><lj-like />
