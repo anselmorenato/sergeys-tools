@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
+<?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -9,31 +10,29 @@
 <BorderPane fx:id="pane" prefHeight="487.0" prefWidth="768.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.privoxytool.ui.MainController">
   <!-- TODO Add Nodes -->
   <center>
-    <StackPane prefHeight="150.0" prefWidth="200.0" />
+    <StackPane prefHeight="150.0" prefWidth="200.0" styleClass="light-bg" />
   </center>
   <left>
-    <VBox prefHeight="-1.0" prefWidth="-1.0" spacing="5.0">
+    <VBox prefHeight="-1.0" prefWidth="-1.0" spacing="15.0" styleClass="dark-bg">
       <children>
         <Button fx:id="btnLogAnalyzer" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Log Analyzer" VBox.vgrow="NEVER" />
         <Button fx:id="btnUserActions" maxWidth="1.7976931348623157E308" minWidth="-1.0" mnemonicParsing="false" text="User Actions" />
         <Button fx:id="btnConfiguration" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Configuration" />
       </children>
       <padding>
-        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+        <Insets bottom="15.0" left="10.0" right="10.0" top="15.0" />
       </padding>
     </VBox>
   </left>
+  <stylesheets>
+    <URL value="@style.css" />
+  </stylesheets>
   <top>
     <MenuBar>
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#onMenuExit" text="Exit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Delete" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

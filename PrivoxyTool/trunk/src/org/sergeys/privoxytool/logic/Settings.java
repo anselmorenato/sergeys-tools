@@ -20,22 +20,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Settings {
-	
-    public static final String SETTINGS_PATH = ".PrivoxyTool";	    
+
+    public static final String SETTINGS_PATH = ".PrivoxyTool";
     public static final String SETTINGS_FILE = "settings.xml";
     public static final String LOG_FILE = "log.txt";
 
     private static String settingsDirPath;
     private static String settingsFilePath;
-    
+
     private Properties resources = new Properties();
     private Dimension winPosition = new Dimension();
     private Dimension winSize = new Dimension();
-    
+
     private static Settings instance = new Settings();
-    
+
     private static Logger logger;
-    
+
     static{
         settingsDirPath = System.getProperty("user.home") + File.separator + SETTINGS_PATH;
         settingsFilePath = settingsDirPath + File.separator + SETTINGS_FILE;
@@ -52,7 +52,7 @@ public class Settings {
 
         // slf4j logger
         logger = LoggerFactory.getLogger("privoxytool");
-        
+
         load();
     }
 
@@ -68,7 +68,7 @@ public class Settings {
     public static Logger getLogger() {
         return logger;
     }
-    
+
     /**
      * Extracts file to the settings directory
      *
@@ -106,7 +106,7 @@ public class Settings {
             }
         }
     }
-    
+
     public static void load() {
         if (new File(settingsFilePath).exists()) {
 
@@ -121,9 +121,11 @@ public class Settings {
             instance = (Settings)decoder.readObject();
             decoder.close();
             try {
-                is.close();
+                if(is != null){
+                    is.close();
+                }
             } catch (IOException e) {
-            	logger.error("", e);
+                logger.error("", e);
             }
         } else {
             instance.setDefaults();
@@ -133,8 +135,8 @@ public class Settings {
         try {
             instance.resources.load(is);
         } catch (Exception e) {
-        	logger.error("failed to load properties, exit", e);
-        	Platform.exit();
+            logger.error("failed to load properties, exit", e);
+            Platform.exit();
         } finally {
             try {
                 if (is != null) {
@@ -145,7 +147,7 @@ public class Settings {
             }
         }
     }
-    
+
     public static void save() throws FileNotFoundException{
 
         XMLEncoder e;
@@ -159,6 +161,10 @@ public class Settings {
         }
     }
 
+    public static String getSettingsDirPath(){
+    	return settingsDirPath;
+    }
+    
     private void setDefaults() {
         // TODO screen center
         winSize.setSize(800.0, 600.0);
@@ -183,23 +189,23 @@ public class Settings {
         return date;
     }
 
-	public Dimension getWinPosition() {
-		return winPosition;
-	}
+    public Dimension getWinPosition() {
+        return winPosition;
+    }
 
-	public void setWinPosition(Dimension winPosition) {
-		this.winPosition = winPosition;
-	}
+    public void setWinPosition(Dimension winPosition) {
+        this.winPosition = winPosition;
+    }
 
-	public Dimension getWinSize() {
-		return winSize;
-	}
+    public Dimension getWinSize() {
+        return winSize;
+    }
 
-	public void setWinSize(Dimension winSize) {
-		this.winSize = winSize;
-	}
+    public void setWinSize(Dimension winSize) {
+        this.winSize = winSize;
+    }
 
 
-	
-    
+
+
 }

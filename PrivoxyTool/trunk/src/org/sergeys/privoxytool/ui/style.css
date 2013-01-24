@@ -1,0 +1,7 @@
+.dark-bg{
+    -fx-background-image: url('../../../../images/greyblack.jpg');
+}
+
+.light-bg{
+    -fx-background-image: url('../../../../images/background.jpg');
+}
