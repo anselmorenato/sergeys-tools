@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane id="rootid" fx:id="pane" prefHeight="409.0" prefWidth="670.0" styleClass="root" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.ui.MainController">
+<AnchorPane id="rootid" fx:id="pane" minHeight="607.0" minWidth="-1.0" prefHeight="712.0" prefWidth="938.0" styleClass="root" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.ui.MainController">
   <!-- TODO Add Nodes -->
   <children>
     <MenuBar prefWidth="670.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -36,16 +36,16 @@
         </Menu>
       </menus>
     </MenuBar>
-    <SplitPane fx:id="splitter" dividerPositions="0.25" focusTraversable="true" prefHeight="359.0" prefWidth="642.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="36.0">
+    <SplitPane fx:id="splitter" dividerPositions="0.30837004405286345" focusTraversable="true" prefHeight="359.0" prefWidth="642.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="36.0">
       <items>
-        <AnchorPane maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="-1.0" minHeight="-Infinity" minWidth="20.0" prefHeight="-1.0" prefWidth="200.0">
           <children>
-            <TreeView fx:id="tree" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="331.0" prefWidth="250.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="13.0" />
+            <TreeView fx:id="tree" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="13.0" />
           </children>
         </AnchorPane>
-        <SplitPane dividerPositions="0.2" focusTraversable="true" orientation="VERTICAL" prefHeight="357.0" prefWidth="136.0">
+        <SplitPane dividerPositions="0.2507598784194529" focusTraversable="true" maxHeight="1.7976931348623157E308" maxWidth="-1.0" minHeight="-Infinity" minWidth="60.0" orientation="VERTICAL" prefHeight="-1.0" prefWidth="600.0">
           <items>
-            <GridPane hgap="10.0" prefHeight="99.0" prefWidth="308.0" styleClass="root">
+            <GridPane hgap="10.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="root">
               <children>
                 <Label styleClass="about-label" text="Tags" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                 <Label styleClass="about-label" text="Title" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
@@ -80,7 +80,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
             </GridPane>
-            <WebView fx:id="webview" prefHeight="519.0" prefWidth="623.0" />
+            <WebView fx:id="webview" minHeight="30.0" minWidth="60.0" prefHeight="300.0" prefWidth="600.0" />
           </items>
         </SplitPane>
       </items>

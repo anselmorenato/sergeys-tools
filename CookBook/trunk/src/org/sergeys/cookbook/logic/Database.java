@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -43,6 +44,7 @@ public final class Database {
 
     private Connection connection;
 
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="DMI_CONSTANT_DB_PASSWORD", justification="I know what I'm doing")
     protected Connection getConnection() throws SQLException
     {
         if(connection == null || connection.isClosed()){
@@ -70,7 +72,7 @@ public final class Database {
             // apply all existing upgrades
             in = getClass().getResourceAsStream("/resources/upgrade" + ver + ".sql");
             while(in != null){
-                RunScript.execute(getConnection(), new InputStreamReader(in));
+                RunScript.execute(getConnection(), new InputStreamReader(in, Charset.defaultCharset()));
                 in.close();
                 Settings.getLogger().info("Upgraded database from version " + ver);
                 ver++;
@@ -98,7 +100,9 @@ public final class Database {
 
         File dir = new File(Settings.getSettingsDirPath());
         if(!dir.exists()){
-            dir.mkdirs();
+            if(!dir.mkdirs()){
+                throw new Exception("Failed to create settings dir at " + Settings.getSettingsDirPath());
+            }
         }
 
         Connection conn = getConnection();
@@ -110,7 +114,7 @@ public final class Database {
             if(!rs.next()){
                 // create new structure
                 InputStream in = Database.class.getResourceAsStream("/resources/createdb.sql");
-                RunScript.execute(conn, new InputStreamReader(in));
+                RunScript.execute(conn, new InputStreamReader(in, Charset.defaultCharset()));
             }
 
             // apply upgrades
@@ -175,14 +179,14 @@ public final class Database {
         } catch (SQLException | IOException e) {
             Settings.getLogger().error("failed to add recipe", e);
         }
-        finally{
-            try {
-                is.close();
-                pst.close();
-            } catch (SQLException | IOException e) {
-                Settings.getLogger().error("", e);
-            }
-        }
+//        finally{
+//            try {
+//                //is.close();	// findbugs says it will be null here
+//                //pst.close();
+//            } catch (SQLException | IOException e) {
+//                Settings.getLogger().error("", e);
+//            }
+//        }
 
         return id;
     }

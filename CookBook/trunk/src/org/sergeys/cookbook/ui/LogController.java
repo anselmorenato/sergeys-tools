@@ -2,8 +2,10 @@ package org.sergeys.cookbook.ui;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.concurrent.Future;
 
 import javafx.application.Platform;
@@ -24,6 +26,8 @@ public class LogController extends DialogController implements
     private Future<?> future;
     private Runnable watcher = new Runnable() {
 
+    	public boolean canContinue = true; // for fu=indbugs, no one can set this 
+    	
         @Override
         public void run() {
 
@@ -36,8 +40,9 @@ public class LogController extends DialogController implements
             
             try {                
                 
-              br = new BufferedReader(new FileReader(logfile));
-              boolean canContinue = true;
+              //br = new BufferedReader(new FileReader(logfile));
+              br = new BufferedReader(new InputStreamReader(new FileInputStream(logfile), Charset.defaultCharset()));
+              //boolean canContinue = true;
               StringBuilder sb = new StringBuilder();
               while (canContinue) {
                   String str = br.readLine();
@@ -59,11 +64,15 @@ public class LogController extends DialogController implements
                   	sb = new StringBuilder();
                   }                    
               }
+              
+              Settings.getLogger().debug("log watch cycle ended normally");
                 
             }
             catch(Exception ex){
                 try {
-                    br.close();
+                	if(br != null){
+                		br.close();
+                	}
                     
                     Settings.getLogger().debug("reader closed");
                 } catch (IOException e) {
@@ -71,7 +80,7 @@ public class LogController extends DialogController implements
                 }
                 
                 if(ex instanceof InterruptedException){
-                    Settings.getLogger().debug("log watch thread interrupted");
+                    Settings.getLogger().debug("log watch cycle: thread interrupted");
                 }
                 else{
                     Settings.getLogger().error("", ex);

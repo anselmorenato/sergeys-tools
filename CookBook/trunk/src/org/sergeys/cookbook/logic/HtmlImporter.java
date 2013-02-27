@@ -4,10 +4,11 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -102,7 +103,7 @@ public class HtmlImporter {
 ////                try {
 ////                    setDocument(doc);
 ////                } catch (IOException e) {
-////                    
+////
 ////                    e.printStackTrace();
 ////                }
 //            }
@@ -162,7 +163,7 @@ public class HtmlImporter {
         }
 
         try {
-            if(Database.getInstance().isRecipeExists(hash)){                
+            if(Database.getInstance().isRecipeExists(hash)){
                 Settings.getLogger().info("recipe with this hash already exist in database");
                 status.set(Status.AlreadyExist);
                 return;
@@ -206,7 +207,7 @@ public class HtmlImporter {
                     attr.getNodeValue().isEmpty()){
                     // TODO: fetch remote files
 //                    System.out.println(tag + ": skip url '" + attr.getNodeValue() + "'");
-                	Settings.getLogger().debug(tag + ": skip url '" + attr.getNodeValue() + "'");
+                    Settings.getLogger().debug(tag + ": skip url '" + attr.getNodeValue() + "'");
                     continue;
                 }
 
@@ -327,7 +328,7 @@ public class HtmlImporter {
 
         String encoding = doc.getInputEncoding();
         Settings.getLogger().debug("doc encoding " + encoding);
-        
+
         // remove garbage
         removeElements(doc, "script");
         removeElements(doc, "noscript");
@@ -351,11 +352,13 @@ public class HtmlImporter {
         String bodytext = nodes.item(0).getTextContent();
         Path p = FileSystems.getDefault().getPath(tempDir.toString(), hash + ".txt");
         try {
-            FileWriter wr = new FileWriter(p.toFile());
+            //FileWriter wr = new FileWriter(p.toFile());
+            //OutputStreamWriter wr = new OutputStreamWriter(new FileOutputStream(p.toFile()), StandardCharsets.UTF_8);
+            OutputStreamWriter wr = new OutputStreamWriter(new FileOutputStream(p.toFile()), Charset.defaultCharset());
             wr.write(bodytext);
             wr.close();
         } catch (IOException e) {
-        	Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e);
             status.set(Status.Failed);
         }
 
@@ -374,7 +377,7 @@ public class HtmlImporter {
             fos.close();
 //            System.out.println("file written");
         } catch (IOException e1) {
-        	Settings.getLogger().error("", e1);
+            Settings.getLogger().error("", e1);
             status.set(Status.Failed);
         }
 
@@ -395,7 +398,7 @@ public class HtmlImporter {
             List<String> suggestedTags = RecipeLibrary.getInstance().suggestTags(title);
             Database.getInstance().updateRecipeTags(hash, suggestedTags);
         } catch (Exception e) {
-        	Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e);
             status.set(Status.Failed);
         }
 

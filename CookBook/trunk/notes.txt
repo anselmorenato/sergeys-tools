@@ -1,5 +1,10 @@
 This is an EclipseFX project
 
+- "like" button for favorite
+- delete recipes
+- show progress of mass import, support cancel
+- show message when warnings or errors on mass import
+- colorise log output
 - editor
 - copy-paste to html, save external images locally
 - share recipes via xmpp

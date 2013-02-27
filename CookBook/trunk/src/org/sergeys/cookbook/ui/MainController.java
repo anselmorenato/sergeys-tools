@@ -68,7 +68,7 @@ public class MainController {
     private Image appIcon;
     private Stage dialogStage;
 
-    ChangeListener<TreeItem<RecipeTreeValue>> treeListener = new ChangeListener<TreeItem<RecipeTreeValue>>(){
+    private ChangeListener<TreeItem<RecipeTreeValue>> treeListener = new ChangeListener<TreeItem<RecipeTreeValue>>(){
 
         @Override
         public void changed(
@@ -86,7 +86,7 @@ public class MainController {
     public void initialize(){
         // called by convention
         // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
-        //Settings.getLogger().debug("maincontroller initialize");
+        Settings.getLogger().debug("maincontroller initialize");
 
         // TODO call in background
         RecipeLibrary.getInstance().validate();
@@ -112,21 +112,39 @@ public class MainController {
 //            }
 //        });
 
-//        double pos = Settings.getInstance().getWinDividerPosition();
-//        System.out.println("set " + pos);
+        double pos = Settings.getInstance().getWinDividerPosition();
+        Settings.getLogger().debug("set " + pos);
 
-//        splitter.setDividerPosition(0, pos);
-//        System.out.println("actual " + splitter.getDividerPositions()[0]);
+        splitter.setDividerPosition(0, pos);
+        
+        //ObservableList<Divider> divs = splitter.getDividers();
+        //double[] positions = splitter.getDividerPositions();
+        
+        //splitter.setDividerPositions(pos, 0.99);
+        
+        Settings.getLogger().debug("actual " + splitter.getDividerPositions()[0]);
 
 //        splitter.layout();
-
+        
+//        final EventDispatcher oldEventDispatcher = splitter.getEventDispatcher();
+//        splitter.setEventDispatcher(new EventDispatcher() {
+//			
+//			@Override
+//			public Event dispatchEvent(Event event, EventDispatchChain tail) {
+//				Settings.getLogger().debug("got event " + event);
+//				
+//				return oldEventDispatcher.dispatchEvent(event, tail);
+//			}
+//		});
+        
+        
         splitter.getDividers().get(0).positionProperty().addListener(new ChangeListener<Number>(){
 
             @Override
             public void changed(ObservableValue<? extends Number> observable,
                     Number oldValue, Number newValue) {
 
-//                System.out.println("changed to " + newValue);
+            	Settings.getLogger().debug("changed to " + newValue);
             }});
 
         splitter.getDividers().get(0).positionProperty().addListener(new InvalidationListener(){
@@ -155,10 +173,18 @@ public class MainController {
     }
 
     public void myInit(Stage stage){
+    	Settings.getLogger().debug("myinit");
+    	
         this.stage = stage;
+        
+        // set after show()
+//        double pos = Settings.getInstance().getWinDividerPosition();
+//        Settings.getLogger().debug("set " + pos);
+//        splitter.setDividerPosition(0, pos);
     }
 
     public void applySettings(){
+    	Settings.getLogger().debug("applysettings");
 //        double pos = Settings.getInstance().getWinDividerPosition();
 //        splitter.setDividerPositions(pos, 1.0 - pos);
     }
@@ -374,7 +400,8 @@ public class MainController {
      * @return true if any children were added
      */
     private boolean buildSubtree(TreeItem<RecipeTreeValue> item, Tag tag){
-
+    	//Settings.getLogger().debug("buildsubtree");
+    	
         boolean hasChildren = false;
 
         try {
@@ -411,6 +438,8 @@ public class MainController {
 
     private void buildTree(){
 
+    	Settings.getLogger().debug("buildtree");
+    	
         tree.getRoot().getChildren().clear();
 
         if(tagIcon == null){
@@ -554,6 +583,8 @@ public class MainController {
     private Recipe currentRecipe;
 
     private void setRecipe(Recipe recipe){
+    	Settings.getLogger().debug("setrecipe");
+    	
         currentRecipe = recipe;
 
         String filename = Settings.getSettingsDirPath() + File.separator + Settings.RECIPES_SUBDIR +
