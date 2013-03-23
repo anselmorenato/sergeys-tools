@@ -1,6 +1,8 @@
 This is an EclipseFX project
 
-- "like" button for favorite
+- context menu for recipe and branch
+- export recipe, export branch to dir
+- "like" or "heart" button for favorite; button to unset favorite
 - delete recipes
 - show progress of mass import, support cancel
 - show message when warnings or errors on mass import
@@ -15,7 +17,7 @@ This is an EclipseFX project
 - mass import, by file mask
 - unpacked recipes in two-level dir structure
 - save and import currently viewed page as new recipe
-- mark recently added recipes in the tree
+- mark recently added recipes in the tree, or collect say last 20 under special branch
 - quick text filter in tree
 - cancel background tasks on exit
 
