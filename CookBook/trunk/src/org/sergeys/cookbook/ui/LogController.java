@@ -55,7 +55,7 @@ public class LogController extends DialogController implements
                   	
                   	Platform.runLater(new Runnable() {
                           @Override
-                          public void run() {
+                          public void run() {                        	  
                               logTextarea.appendText(append);                                
                           }
                       });

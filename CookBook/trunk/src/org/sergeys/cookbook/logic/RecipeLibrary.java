@@ -30,7 +30,7 @@ public final class RecipeLibrary {
         String s;
         try {
             while((s = br.readLine()) != null){
-                if(!s.isEmpty()){
+                if(!s.isEmpty() && !s.startsWith("#")){
                     String[] arr = s.split("=");
                     String[] words = arr[1].split(",");
                     for(String word: words){
@@ -46,7 +46,7 @@ public final class RecipeLibrary {
                 }
             }
         } catch (IOException e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("failed to parse tag suggestions", e);
         }
     }
 
@@ -66,19 +66,23 @@ public final class RecipeLibrary {
         try {
             ArrayList<Recipe> recipes = Database.getInstance().getAllRecipes();
             for(final Recipe r: recipes){
-                final File f = new File(Settings.getRecipeLibraryPath() + File.separator + r.getHash() + ".html");
+            	            	            	
+                //final File f = new File(Settings.getRecipeLibraryPath() + File.separator + r.getHash() + ".html");
+            	//final File dir = new File(r.getUnpackedDir());
+            	final File f = new File(r.getUnpackedFilename());
                 if(!f.exists()){
 
                     Task<Void> task = new Task<Void>() {
                         @Override
                         protected Void call() throws Exception {
                             Settings.getLogger().debug("unpacking " + f.getAbsolutePath());
+                                                                                    
                             File temp = File.createTempFile("cookbook", ".jar");
                             temp.deleteOnExit();
 
                             Database.getInstance().extractRecipeFile(r.getHash(), temp);
 
-                            Util.unpackJar(temp, Settings.getRecipeLibraryPath());
+                            Util.unpackJar(temp, r.getUnpackedDir());
 
                             temp.delete();
                             return null;

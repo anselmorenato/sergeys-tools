@@ -25,7 +25,7 @@ public class Settings {
 
     public static final String SETTINGS_PATH = ".CookBook";
     public static final String SETTINGS_FILE = "settings.xml";
-
+    public static final String LOG_FILE = "log.txt";
     public static final String RECIPES_SUBDIR = "recipes";
 
     private static String settingsDirPath;
@@ -37,6 +37,7 @@ public class Settings {
     private Dimension winSize = new Dimension();
     private double winDividerPosition = 0;
     private String lastFilechooserLocation = "";
+    private Date savedVersion = new Date(0);
 
     private static Settings instance = new Settings();
     private static ExecutorService executor = Executors.newCachedThreadPool();
@@ -85,33 +86,38 @@ public class Settings {
 //        }
 
         // log4j
-        try{
-            String logproperties = settingsDirPath + File.separator + "log4j.properties";
-            if(!new File(logproperties).exists()){
+//        try{
+//            String logproperties = settingsDirPath + File.separator + "log4j.properties";
+//            if(!new File(logproperties).exists()){
+//
+//                InputStream is = Settings.class.getResourceAsStream("/resources/log4j.properties");
+//                if(is != null){
+//                    byte[] buf = new byte[20480];
+//                    FileOutputStream fos = new FileOutputStream(logproperties);
+//                    int count = 0;
+//                    while((count = is.read(buf)) > 0){
+//                        fos.write(buf, 0, count);
+//                    }
+//                    fos.close();
+//                    is.close();
+//                }
+//            }
+//
+//            //System.setProperty("log4j.debug", "true");
+//            String conf = settingsDirPath + File.separator + "log4j.properties";
+//            File confFile = new File(conf);
+//            System.setProperty("log4j.configuration", confFile.toURI().toString());
+//            System.setProperty("log4j.log.dir", settingsDirPath);
+//        }
+//        catch(IOException ex){
+//            ex.printStackTrace();
+//        }
 
-                InputStream is = Settings.class.getResourceAsStream("/resources/log4j.properties");
-                if(is != null){
-                    byte[] buf = new byte[20480];
-                    FileOutputStream fos = new FileOutputStream(logproperties);
-                    int count = 0;
-                    while((count = is.read(buf)) > 0){
-                        fos.write(buf, 0, count);
-                    }
-                    fos.close();
-                    is.close();
-                }
-            }
-
-            //System.setProperty("log4j.debug", "true");
-            String conf = settingsDirPath + File.separator + "log4j.properties";
-            File confFile = new File(conf);
-            System.setProperty("log4j.configuration", confFile.toURI().toString());
-            System.setProperty("log4j.log.dir", settingsDirPath);
-        }
-        catch(IOException ex){
-            ex.printStackTrace();
-        }
-
+        // settings for log4j
+        extractResource("log4j.properties", false);
+        System.setProperty("log4j.configuration", new File(settingsDirPath + File.separator + "log4j.properties").toURI().toString());
+        System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
+        
         // slf4j logging
         log = LoggerFactory.getLogger("cookbook");
 
@@ -141,12 +147,7 @@ public class Settings {
 
     public static void save() throws FileNotFoundException{
 
-//        instance.savedVersion = instance.getCurrentVersion();
-
-//        File dir = new File(settingsDirPath);
-//        if(!dir.exists()){
-//            dir.mkdirs();
-//        }
+        instance.savedVersion = instance.getCurrentVersion();
 
         XMLEncoder e;
 
@@ -241,6 +242,45 @@ public class Settings {
         executor.shutdown();
     }
 
+    /**
+     * Extracts file to the settings directory
+     *
+     * @param filename
+     * @param overwrite
+     */
+    private static void extractResource(String filename, boolean overwrite){
+
+        String targetfile = settingsDirPath + File.separator + filename;
+
+        try{
+
+            if(!overwrite && new File(targetfile).exists()){
+                return;
+            }
+
+            InputStream is = Settings.class.getResourceAsStream("/resources/" + filename);
+            if (is != null) {
+                byte[] buf = new byte[20480];
+                FileOutputStream fos = new FileOutputStream(targetfile);
+                int count = 0;
+                while ((count = is.read(buf)) > 0) {
+                    fos.write(buf, 0, count);
+                }
+                fos.close();
+                is.close();
+            }
+        }
+        catch(IOException ex){
+            if(log != null){
+                log.error("Failed to extract data to " + targetfile, ex);
+            }
+            else{
+                ex.printStackTrace(System.err);
+            }
+        }
+    }
+    
+    
     private void setDefaults() {
 //    	
 //    	try{
@@ -275,6 +315,15 @@ public class Settings {
         Date date = cal.getTime();
 
         return date;
+    }
+    
+    public Date getSavedVersion() {
+        return savedVersion;
+    }
+    
+    // required for xml serializer to work
+    public void setSavedVersion(Date savedVersion) {
+        this.savedVersion = savedVersion;
     }
 
     public Properties getResources(){

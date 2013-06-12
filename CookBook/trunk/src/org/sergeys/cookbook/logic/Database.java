@@ -48,7 +48,10 @@ public final class Database {
     protected Connection getConnection() throws SQLException
     {
         if(connection == null || connection.isClosed()){
-            String url = String.format("jdbc:h2:%s/%s", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
+        	// http://www.h2database.com/html/features.html#other_logging
+        	// log to slf4j
+            String url = String.format("jdbc:h2:%s/%s;TRACE_LEVEL_FILE=4", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
+        	//String url = String.format("jdbc:h2:%s/%s", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
             //String url = String.format("jdbc:h2:%s/%s;JMX=TRUE", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
             connection = DriverManager.getConnection(url, "sa", "sa");
         }

@@ -15,11 +15,12 @@ This is an EclipseFX project
 - favorites
 - tag synonyms, merge same tags to one
 - mass import, by file mask
-- unpacked recipes in two-level dir structure
++- unpacked recipes in two-level dir structure
 - save and import currently viewed page as new recipe
 - mark recently added recipes in the tree, or collect say last 20 under special branch
 - quick text filter in tree
 - cancel background tasks on exit
+- show total # of recipes
 
 
 http://stackoverflow.com/questions/11242847/is-drag-and-drop-supported-by-treeitem

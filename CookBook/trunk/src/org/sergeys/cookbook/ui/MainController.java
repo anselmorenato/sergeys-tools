@@ -23,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -32,6 +33,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebView;
@@ -62,6 +64,10 @@ public class MainController {
     @FXML private TextArea tags;
     @FXML private Button buttonSave;
     @FXML private Button buttonRevert;
+    
+    @FXML private AnchorPane leftSplitterPane;
+    @FXML private SplitPane rightSplitterPane;
+    @FXML private GridPane topSplitterPane;
 
     private Stage stage;
     private FileChooser fc;
@@ -88,6 +94,12 @@ public class MainController {
         // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
         Settings.getLogger().debug("maincontroller initialize");
 
+
+        // https://forums.oracle.com/message/10823990#10823990
+//        SplitPane.setResizableWithParent(leftSplitterPane, false);
+//        SplitPane.setResizableWithParent(rightSplitterPane, false);
+//        SplitPane.setResizableWithParent(topSplitterPane, false);
+        
         // TODO call in background
         RecipeLibrary.getInstance().validate();
 
@@ -99,6 +111,7 @@ public class MainController {
         tree.setRoot(treeRoot);
         treeRoot.setExpanded(true);
 
+        tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tree.getSelectionModel().selectedItemProperty().addListener(treeListener);
 
         buildTree();
@@ -587,9 +600,11 @@ public class MainController {
     	
         currentRecipe = recipe;
 
-        String filename = Settings.getSettingsDirPath() + File.separator + Settings.RECIPES_SUBDIR +
-                File.separator + recipe.getHash() + ".html";
-        webview.getEngine().load(new File(filename).toURI().toString());
+//        String filename = Settings.getSettingsDirPath() + File.separator + Settings.RECIPES_SUBDIR +
+//                File.separator + recipe.getHash() + ".html";
+//        webview.getEngine().load(new File(filename).toURI().toString());
+        
+        webview.getEngine().load(new File(currentRecipe.getUnpackedFilename()).toURI().toString());
 
         setTitle(recipe);
     }
@@ -611,6 +626,14 @@ public class MainController {
             Settings.getLogger().error("", e);
         }
 
+    }
+    
+    public void onContextMenuExport(ActionEvent e){
+    	Settings.getLogger().debug("export");
+    }
+    
+    public void onContextMenuDelete(ActionEvent e){
+    	Settings.getLogger().debug("delete");
     }
 
 }
