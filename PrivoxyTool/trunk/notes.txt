@@ -1,1 +1,2 @@
 - group log records in hierarchy tree like in jdiskreport, order by frequency, hierarchy by domain levels
+- store/update user acions in google drive; diff, merge, save changes
