@@ -1,9 +1,9 @@
 .root{
-    -fx-background-image: url('../../../../images/bluShadow.jpg');
+    -fx-background-image: url('../images/bluShadow.jpg');
 }
 
 .red-bg{
-    -fx-background-image: url('../../../../images/06.gif');
+    -fx-background-image: url('../images/06.gif');
 }
 
 .about-label{
@@ -12,11 +12,11 @@
 }
 
 .buttonSave{
-    -fx-graphic: url('../../../../images/button_ok.png');
+    -fx-graphic: url('../images/button_ok.png');
 }
 
 .buttonRevert{
-    -fx-graphic: url('../../../../images/undo.png');
+    -fx-graphic: url('../images/undo.png');
 }
 
 

@@ -48,10 +48,10 @@ public final class Database {
     protected Connection getConnection() throws SQLException
     {
         if(connection == null || connection.isClosed()){
-        	// http://www.h2database.com/html/features.html#other_logging
-        	// log to slf4j
+            // http://www.h2database.com/html/features.html#other_logging
+            // log to slf4j
             String url = String.format("jdbc:h2:%s/%s;TRACE_LEVEL_FILE=4", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
-        	//String url = String.format("jdbc:h2:%s/%s", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
+            //String url = String.format("jdbc:h2:%s/%s", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
             //String url = String.format("jdbc:h2:%s/%s;JMX=TRUE", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
             connection = DriverManager.getConnection(url, "sa", "sa");
         }
@@ -73,13 +73,13 @@ public final class Database {
             int ver = Integer.valueOf(version);
 
             // apply all existing upgrades
-            in = getClass().getResourceAsStream("/resources/upgrade" + ver + ".sql");
+            in = getClass().getResourceAsStream("/upgrade" + ver + ".sql");
             while(in != null){
                 RunScript.execute(getConnection(), new InputStreamReader(in, Charset.defaultCharset()));
                 in.close();
                 Settings.getLogger().info("Upgraded database from version " + ver);
                 ver++;
-                in = getClass().getResourceAsStream("/resources/upgrade" + ver + ".sql");
+                in = getClass().getResourceAsStream("/upgrade" + ver + ".sql");
             }
 
             //st.close();
@@ -116,7 +116,7 @@ public final class Database {
 
             if(!rs.next()){
                 // create new structure
-                InputStream in = Database.class.getResourceAsStream("/resources/createdb.sql");
+                InputStream in = Database.class.getResourceAsStream("/createdb.sql");
                 RunScript.execute(conn, new InputStreamReader(in, Charset.defaultCharset()));
             }
 

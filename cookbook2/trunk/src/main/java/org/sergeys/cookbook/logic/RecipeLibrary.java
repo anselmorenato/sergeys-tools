@@ -2,7 +2,6 @@ package org.sergeys.cookbook.logic;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -24,9 +23,10 @@ public final class RecipeLibrary {
 
     // singleton
     private RecipeLibrary(){
+        // TODO error handling here
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(
-                        getClass().getResourceAsStream("/resources/tagsuggestions_ru.txt"), StandardCharsets.UTF_8));
+                        getClass().getResourceAsStream("/tagsuggestions_ru.txt"), StandardCharsets.UTF_8));
         String s;
         try {
             while((s = br.readLine()) != null){
@@ -45,7 +45,7 @@ public final class RecipeLibrary {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Settings.getLogger().error("failed to parse tag suggestions", e);
         }
     }
@@ -61,22 +61,22 @@ public final class RecipeLibrary {
     }
 
     //ExecutorService executor;
-    
+
     public void validate(){
         try {
             ArrayList<Recipe> recipes = Database.getInstance().getAllRecipes();
             for(final Recipe r: recipes){
-            	            	            	
+
                 //final File f = new File(Settings.getRecipeLibraryPath() + File.separator + r.getHash() + ".html");
-            	//final File dir = new File(r.getUnpackedDir());
-            	final File f = new File(r.getUnpackedFilename());
+                //final File dir = new File(r.getUnpackedDir());
+                final File f = new File(r.getUnpackedFilename());
                 if(!f.exists()){
 
                     Task<Void> task = new Task<Void>() {
                         @Override
                         protected Void call() throws Exception {
                             Settings.getLogger().debug("unpacking " + f.getAbsolutePath());
-                                                                                    
+
                             File temp = File.createTempFile("cookbook", ".jar");
                             temp.deleteOnExit();
 
@@ -88,11 +88,11 @@ public final class RecipeLibrary {
                             return null;
                         }
                     };
-                    
+
 //                    if(executor == null){
 //                    	executor = Executors.newSingleThreadExecutor();
 //                    }
-//                    
+//
 //                    executor.execute(task);
                     Settings.getExecutor().execute(task);
                 }

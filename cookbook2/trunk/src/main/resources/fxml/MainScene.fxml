@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane id="rootid" fx:id="pane" minHeight="607.0" minWidth="-1.0" prefHeight="712.0" prefWidth="938.0" styleClass="root" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sergeys.cookbook.ui.MainController">
+<AnchorPane id="rootid" fx:id="pane" minHeight="607.0" minWidth="-1.0" prefHeight="712.0" prefWidth="938.0" styleClass="root" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.sergeys.cookbook.ui.MainController">
   <!-- TODO Add Nodes -->
   <children>
     <MenuBar prefWidth="670.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -65,12 +65,12 @@
                   <children>
                     <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#onButtonSave" styleClass="buttonSave" text="Save" visible="true">
                       <stylesheets>
-                        <URL value="@style.css" />
+
                       </stylesheets>
                     </Button>
                     <Button fx:id="buttonRevert" mnemonicParsing="false" onAction="#onButtonRevert" styleClass="buttonRevert" text="Revert">
                       <stylesheets>
-                        <URL value="@style.css" />
+
                       </stylesheets>
                     </Button>
                   </children>
@@ -97,6 +97,6 @@
     </SplitPane>
   </children>
   <stylesheets>
-    <URL value="@style.css" />
+    <URL value="@../styles/style.css" />
   </stylesheets>
 </AnchorPane>

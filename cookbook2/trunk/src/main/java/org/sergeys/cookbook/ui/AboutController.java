@@ -77,7 +77,7 @@ public class AboutController extends DialogController
 
         tableProps.getColumns().add(col);
 
-        String url = getClass().getResource("/resources/libraries.html").toString();
+        String url = getClass().getResource("/libraries.html").toString();
         WebEngine engine = webLibs.getEngine();
         engine.load(url);
     }

@@ -187,7 +187,7 @@ public class Settings {
             instance.setDefaults();
         }
 
-        InputStream is = Settings.class.getResourceAsStream("/resources/settings.properties");
+        InputStream is = Settings.class.getResourceAsStream("/settings.properties");
         try {
             instance.resources.load(is);
         } catch (Exception e) {
@@ -258,7 +258,8 @@ public class Settings {
                 return;
             }
 
-            InputStream is = Settings.class.getResourceAsStream("/resources/" + filename);
+            //InputStream is = Settings.class.getResourceAsStream("/resources/" + filename);
+            InputStream is = Settings.class.getResourceAsStream("/" + filename);
             if (is != null) {
                 byte[] buf = new byte[20480];
                 FileOutputStream fos = new FileOutputStream(targetfile);

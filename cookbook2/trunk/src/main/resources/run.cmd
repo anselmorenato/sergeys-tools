@@ -1,0 +1,1 @@
+java -cp .;"%JAVA_HOME%\jre\lib\jfxrt.jar" org.sergeys.cookbook.ui.CookBook

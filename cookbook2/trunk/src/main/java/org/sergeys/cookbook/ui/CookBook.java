@@ -30,12 +30,16 @@ public class CookBook extends Application {
 
             // http://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html
 
-            URL location = getClass().getResource("MainScene.fxml");
+            URL location = getClass().getResource("/fxml/MainScene.fxml");
             //URL location = getClass().getResource("Main2.fxml");
             //ResourceBundle resources = ResourceBundle.getBundle("com.foo.example");
             FXMLLoader fxmlLoader = new FXMLLoader(location);
+            //FXMLLoader loader = new FXMLLoader();
 
             Pane root = (Pane)fxmlLoader.load();
+
+            //InputStream is = getClass().getResourceAsStream("/fxml/MainScene.fxml");
+            //Pane root = (Pane)loader.load(is);
             controller = (MainController)fxmlLoader.getController();
 
             primaryStage.setTitle("CookBook");
