@@ -11,6 +11,7 @@ This is an EclipseFX project
 - copy-paste to html, save external images locally
 - share recipes via xmpp
 - share recipes p2p if possible, lookup via my server
+- share recipes via google drive
 - build tree from tags with drag-n-drop, sort tags by total count
 - favorites
 - tag synonyms, merge same tags to one
