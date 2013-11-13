@@ -1,0 +1,52 @@
+.root{
+    -fx-background-image: url('../../../../images/bluShadow.jpg');
+}
+
+.red-bg{
+    -fx-background-image: url('../../../../images/06.gif');
+}
+
+.about-label{
+    -fx-font: bold 16 serif;
+    -fx-text-fill: white;
+}
+
+.buttonSave{
+    -fx-graphic: url('../../../../images/button_ok.png');
+}
+
+.buttonRevert{
+    -fx-graphic: url('../../../../images/undo.png');
+}
+
+
+.scroll-bar:horizontal .increment-button,
+.scroll-bar:horizontal .decrement-button{
+    -fx-padding: 6px;
+}
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button{
+
+    -fx-padding: 6px;
+}
+
+.scroll-pane > * > .scroll-bar:horizontal .increment-button,
+.scroll-pane > * > .scroll-bar:horizontal .decrement-button{
+    -fx-padding: 6px;
+}
+
+.scroll-pane > * > .scroll-bar:vertical .increment-button,
+.scroll-pane > * > .scroll-bar:vertical .decrement-button{
+    -fx-padding: 6px;
+}
+/*
+.web-view > * > .scroll-bar:horizontal .increment-button,
+.web-view > * > .scroll-bar:horizontal .decrement-button{
+    -fx-padding: 6px;
+}
+
+.web-view > * > .scroll-bar:vertical .increment-button,
+.web-view > * > .scroll-bar:vertical .decrement-button{
+    -fx-padding: 6px;
+}
+*/
