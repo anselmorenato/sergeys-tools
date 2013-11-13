@@ -44,7 +44,7 @@ public final class Database {
 
     private Connection connection;
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="DMI_CONSTANT_DB_PASSWORD", justification="I know what I'm doing")
+    //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="DMI_CONSTANT_DB_PASSWORD", justification="I know what I'm doing")
     protected Connection getConnection() throws SQLException
     {
         if(connection == null || connection.isClosed()){
