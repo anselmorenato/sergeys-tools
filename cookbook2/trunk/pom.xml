@@ -14,6 +14,8 @@
         <log4j.version>1.2.17</log4j.version>
         <javafx.lib.ant-javafx.jar>${env.JAVA_HOME}/lib/ant-javafx.jar</javafx.lib.ant-javafx.jar>
         <application.dist>${project.build.directory}/dist</application.dist>
+
+        <keystore>d:/codesigning/.keystore</keystore>
     </properties>
 
     <build>
@@ -95,7 +97,7 @@
                                     uri="javafx:com.sun.javafx.tools.ant" classpath="${javafx.lib.ant-javafx.jar}" />
 
                                 <fx:application id="myApp" name="${application.title}"
-                                    mainClass="com.sssii.vidconf.research.MainApp" />
+                                    mainClass="org.sergeys.cookbook.ui.CookBook" />
 
                                 <fx:jar destfile="${application.dist}/${project.build.finalName}.jar">
                                     <fx:application refid="myApp" />
@@ -116,10 +118,10 @@
                                 </fx:resources>
 
                                 <signjar destdir="${application.dist}"
-                                    keyStore="${basedir}/src/main/deploy/keystore.jks"
-                                    storePass="storepass"
-                                    alias="appkey"
-                                    keyPass="keypass">
+                                    keyStore="${keystore}"
+                                    storePass="password"
+                                    alias="sergey.selivanov"
+                                    >
 
                                     <fileset dir="${application.dist}" includes="*.jar" />
                                     <fileset dir="${application.dist}" includes="lib/*.jar" />
@@ -144,11 +146,12 @@
 
                                 <!-- tweak codebase http://stackoverflow.com/questions/16365651/how-to-specify-jnlp-codebase-with-javafx-ant-tasks -->
                                 <!-- TODO substitute actual codebase in WAR project -->
+                                <!--
                                 <replaceregexp
                                     file="${application.dist}/${project.build.finalName}.jnlp"
                                     match="&lt;jnlp"
                                     replace="&lt;jnlp codebase=&quot;http://minami.blacksea.globaltides.com:7001/vidconf&quot;" />
-
+ -->
                             </target>
                         </configuration>
                         <goals>
