@@ -44,6 +44,12 @@
               <contextMenu>
                 <ContextMenu>
                   <items>
+                    <Menu mnemonicParsing="false" text="Add tag">
+                      <items>
+                        <MenuItem mnemonicParsing="false" text="Sample" />
+                        <MenuItem mnemonicParsing="false" text="Another" />
+                      </items>
+                    </Menu>
                     <MenuItem mnemonicParsing="false" onAction="#onContextMenuExport" text="Export" />
                     <MenuItem disable="true" mnemonicParsing="false" text="Favorite" />
                     <MenuItem mnemonicParsing="false" onAction="#onContextMenuDelete" text="Delete" />
@@ -63,16 +69,8 @@
                 <TextArea fx:id="tags" onKeyReleased="#onTagsChanged" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="2.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
                   <children>
-                    <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#onButtonSave" styleClass="buttonSave" text="Save" visible="true">
-                      <stylesheets>
-
-                      </stylesheets>
-                    </Button>
-                    <Button fx:id="buttonRevert" mnemonicParsing="false" onAction="#onButtonRevert" styleClass="buttonRevert" text="Revert">
-                      <stylesheets>
-
-                      </stylesheets>
-                    </Button>
+                    <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#onButtonSave" styleClass="buttonSave" text="Save" visible="true" />
+                    <Button fx:id="buttonRevert" mnemonicParsing="false" onAction="#onButtonRevert" styleClass="buttonRevert" text="Revert" />
                   </children>
                   <padding>
                     <Insets right="2.0" top="2.0" />
