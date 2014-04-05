@@ -47,7 +47,6 @@
 
 <br>
 <br>
-<br>
 
 
 <!--  img src="cookbook/largeicon.png" -->
@@ -78,12 +77,8 @@
 (<a href='cookbook/cookbook.jnlp'>прямая ссылка</a>)
 </div>
 
-
 <br>
 <br>
-<br>
-
-
 
 <h2>Web Cache Digger</h2>
 <br>
@@ -173,7 +168,7 @@
 
 
 <br/>
-<br>
+<br/>
 <h3>Problem?</h3>
 <br>
 <p>
@@ -182,22 +177,13 @@
 <a href="http://baccara.livejournal.com/389485.html">http://baccara.livejournal.com/389485.html</a>
 
 
-
-
-<?php /**/ ?>
-<?php /*
-
-<a href="pinfo.php">php info</a>
-
-
-<a href="test.php">test</a>
 <br/>
 <br/>
 
-
-*/ ?>
-<div class="smallergray">
-$Id$
+<p>
+<div class="gray12">
+<pre>
 $LastChangedDate$
+</pre>
 </div>
 <?php require_once("footer.inc.php");?>
