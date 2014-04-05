@@ -540,6 +540,8 @@ implements ActionListener, PropertyChangeListener
         if (helpMenu == null) {
             helpMenu = new JMenu();
             helpMenu.setText(Messages.getString("WebCacheDigger.Help")); //$NON-NLS-1$
+            helpMenu.add(getMntmLog());
+            helpMenu.add(getSeparator());
             helpMenu.add(getAboutMenuItem());
         }
         return helpMenu;
@@ -868,6 +870,7 @@ implements ActionListener, PropertyChangeListener
     @SuppressWarnings("unused")
     private JMenuItem mntmEnglish;
     private JMenu mnLookAndFeel;
+    private JMenuItem mntmLog;
 
     public synchronized LinkedHashSet<IBrowser> getExistingBrowsers(){
         if(existingBrowsers == null){
@@ -1007,5 +1010,30 @@ implements ActionListener, PropertyChangeListener
         }
         return mnLookAndFeel;
     }
+
+    LogfileDialog logfileDialog;
+    private JSeparator separator;
+    
+    private JMenuItem getMntmLog() {
+        if (mntmLog == null) {
+            mntmLog = new JMenuItem(Messages.getString("WebCacheDigger.mntmLog.text")); //$NON-NLS-1$
+            mntmLog.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                	if(logfileDialog == null){
+                		logfileDialog = new LogfileDialog(getJFrame());
+                	}
+                	
+                	logfileDialog.setVisible(true);
+                }
+            });
+        }
+        return mntmLog;
+    }
+	private JSeparator getSeparator() {
+		if (separator == null) {
+			separator = new JSeparator();
+		}
+		return separator;
+	}
 }
 

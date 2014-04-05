@@ -89,7 +89,7 @@ public class Opera extends AbstractBrowser {
                     "Opera" + File.separator + "Opera" + File.separator +	// yes opera twice
                     "cache";
 
-            Settings.getLogger().info("opera path to search: " + path);
+            Settings.getLogger().debug("opera path to search (win7+): " + path);
             f = new File(path);
             if(f.isDirectory()){
                 existingPaths.add(f);
@@ -102,7 +102,7 @@ public class Opera extends AbstractBrowser {
                     "Opera" + File.separator + "Opera" + File.separator +	// yes opera twice
                     "cache";
 
-            Settings.getLogger().info("opera path to search: " + path);
+            Settings.getLogger().debug("opera path to search (xp): " + path);
             f = new File(path);
             if(f.isDirectory()){
                 existingPaths.add(f);
@@ -113,7 +113,7 @@ public class Opera extends AbstractBrowser {
         path = System.getProperty("user.home") + File.separator +
                 "Library" + File.separator + "Caches" + File.separator + "Opera" + File.separator + "cache";
 
-        Settings.getLogger().info("opera path to search: " + path);
+        Settings.getLogger().debug("opera path to search (macosx): " + path);
         f = new File(path);
         if(f.isDirectory()){
             existingPaths.add(f);
@@ -122,12 +122,16 @@ public class Opera extends AbstractBrowser {
         // linux
         path = System.getProperty("user.home") + File.separator +
                 ".opera" + File.separator + "cache";
-        Settings.getLogger().info("opera path to search: " + path);
+        Settings.getLogger().debug("opera path to search (linux): " + path);
         f = new File(path);
         if(f.isDirectory()){
             existingPaths.add(f);
         }
 
+        for(File f1: existingPaths){            
+            Settings.getLogger().info("Actual path to search: " + f1.getAbsolutePath());            
+        }
+        
         return existingPaths;
     }
 

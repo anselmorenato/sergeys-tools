@@ -28,7 +28,7 @@ public class Firefox extends AbstractBrowser {
         String profilesini = profilesIniPath + File.separator + "profiles.ini";
         File f = new File(profilesini);
         if(!f.isFile()){
-            Settings.getLogger().info(profilesini + " is not a file");
+            Settings.getLogger().debug(profilesini + " is not a file");
             return paths;    // empty
         }
 
@@ -85,7 +85,7 @@ public class Firefox extends AbstractBrowser {
                                         "Mozilla" + File.separator + "Firefox" + File.separator +
                                         relPath + File.separator + "Cache";
                                 paths.add(path);
-                                Settings.getLogger().info("path to search (win7+): " + path);
+                                Settings.getLogger().debug("path to search (win7+): " + path);
                             }
                             else if(System.getenv("USERPROFILE") != null){
                                 // xp
@@ -94,7 +94,7 @@ public class Firefox extends AbstractBrowser {
                                         "Mozilla" + File.separator + "Firefox" + File.separator +
                                         relPath + File.separator + "Cache";
                                 paths.add(path);
-                                Settings.getLogger().info("path to search (xp): " + path);
+                                Settings.getLogger().debug("path to search (xp): " + path);
                             }
 
                             // macos
@@ -102,20 +102,20 @@ public class Firefox extends AbstractBrowser {
                                     "Library" + File.separator + "Caches" + File.separator + "Firefox" + File.separator +
                                     relPath + File.separator + "Cache";
                             paths.add(path);
-                            Settings.getLogger().info("path to search (macos): " + path);
+                            Settings.getLogger().debug("path to search (macos): " + path);
 
                             // linux relative to .ini
                             path = profilesIniPath + File.separator +
                                     relPath + File.separator + "Cache";
                             paths.add(path);
-                            Settings.getLogger().info("path to search (linux): " + path);
+                            Settings.getLogger().debug("path to search (linux): " + path);
 
                         }
                         else{
                             // absolute
                             path = path + File.separator + "Cache";
                             paths.add(path);
-                            Settings.getLogger().info("path to search (absolute): " + path);
+                            Settings.getLogger().debug("path to search (absolute): " + path);
                         }
                     }
                 }
@@ -222,7 +222,7 @@ public class Firefox extends AbstractBrowser {
                 allFiles.addAll(dirFiles);
             } else {
                 //SimpleLogger.logMessage(String.format("'%s' is not a directory", directory.getPath()));
-                Settings.getLogger().info(String.format("'%s' is not a directory", directory.getPath()));
+                Settings.getLogger().warn(String.format("'%s' is not a directory", directory.getPath()));
             }
 
         }

@@ -37,7 +37,7 @@ public class Chrome extends AbstractBrowser {
                     "Google" + File.separator + "Chrome" + File.separator + "User Data" + File.separator +
                     "Default" + File.separator + "Cache" + File.separator;
 
-            Settings.getLogger().info("chrome path to search (win7+): " + path);
+            Settings.getLogger().debug("chrome path to search (win7+): " + path);
 
             f = new File(path);
             if(f.isDirectory()){
@@ -51,7 +51,7 @@ public class Chrome extends AbstractBrowser {
                     "Google" + File.separator + "Chrome" + File.separator + "User Data" + File.separator +
                     "Default" + File.separator + "Cache" + File.separator;
 
-            Settings.getLogger().info("chrome path to search (xp): " + path);
+            Settings.getLogger().debug("chrome path to search (xp): " + path);
 
             f = new File(path);
             if(f.isDirectory()){
@@ -64,7 +64,7 @@ public class Chrome extends AbstractBrowser {
                 "Library" + File.separator + "Caches" + File.separator + "Google" + File.separator +
                 "Chrome" + File.separator + "Default" + File.separator + "Cache";
 
-        Settings.getLogger().info("chrome path to search (macosx): " + path);
+        Settings.getLogger().debug("chrome path to search (macosx): " + path);
 
         f = new File(path);
         if(f.isDirectory()){
@@ -75,11 +75,12 @@ public class Chrome extends AbstractBrowser {
         path = System.getProperty("user.home") + File.separator +
                 ".cache" + File.separator + "google-chrome" + File.separator + "Default" + File.separator + "Cache";
 
-        Settings.getLogger().info("chrome path to search (linux): " + path);
+        Settings.getLogger().debug("chrome path to search (linux): " + path);
 
         f = new File(path);
         if(f.isDirectory()){
             existingPaths.add(f);
+            Settings.getLogger().info("Actual path to search: " + path);
         }
 
         return existingPaths;

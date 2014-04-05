@@ -42,8 +42,17 @@ public class Database {
 
     protected Connection getConnection() throws SQLException{
         if(connection == null || connection.isClosed()){
-            //String url = String.format("jdbc:h2:%s/%s", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
-            String url = String.format("jdbc:h2:%s/%s;JMX=TRUE", Settings.getSettingsDirPath(), Database.FILENAME).replace('\\', '/');
+
+            String features = "";
+
+            features += ";TRACE_LEVEL_FILE=4";	// trace to slf4j
+            //features += ";JMX=TRUE";	// TODO what for?
+
+            String url = String.format("jdbc:h2:%s/%s%s",
+                    Settings.getSettingsDirPath(), Database.FILENAME, features).replace('\\', '/');
+
+            Settings.getLogger().debug("db connection: " + url);
+
             connection = DriverManager.getConnection(url, "sa", "sa");
         }
 
