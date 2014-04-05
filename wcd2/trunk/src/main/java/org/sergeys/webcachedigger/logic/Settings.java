@@ -18,6 +18,9 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.sergeys.library.OsUtils;
 
 public class Settings
@@ -36,6 +39,7 @@ extends Properties
     public static final String SETTINGS_PATH = ".WebCacheDigger-devel";
     //public static final String SETTINGS_FILE = "settings.properties";
     public static final String SETTINGS_FILE = "settings.xml";
+    public static final String LOG_FILE = "log.txt";
 
     // action names for events
     public static final String COMMAND_SAVE_SETTINGS = "COMMAND_SAVE_SETTINGS";
@@ -77,9 +81,24 @@ extends Properties
 
     private static Settings instance = new Settings();
 
+    private static Logger logger;
+
     static{
         settingsDirPath = System.getProperty("user.home") + File.separator + SETTINGS_PATH;
         settingsFilePath = settingsDirPath + File.separator + SETTINGS_FILE;
+
+        File dir = new File(settingsDirPath);
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+
+        // settings for log4j
+        extractResource("log4j.properties", false);
+        System.setProperty("log4j.configuration", new File(settingsDirPath + File.separator + "log4j.properties").toURI().toString());
+        System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
+
+        // slf4j logger
+        logger = LoggerFactory.getLogger("wcd2");
 
         load();
     }
@@ -95,6 +114,44 @@ extends Properties
         return settingsDirPath;
     }
 
+    /**
+     * Extracts file to the settings directory
+     *
+     * @param filename
+     * @param overwrite
+     */
+    private static void extractResource(String filename, boolean overwrite){
+
+        String targetfile = settingsDirPath + File.separator + filename;
+
+        try{
+
+            if(!overwrite && new File(targetfile).exists()){
+                return;
+            }
+
+            InputStream is = Settings.class.getResourceAsStream("/resources/" + filename);
+            if (is != null) {
+                byte[] buf = new byte[20480];
+                FileOutputStream fos = new FileOutputStream(targetfile);
+                int count = 0;
+                while ((count = is.read(buf)) > 0) {
+                    fos.write(buf, 0, count);
+                }
+                fos.close();
+                is.close();
+            }
+        }
+        catch(IOException ex){
+            if(logger != null){
+                logger.error("Failed to extract data to " + targetfile, ex);
+            }
+            else{
+                ex.printStackTrace(System.err);
+            }
+        }
+    }
+
 
     // Singleton must have private constructor
     // public constructor required for XML serialization, do not use it
@@ -106,6 +163,9 @@ extends Properties
         return instance;
     }
 
+    public static Logger getLogger() {
+        return logger;
+    }
 
     // http://java.sys-con.com/node/37550
     // http://www.java2s.com/Code/Java/JDK-6/MarshalJavaobjecttoxmlandoutputtoconsole.htm
@@ -317,7 +377,8 @@ extends Properties
 
         ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
         for(IBrowser browser : ldr){
-            SimpleLogger.logMessage("Can handle " + browser.getName());
+            //SimpleLogger.logMessage("Can handle " + browser.getName());
+            logger.info("Can handle " + browser.getName());
             existingBrowsers.add(browser);
         }
 

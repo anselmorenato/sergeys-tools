@@ -55,7 +55,6 @@ import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.IBrowser;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
-import org.sergeys.webcachedigger.logic.SimpleLogger;
 import org.sergeys.webcachedigger.ui.ProgressDialog.WorkType;
 
 public class WebCacheDigger
@@ -282,9 +281,9 @@ implements ActionListener, PropertyChangeListener
     private static File lockfile;
     private static FileChannel lockchannel;
     private static FileLock applock;
-    
+
     public static void unlockFile() {
-    	// release and delete file lock
+        // release and delete file lock
         try {
             if(applock != null) {
                 applock.release();
@@ -295,58 +294,60 @@ implements ActionListener, PropertyChangeListener
             e.printStackTrace();
         }
     }
-    
-    static class ShutdownHook extends Thread {    		 
+
+    static class ShutdownHook extends Thread {
         public void run() {
             unlockFile();
         }
-    }    
-    
+    }
+
     /**
      * @param args
-     * @return 
+     * @return
      */
     public static void main(String[] args) {
-    	
-    	// check if there is another instance running
-    	// http://jimlife.wordpress.com/2008/07/21/java-application-make-sure-only-singleone-instance-running-with-file-lock-ampampampampamp-shutdownhook/
-    	File dir = new File(Settings.getSettingsDirPath());
+
+        Settings.getLogger().info("application start");
+
+        // check if there is another instance running
+        // http://jimlife.wordpress.com/2008/07/21/java-application-make-sure-only-singleone-instance-running-with-file-lock-ampampampampamp-shutdownhook/
+        File dir = new File(Settings.getSettingsDirPath());
         if(!dir.exists()){
             dir.mkdirs();
         }
-    	String lockfilename = Settings.getSettingsDirPath() + File.separator + Settings.LOCK_FILE; 
-    	lockfile = new File(lockfilename);
-    	
+        String lockfilename = Settings.getSettingsDirPath() + File.separator + Settings.LOCK_FILE;
+        lockfile = new File(lockfilename);
+
 //    	if(lockfile.exists()){
 //    		lockfile.delete();
 //    	}
 
-    	// Try to get the lock
-    	try {
-			lockchannel = new RandomAccessFile(lockfile, "rw").getChannel();
-	    	applock = lockchannel.tryLock();
-	        if(applock == null)
-	        {
-	            // File is locked by other application
-	            lockchannel.close();
-	            //throw new RuntimeException("Only 1 instance of MyApp can run.");
-	            JOptionPane.showMessageDialog(null, "Another instance is already running.");
-	            System.exit(1);	            
-	        }
-		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Cannot access lockfile " + lockfilename + "\n" + ex.getMessage());
-			System.exit(1);
-		} catch (IOException ex) {			
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Failed to get lock on lockfile " + lockfilename + "\n" + ex.getMessage());
-			System.exit(1);
-		}
-        
+        // Try to get the lock
+        try {
+            lockchannel = new RandomAccessFile(lockfile, "rw").getChannel();
+            applock = lockchannel.tryLock();
+            if(applock == null)
+            {
+                // File is locked by other application
+                lockchannel.close();
+                //throw new RuntimeException("Only 1 instance of MyApp can run.");
+                JOptionPane.showMessageDialog(null, "Another instance is already running.");
+                System.exit(1);
+            }
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Cannot access lockfile " + lockfilename + "\n" + ex.getMessage());
+            System.exit(1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to get lock on lockfile " + lockfilename + "\n" + ex.getMessage());
+            System.exit(1);
+        }
+
         // Add shutdown hook to release lock when application shutdown
         ShutdownHook shutdownHook = new ShutdownHook();
         Runtime.getRuntime().addShutdownHook(shutdownHook);
-    	    	
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 
@@ -357,7 +358,7 @@ implements ActionListener, PropertyChangeListener
                     {
                         // looks like old name is used in 1.6 on macosx and this not works
                         //UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-                    	UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+                        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
                     }
                     else{
                         UIManager.setLookAndFeel(laf);
@@ -444,7 +445,7 @@ implements ActionListener, PropertyChangeListener
                 dbcleaner.execute();
             }
         });
-        
+
     }
 
     /**
@@ -717,6 +718,7 @@ implements ActionListener, PropertyChangeListener
         mainWindow.setVisible(false);
         mainWindow.dispose();
 
+        Settings.getLogger().info("application exit");
         System.exit(0);
     }
 
@@ -872,7 +874,10 @@ implements ActionListener, PropertyChangeListener
             for(IBrowser browser : ldr){
                 if(browser.isPresent()){
                     existingBrowsers.add(browser);
-                    SimpleLogger.logMessage("Found " + browser.getName());					   //$NON-NLS-1$
+                    Settings.getLogger().info(browser.getName() + " found");
+                }
+                else{
+                    Settings.getLogger().info(browser.getName() + " not found");
                 }
             }
         }

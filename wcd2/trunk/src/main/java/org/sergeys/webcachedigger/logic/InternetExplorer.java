@@ -70,7 +70,7 @@ public class InternetExplorer extends AbstractBrowser {
             File f = new File(path);
             if(f.isDirectory()){
                 paths.add(f);
-                System.out.println("Actual path to search (win): " + path);
+                Settings.getLogger().info("Actual path to search (win): " + path);
             }
 
         }
@@ -83,7 +83,7 @@ public class InternetExplorer extends AbstractBrowser {
             File f = new File(path);
             if(f.isDirectory()){
                 paths.add(f);
-                System.out.println("Actual path to search (win): " + path);
+                Settings.getLogger().info("Actual path to search (win): " + path);
             }
         }
 
@@ -95,13 +95,13 @@ public class InternetExplorer extends AbstractBrowser {
 
             String path = OsUtils.readWindowsRegistry("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\"
                      + "Explorer\\Shell Folders", "Cache", "REG_SZ");
-            System.out.println("Registry path (win): " + path);
+            Settings.getLogger().info("Registry path (win): " + path);
             if(path != null){
                 path = path + File.separator + "Content.IE5";
                 File f = new File(path);
                 if(f.isDirectory()){
                     paths.add(f);
-                    System.out.println("Actual path to search (win): " + path);
+                    Settings.getLogger().info("Actual path to search (win): " + path);
                 }
             }
         }
