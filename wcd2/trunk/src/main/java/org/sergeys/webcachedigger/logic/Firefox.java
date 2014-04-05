@@ -35,8 +35,7 @@ public class Firefox extends AbstractBrowser {
         try {
             rdr = new BufferedReader(new FileReader(profilesini));
         } catch (FileNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            Settings.getLogger().error("", e1);
         }
 
         if(rdr == null){
@@ -124,8 +123,7 @@ public class Firefox extends AbstractBrowser {
 
             rdr.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
         return paths;

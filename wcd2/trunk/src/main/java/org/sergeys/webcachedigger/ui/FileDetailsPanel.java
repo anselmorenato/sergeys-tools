@@ -20,6 +20,7 @@ import javax.swing.border.SoftBevelBorder;
 
 import org.sergeys.webcachedigger.logic.CachedFile;
 import org.sergeys.webcachedigger.logic.Messages;
+import org.sergeys.webcachedigger.logic.Settings;
 
 public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 
@@ -109,12 +110,12 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
         gbc_lblFiletype.gridx = 1;
         gbc_lblFiletype.gridy = 3;
         panelTop.add(lblFiletype, gbc_lblFiletype);
-        
+
         btnOpenLocation = new JButton(Messages.getString("FileDetailsPanel.btnOpenLocation.text"));
         btnOpenLocation.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent arg0) {
-        		doOpenLocation();
-        	}
+            public void actionPerformed(ActionEvent arg0) {
+                doOpenLocation();
+            }
         });
         GridBagConstraints gbc_btnOpenLocation = new GridBagConstraints();
         gbc_btnOpenLocation.anchor = GridBagConstraints.LINE_START;
@@ -130,18 +131,17 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
         initialize();
     }
 
-    protected void doOpenLocation() {    	
-    	if(file != null){
-    		try {
-				Desktop.getDesktop().open(file.getParentFile());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}    					
-	}
+    protected void doOpenLocation() {
+        if(file != null){
+            try {
+                Desktop.getDesktop().open(file.getParentFile());
+            } catch (IOException e) {
+                Settings.getLogger().error("", e);
+            }
+        }
+    }
 
-	/**
+    /**
      * This method initializes this
      *
      * @return void
@@ -157,7 +157,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
         remove(panelPreview);
 
         this.file = file;
-        
+
         if(file != null){
 
             panelTop.setVisible(true);
@@ -181,7 +181,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
 
             panelPreview.setBorder(new EmptyBorder(5, 5, 5, 5));
             add(panelPreview, BorderLayout.CENTER);
-            
+
             panelPreview.setVisible(true);
         }
         else{

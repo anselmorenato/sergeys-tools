@@ -291,8 +291,7 @@ public class AboutDialog extends JDialog {
             try {
                 textPaneLibs.setPage(AboutDialog.class.getResource("/resources/libraries.html")); //$NON-NLS-1$
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Settings.getLogger().error("", e);
             }
 
         }
@@ -310,11 +309,9 @@ public class AboutDialog extends JDialog {
                     try {
                         dt.browse(e.getURL().toURI());
                     } catch (IOException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                        Settings.getLogger().error("", e1);
                     } catch (URISyntaxException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                        Settings.getLogger().error("", e1);
                     }
                 }
             }

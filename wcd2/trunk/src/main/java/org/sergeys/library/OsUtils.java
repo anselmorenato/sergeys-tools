@@ -31,8 +31,10 @@ public abstract class OsUtils {
      * @param key
      * @param expectedType in form like "REG_SZ", as reg.exe returns
      * @return
+     * @throws IOException
+     * @throws InterruptedException
      */
-    public static final String readWindowsRegistry(String location, String key, String expectedType) {
+    public static final String readWindowsRegistry(String location, String key, String expectedType) throws IOException, InterruptedException {
         try {
             // Run reg query, then read output with StreamReader (internal class)
             Process process;
@@ -58,18 +60,19 @@ public abstract class OsUtils {
             String[] parsed = output.split(expectedType);
             return parsed[parsed.length-1].trim();
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        finally{}
 
-        return null;
+//        return null;
     }
 
     static class StreamReader extends Thread {
         private InputStream is;
-        private StringWriter sw= new StringWriter();
+        private StringWriter sw = new StringWriter();
 
         public StreamReader(InputStream is) {
             this.is = is;

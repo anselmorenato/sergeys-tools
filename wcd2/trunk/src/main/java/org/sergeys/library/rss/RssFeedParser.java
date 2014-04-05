@@ -16,160 +16,162 @@ import javax.xml.stream.events.XMLEvent;
 
 /**
  * Based on http://www.vogella.de/articles/RSSFeed/article.html
- * 
+ *
  * @author sergeys
  *
  */
 public class RssFeedParser {
-	static final String TITLE = "title";
-	static final String DESCRIPTION = "description";
-	static final String CHANNEL = "channel";
-	static final String LANGUAGE = "language";
-	static final String COPYRIGHT = "copyright";
-	static final String LINK = "link";
-	static final String AUTHOR = "author";
-	static final String ITEM = "item";
-	static final String PUB_DATE = "pubDate";
-	static final String GUID = "guid";
+    static final String TITLE = "title";
+    static final String DESCRIPTION = "description";
+    static final String CHANNEL = "channel";
+    static final String LANGUAGE = "language";
+    static final String COPYRIGHT = "copyright";
+    static final String LINK = "link";
+    static final String AUTHOR = "author";
+    static final String ITEM = "item";
+    static final String PUB_DATE = "pubDate";
+    static final String GUID = "guid";
 
-	final URL url;
+    final URL url;
 
-	private InputStream is;
-	private String simpleDateFormat;
-	
-	public RssFeedParser(String feedUrl) {
-		try {
-			this.url = new URL(feedUrl);
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    private InputStream is;
+    private String simpleDateFormat;
 
-	public RssFeedParser(InputStream is, String simpleDateFormat){
-		url = null;
-		this.is = is;
-		this.simpleDateFormat = simpleDateFormat;
-	}
-	
-	public Feed readFeed() {
-		Feed feed = null;
-		try {
+    public RssFeedParser(String feedUrl) {
+        try {
+            this.url = new URL(feedUrl);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-			boolean isFeedHeader = true;
-			// Set header values intial to the empty string
-			String description = "";
-			String title = "";
-			String link = "";
-			String language = "";
-			String copyright = "";
-			//String author = "";
-			Date pubdate = new Date(0);
-			String guid = "";
+    public RssFeedParser(InputStream is, String simpleDateFormat){
+        url = null;
+        this.is = is;
+        this.simpleDateFormat = simpleDateFormat;
+    }
 
-			// First create a new XMLInputFactory
-			XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-			// Setup a new eventReader
-			InputStream in = read();
-			XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
-			// Read the XML document
-			while (eventReader.hasNext()) {
+    public Feed readFeed() throws XMLStreamException {
+        Feed feed = null;
+        try {
 
-				XMLEvent event = eventReader.nextEvent();
+            boolean isFeedHeader = true;
+            // Set header values intial to the empty string
+            String description = "";
+            String title = "";
+            String link = "";
+            String language = "";
+            String copyright = "";
+            //String author = "";
+            Date pubdate = new Date(0);
+            String guid = "";
 
-				if (event.isStartElement()) {
-					if (event.asStartElement().getName().getLocalPart().equals(ITEM)) {
-						if (isFeedHeader) {
-							isFeedHeader = false;
-							feed = new Feed(title, link, description, language,
-									copyright, pubdate);
-						}
-						event = eventReader.nextEvent();
-						continue;
-					}
+            // First create a new XMLInputFactory
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            // Setup a new eventReader
+            InputStream in = read();
+            XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
+            // Read the XML document
+            while (eventReader.hasNext()) {
 
-					if (event.asStartElement().getName().getLocalPart().equals(TITLE)) {
-						event = eventReader.nextEvent();
-						title = event.asCharacters().getData();
-						continue;
-					}
-					if (event.asStartElement().getName().getLocalPart().equals(DESCRIPTION)) {
-						event = eventReader.nextEvent();
-						description = event.asCharacters().getData();
-						continue;
-					}
+                XMLEvent event = eventReader.nextEvent();
 
-					if (event.asStartElement().getName().getLocalPart().equals(LINK)) {
-						event = eventReader.nextEvent();
-						link = event.asCharacters().getData();
-						continue;
-					}
+                if (event.isStartElement()) {
+                    if (event.asStartElement().getName().getLocalPart().equals(ITEM)) {
+                        if (isFeedHeader) {
+                            isFeedHeader = false;
+                            feed = new Feed(title, link, description, language,
+                                    copyright, pubdate);
+                        }
+                        event = eventReader.nextEvent();
+                        continue;
+                    }
 
-					if (event.asStartElement().getName().getLocalPart().equals(GUID)) {
-						event = eventReader.nextEvent();
-						guid = event.asCharacters().getData();
-						continue;
-					}
-					if (event.asStartElement().getName().getLocalPart().equals(LANGUAGE)) {
-						event = eventReader.nextEvent();
-						language = event.asCharacters().getData();
-						continue;
-					}
-					if (event.asStartElement().getName().getLocalPart().equals(AUTHOR)) {
-						event = eventReader.nextEvent();
-						//author = event.asCharacters().getData();
-						continue;
-					}
-					if (event.asStartElement().getName().getLocalPart().equals(PUB_DATE)) {
-						event = eventReader.nextEvent();
-						
-						String data = event.asCharacters().getData(); 
-						
-						try {
-							//pubdate = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, new Locale("en")).parse(data);
-							pubdate = new SimpleDateFormat(simpleDateFormat, new Locale("en")).parse(data);
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						continue;
-					}
-					if (event.asStartElement().getName().getLocalPart().equals(COPYRIGHT)) {
-						event = eventReader.nextEvent();
-						copyright = event.asCharacters().getData();
-						continue;
-					}
-				} else if (event.isEndElement()) {
-					if (event.asEndElement().getName().getLocalPart().equals(ITEM)) {
-						FeedMessage message = new FeedMessage();
-						//message.setAuthor(author);
-						message.setDescription(description);
-						message.setGuid(guid);
-						//message.setLink(link);
-						//message.setTitle(title);
-						message.setPubDate(pubdate);
-						feed.getMessages().add(message);
-						event = eventReader.nextEvent();
-						continue;
-					}
-				}
-			}
-		} catch (XMLStreamException e) {
-			throw new RuntimeException(e);
-		}
-		return feed;
+                    if (event.asStartElement().getName().getLocalPart().equals(TITLE)) {
+                        event = eventReader.nextEvent();
+                        title = event.asCharacters().getData();
+                        continue;
+                    }
+                    if (event.asStartElement().getName().getLocalPart().equals(DESCRIPTION)) {
+                        event = eventReader.nextEvent();
+                        description = event.asCharacters().getData();
+                        continue;
+                    }
 
-	}
+                    if (event.asStartElement().getName().getLocalPart().equals(LINK)) {
+                        event = eventReader.nextEvent();
+                        link = event.asCharacters().getData();
+                        continue;
+                    }
 
-	private InputStream read() {
-		if(is == null && url != null){
-			try {
-				return url.openStream();
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		else{
-			return is;			
-		}
-	}
+                    if (event.asStartElement().getName().getLocalPart().equals(GUID)) {
+                        event = eventReader.nextEvent();
+                        guid = event.asCharacters().getData();
+                        continue;
+                    }
+                    if (event.asStartElement().getName().getLocalPart().equals(LANGUAGE)) {
+                        event = eventReader.nextEvent();
+                        language = event.asCharacters().getData();
+                        continue;
+                    }
+                    if (event.asStartElement().getName().getLocalPart().equals(AUTHOR)) {
+                        event = eventReader.nextEvent();
+                        //author = event.asCharacters().getData();
+                        continue;
+                    }
+                    if (event.asStartElement().getName().getLocalPart().equals(PUB_DATE)) {
+                        event = eventReader.nextEvent();
+
+                        String data = event.asCharacters().getData();
+
+                        try {
+                            //pubdate = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, new Locale("en")).parse(data);
+                            pubdate = new SimpleDateFormat(simpleDateFormat, new Locale("en")).parse(data);
+                        } catch (ParseException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        continue;
+                    }
+                    if (event.asStartElement().getName().getLocalPart().equals(COPYRIGHT)) {
+                        event = eventReader.nextEvent();
+                        copyright = event.asCharacters().getData();
+                        continue;
+                    }
+                } else if (event.isEndElement()) {
+                    if (event.asEndElement().getName().getLocalPart().equals(ITEM)) {
+                        FeedMessage message = new FeedMessage();
+                        //message.setAuthor(author);
+                        message.setDescription(description);
+                        message.setGuid(guid);
+                        //message.setLink(link);
+                        //message.setTitle(title);
+                        message.setPubDate(pubdate);
+                        feed.getMessages().add(message);
+                        event = eventReader.nextEvent();
+                        continue;
+                    }
+                }
+            }
+        }
+//		catch (XMLStreamException e) {
+//			throw new RuntimeException(e);
+//		}
+        finally{}
+
+        return feed;
+    }
+
+    private InputStream read() {
+        if(is == null && url != null){
+            try {
+                return url.openStream();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else{
+            return is;
+        }
+    }
 }

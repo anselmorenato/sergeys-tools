@@ -52,11 +52,9 @@ extends SwingWorker<List<CachedFile>, Integer>
         try {
             pd.copyingComplete(get());
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
         catch (CancellationException e) {
             Settings.getLogger().error("FileCopyWorker cancelled", e);
@@ -139,14 +137,11 @@ extends SwingWorker<List<CachedFile>, Integer>
             try {
                 Database.getInstance().updateSaved(markAsSaved.values());
             } catch (NoSuchAlgorithmException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Settings.getLogger().error("", e);
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Settings.getLogger().error("", e);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Settings.getLogger().error("", e);
             }
         }
 

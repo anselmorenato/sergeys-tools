@@ -8,43 +8,43 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import org.sergeys.webcachedigger.logic.Database;
+import org.sergeys.webcachedigger.logic.Settings;
 
 public class DatabaseCleanerWorker
 extends SwingWorker<List<File>, Integer>
 {
 
-	@Override
-	protected void done() {
-		// TODO Auto-generated method stub
-		super.done();
-		
-		try {
-			Database.getInstance().removeByName(get());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-			JOptionPane.showMessageDialog(null, e.getMessage());
-		}
-	}
+    @Override
+    protected void done() {
+        // TODO Auto-generated method stub
+        super.done();
 
-	@Override
-	protected List<File> doInBackground() throws Exception {
-		ArrayList<File> nonexistent = new ArrayList<File>();
-		
-		List<File> files = Database.getInstance().getNotSavedFiles();
-		for(File file: files){
-			
-			if(isCancelled()){
-				return null;
-			}
-			
-			if(!file.exists()){
-				nonexistent.add(file);
-			}
-		}
-		
-		return nonexistent;
-	}
+        try {
+            Database.getInstance().removeByName(get());
+        } catch (Exception e) {
+            Settings.getLogger().error("", e);
+
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    @Override
+    protected List<File> doInBackground() throws Exception {
+        ArrayList<File> nonexistent = new ArrayList<File>();
+
+        List<File> files = Database.getInstance().getNotSavedFiles();
+        for(File file: files){
+
+            if(isCancelled()){
+                return null;
+            }
+
+            if(!file.exists()){
+                nonexistent.add(file);
+            }
+        }
+
+        return nonexistent;
+    }
 
 }

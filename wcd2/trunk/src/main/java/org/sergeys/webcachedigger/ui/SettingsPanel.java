@@ -197,8 +197,7 @@ public class SettingsPanel extends JPanel {
                 hasSaved = (Database.getInstance().countSaved() > 0);
                 hasIgnored = (Database.getInstance().countIgnored() > 0);
             } catch (SQLException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                Settings.getLogger().error("", e1);
             }
             getBtnForget().setEnabled(hasSaved);
             getBtnForgetIgnored().setEnabled(hasIgnored);
@@ -231,18 +230,18 @@ public class SettingsPanel extends JPanel {
         }
 
         switch(Settings.getInstance().getMediaPlayerType()){
-			case External:
-				getRdbtnUseExternalPlayer().setSelected(true);
-				break;
-			case Vlc:
-				getRdbtnUseVlc().setSelected(true);
-				break;
+            case External:
+                getRdbtnUseExternalPlayer().setSelected(true);
+                break;
+            case Vlc:
+                getRdbtnUseVlc().setSelected(true);
+                break;
 //		default:
-//			break;        
+//			break;
         }
-        
+
         getTextLibvlcLocation().setText(Settings.getInstance().getLibVlc());
-        
+
         //revalidate();
     }
 
@@ -265,15 +264,15 @@ public class SettingsPanel extends JPanel {
         }
 
         if(getRdbtnUseExternalPlayer().isSelected()){
-        	Settings.getInstance().setMediaPlayerType(MediaPlayerType.External);
+            Settings.getInstance().setMediaPlayerType(MediaPlayerType.External);
         }
         else if(getRdbtnUseVlc().isSelected()){
-        	Settings.getInstance().setMediaPlayerType(MediaPlayerType.Vlc);
+            Settings.getInstance().setMediaPlayerType(MediaPlayerType.Vlc);
         }
         else{
-        	Settings.getInstance().setMediaPlayerType(null);        
+            Settings.getInstance().setMediaPlayerType(null);
         }
-        
+
         Settings.getInstance().setLibVlc(getTextLibvlcLocation().getText());
     }
 
@@ -515,8 +514,7 @@ public class SettingsPanel extends JPanel {
         try {
             Database.getInstance().clearSaved();
         } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            Settings.getLogger().error("", e1);
         }
         setForgetButtonsEnabled();
     }
@@ -569,8 +567,7 @@ public class SettingsPanel extends JPanel {
         try {
             Database.getInstance().clearIgnored();
         } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            Settings.getLogger().error("", e1);
         }
         setForgetButtonsEnabled();
     }
@@ -668,7 +665,7 @@ public class SettingsPanel extends JPanel {
 
                 @Override
                 public String getDescription() {
-                    return "VLC library"; 
+                    return "VLC library";
                 }
 
             });
@@ -677,38 +674,38 @@ public class SettingsPanel extends JPanel {
             fc.addChoosableFileFilter(new FileFilter(){
                 @Override
                 public boolean accept(File f) {
-                	// TODO: actual name
+                    // TODO: actual name
                     return f.isDirectory() || f.getName().toLowerCase().equals("libvlc.dll");
                 }
 
                 @Override
                 public String getDescription() {
-                    return "VLC library"; 
+                    return "VLC library";
                 }
             });
         }
         else{
-        	// assume linux and other unices
+            // assume linux and other unices
             fc.addChoosableFileFilter(new FileFilter(){
                 @Override
                 public boolean accept(File f) {
-                	// TODO: actual name
+                    // TODO: actual name
                     return f.isDirectory() || f.getName().toLowerCase().equals("libvlc.so");
                 }
 
                 @Override
                 public String getDescription() {
-                    return "VLC library"; 
+                    return "VLC library";
                 }
             });
         }
 
         if (fc.showOpenDialog(this.getParent()) == JFileChooser.APPROVE_OPTION) {
             String path = fc.getSelectedFile().getAbsolutePath();
-            if(path.contains(" ")){ 
+            if(path.contains(" ")){
                 path = "\"" + path + "\"";
             }
-            
+
             getTextLibvlcLocation().setText(path);
         }
     }
@@ -727,7 +724,7 @@ public class SettingsPanel extends JPanel {
     }
 
     protected void doDetectVlc(ActionEvent e) {
-    	// TODO: detect vlc lib
+        // TODO: detect vlc lib
 
     }
 }

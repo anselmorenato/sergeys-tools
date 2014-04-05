@@ -326,14 +326,11 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
                     addRow("Sample rate", String.valueOf(mp3.getSampleRate()), row);
 
         } catch (UnsupportedTagException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         } catch (InvalidDataException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 

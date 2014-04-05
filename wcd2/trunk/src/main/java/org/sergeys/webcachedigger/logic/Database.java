@@ -73,11 +73,9 @@ public class Database {
 
             st.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 
@@ -182,8 +180,7 @@ public class Database {
             pst.close();
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
 
             return cachedFiles;
         }
@@ -261,8 +258,7 @@ public class Database {
             allFiles.removeAll(unchangedFiles);
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 
@@ -290,8 +286,7 @@ public class Database {
             pst.close();
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
 
             return cacheFiles;
         }
@@ -502,8 +497,7 @@ public class Database {
 
             getConnection().setAutoCommit(true);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
     }

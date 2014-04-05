@@ -47,6 +47,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
+import javax.xml.stream.XMLStreamException;
 
 import org.sergeys.library.rss.Feed;
 import org.sergeys.library.rss.RssFeedParser;
@@ -141,11 +142,9 @@ implements ActionListener, PropertyChangeListener
             try {
                 Database.getInstance().updateIgnored(markAsIgnored.values());
             } catch (SQLException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                Settings.getLogger().error("", e1);
             } catch (Exception e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                Settings.getLogger().error("", e1);
             }
 
             List<CachedFile> current = getFilesListPanel().getCachedFiles();
@@ -206,8 +205,7 @@ implements ActionListener, PropertyChangeListener
             try {
                 jPanelTop.add(new MainWinTopPanel(this));
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Settings.getLogger().error("", e);
             }
 
             jPanelTop.add(getJButtonSearch(), null);
@@ -291,7 +289,7 @@ implements ActionListener, PropertyChangeListener
                 //lockfile.delete();
             }
         } catch(IOException e) {
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
     }
 
@@ -335,11 +333,11 @@ implements ActionListener, PropertyChangeListener
                 System.exit(1);
             }
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            Settings.getLogger().error("", ex);
             JOptionPane.showMessageDialog(null, "Cannot access lockfile " + lockfilename + "\n" + ex.getMessage());
             System.exit(1);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Settings.getLogger().error("", ex);
             JOptionPane.showMessageDialog(null, "Failed to get lock on lockfile " + lockfilename + "\n" + ex.getMessage());
             System.exit(1);
         }
@@ -366,13 +364,13 @@ implements ActionListener, PropertyChangeListener
 
                     //UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    Settings.getLogger().error("", e);
                 } catch (InstantiationException e) {
-                    e.printStackTrace();
+                    Settings.getLogger().error("", e);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    Settings.getLogger().error("", e);
                 } catch (UnsupportedLookAndFeelException e) {
-                    e.printStackTrace();
+                    Settings.getLogger().error("", e);
                 }
 
                 final WebCacheDigger application = new WebCacheDigger();
@@ -424,13 +422,18 @@ implements ActionListener, PropertyChangeListener
                     if(is != null){
                         //RssFeedParser parser = new RssFeedParser(is, "EEE, d MMM yyyy HH:mm:ss Z");
                         RssFeedParser parser = new RssFeedParser(is, "d MMM yyyy HH:mm"); //$NON-NLS-1$
-                        Feed changes = parser.readFeed();
+                        Feed changes = null;
+                        try {
+                            changes = parser.readFeed();
+                        } catch (XMLStreamException e1) {
+                            Settings.getLogger().error("failed to read news feed", e1);
+                        }
 
 //						for(FeedMessage msg: changes.getMessages()){
 //							System.out.println(msg.getPubDate() + " " + msg.getDescription());
 //						}
 
-                        if(changes.getPubDate().after(Settings.getInstance().getSavedVersion())){
+                        if(changes != null && changes.getPubDate().after(Settings.getInstance().getSavedVersion())){
                             ChangesDialog chdlg = new ChangesDialog(mainWindow);
                             chdlg.setLocationRelativeTo(mainWindow);
                             chdlg.createText(changes);
@@ -712,7 +715,7 @@ implements ActionListener, PropertyChangeListener
 
             Settings.save();
         } catch (IOException e) {
-            e.printStackTrace();
+            Settings.getLogger().error("", e);
         }
 
         mainWindow.setVisible(false);
@@ -893,16 +896,14 @@ implements ActionListener, PropertyChangeListener
             is = WebCacheDigger.class.getResourceAsStream("/resources/lang/supportedLanguages.properties");
             p.load(is);
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            Settings.getLogger().error("", e1);
         }
         finally{
             if(is != null){
                 try {
                     is.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Settings.getLogger().error("", e);
                 }
             }
         }
