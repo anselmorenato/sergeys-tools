@@ -11,4 +11,4 @@ ls
 
 set ftp:ssl-protect-data yes
 
-mirror www target
+mirror --reverse --only-newer --no-perms --no-umask --verbose ../site public_html

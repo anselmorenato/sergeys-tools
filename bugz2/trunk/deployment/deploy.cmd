@@ -1,5 +1,5 @@
 @echo off
 
-set PATH=./win;%PATH%
+set LFTP=c:\cygwin\bin\lftp.exe
 
-lftp -f lftp.txt
+%LFTP% -f lftp.txt
