@@ -1,0 +1,15 @@
+set cmd:trace yes
+set cmd:verbose yes
+set ftp:ssl-auth TLS-C
+set ftp:ssl-force yes
+set ssl:check-hostname no
+set ssl:verify-certificate no
+
+open -u svsbugzo,SHCvk2nph8EmvGNh ftp://svs.bugz.org.ua
+
+ls
+
+set ftp:ssl-protect-data yes
+
+mirror --reverse --only-newer --verbose ../build/webstart/signed public_html/wcd2
+

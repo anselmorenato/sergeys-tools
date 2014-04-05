@@ -2,7 +2,8 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-version = 386
+
+version = 387	// also set in resources/settings.properties
 sourceCompatibility = 1.6	// see also jdk in gradle.properties, and j2se in jnlp-template.xml
 mainClassName = 'org.sergeys.webcachedigger.ui.WebCacheDigger'
 
