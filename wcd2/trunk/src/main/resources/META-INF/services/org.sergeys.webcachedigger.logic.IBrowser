@@ -1,0 +1,5 @@
+org.sergeys.webcachedigger.logic.Firefox
+org.sergeys.webcachedigger.logic.InternetExplorer
+org.sergeys.webcachedigger.logic.Chrome
+org.sergeys.webcachedigger.logic.Opera
+#org.sergeys.webcachedigger.logic.FilesystemBrowser

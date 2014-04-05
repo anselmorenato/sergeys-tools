@@ -1,5 +1,9 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin:'application'
+
+sourceCompatibility = 1.6	// see also jdk in gradle.properties
+mainClassName = "org.sergeys.webcachedigger.ui.WebCacheDigger"
 
 repositories {
     mavenCentral()
