@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+
+	<!-- sample from http://www.rssboard.org/files/sample-rss-2.xml -->
+
+   <channel>
+      <title>Изменения:</title>
+      <link>http://code.google.com/p/sergeys-tools/wiki/WebCacheDigger/</link>
+      <pubDate>18 Oct 2011 11:30</pubDate>
+
+      <item>         
+         <pubDate>18 Oct 2011 11:30</pubDate>
+         <description>
+         	Добавилась новая настройка для метода сравнения файлов: сравнивать быстро, или медленно и полностью. Быстрое сравнение
+         	достаточно надежно, поэтому медленное оставлено так, на всякий случай.
+         </description>         
+      </item>
+      
+   </channel>
+</rss>

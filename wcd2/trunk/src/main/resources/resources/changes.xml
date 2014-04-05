@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+
+	<!-- sample from http://www.rssboard.org/files/sample-rss-2.xml -->
+
+   <channel>
+      <title>Changes:</title>
+      <link>http://code.google.com/p/sergeys-tools/wiki/WebCacheDigger/</link>
+      <pubDate>18 Oct 2011 11:30</pubDate>
+
+      <item>
+         <pubDate>18 Oct 2011 11:30</pubDate>
+         <description>
+         New setting is added for the file comparison method, fast compare or complete and slow compare.
+         </description>
+      </item>
+
+   </channel>
+</rss>
