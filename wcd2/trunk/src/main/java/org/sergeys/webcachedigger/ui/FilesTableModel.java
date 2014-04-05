@@ -97,7 +97,7 @@ extends AbstractTableModel
 			return this.cachedFiles.get(rowIndex).length();
 		case 4:
 			// format long as datetime
-			return String.format("%1$tF %1$tR", this.cachedFiles.get(rowIndex)
+			return String.format("%1$tF %1$tR", this.cachedFiles.get(rowIndex) //$NON-NLS-1$
 					.lastModified());
 		default:
 			return null;

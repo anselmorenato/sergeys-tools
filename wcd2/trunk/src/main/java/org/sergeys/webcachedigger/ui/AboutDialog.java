@@ -175,8 +175,8 @@ public class AboutDialog extends JDialog {
             gbc_lblJvm.gridx = 0;
             gbc_lblJvm.gridy = 3;
             getLblJvm().setText(
-                    System.getProperties().getProperty("java.runtime.name") + " " +
-                            System.getProperties().getProperty("java.runtime.version"));
+                    System.getProperties().getProperty("java.runtime.name") + " " + //$NON-NLS-1$ //$NON-NLS-2$
+                            System.getProperties().getProperty("java.runtime.version")); //$NON-NLS-1$
             jPanelAbout.add(getLblJvm(), gbc_lblJvm);
         }
         return jPanelAbout;
@@ -291,7 +291,7 @@ public class AboutDialog extends JDialog {
             try {
                 textPaneLibs.setPage(AboutDialog.class.getResource("/resources/libraries.html")); //$NON-NLS-1$
             } catch (IOException e) {
-                Settings.getLogger().error("", e);
+                Settings.getLogger().error("", e); //$NON-NLS-1$
             }
 
         }
@@ -309,9 +309,9 @@ public class AboutDialog extends JDialog {
                     try {
                         dt.browse(e.getURL().toURI());
                     } catch (IOException e1) {
-                        Settings.getLogger().error("", e1);
+                        Settings.getLogger().error("", e1); //$NON-NLS-1$
                     } catch (URISyntaxException e1) {
-                        Settings.getLogger().error("", e1);
+                        Settings.getLogger().error("", e1); //$NON-NLS-1$
                     }
                 }
             }

@@ -33,8 +33,8 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
     private JButton btnPlay;
 
     static {
-        iconPlay = new ImageIcon(VideoPreviewPanel.class.getResource("/images/player_play.png"));
-        iconStop = new ImageIcon(VideoPreviewPanel.class.getResource("/images/player_stop.png"));
+        iconPlay = new ImageIcon(VideoPreviewPanel.class.getResource("/images/player_play.png")); //$NON-NLS-1$
+        iconStop = new ImageIcon(VideoPreviewPanel.class.getResource("/images/player_stop.png")); //$NON-NLS-1$
     }
 
     public VideoPreviewPanel() {
@@ -44,7 +44,7 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
         JPanel panel = new JPanel();
         add(panel, BorderLayout.SOUTH);
 
-        btnPlay = new JButton("");
+        btnPlay = new JButton(""); //$NON-NLS-1$
 
         btnPlay.setIcon(iconPlay);
         panel.add(btnPlay);
@@ -103,7 +103,7 @@ public class VideoPreviewPanel extends AbstractFilePreviewPanel {
 
         if(Settings.getInstance().getMediaPlayerType() == MediaPlayerType.Vlc){
             if(aFlag){
-                String url = "file:///" + getCachedFile().getAbsolutePath();
+                String url = "file:///" + getCachedFile().getAbsolutePath(); //$NON-NLS-1$
                 System.out.println(url);
 
 //	            mpComponent.getMediaPlayer().prepareMedia(url);

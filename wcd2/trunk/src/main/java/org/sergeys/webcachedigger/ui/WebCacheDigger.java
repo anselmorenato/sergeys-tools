@@ -142,9 +142,9 @@ implements ActionListener, PropertyChangeListener
             try {
                 Database.getInstance().updateIgnored(markAsIgnored.values());
             } catch (SQLException e1) {
-                Settings.getLogger().error("", e1);
+                Settings.getLogger().error("", e1); //$NON-NLS-1$
             } catch (Exception e1) {
-                Settings.getLogger().error("", e1);
+                Settings.getLogger().error("", e1); //$NON-NLS-1$
             }
 
             List<CachedFile> current = getFilesListPanel().getCachedFiles();
@@ -205,7 +205,7 @@ implements ActionListener, PropertyChangeListener
             try {
                 jPanelTop.add(new MainWinTopPanel(this));
             } catch (IOException e) {
-                Settings.getLogger().error("", e);
+                Settings.getLogger().error("", e); //$NON-NLS-1$
             }
 
             jPanelTop.add(getJButtonSearch(), null);
@@ -289,7 +289,7 @@ implements ActionListener, PropertyChangeListener
                 //lockfile.delete();
             }
         } catch(IOException e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
         }
     }
 
@@ -305,7 +305,7 @@ implements ActionListener, PropertyChangeListener
      */
     public static void main(String[] args) {
 
-        Settings.getLogger().info("application started");
+        Settings.getLogger().info("application started"); //$NON-NLS-1$
 
         // check if there is another instance running
         // http://jimlife.wordpress.com/2008/07/21/java-application-make-sure-only-singleone-instance-running-with-file-lock-ampampampampamp-shutdownhook/
@@ -322,23 +322,23 @@ implements ActionListener, PropertyChangeListener
 
         // Try to get the lock
         try {
-            lockchannel = new RandomAccessFile(lockfile, "rw").getChannel();
+            lockchannel = new RandomAccessFile(lockfile, "rw").getChannel(); //$NON-NLS-1$
             applock = lockchannel.tryLock();
             if(applock == null)
             {
                 // File is locked by other application
                 lockchannel.close();
                 //throw new RuntimeException("Only 1 instance of MyApp can run.");
-                JOptionPane.showMessageDialog(null, "Another instance is already running.");
+                JOptionPane.showMessageDialog(null, Messages.getString("WebCacheDigger.0")); //$NON-NLS-1$
                 System.exit(1);
             }
         } catch (FileNotFoundException ex) {
-            Settings.getLogger().error("", ex);
-            JOptionPane.showMessageDialog(null, "Cannot access lockfile " + lockfilename + "\n" + ex.getMessage());
+            Settings.getLogger().error("", ex); //$NON-NLS-1$
+            JOptionPane.showMessageDialog(null, "Cannot access lockfile " + lockfilename + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             System.exit(1);
         } catch (IOException ex) {
-            Settings.getLogger().error("", ex);
-            JOptionPane.showMessageDialog(null, "Failed to get lock on lockfile " + lockfilename + "\n" + ex.getMessage());
+            Settings.getLogger().error("", ex); //$NON-NLS-1$
+            JOptionPane.showMessageDialog(null, "Failed to get lock on lockfile " + lockfilename + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             System.exit(1);
         }
 
@@ -352,11 +352,11 @@ implements ActionListener, PropertyChangeListener
                 try {
 
                     String laf = Settings.getInstance().getLookAndFeel();
-                    if(laf == null || laf.equals("default") || laf.isEmpty())
+                    if(laf == null || laf.equals("default") || laf.isEmpty()) //$NON-NLS-1$
                     {
                         // looks like old name is used in 1.6 on macosx and this not works
                         //UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-                        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+                        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
                     }
                     else{
                         UIManager.setLookAndFeel(laf);
@@ -364,13 +364,13 @@ implements ActionListener, PropertyChangeListener
 
                     //UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
                 } catch (ClassNotFoundException e) {
-                    Settings.getLogger().error("", e);
+                    Settings.getLogger().error("", e); //$NON-NLS-1$
                 } catch (InstantiationException e) {
-                    Settings.getLogger().error("", e);
+                    Settings.getLogger().error("", e); //$NON-NLS-1$
                 } catch (IllegalAccessException e) {
-                    Settings.getLogger().error("", e);
+                    Settings.getLogger().error("", e); //$NON-NLS-1$
                 } catch (UnsupportedLookAndFeelException e) {
-                    Settings.getLogger().error("", e);
+                    Settings.getLogger().error("", e); //$NON-NLS-1$
                 }
 
                 final WebCacheDigger application = new WebCacheDigger();
@@ -426,7 +426,7 @@ implements ActionListener, PropertyChangeListener
                         try {
                             changes = parser.readFeed();
                         } catch (XMLStreamException e1) {
-                            Settings.getLogger().error("failed to read news feed", e1);
+                            Settings.getLogger().error("failed to read news feed", e1); //$NON-NLS-1$
                         }
 
 //						for(FeedMessage msg: changes.getMessages()){
@@ -717,13 +717,13 @@ implements ActionListener, PropertyChangeListener
 
             Settings.save();
         } catch (IOException e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
         }
 
         mainWindow.setVisible(false);
         mainWindow.dispose();
 
-        Settings.getLogger().info("application exit");
+        Settings.getLogger().info("application exit"); //$NON-NLS-1$
         System.exit(0);
     }
 
@@ -880,10 +880,10 @@ implements ActionListener, PropertyChangeListener
             for(IBrowser browser : ldr){
                 if(browser.isPresent()){
                     existingBrowsers.add(browser);
-                    Settings.getLogger().info(browser.getName() + " found");
+                    Settings.getLogger().info(browser.getName() + " found"); //$NON-NLS-1$
                 }
                 else{
-                    Settings.getLogger().info(browser.getName() + " not found");
+                    Settings.getLogger().info(browser.getName() + " not found"); //$NON-NLS-1$
                 }
             }
         }
@@ -896,17 +896,17 @@ implements ActionListener, PropertyChangeListener
         Properties p = new Properties();
         InputStream is = null;
         try {
-            is = WebCacheDigger.class.getResourceAsStream("/resources/lang/supportedLanguages.properties");
+            is = WebCacheDigger.class.getResourceAsStream("/resources/lang/supportedLanguages.properties"); //$NON-NLS-1$
             p.load(is);
         } catch (IOException e1) {
-            Settings.getLogger().error("", e1);
+            Settings.getLogger().error("", e1); //$NON-NLS-1$
         }
         finally{
             if(is != null){
                 try {
                     is.close();
                 } catch (IOException e) {
-                    Settings.getLogger().error("", e);
+                    Settings.getLogger().error("", e); //$NON-NLS-1$
                 }
             }
         }
@@ -940,8 +940,8 @@ implements ActionListener, PropertyChangeListener
     private void createLafMenu(JMenu parent){
         ButtonGroup group = new ButtonGroup();
 
-        JRadioButtonMenuItem mi = new JRadioButtonMenuItem("Default");
-        mi.setActionCommand("default");
+        JRadioButtonMenuItem mi = new JRadioButtonMenuItem(Messages.getString("WebCacheDigger.1")); //$NON-NLS-1$
+        mi.setActionCommand("default"); //$NON-NLS-1$
         mi.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doLafSelected(e);
@@ -950,7 +950,7 @@ implements ActionListener, PropertyChangeListener
 
         String currentLaf = Settings.getInstance().getLookAndFeel();
 
-        if(currentLaf == null || currentLaf.equals("default") || currentLaf.isEmpty()){
+        if(currentLaf == null || currentLaf.equals("default") || currentLaf.isEmpty()){ //$NON-NLS-1$
             mi.setSelected(true);
         }
 
@@ -983,7 +983,7 @@ implements ActionListener, PropertyChangeListener
     protected void doLafSelected(ActionEvent e) {
 //System.out.println(e.getActionCommand());
         Settings.getInstance().setLookAndFeel(e.getActionCommand());
-        JOptionPane.showMessageDialog(this.getJContentPane(), "Please restart application to change look and feel.");
+        JOptionPane.showMessageDialog(this.getJContentPane(), Messages.getString("WebCacheDigger.2")); //$NON-NLS-1$
     }
 
     private JMenu getMnLanguage() {
@@ -1004,7 +1004,7 @@ implements ActionListener, PropertyChangeListener
 
     private JMenu getMnLookAndFeel() {
         if (mnLookAndFeel == null) {
-            mnLookAndFeel = new JMenu(Messages.getString("WebCacheDigger.mnLookAndFeel.text"));
+            mnLookAndFeel = new JMenu(Messages.getString("WebCacheDigger.3")); //$NON-NLS-1$
 
             createLafMenu(mnLookAndFeel);
         }

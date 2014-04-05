@@ -48,12 +48,12 @@ implements IProgressWatcher
             }
         }
 
-        Settings.getLogger().info("collected files: " + cacheFiles.size());
+        Settings.getLogger().info("collected files: " + cacheFiles.size()); //$NON-NLS-1$
 
         if(Settings.getInstance().isExcludeSavedAndIgnored()){
             // exclude saved files with same absolute path and timestamp
             cacheFiles = Database.getInstance().filterSavedAndIgnoredByFilesystem(cacheFiles);
-            Settings.getLogger().info("not yet copied and not ignored files: " + cacheFiles.size());
+            Settings.getLogger().info("not yet copied and not ignored files: " + cacheFiles.size()); //$NON-NLS-1$
         }
 
         stage = ProgressDialog.STAGE_FILTER_TYPE;
@@ -117,10 +117,10 @@ implements IProgressWatcher
         try {
             pd.searchComplete(get());
         } catch (InterruptedException e) {
-            Settings.getLogger().error("interrupted", e);
+            Settings.getLogger().error("interrupted", e); //$NON-NLS-1$
         } catch (final ExecutionException e) {
 
-            Settings.getLogger().error("execution", e);
+            Settings.getLogger().error("execution", e); //$NON-NLS-1$
 
             SwingUtilities.invokeLater(new Runnable(){
 
@@ -131,7 +131,7 @@ implements IProgressWatcher
                 }});
         }
         catch (CancellationException e) {
-            Settings.getLogger().error("worker cancelled", e);
+            Settings.getLogger().info("worker cancelled"); //$NON-NLS-1$
         }
     }
 

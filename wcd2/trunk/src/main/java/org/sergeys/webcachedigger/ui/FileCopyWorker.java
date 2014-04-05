@@ -52,12 +52,12 @@ extends SwingWorker<List<CachedFile>, Integer>
         try {
             pd.copyingComplete(get());
         } catch (InterruptedException e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
         } catch (ExecutionException e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
         }
         catch (CancellationException e) {
-            Settings.getLogger().error("FileCopyWorker cancelled", e);
+            Settings.getLogger().debug("worker cancelled", e); //$NON-NLS-1$
         }
     }
 
@@ -83,15 +83,15 @@ extends SwingWorker<List<CachedFile>, Integer>
                 if(Settings.getInstance().isExcludeSavedAndIgnored()){
                     // check for duplicates
                     if(markAsSaved.containsKey(file.getHash())){
-                        Settings.getLogger().info(String.format("Duplicate file skipped: %s", file.getName()));
+                        Settings.getLogger().info(String.format("Duplicate file skipped: %s", file.getName())); //$NON-NLS-1$
                         copied.add(file);	// to remove from visible list
                         continue;
                     }
                 }
 
-                if(file.getMimeType().equals("audio/mpeg") && Settings.getInstance().isRenameMp3byTags()){
+                if(file.getMimeType().equals("audio/mpeg") && Settings.getInstance().isRenameMp3byTags()){ //$NON-NLS-1$
                     String proposed = Mp3Utils.getInstance().proposeName(file);
-                    if(!proposed.contains("?")){
+                    if(!proposed.contains("?")){ //$NON-NLS-1$
                         file.setProposedName(proposed);
                     }
                 }
@@ -118,7 +118,7 @@ extends SwingWorker<List<CachedFile>, Integer>
                     publish(copiedCount);
 
                 } catch (final IOException e) {
-                    Settings.getLogger().error("failed to copy " + file.getAbsolutePath() + " to " + targetFile1, e);
+                    Settings.getLogger().error("failed to copy " + file.getAbsolutePath() + " to " + targetFile1, e); //$NON-NLS-1$ //$NON-NLS-2$
                     SwingUtilities.invokeLater(new Runnable(){
 
                         @Override
@@ -137,11 +137,11 @@ extends SwingWorker<List<CachedFile>, Integer>
             try {
                 Database.getInstance().updateSaved(markAsSaved.values());
             } catch (NoSuchAlgorithmException e) {
-                Settings.getLogger().error("", e);
+                Settings.getLogger().error("", e); //$NON-NLS-1$
             } catch (SQLException e) {
-                Settings.getLogger().error("", e);
+                Settings.getLogger().error("", e); //$NON-NLS-1$
             } catch (IOException e) {
-                Settings.getLogger().error("", e);
+                Settings.getLogger().error("", e); //$NON-NLS-1$
             }
         }
 

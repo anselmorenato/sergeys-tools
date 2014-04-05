@@ -115,7 +115,7 @@ public class ChangesDialog extends JDialog {
             }
 
         } catch (Exception e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
         }
 
 
@@ -127,9 +127,9 @@ public class ChangesDialog extends JDialog {
 //			wr.write();
 //System.out.println(sw);
         } catch (IOException e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
         } catch (BadLocationException e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
         }
 
         txtpnChanges.setStyledDocument(doc);

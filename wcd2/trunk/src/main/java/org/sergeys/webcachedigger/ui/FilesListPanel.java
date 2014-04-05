@@ -137,13 +137,13 @@ implements ListSelectionListener, TableModelListener
 		JLabel lblTotalLabel = new JLabel(Messages.getString("FilesListPanel.lblTotal.text")); //$NON-NLS-1$
 		panelSummary.add(lblTotalLabel);
 		
-		lblTotal = new JLabel("total"); 
+		lblTotal = new JLabel(Messages.getString("FilesListPanel.0"));  //$NON-NLS-1$
 		panelSummary.add(lblTotal);
 		
 		JLabel lblCheckedLabel = new JLabel(Messages.getString("FilesListPanel.lblCheckedToCopy.text")); //$NON-NLS-1$
 		panelSummary.add(lblCheckedLabel);
 		
-		lblChecked = new JLabel("checked"); 
+		lblChecked = new JLabel(Messages.getString("FilesListPanel.1"));  //$NON-NLS-1$
 		panelSummary.add(lblChecked);
 								
 		lblTotal.setText("0"); //$NON-NLS-1$

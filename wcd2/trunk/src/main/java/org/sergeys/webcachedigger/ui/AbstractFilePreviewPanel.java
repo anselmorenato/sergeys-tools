@@ -39,14 +39,14 @@ public abstract class AbstractFilePreviewPanel extends JPanel {
 
         AbstractFilePreviewPanel panel = null;
 
-        if(mimeType.startsWith("image/")){
+        if(mimeType.startsWith("image/")){ //$NON-NLS-1$
             panel = new ImagePreviewPanel();
         }
-        else if(mimeType.startsWith("audio/")){
+        else if(mimeType.startsWith("audio/")){ //$NON-NLS-1$
             panel = new AudioPreviewPanel();
             panel.addPropertyChangeListener(AudioPreviewPanel.PROPERTY_FILE_TO_PLAY, listener);
         }
-        else if(mimeType.startsWith("video/")){
+        else if(mimeType.startsWith("video/")){ //$NON-NLS-1$
             panel = new VideoPreviewPanel();
             panel.addPropertyChangeListener(VideoPreviewPanel.PROPERTY_FILE_TO_PLAY, listener);
         }

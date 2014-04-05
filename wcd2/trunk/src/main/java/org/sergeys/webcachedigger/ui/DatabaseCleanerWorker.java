@@ -22,7 +22,7 @@ extends SwingWorker<List<File>, Integer>
         try {
             Database.getInstance().removeByName(get());
         } catch (Exception e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
 
             JOptionPane.showMessageDialog(null, e.getMessage());
         }

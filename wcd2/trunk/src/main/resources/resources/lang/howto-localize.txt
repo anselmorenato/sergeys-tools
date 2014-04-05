@@ -1,0 +1,4 @@
+1. For project, use Source->Externalize Strings in eclipse menu.
+2. Run copyres
+3. Edit messages_ru.properties.txt
+4. Run mkres

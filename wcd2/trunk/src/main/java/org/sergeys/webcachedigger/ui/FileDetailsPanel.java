@@ -111,7 +111,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
         gbc_lblFiletype.gridy = 3;
         panelTop.add(lblFiletype, gbc_lblFiletype);
 
-        btnOpenLocation = new JButton(Messages.getString("FileDetailsPanel.btnOpenLocation.text"));
+        btnOpenLocation = new JButton(Messages.getString("FileDetailsPanel.0")); //$NON-NLS-1$
         btnOpenLocation.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 doOpenLocation();
@@ -136,7 +136,7 @@ public class FileDetailsPanel extends JPanel implements PropertyChangeListener {
             try {
                 Desktop.getDesktop().open(file.getParentFile());
             } catch (IOException e) {
-                Settings.getLogger().error("", e);
+                Settings.getLogger().error("", e); //$NON-NLS-1$
             }
         }
     }

@@ -314,23 +314,23 @@ public class AudioPreviewPanel extends AbstractFilePreviewPanel {
             }
 
             if(row > 0){
-                row = addRow(" ", " ", row);
+                row = addRow(" ", " ", row); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
-            row = addRow("", mp3.getChannelMode(), row);    // channel mode
-            row = addRow("Layer", mp3.getLayer(), row);
-            row = addRow("Mode extension", mp3.getModeExtension(), row);
+            row = addRow("", mp3.getChannelMode(), row);    // channel mode //$NON-NLS-1$
+            row = addRow("Layer", mp3.getLayer(), row); //$NON-NLS-1$
+            row = addRow("Mode extension", mp3.getModeExtension(), row); //$NON-NLS-1$
             //row = addRow("version", mp3.getVersion(), row);
-            row = addRow("Bitrate", String.valueOf(mp3.getBitrate()), row);
+            row = addRow("Bitrate", String.valueOf(mp3.getBitrate()), row); //$NON-NLS-1$
             //row =
-                    addRow("Sample rate", String.valueOf(mp3.getSampleRate()), row);
+                    addRow("Sample rate", String.valueOf(mp3.getSampleRate()), row); //$NON-NLS-1$
 
         } catch (UnsupportedTagException e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
         } catch (InvalidDataException e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
         } catch (IOException e) {
-            Settings.getLogger().error("", e);
+            Settings.getLogger().error("", e); //$NON-NLS-1$
         }
     }
 

@@ -197,7 +197,7 @@ public class SettingsPanel extends JPanel {
                 hasSaved = (Database.getInstance().countSaved() > 0);
                 hasIgnored = (Database.getInstance().countIgnored() > 0);
             } catch (SQLException e1) {
-                Settings.getLogger().error("", e1);
+                Settings.getLogger().error("", e1); //$NON-NLS-1$
             }
             getBtnForget().setEnabled(hasSaved);
             getBtnForgetIgnored().setEnabled(hasIgnored);
@@ -240,9 +240,7 @@ public class SettingsPanel extends JPanel {
 //			break;
         }
 
-        getTextLibvlcLocation().setText(Settings.getInstance().getLibVlc());
-
-        //revalidate();
+        //getTextLibvlcLocation().setText(Settings.getInstance().getLibVlc());
     }
 
     public void updateSettings() {
@@ -273,7 +271,7 @@ public class SettingsPanel extends JPanel {
             Settings.getInstance().setMediaPlayerType(null);
         }
 
-        Settings.getInstance().setLibVlc(getTextLibvlcLocation().getText());
+        //Settings.getInstance().setLibVlc(getTextLibvlcLocation().getText());
     }
 
     /**
@@ -514,7 +512,7 @@ public class SettingsPanel extends JPanel {
         try {
             Database.getInstance().clearSaved();
         } catch (SQLException e1) {
-            Settings.getLogger().error("", e1);
+            Settings.getLogger().error("", e1); //$NON-NLS-1$
         }
         setForgetButtonsEnabled();
     }
@@ -567,7 +565,7 @@ public class SettingsPanel extends JPanel {
         try {
             Database.getInstance().clearIgnored();
         } catch (SQLException e1) {
-            Settings.getLogger().error("", e1);
+            Settings.getLogger().error("", e1); //$NON-NLS-1$
         }
         setForgetButtonsEnabled();
     }
@@ -598,13 +596,13 @@ public class SettingsPanel extends JPanel {
     }
     private JRadioButton getRdbtnUseVlc() {
         if (rdbtnUseVlc == null) {
-            rdbtnUseVlc = new JRadioButton(Messages.getString("SettingsPanel.rdbtnUseVlc.text"));
+            rdbtnUseVlc = new JRadioButton(Messages.getString("SettingsPanel.0")); //$NON-NLS-1$
         }
         return rdbtnUseVlc;
     }
     private JRadioButton getRdbtnUseExternalPlayer() {
         if (rdbtnUseExternalPlayer == null) {
-            rdbtnUseExternalPlayer = new JRadioButton(Messages.getString("SettingsPanel.rdbtnUseExternalPlayer.text"));
+            rdbtnUseExternalPlayer = new JRadioButton(Messages.getString("SettingsPanel.1")); //$NON-NLS-1$
         }
         return rdbtnUseExternalPlayer;
     }
@@ -631,14 +629,15 @@ public class SettingsPanel extends JPanel {
         }
         return lblLocationOfLibvlc;
     }
+
     private JTextField getTextLibvlcLocation() {
         if (textLibvlcLocation == null) {
             textLibvlcLocation = new JTextField();
-            //textLibvlcLocation.setText(Messages.getString("SettingsPanel.textField.text")); //$NON-NLS-1$
             textLibvlcLocation.setColumns(20);
         }
         return textLibvlcLocation;
     }
+
     private JButton getButtonLibvlc() {
         if (buttonLibvlc == null) {
             buttonLibvlc = new JButton(Messages.getString("SettingsPanel.button.text")); //$NON-NLS-1$
@@ -660,12 +659,12 @@ public class SettingsPanel extends JPanel {
 
                 @Override
                 public boolean accept(File f) {
-                    return f.isDirectory() || f.getName().toLowerCase().equals("libvlc.dll");
+                    return f.isDirectory() || f.getName().toLowerCase().equals("libvlc.dll"); //$NON-NLS-1$
                 }
 
                 @Override
                 public String getDescription() {
-                    return "VLC library";
+                    return Messages.getString("SettingsPanel.6"); //$NON-NLS-1$
                 }
 
             });
@@ -675,12 +674,12 @@ public class SettingsPanel extends JPanel {
                 @Override
                 public boolean accept(File f) {
                     // TODO: actual name
-                    return f.isDirectory() || f.getName().toLowerCase().equals("libvlc.dll");
+                    return f.isDirectory() || f.getName().toLowerCase().equals("libvlc.dll"); //$NON-NLS-1$
                 }
 
                 @Override
                 public String getDescription() {
-                    return "VLC library";
+                    return Messages.getString("SettingsPanel.8"); //$NON-NLS-1$
                 }
             });
         }
@@ -690,20 +689,20 @@ public class SettingsPanel extends JPanel {
                 @Override
                 public boolean accept(File f) {
                     // TODO: actual name
-                    return f.isDirectory() || f.getName().toLowerCase().equals("libvlc.so");
+                    return f.isDirectory() || f.getName().toLowerCase().equals("libvlc.so"); //$NON-NLS-1$
                 }
 
                 @Override
                 public String getDescription() {
-                    return "VLC library";
+                    return Messages.getString("SettingsPanel.10"); //$NON-NLS-1$
                 }
             });
         }
 
         if (fc.showOpenDialog(this.getParent()) == JFileChooser.APPROVE_OPTION) {
             String path = fc.getSelectedFile().getAbsolutePath();
-            if(path.contains(" ")){
-                path = "\"" + path + "\"";
+            if(path.contains(" ")){ //$NON-NLS-1$
+                path = "\"" + path + "\""; //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             getTextLibvlcLocation().setText(path);

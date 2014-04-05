@@ -121,7 +121,7 @@ public class MainWinTopPanel extends JPanel {
 		// file types
 		
 		JToggleButton tglbtnAudio = new JToggleButton(Messages.getString("MainWinTopPanel.Audio")); //$NON-NLS-1$
-		tglbtnAudio.setIcon(new ImageIcon(MainWinTopPanel.class.getResource("/images/midi.png")));
+		tglbtnAudio.setIcon(new ImageIcon(MainWinTopPanel.class.getResource("/images/midi.png"))); //$NON-NLS-1$
 		tglbtnAudio.setName(Settings.FileType.Audio.name());
 		tglbtnAudio.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -132,7 +132,7 @@ public class MainWinTopPanel extends JPanel {
 		panel_1.add(tglbtnAudio);
 		
 		JToggleButton tglbtnVideo = new JToggleButton(Messages.getString("MainWinTopPanel.Video")); //$NON-NLS-1$
-		tglbtnVideo.setIcon(new ImageIcon(MainWinTopPanel.class.getResource("/images/video.png")));
+		tglbtnVideo.setIcon(new ImageIcon(MainWinTopPanel.class.getResource("/images/video.png"))); //$NON-NLS-1$
 		tglbtnVideo.setName(Settings.FileType.Video.name());
 		tglbtnVideo.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -143,7 +143,7 @@ public class MainWinTopPanel extends JPanel {
 		panel_1.add(tglbtnVideo);
 		
 		JToggleButton tglbtnImages = new JToggleButton(Messages.getString("MainWinTopPanel.Images")); //$NON-NLS-1$
-		tglbtnImages.setIcon(new ImageIcon(MainWinTopPanel.class.getResource("/images/image.png")));
+		tglbtnImages.setIcon(new ImageIcon(MainWinTopPanel.class.getResource("/images/image.png"))); //$NON-NLS-1$
 		tglbtnImages.setName(Settings.FileType.Image.name());
 		tglbtnImages.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -154,7 +154,7 @@ public class MainWinTopPanel extends JPanel {
 		panel_1.add(tglbtnImages);
 		
 		JToggleButton tglbtnOther = new JToggleButton(Messages.getString("MainWinTopPanel.Other")); //$NON-NLS-1$
-		tglbtnOther.setIcon(new ImageIcon(MainWinTopPanel.class.getResource("/images/kmultiple.png")));
+		tglbtnOther.setIcon(new ImageIcon(MainWinTopPanel.class.getResource("/images/kmultiple.png"))); //$NON-NLS-1$
 		tglbtnOther.setName(Settings.FileType.Other.name());
 		tglbtnOther.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {

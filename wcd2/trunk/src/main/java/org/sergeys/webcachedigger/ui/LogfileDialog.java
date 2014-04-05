@@ -14,6 +14,7 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
 
 import java.awt.event.ActionListener;
@@ -46,7 +47,7 @@ public class LogfileDialog extends JDialog {
 
         super(owner);
 
-        setTitle("Log - " + Settings.getSettingsDirPath() + File.separator + Settings.LOG_FILE);
+        setTitle(Messages.getString("LogfileDialog.0") + Settings.getSettingsDirPath() + File.separator + Settings.LOG_FILE); //$NON-NLS-1$
 
         setBounds(100, 100, 800, 500);
         getContentPane().setLayout(new BorderLayout());
@@ -76,7 +77,7 @@ public class LogfileDialog extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
             {
-                JButton btnClose = new JButton("Close");
+                JButton btnClose = new JButton(Messages.getString("LogfileDialog.1")); //$NON-NLS-1$
                 btnClose.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         doClose();
@@ -84,7 +85,7 @@ public class LogfileDialog extends JDialog {
 
                 });
                 {
-                    JButton btnRefresh = new JButton("Refresh");
+                    JButton btnRefresh = new JButton(Messages.getString("LogfileDialog.2")); //$NON-NLS-1$
                     btnRefresh.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             doRefresh();
@@ -103,39 +104,39 @@ public class LogfileDialog extends JDialog {
 
     protected void doRefresh() {
         try {
-            textPane.setText("");
+            textPane.setText(""); //$NON-NLS-1$
             StyledDocument doc = textPane.getStyledDocument();
 
-            Style styleError = textPane.addStyle("error", null);
+            Style styleError = textPane.addStyle("error", null); //$NON-NLS-1$
             StyleConstants.setForeground(styleError, Color.red);
-            Style styleWarning = textPane.addStyle("warning", null);
+            Style styleWarning = textPane.addStyle("warning", null); //$NON-NLS-1$
             StyleConstants.setForeground(styleWarning, Color.magenta);
-            Style styleDebug = textPane.addStyle("debug", null);
+            Style styleDebug = textPane.addStyle("debug", null); //$NON-NLS-1$
             StyleConstants.setForeground(styleDebug, Color.gray);
 
             BufferedReader br = new BufferedReader(new FileReader(Settings.getSettingsDirPath() + File.separator + Settings.LOG_FILE));
             String str;
             while((str = br.readLine()) != null){
-                if(str.startsWith("ERR") || str.startsWith("SEVERE")){
-                    doc.insertString(doc.getLength(), str + "\n", styleError);
+                if(str.startsWith("ERR") || str.startsWith("SEVERE")){ //$NON-NLS-1$ //$NON-NLS-2$
+                    doc.insertString(doc.getLength(), str + "\n", styleError); //$NON-NLS-1$
                 }
-                else if(str.startsWith("WARN")){
-                    doc.insertString(doc.getLength(), str + "\n", styleWarning);
+                else if(str.startsWith("WARN")){ //$NON-NLS-1$
+                    doc.insertString(doc.getLength(), str + "\n", styleWarning); //$NON-NLS-1$
                 }
-                else if(str.startsWith("DEBUG") || str.startsWith("FINE")){	// FINER, FINEST
-                    doc.insertString(doc.getLength(), str + "\n", styleDebug);
+                else if(str.startsWith("DEBUG") || str.startsWith("FINE")){	// FINER, FINEST //$NON-NLS-1$ //$NON-NLS-2$
+                    doc.insertString(doc.getLength(), str + "\n", styleDebug); //$NON-NLS-1$
                 }
                 else{
-                    doc.insertString(doc.getLength(), str + "\n", null);
+                    doc.insertString(doc.getLength(), str + "\n", null); //$NON-NLS-1$
                 }
             }
             br.close();
         } catch (FileNotFoundException e) {
-            Settings.getLogger().error("failed to read log file", e);
+            Settings.getLogger().error("failed to read log file", e); //$NON-NLS-1$
         } catch (IOException e) {
-            Settings.getLogger().error("failed to read log file", e);
+            Settings.getLogger().error("failed to read log file", e); //$NON-NLS-1$
         } catch (BadLocationException e) {
-            Settings.getLogger().error("failed to read log file", e);
+            Settings.getLogger().error("failed to read log file", e); //$NON-NLS-1$
         }
     }
 

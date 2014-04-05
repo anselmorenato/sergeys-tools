@@ -28,9 +28,11 @@ public class Firefox extends AbstractBrowser {
         String profilesini = profilesIniPath + File.separator + "profiles.ini";
         File f = new File(profilesini);
         if(!f.isFile()){
-            Settings.getLogger().debug(profilesini + " is not a file");
+            //Settings.getLogger().debug(profilesini + " is not a file");
             return paths;    // empty
         }
+
+        Settings.getLogger().debug("parse profile locations from " + profilesini);
 
         try {
             rdr = new BufferedReader(new FileReader(profilesini));
