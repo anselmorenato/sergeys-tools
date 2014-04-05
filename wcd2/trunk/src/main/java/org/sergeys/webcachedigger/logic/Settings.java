@@ -98,7 +98,7 @@ extends Properties
         System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
 
         // slf4j logger
-        logger = LoggerFactory.getLogger("wcd2");
+        logger = LoggerFactory.getLogger("webcachedigger");
 
         load();
     }
@@ -170,7 +170,7 @@ extends Properties
     // http://java.sys-con.com/node/37550
     // http://www.java2s.com/Code/Java/JDK-6/MarshalJavaobjecttoxmlandoutputtoconsole.htm
 
-    public static void save() throws FileNotFoundException{
+    public static void save() throws FileNotFoundException {
 
         instance.savedVersion = instance.getCurrentVersion();
 
@@ -182,13 +182,21 @@ extends Properties
         XMLEncoder e;
 
         synchronized (instance) {
-            e = new XMLEncoder(
-                    new BufferedOutputStream(
-                        new FileOutputStream(settingsFilePath)));
-            e.writeObject(instance);
-            e.close();
-        }
+            try {
+                e = new XMLEncoder(
+                        new BufferedOutputStream(
+                            new FileOutputStream(settingsFilePath)));
 
+                e.writeObject(instance);
+                e.close();
+            } catch (FileNotFoundException e1) {
+                if(logger != null){
+                    logger.error("failed to save " + settingsFilePath, e1);
+                }
+
+                throw e1;
+            }
+        }
     }
 
     /**
@@ -346,27 +354,11 @@ extends Properties
         return result;
     }
 
-//    public static boolean isOSWindows(){
-//        return System.getenv("OS") != null && System.getenv("OS").equals("Windows_NT");
-//    }
-//
-//    public static boolean isOSMacOSX(){
-//        //return System.getenv("OSTYPE") != null && System.getenv("OSTYPE").startsWith("darwin");
-//        return new File("/Applications/System preferences.app").exists();
-//    }
-
     public String getLanguage() {
-//        if(language == null){    // causes XMLEncoder to skip this value??
-//            language = Locale.getDefault().getLanguage();
-//        }
-
-//System.out.println("gettings lang " + language);
-
         return language;
     }
 
     public void setLanguage(String language) {
-//System.out.println("settings lang " + language);
         this.language = language;
     }
 
@@ -377,7 +369,6 @@ extends Properties
 
         ServiceLoader<IBrowser> ldr = ServiceLoader.load(IBrowser.class);
         for(IBrowser browser : ldr){
-            //SimpleLogger.logMessage("Can handle " + browser.getName());
             logger.info("Can handle " + browser.getName());
             existingBrowsers.add(browser);
         }

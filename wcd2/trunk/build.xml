@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="all">
+
+    <property name="properties.file" value="build.properties" />
+
+    <property name="dist.dir" value="jar/dist" />
+    <property name="work.dir" value="src/main/webstart" />
+
+    <property name="main-class" value="org.sergeys.webcachedigger.ui.WebCacheDigger" />
+
+    <property name="keystore.file" value="${work.dir}/.keystore" />
+    <property name="keystore.alias" value="sergey.selivanov" />
+    <property name="keystore.password" value="password" />
+
+
+    <macrodef name="unsignjar">
+        <!-- http://frank.zinepal.com/unsign-a-jar-with-ant -->
+
+        <attribute name="jar" />
+
+        <sequential>
+            <!-- Remove any existing signatures from a JAR file. -->
+            <tempfile prefix="usignjar-" destdir="${java.io.tmpdir}" property="temp.file" />
+            <echo message="Removing signatures from JAR: @{jar}" />
+            <mkdir dir="${temp.file}" />
+
+            <unjar src="@{jar}" dest="${temp.file}">
+                <patternset>
+                    <include name="**" />
+                    <exclude name="META-INF/*.SF" />
+                    <exclude name="META-INF/*.DSA" />
+                    <exclude name="META-INF/*.RSA" />
+                </patternset>
+            </unjar>
+
+            <delete file="@{jar}" failonerror="true" />
+
+            <!-- Touch it in case the file didn't have a manifest.
+                 Otherwise the JAR task below will fail if the manifest
+                 file doesn't exist. -->
+            <mkdir dir="${temp.file}/META-INF" />
+            <touch file="${temp.file}/META-INF/MANIFEST.MF" />
+
+            <jar destfile="@{jar}" basedir="${temp.file}" includes="**" manifest="${temp.file}/META-INF/MANIFEST.MF" />
+
+            <delete dir="${temp.file}" failonerror="true" />
+        </sequential>
+    </macrodef>
+
+
+    <target name="all" depends="init, check-key">
+    </target>
+
+    <target name="init">
+        <property file="${properties.file}">
+        </property>
+    </target>
+
+
+    <target name="jnlp">
+        <mkdir dir="${dist.dir}" />
+        <copy file="jar/webcachedigger.jnlp" tofile="${dist.dir}/wcd.jnlp" overwrite="true">
+        </copy>
+
+        <copy file="jar/largeicon.png" tofile="${dist.dir}/largeicon.png" overwrite="true">
+        </copy>
+
+        <replace file="${dist.dir}/wcd.jnlp">
+            <replacefilter token="%REVISION%" value="${revision}"/>
+            <replacefilter token="%URL%" value="${webstart.url}"/>
+        </replace>
+    </target>
+
+
+    <target name="check-key">
+        <available file="${keystore.file}" property="keystore.file.exists">
+        </available>
+    </target>
+
+    <target name="create-key" depends="check-key" unless="keystore.file.exists">
+        <echo>Create key</echo>
+        <mkdir dir="${work.dir}" />
+        <genkey keystore="${keystore.file}" alias="${keystore.alias}" validity="365" storepass="${keystore.password}">
+            <dname>
+                <param name="CN" value="Sergey Selivanov" />
+                <param name="OU" value="Home" />
+                <param name="O" value="Sergey Selivanov" />
+                <param name="C" value="UA" />
+                <param name="L" value="Kharkov" />
+                <!--
+                <param name="EmailAddress" value="sergey.selivanov@gmail.com" />
+                -->
+            </dname>
+        </genkey>
+    </target>
+
+    <target name="clean">
+    </target>
+
+
+</project>
+
+
+

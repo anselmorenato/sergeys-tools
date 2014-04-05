@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 import org.sergeys.library.FileUtils;
 
 /**
- * Google Chrome Windows
+ * Google Chrome
  *
  * @author sergeys
  *
@@ -20,7 +20,7 @@ public class Chrome extends AbstractBrowser {
 
     @Override
     public String getName() {
-        return "Google Chrome";
+        return "Google Chrome or Chromium";
     }
 
     @Override
@@ -77,6 +77,15 @@ public class Chrome extends AbstractBrowser {
 
         Settings.getLogger().debug("chrome path to search (linux): " + path);
 
+        f = new File(path);
+        if(f.isDirectory()){
+            existingPaths.add(f);
+            Settings.getLogger().info("Actual path to search: " + path);
+        }
+
+        path = System.getProperty("user.home") + File.separator +
+                ".cache" + File.separator + "chromium" + File.separator + "Default" + File.separator + "Cache";
+        Settings.getLogger().debug("chromium path to search (linux): " + path);
         f = new File(path);
         if(f.isDirectory()){
             existingPaths.add(f);

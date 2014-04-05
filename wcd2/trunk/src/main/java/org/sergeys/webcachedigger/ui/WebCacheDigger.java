@@ -305,7 +305,7 @@ implements ActionListener, PropertyChangeListener
      */
     public static void main(String[] args) {
 
-        Settings.getLogger().info("application start");
+        Settings.getLogger().info("application started");
 
         // check if there is another instance running
         // http://jimlife.wordpress.com/2008/07/21/java-application-make-sure-only-singleone-instance-running-with-file-lock-ampampampampamp-shutdownhook/
@@ -437,7 +437,7 @@ implements ActionListener, PropertyChangeListener
                             ChangesDialog chdlg = new ChangesDialog(mainWindow);
                             chdlg.setLocationRelativeTo(mainWindow);
                             chdlg.createText(changes);
-                            chdlg.setModal(true);
+                            chdlg.setModal(false);
                             chdlg.setVisible(true);
                         }
 
@@ -1013,27 +1013,27 @@ implements ActionListener, PropertyChangeListener
 
     LogfileDialog logfileDialog;
     private JSeparator separator;
-    
+
     private JMenuItem getMntmLog() {
         if (mntmLog == null) {
             mntmLog = new JMenuItem(Messages.getString("WebCacheDigger.mntmLog.text")); //$NON-NLS-1$
             mntmLog.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                	if(logfileDialog == null){
-                		logfileDialog = new LogfileDialog(getJFrame());
-                	}
-                	
-                	logfileDialog.setVisible(true);
+                    if(logfileDialog == null){
+                        logfileDialog = new LogfileDialog(getJFrame());
+                    }
+
+                    logfileDialog.setVisible(true);
                 }
             });
         }
         return mntmLog;
     }
-	private JSeparator getSeparator() {
-		if (separator == null) {
-			separator = new JSeparator();
-		}
-		return separator;
-	}
+    private JSeparator getSeparator() {
+        if (separator == null) {
+            separator = new JSeparator();
+        }
+        return separator;
+    }
 }
 

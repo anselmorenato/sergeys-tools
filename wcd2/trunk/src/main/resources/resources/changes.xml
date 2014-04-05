@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <rss version="2.0">
 
-	<!-- sample from http://www.rssboard.org/files/sample-rss-2.xml -->
+    <!-- sample from http://www.rssboard.org/files/sample-rss-2.xml -->
 
    <channel>
       <title>Changes:</title>
       <link>http://code.google.com/p/sergeys-tools/wiki/WebCacheDigger/</link>
-      <pubDate>18 Oct 2011 11:30</pubDate>
+      <pubDate>5 Apr 2014 14:00</pubDate>
 
       <item>
          <pubDate>18 Oct 2011 11:30</pubDate>
@@ -14,6 +14,14 @@
          New setting is added for the file comparison method, fast compare or complete and slow compare.
          </description>
       </item>
+
+      <item>
+         <pubDate>5 Apr 2014 14:00</pubDate>
+         <description>
+         Logging added, see menu Help->View log.
+         </description>
+      </item>
+
 
    </channel>
 </rss>
