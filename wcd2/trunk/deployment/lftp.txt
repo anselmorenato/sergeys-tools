@@ -11,5 +11,5 @@ ls
 
 set ftp:ssl-protect-data yes
 
-mirror --reverse --only-newer --verbose ../build/webstart/signed public_html/wcd2
+mirror --reverse --only-newer --no-perms --no-umask --verbose ../build/webstart/signed public_html/wcd2
 
