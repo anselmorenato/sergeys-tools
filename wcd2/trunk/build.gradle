@@ -7,7 +7,7 @@ apply plugin: 'project-report'
 apply plugin: 'build-dashboard'
 
 
-version = 394	// also set in resources/settings.properties
+version = 396	// also set in resources/settings.properties
 sourceCompatibility = 1.6	// see also jdk in gradle.properties, and j2se in jnlp-template.xml
 mainClassName = 'org.sergeys.webcachedigger.ui.WebCacheDigger'
 
