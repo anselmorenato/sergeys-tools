@@ -18,6 +18,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
@@ -110,13 +111,11 @@ implements ActionListener, PropertyChangeListener
             bthIgnoreSelectedFiles.setEnabled(false);
             bthIgnoreSelectedFiles.setIcon(new ImageIcon(WebCacheDigger.class.getResource("/images/fileclose.png"))); //$NON-NLS-1$
             bthIgnoreSelectedFiles.addActionListener(new ActionListener(){
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // TODO Auto-generated method stub
                     doIgnoreSelectedFiles(e);
-
                 }});
+
             jPanelFoundFilesActions.add(bthIgnoreSelectedFiles, null);
 
             jPanelFoundFilesActions.add(getJButtonCopySelectedFiles(), null);
@@ -426,6 +425,8 @@ implements ActionListener, PropertyChangeListener
                         try {
                             changes = parser.readFeed();
                         } catch (XMLStreamException e1) {
+                            Settings.getLogger().error("failed to read news feed", e1); //$NON-NLS-1$
+                        } catch (ParseException e1) {
                             Settings.getLogger().error("failed to read news feed", e1); //$NON-NLS-1$
                         }
 
@@ -801,7 +802,6 @@ implements ActionListener, PropertyChangeListener
 
                             @Override
                             public void run() {
-                                // TODO Auto-generated method stub
                                 JOptionPane.showMessageDialog(WebCacheDigger.this.getJContentPane(),
                                         String.format(Messages.getString("WebCacheDigger.FailedParseCmdLine"), cmdLine) //$NON-NLS-1$
                                         );
@@ -813,7 +813,7 @@ implements ActionListener, PropertyChangeListener
                     String[] args = new String[tokens.size()];
                     for(int i = 0; i<tokens.size(); i++){
                         if(tokens.get(i).startsWith("\"")){   //$NON-NLS-1$
-                            args[i] = tokens.get(i).substring(1, tokens.get(i).length()-1);
+                            args[i] = tokens.get(i).substring(1, tokens.get(i).length() - 1);
                         }
                         else if(tokens.get(i).equals(Settings.EXT_PLAYER_FILEPATH)){
                             args[i] = f.getAbsolutePath();
@@ -832,7 +832,6 @@ implements ActionListener, PropertyChangeListener
 
                                 @Override
                                 public void run() {
-                                    // TODO Auto-generated method stub
                                     JOptionPane.showMessageDialog(WebCacheDigger.this.getJContentPane(),
                                             String.format(Messages.getString("WebCacheDigger.ExtPlayerFailed"), exitCode)); //$NON-NLS-1$
 
@@ -844,7 +843,6 @@ implements ActionListener, PropertyChangeListener
 
                             @Override
                             public void run() {
-                                // TODO Auto-generated method stub
                                 JOptionPane.showMessageDialog(WebCacheDigger.this.getJContentPane(),
                                         String.format(Messages.getString("WebCacheDigger.ExtPlayerFailed1"), ex.getMessage())); //$NON-NLS-1$
 

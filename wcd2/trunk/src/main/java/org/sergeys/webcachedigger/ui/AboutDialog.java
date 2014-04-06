@@ -249,17 +249,12 @@ public class AboutDialog extends JDialog {
             jButtonSave.setEnabled(false);
             jButtonSave.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    doSaveSystemPropsToFile(e);
+
                 }
             });
             jButtonSave.setText(Messages.getString("AboutDialog.SaveToFile") + "...");  //$NON-NLS-1$ //$NON-NLS-2$
         }
         return jButtonSave;
-    }
-
-    protected void doSaveSystemPropsToFile(ActionEvent e) {
-        // TODO Auto-generated method stub
-
     }
 
     /**

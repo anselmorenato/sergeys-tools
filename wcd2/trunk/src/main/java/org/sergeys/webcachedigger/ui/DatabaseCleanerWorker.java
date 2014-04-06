@@ -16,7 +16,6 @@ extends SwingWorker<List<File>, Integer>
 
     @Override
     protected void done() {
-        // TODO Auto-generated method stub
         super.done();
 
         try {

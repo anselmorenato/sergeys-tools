@@ -115,7 +115,7 @@ public class Database {
             throw e;
         }
         finally{
-            conn.close();
+            //conn.close();	// why close?
         }
     }
 
@@ -197,39 +197,6 @@ public class Database {
         return filtered;
     }
 
-//	public ArrayList<CachedFile> filterIgnoredByFilesystem(ArrayList<CachedFile> cachedFiles) {
-//		ArrayList<CachedFile> filtered = new ArrayList<CachedFile>();
-//
-//		try {
-//			PreparedStatement pst = getConnection().prepareStatement(
-//					"select id from files where absolutepath = ? and lastmodified = ? and filesize = ? and ignored");
-//
-//			for(CachedFile file: cachedFiles){
-//				pst.setString(1, file.getAbsolutePath());
-//				pst.setLong(2, file.lastModified());
-//				pst.setLong(3, file.length());
-//
-//				ResultSet rs = pst.executeQuery();
-//				if(rs.next()){
-//					// has this file
-////					SimpleLogger.logMessage("already has saved " + file.getAbsolutePath());
-//				}
-//				else{
-//					filtered.add(file);
-//				}
-//			}
-//
-//			pst.close();
-//
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//
-//			return cachedFiles;
-//		}
-//
-//		return filtered;
-//	}
 
     /**
      * Populate unchangedFiles with hash and mime if possible.

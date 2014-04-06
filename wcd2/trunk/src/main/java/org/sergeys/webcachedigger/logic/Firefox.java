@@ -73,13 +73,6 @@ public class Firefox extends AbstractBrowser {
 
                         if(isRelative){
 
-//                            String regexp = File.separator;
-//                            if(regexp.equals("\\")){
-//                                regexp = "\\\\";    // workaround backslash on Windows
-//                            }
-//                            //tokens = path.split(File.separator);    // TODO: fails!
-//                            tokens = relPath.split(regexp);
-
                             // windows
                             if(System.getenv("LOCALAPPDATA") != null){
                                 // 7

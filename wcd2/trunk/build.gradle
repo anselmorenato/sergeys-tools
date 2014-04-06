@@ -1,9 +1,13 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+apply plugin: 'project-report'
+apply plugin: 'build-dashboard'
 
 
-version = 392	// also set in resources/settings.properties
+version = 394	// also set in resources/settings.properties
 sourceCompatibility = 1.6	// see also jdk in gradle.properties, and j2se in jnlp-template.xml
 mainClassName = 'org.sergeys.webcachedigger.ui.WebCacheDigger'
 

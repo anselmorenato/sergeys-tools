@@ -51,7 +51,7 @@ public class RssFeedParser {
         this.simpleDateFormat = simpleDateFormat;
     }
 
-    public Feed readFeed() throws XMLStreamException {
+    public Feed readFeed() throws XMLStreamException, ParseException {
         Feed feed = null;
         try {
 
@@ -124,13 +124,14 @@ public class RssFeedParser {
 
                         String data = event.asCharacters().getData();
 
-                        try {
-                            //pubdate = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, new Locale("en")).parse(data);
-                            pubdate = new SimpleDateFormat(simpleDateFormat, new Locale("en")).parse(data);
-                        } catch (ParseException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            //pubdate = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, new Locale("en")).parse(data);
+//                            pubdate = new SimpleDateFormat(simpleDateFormat, new Locale("en")).parse(data);
+//                        } catch (ParseException e) {
+//                            e.printStackTrace();
+//                        }
+
+                        pubdate = new SimpleDateFormat(simpleDateFormat, new Locale("en")).parse(data);
                         continue;
                     }
                     if (event.asStartElement().getName().getLocalPart().equals(COPYRIGHT)) {

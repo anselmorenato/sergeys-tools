@@ -17,6 +17,7 @@ import org.sergeys.library.FileUtils;
  */
 public class Chrome extends AbstractBrowser {
 
+    private final String SEP = File.separator;
 
     @Override
     public String getName() {
@@ -33,9 +34,9 @@ public class Chrome extends AbstractBrowser {
         // windows
         if(System.getenv("LOCALAPPDATA") != null){
             // 7
-            path = System.getenv("LOCALAPPDATA") + File.separator +
-                    "Google" + File.separator + "Chrome" + File.separator + "User Data" + File.separator +
-                    "Default" + File.separator + "Cache" + File.separator;
+            path = System.getenv("LOCALAPPDATA") + SEP +
+                    "Google" + SEP + "Chrome" + SEP + "User Data" + SEP +
+                    "Default" + SEP + "Cache" + SEP;
 
             Settings.getLogger().debug("chrome path to search (win7+): " + path);
 
@@ -46,10 +47,10 @@ public class Chrome extends AbstractBrowser {
         }
         else if(System.getenv("USERPROFILE") != null){
             // xp
-            path = System.getenv("USERPROFILE") + File.separator +
-                    "Local Settings" + File.separator + "Application Data" + File.separator +
-                    "Google" + File.separator + "Chrome" + File.separator + "User Data" + File.separator +
-                    "Default" + File.separator + "Cache" + File.separator;
+            path = System.getenv("USERPROFILE") + SEP +
+                    "Local Settings" + SEP + "Application Data" + SEP +
+                    "Google" + SEP + "Chrome" + SEP + "User Data" + SEP +
+                    "Default" + SEP + "Cache" + SEP;
 
             Settings.getLogger().debug("chrome path to search (xp): " + path);
 
@@ -60,9 +61,9 @@ public class Chrome extends AbstractBrowser {
         }
 
         // macos
-        path = System.getProperty("user.home") + File.separator +
-                "Library" + File.separator + "Caches" + File.separator + "Google" + File.separator +
-                "Chrome" + File.separator + "Default" + File.separator + "Cache";
+        path = System.getProperty("user.home") + SEP +
+                "Library" + SEP + "Caches" + SEP + "Google" + SEP +
+                "Chrome" + SEP + "Default" + SEP + "Cache";
 
         Settings.getLogger().debug("chrome path to search (macosx): " + path);
 
@@ -72,8 +73,8 @@ public class Chrome extends AbstractBrowser {
         }
 
         // linux
-        path = System.getProperty("user.home") + File.separator +
-                ".cache" + File.separator + "google-chrome" + File.separator + "Default" + File.separator + "Cache";
+        path = System.getProperty("user.home") + SEP +
+                ".cache" + SEP + "google-chrome" + SEP + "Default" + SEP + "Cache";
 
         Settings.getLogger().debug("chrome path to search (linux): " + path);
 
@@ -83,8 +84,8 @@ public class Chrome extends AbstractBrowser {
             Settings.getLogger().info("Actual path to search: " + path);
         }
 
-        path = System.getProperty("user.home") + File.separator +
-                ".cache" + File.separator + "chromium" + File.separator + "Default" + File.separator + "Cache";
+        path = System.getProperty("user.home") + SEP +
+                ".cache" + SEP + "chromium" + SEP + "Default" + SEP + "Cache";
         Settings.getLogger().debug("chromium path to search (linux): " + path);
         f = new File(path);
         if(f.isDirectory()){
@@ -112,7 +113,6 @@ public class Chrome extends AbstractBrowser {
 
                 @Override
                 public boolean accept(File pathname) {
-                    // TODO Auto-generated method stub
                     return (!pathname.getName().equals("index") && !pathname.getName().startsWith("data_"));
                 }}, null, allFiles);
         }

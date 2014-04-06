@@ -205,22 +205,25 @@ extends Properties
     public static void load() {
 
         if(new File(settingsFilePath).exists()){
+            try{
+                FileInputStream is = new FileInputStream(settingsFilePath);
 
-            FileInputStream is = null;
-            try {
-                is = new FileInputStream(settingsFilePath);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                XMLDecoder decoder = new XMLDecoder(is);
+                instance = (Settings)decoder.readObject();
+                decoder.close();
+
+                instance.firstRun = false;
             }
+            catch(FileNotFoundException e){
+                if(logger != null){
+                    logger.error("failed to open " + settingsFilePath, e);
+                }
+                else{
+                    e.printStackTrace();
+                }
 
-            XMLDecoder decoder = new XMLDecoder(is);
-            instance = (Settings)decoder.readObject();
-            decoder.close();
-
-            instance.firstRun = false;
-
-//System.out.println("read lang " + instance.getLanguage());
+                instance.setDefaults();
+            }
         }
         else{
             instance.setDefaults();
@@ -230,8 +233,12 @@ extends Properties
         try {
             instance.resources.load(is);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            if(logger != null){
+                logger.error("failed to load resources", e);
+            }
+            else{
+                e.printStackTrace();
+            }
         }
         finally{
             try {
@@ -239,7 +246,6 @@ extends Properties
                     is.close();
                 }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -288,8 +294,6 @@ extends Properties
     }
 
     public int getIntProperty(String key){
-        //String value = getProperty(key);
-        //return (value == null) ? null : Integer.parseInt(value);
         return Integer.parseInt(getProperty(key));
     }
 

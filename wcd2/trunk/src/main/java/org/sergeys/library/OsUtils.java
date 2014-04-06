@@ -58,7 +58,7 @@ public abstract class OsUtils {
 
             // Parse out the value
             String[] parsed = output.split(expectedType);
-            return parsed[parsed.length-1].trim();
+            return parsed[parsed.length - 1].trim();
         }
 //        catch (IOException e) {
 //            e.printStackTrace();

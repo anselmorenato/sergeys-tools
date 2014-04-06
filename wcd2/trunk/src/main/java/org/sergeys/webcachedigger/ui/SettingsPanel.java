@@ -451,10 +451,9 @@ public class SettingsPanel extends JPanel {
     }
 
     protected void doHelpChoosePlayer(ActionEvent e) {
-        // TODO Auto-generated method stub
         JOptionPane.showMessageDialog(this, Messages.getString("SettingsPanel.cmdLineHelp")); //$NON-NLS-1$
-
     }
+
     private JCheckBox getChckbxRenameMpFiles() {
         if (chckbxRenameMpFiles == null) {
             chckbxRenameMpFiles = new JCheckBox(Messages.getString("SettingsPanel.chckbxRenameMpFiles.text")); //$NON-NLS-1$
