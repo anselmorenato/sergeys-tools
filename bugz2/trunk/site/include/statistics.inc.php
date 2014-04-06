@@ -7,19 +7,26 @@
       global $db_connect;
       global $log_visits;
 
-      if($_SERVER["HTTP_HOST"] == "bugz.localhost:8080"
-          || $_SERVER["HTTP_HOST"] == "192.168.56.1:8080"
-          || $_SERVER["HTTP_HOST"] == "localhost"
-          || $_SERVER["HTTP_HOST"] == "bugz.localhost"){
-        // do not log on development
-        return;
-      }
+//       if($_SERVER["HTTP_HOST"] == "bugz.localhost:8080"
+//           || $_SERVER["HTTP_HOST"] == "192.168.56.1:8080"
+//           || $_SERVER["HTTP_HOST"] == "localhost"
+//           || $_SERVER["HTTP_HOST"] == "bugz.localhost"){
+//         // do not log on development
+//         return;
+//       }
 
-      if(isset($_SERVER["HTTP_VIA"]) &&
-        (strpos($_SERVER["HTTP_VIA"], "zeppelin:3128") || strpos($_SERVER["HTTP_VIA"], "bugz.localhost:3128"))
-        ){
-        // do not log my own requests
-        return;
+//       if(isset($_SERVER["HTTP_VIA"]) &&
+//         (strpos($_SERVER["HTTP_VIA"], "zeppelin:3128") || strpos($_SERVER["HTTP_VIA"], "bugz.localhost:3128"))
+//         ){
+//         // do not log my own requests
+//         return;
+//       }
+
+      // do not log my own requests
+      if(isset($_SERVER["REMOTE_ADDR"]) &&
+          (strpos($_SERVER["REMOTE_ADDR"], "93.77.76.143"))
+      ){
+          return;
       }
 
       db_connect();
