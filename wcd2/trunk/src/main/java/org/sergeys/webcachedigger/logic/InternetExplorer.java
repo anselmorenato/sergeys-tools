@@ -23,34 +23,51 @@ public class InternetExplorer extends AbstractBrowser {
 
 
         if(directory.isDirectory()){
-
+Settings.getLogger().debug("list files in " + directory);
             // collect regular files
-            List<File> files = Arrays.asList(directory
+            File[] arrFiles = null;
+
+            //  The array will be empty if the directory is empty.
+            // Returns null if this abstract pathname does not denote a directory, or if an I/O error occurs.
+            arrFiles = directory
                     .listFiles(new FileFilter() {
                         public boolean accept(File file) {
                             return (!file.isDirectory() &&
                                     !file.getName().toLowerCase().equals("index.dat") &&
-                                    !file.getName().toLowerCase().equals("desktop.ini"));
+                                    !file.getName().toLowerCase().equals("desktop.ini") &&
+                                    !file.getName().toLowerCase().equals("container.dat")
+                                    );
                         }
-                    }));
+                    });
 
-            allFiles.addAll(files);
+            if(arrFiles != null){
+                List<File> files = Arrays.asList(arrFiles);
+                allFiles.addAll(files);
+            }
+            else{
+                Settings.getLogger().warn("null returned from listing files in " + directory);
+            }
 
             // process subdirs
-            List<File> subdirs = Arrays.asList(directory
+            arrFiles = directory
                     .listFiles(new FileFilter() {
                         public boolean accept(File file) {
                             return (file.isDirectory() &&
                                     !file.getName().toLowerCase().equals("antiphishing"));    // ie9 on win7
                         }
-                    }));
+                    });
 
-            for(File subdir: subdirs){
-                files = listFilesRecursive(subdir);
-                allFiles.addAll(files);
+            if(arrFiles != null){
+                List<File> subdirs = Arrays.asList(arrFiles);
+
+                for(File subdir: subdirs){
+                    List<File> files = listFilesRecursive(subdir);
+                    allFiles.addAll(files);
+                }
             }
-
-//            SimpleLogger.logMessage("collected files in " + directory);
+            else{
+                Settings.getLogger().warn("null returned from listing dirs in " + directory);
+            }
         }
 
         return allFiles;
@@ -59,6 +76,9 @@ public class InternetExplorer extends AbstractBrowser {
     @Override
     protected List<File> collectExistingCachePaths() throws Exception {
         List<File> paths = new ArrayList<File>();
+
+// TODO find correct paths for win8
+// C:\Users\svs.BLACKSEA\AppData\Local\Microsoft\Windows\INetCache\IE\
 
          // Try default paths.
         if(System.getenv("LOCALAPPDATA") != null){
