@@ -1,0 +1,104 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+
+version = 399	// also set in resources/settings.properties
+sourceCompatibility = 1.7	// see also jdk in gradle.properties, and j2se in jnlp-template.xml
+mainClassName = 'org.sergeys.cookbook.ui.CookBook'
+
+ext.buildWebstartDir = 'build/webstart'
+ext.webstartUrl = 'http://svs.bugz.org.ua/cookbook3'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.h2database:h2:1.3.175'
+    compile 'log4j:log4j:1.2.17'
+    compile 'org.slf4j:slf4j-log4j12:1.7.6'
+}
+
+// https://github.com/gmateo/gradle-webstart-example/blob/master/build.gradle
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'CookBook',
+            'Implementation-Version': version,
+            'Permissions': 'all-permissions',
+            'Application-Name': 'CookBook'
+    }
+}
+
+task copyJars(type: Copy, dependsOn: [jar]) {
+    from configurations.runtime
+    from("build/libs")
+    into("$buildWebstartDir/lib")
+    include('*.jar')
+}
+
+task copyFiles(type: Copy) {
+    from("src/main/webstart")
+    into("$buildWebstartDir/signed")
+    include('*.png')
+}
+
+
+task signAll(dependsOn: [copyJars]) << {
+    new File("$buildWebstartDir/signed").mkdirs()
+    def libFiles = files { file("$buildWebstartDir/lib").listFiles() }
+    libFiles.each {
+        ant.signjar(
+                destDir: "${buildWebstartDir}/signed",
+                alias: 'sergey.selivanov',
+                jar: it,
+                keystore: 'src/main/webstart/.keystore',
+                storepass: 'password',
+                preservelastmodified: 'true')
+    }
+}
+
+task generateJnlp(dependsOn: [signAll, copyFiles]) << {
+
+    File jnlpTemplateFile = new File('src/main/webstart/jnlp-template.xml')
+    def root = new XmlParser().parse(jnlpTemplateFile)
+    def jnlpFileName = "cookbook3.jnlp"
+
+    root.@codebase = webstartUrl
+    root.@href = jnlpFileName
+
+    def information = root.information[0]
+
+    def icon = information.icon[0]
+    icon.@href = webstartUrl + '/largeicon.png'
+
+
+    def resource = root.resources[0]
+
+//    def j2se = resource.j2se[0]
+//    j2se.@version = "$sourceCompatibility+"
+
+    def collection = files { file("${buildWebstartDir}/lib").listFiles() }
+    def mainJar = "cookbook3-${version}.jar"
+    collection.each {
+        def resourceValues = [href: it.name]
+//println it.name + ' - ' + mainJar
+        if (mainJar == it.name) {
+            resourceValues = [href: it.name, main: 'true']	// TODO not working?
+        }
+        resource.appendNode('jar', resourceValues)
+    }
+    // Setting the main class
+    def applicationDesc = root.'application-desc'[0]
+    applicationDesc.'@main-class' = mainClassName
+    // Writing the jnlp file filled
+    File jnlpFile = new File("${buildWebstartDir}/signed/" + jnlpFileName)
+    new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+}
+
+task webstart (dependsOn: [generateJnlp])<< {
+    println("Generating all webstart files in ${buildWebstartDir}/signed")
+}
+
