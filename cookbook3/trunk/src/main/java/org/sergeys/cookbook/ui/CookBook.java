@@ -5,6 +5,7 @@ import java.net.URL;
 import org.sergeys.cookbook.logic.Settings;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -12,11 +13,11 @@ import javafx.stage.Stage;
 
 public class CookBook extends Application
 {
-	private Stage primaryStage;
-	
+    private Stage primaryStage;
+
     public static void main(String[] args) {
-    	Settings.getLogger().debug("main");
-    	launch(args);
+        Settings.getLogger().debug("main");
+        launch(args);
     }
 
     @Override
@@ -27,11 +28,38 @@ public class CookBook extends Application
 
         URL location = getClass().getResource("/fxml/MainScene.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
+        
+        
 
         Pane root = (Pane)fxmlLoader.load();
-        primaryStage.setScene(new Scene(root));
+        
+        final MainController controller = (MainController)fxmlLoader.getController();
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
 
+        // http://stackoverflow.com/questions/15041332/javafx-splitpane-divider-position-inconsistent-behaviour
+        
+        primaryStage.setX(Settings.getInstance().getWinPosition().getWidth());
+        primaryStage.setY(Settings.getInstance().getWinPosition().getHeight());
+        primaryStage.setWidth(Settings.getInstance().getWinSize().getWidth());
+        primaryStage.setHeight(Settings.getInstance().getWinSize().getHeight());
+        //scene.setWidth(Settings.getInstance().getWinSize().getWidth());
+        //scene.setHeight(Settings.getInstance().getWinSize().getHeight());
+
+        
+                
         primaryStage.show();
+        
+        
+        Platform.runLater(new Runnable(){
+
+			@Override
+			public void run() {
+				controller.setDivider();				
+			}});
+        
+        
+        
     }
 
 }
