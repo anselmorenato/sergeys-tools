@@ -28,38 +28,28 @@ public class CookBook extends Application
 
         URL location = getClass().getResource("/fxml/MainScene.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
-        
-        
+
+
 
         Pane root = (Pane)fxmlLoader.load();
-        
+
         final MainController controller = (MainController)fxmlLoader.getController();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
 
         // http://stackoverflow.com/questions/15041332/javafx-splitpane-divider-position-inconsistent-behaviour
-        
+
         primaryStage.setX(Settings.getInstance().getWinPosition().getWidth());
         primaryStage.setY(Settings.getInstance().getWinPosition().getHeight());
         primaryStage.setWidth(Settings.getInstance().getWinSize().getWidth());
         primaryStage.setHeight(Settings.getInstance().getWinSize().getHeight());
-        //scene.setWidth(Settings.getInstance().getWinSize().getWidth());
-        //scene.setHeight(Settings.getInstance().getWinSize().getHeight());
 
-        
-                
         primaryStage.show();
-        
-        
+
         Platform.runLater(new Runnable(){
-
-			@Override
-			public void run() {
-				controller.setDivider();				
-			}});
-        
-        
-        
+            @Override
+            public void run() {
+                controller.setDivider();
+            }});
     }
-
 }

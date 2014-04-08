@@ -18,7 +18,7 @@ public class MainController {
 
     public void initialize(){
         System.out.println("init");
-        
+
 //        double pos = Settings.getInstance().getWinDividerPosition();
 //        System.out.println(">" + pos);
 //        splitPane.setDividerPositions(pos);
@@ -28,9 +28,9 @@ public class MainController {
         double pos = Settings.getInstance().getWinDividerPosition();
         System.out.println(">" + pos);
         splitPane.setDividerPositions(pos);
-    	
+
     }
-    
+
     public void onMenuItemClose(ActionEvent e){
         Settings.getLogger().info("application exit");
 
@@ -44,14 +44,13 @@ public class MainController {
             System.out.println(Settings.getInstance().getWinDividerPosition());
 
             Stage myStage = (Stage) mainBorderPane.getScene().getWindow();
-            
+
             Settings.getInstance().getWinPosition().setSize(myStage.getX(), myStage.getY());
             Settings.getInstance().getWinSize().setSize(myStage.getWidth(), myStage.getHeight());
 
             Settings.save();
         } catch (FileNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            Settings.getLogger().info("cannot save settings", e1);
         }
 
         Platform.exit();
