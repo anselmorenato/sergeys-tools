@@ -2,17 +2,17 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-version = '1'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-mainClassName = 'com.sssii.sample.SampleApp'
+version = '413'
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+mainClassName = 'org.sergeys.fmws.FreemindWebstart'
 
+ext.freemindDir = 'c:/bin/freemind-bin-max-1.0.0'
 ext.buildWebstartDir = 'build/webstart'
 ext.webstartBaseUrl = 'http://svs.bugz.org.ua/cookbook3'
 
 
 repositories {
-
 //    mavenCentral()
 
     maven {
@@ -26,13 +26,8 @@ repositories {
 }
 
 dependencies {
-
-//    compile 'org.slf4j:slf4j-log4j12:1.7.6'
-//    compile 'log4j:log4j:1.2.17'
-
     compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.0-rc1'
     compile 'org.apache.logging.log4j:log4j-core:2.0-rc1'
-
 }
 
 // https://github.com/gmateo/gradle-webstart-example/blob/master/build.gradle
@@ -63,6 +58,13 @@ task copyFiles(type: Copy) {
 
 }
 
+task copyFreemind(type: Copy) {
+    from("$freemindDir/lib")
+    into("$buildWebstartDir/lib")
+    include('**/*.jar')
+}
+
+
 task createKey{
 
     File ksfile = new File('src/main/webstart/.keystore')
@@ -85,7 +87,7 @@ task createKey{
 }
 
 
-task signAll(dependsOn: [copyJars, createKey]) << {
+task signAll(dependsOn: [copyJars, copyFreemind, createKey]) << {
     new File("$buildWebstartDir/signed").mkdirs()
     def libFiles = files { file("$buildWebstartDir/lib").listFiles() }
     libFiles.each {
