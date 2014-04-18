@@ -1,0 +1,143 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+version = '1'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+mainClassName = 'com.sssii.sample.SampleApp'
+
+ext.buildWebstartDir = 'build/webstart'
+ext.webstartBaseUrl = 'http://svs.bugz.org.ua/cookbook3'
+
+
+repositories {
+
+//    mavenCentral()
+
+    maven {
+        url "${artifactory_contextUrl}/libs-release"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+}
+
+dependencies {
+
+//    compile 'org.slf4j:slf4j-log4j12:1.7.6'
+//    compile 'log4j:log4j:1.2.17'
+
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.0-rc1'
+    compile 'org.apache.logging.log4j:log4j-core:2.0-rc1'
+
+}
+
+// https://github.com/gmateo/gradle-webstart-example/blob/master/build.gradle
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Sample App title',
+            'Implementation-Version': version,
+            'Permissions': 'all-permissions',
+            'Application-Name': 'Sample App name'
+    }
+}
+
+task copyJars(type: Copy, dependsOn: [jar]) {
+    from configurations.runtime
+    from("build/libs")
+    into("$buildWebstartDir/lib")
+    include('*.jar')
+}
+
+task copyFiles(type: Copy) {
+//    from("src/main/webstart")
+//    into("$buildWebstartDir/signed")
+//    include('*.png')
+    from("src/main/resources")
+    into("$buildWebstartDir/signed")
+    include('largeicon.png')
+
+}
+
+task createKey{
+
+    File ksfile = new File('src/main/webstart/.keystore')
+    if(!ksfile.isFile()){
+        ant.genkey(
+            keystore: 'src/main/webstart/.keystore',
+            storepass: 'password',
+            alias: 'sergey.selivanov',
+            validity: 365
+            ){
+            dname{
+                param(name: 'CN', value: 'Common Name')
+                param(name: 'OU', value: 'Org Unit')
+                param(name: 'O', value: 'Org')
+                param(name: 'C', value: 'UA')
+                param(name: 'L', value: 'Location')
+            }
+        }
+    }
+}
+
+
+task signAll(dependsOn: [copyJars, createKey]) << {
+    new File("$buildWebstartDir/signed").mkdirs()
+    def libFiles = files { file("$buildWebstartDir/lib").listFiles() }
+    libFiles.each {
+        ant.signjar(
+                destDir: "${buildWebstartDir}/signed",
+                alias: 'sergey.selivanov',
+                jar: it,
+                keystore: 'src/main/webstart/.keystore',
+                storepass: 'password',
+                preservelastmodified: 'true')
+    }
+}
+
+task generateJnlp(dependsOn: [signAll, copyFiles]) << {
+
+    File jnlpTemplateFile = new File('src/main/webstart/jnlp-template.xml')
+    def root = new XmlParser().parse(jnlpTemplateFile)
+    def jnlpFileName = "sampleApp.jnlp"
+
+    root.@codebase = webstartBaseUrl
+    root.@href = jnlpFileName
+
+    def information = root.information[0]
+
+    def icon = information.icon[0]
+    icon.@href = webstartBaseUrl + '/largeicon.png'
+
+
+    def resource = root.resources[0]
+
+//    def j2se = resource.j2se[0]
+//    j2se.@version = "$sourceCompatibility+"
+
+    def collection = files { file("${buildWebstartDir}/lib").listFiles() }
+    def mainJar = "sampleapp-${version}.jar"
+    collection.each {
+        def resourceValues = [href: it.name]
+//println it.name + ' - ' + mainJar
+        if (mainJar == it.name) {
+            resourceValues = [href: it.name, main: 'true']    // TODO not working?
+        }
+        resource.appendNode('jar', resourceValues)
+    }
+    // Setting the main class
+    def applicationDesc = root.'application-desc'[0]
+    applicationDesc.'@main-class' = mainClassName
+    // Writing the jnlp file filled
+    File jnlpFile = new File("${buildWebstartDir}/signed/" + jnlpFileName)
+    new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+}
+
+
+task webstart (dependsOn: [generateJnlp])<< {
+    println("Generating all webstart files in ${buildWebstartDir}/signed")
+}
