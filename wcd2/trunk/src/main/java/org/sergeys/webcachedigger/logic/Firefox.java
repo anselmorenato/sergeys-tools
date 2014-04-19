@@ -105,6 +105,14 @@ public class Firefox extends AbstractBrowser {
                             paths.add(path);
                             Settings.getLogger().debug("path to search (linux): " + path);
 
+                            // ff 28, ubuntu
+                            path = System.getProperty("user.home") + File.separator +
+                                    ".cache" + File.separator +
+                                    "mozilla" + File.separator +
+                                    "firefox" + File.separator +
+                                    relPath + File.separator +
+                                    "Cache";
+
                         }
                         else{
                             // absolute
