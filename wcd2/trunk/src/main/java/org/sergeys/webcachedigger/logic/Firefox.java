@@ -112,7 +112,8 @@ public class Firefox extends AbstractBrowser {
                                     "firefox" + File.separator +
                                     relPath + File.separator +
                                     "Cache";
-
+                            paths.add(path);
+                            Settings.getLogger().debug("path to search (linux): " + path);
                         }
                         else{
                             // absolute

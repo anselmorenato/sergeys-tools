@@ -37,7 +37,6 @@ extends Properties
 
     // where to save
     public static final String SETTINGS_PATH = ".WebCacheDigger-devel";
-    //public static final String SETTINGS_FILE = "settings.properties";
     public static final String SETTINGS_FILE = "settings.xml";
     public static final String LOG_FILE = "log.txt";
 
@@ -93,8 +92,13 @@ extends Properties
         }
 
         // settings for log4j
-        extractResource("log4j.properties", false);
-        System.setProperty("log4j.configuration", new File(settingsDirPath + File.separator + "log4j.properties").toURI().toString());
+//        extractResource("log4j.properties", false);
+//        System.setProperty("log4j.configuration", new File(settingsDirPath + File.separator + "log4j.properties").toURI().toString());
+//        System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
+
+        // settings for log4j 2
+        extractResource("log4j2.xml", false);
+        System.setProperty("log4j.configurationFile", new File(settingsDirPath + File.separator + "log4j2.xml").toURI().toString());
         System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
 
         // slf4j logger

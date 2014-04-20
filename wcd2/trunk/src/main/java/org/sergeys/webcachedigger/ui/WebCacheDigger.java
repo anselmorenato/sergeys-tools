@@ -20,6 +20,7 @@ import java.nio.channels.FileLock;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -305,6 +306,8 @@ implements ActionListener, PropertyChangeListener
     public static void main(String[] args) {
 
         Settings.getLogger().info("application started"); //$NON-NLS-1$
+        Settings.getLogger().info(Calendar.getInstance().getTime().toString());
+        Settings.getLogger().info("version: " + Settings.getInstance().getVersionDisplay());
 
         // check if there is another instance running
         // http://jimlife.wordpress.com/2008/07/21/java-application-make-sure-only-singleone-instance-running-with-file-lock-ampampampampamp-shutdownhook/

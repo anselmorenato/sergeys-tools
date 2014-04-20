@@ -9,6 +9,7 @@ apply plugin: 'application'
 
 version = 399	// also set in resources/settings.properties
 sourceCompatibility = 1.6	// see also jdk in gradle.properties, and j2se in jnlp-template.xml
+targetCompatibility = 1.6
 mainClassName = 'org.sergeys.webcachedigger.ui.WebCacheDigger'
 
 ext.buildWebstartDir = 'build/webstart'
@@ -20,16 +21,22 @@ repositories {
 }
 
 dependencies {
-    compile 'eu.medsea.mimeutil:mime-util:2.1.3'
-    compile 'com.h2database:h2:1.3.175'
+    compile('eu.medsea.mimeutil:mime-util:2.1.3'){
+        exclude module: 'log4j'
+        exclude module: 'slf4j-log4j12'
+    }
+//    compile 'com.h2database:h2:1.3.175'
+    compile 'com.h2database:h2:1.4.177'
     compile 'com.mpatric:mp3agic:0.8.2'
 
 //    compile 'log4j:log4j:1.2.17'
 //    compile 'org.slf4j:slf4j-log4j12:1.7.6'
 
+    compile 'org.slf4j:slf4j-api:1.7.6'
+
+
     compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.0-rc1'
     compile 'org.apache.logging.log4j:log4j-core:2.0-rc1'
-
 }
 
 // https://github.com/gmateo/gradle-webstart-example/blob/master/build.gradle

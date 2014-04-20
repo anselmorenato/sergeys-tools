@@ -5,6 +5,10 @@
 http://logging.apache.org/log4j/2.x/manual/configuration.html
  -->
 
+     <Properties>
+        <Property name="filename">${sys:log4j.log.file}</Property>
+    </Properties>
+
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
         <!--
@@ -15,6 +19,21 @@ http://logging.apache.org/log4j/2.x/manual/configuration.html
              -->
              <PatternLayout pattern="%5p [%t] (%F:%L) - %m%n" />
         </Console>
+
+<!--
+http://stackoverflow.com/questions/14657572/getting-error-trying-to-create-log4j2-rollingfileappender
+cannot have two appenders with same filename
+        <File name="File" fileName="${filename}">
+            <PatternLayout pattern="%p (%F:%L) - %m%n" />
+        </File>
+ -->
+        <RollingFile name="RFile"
+            fileName="${filename}"
+            filePattern="${filename}.gz"
+            append="false">
+            <PatternLayout pattern="%p (%F:%L) - %m%n" />
+            <OnStartupTriggeringPolicy />
+        </RollingFile>
     </Appenders>
 
     <Loggers>
@@ -22,5 +41,17 @@ http://logging.apache.org/log4j/2.x/manual/configuration.html
         <Root level="debug">
             <AppenderRef ref="Console" />
         </Root>
+
+        <Logger name="h2database" level="warn">
+            <AppenderRef ref="RFile" />
+        </Logger>
+
+        <Logger name="eu.medsea.mimeutil" level="warn">
+            <AppenderRef ref="RFile" />
+        </Logger>
+
+        <Logger name="webcachedigger" level="debug">
+            <AppenderRef ref="RFile" />
+        </Logger>
     </Loggers>
 </Configuration>
