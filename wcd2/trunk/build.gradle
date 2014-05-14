@@ -7,7 +7,7 @@ apply plugin: 'application'
 //apply plugin: 'build-dashboard'
 
 
-version = 399	// also set in resources/settings.properties
+version = 416	// also set in resources/settings.properties
 sourceCompatibility = 1.6	// see also jdk in gradle.properties, and j2se in jnlp-template.xml
 targetCompatibility = 1.6
 mainClassName = 'org.sergeys.webcachedigger.ui.WebCacheDigger'
@@ -26,13 +26,14 @@ dependencies {
         exclude module: 'slf4j-log4j12'
     }
 //    compile 'com.h2database:h2:1.3.175'
-    compile 'com.h2database:h2:1.4.177'
+    compile 'com.h2database:h2:1.4.178'
     compile 'com.mpatric:mp3agic:0.8.2'
 
 //    compile 'log4j:log4j:1.2.17'
 //    compile 'org.slf4j:slf4j-log4j12:1.7.6'
 
-    compile 'org.slf4j:slf4j-api:1.7.6'
+    //compile 'org.slf4j:slf4j-api:1.7.6'
+    compile 'org.slf4j:slf4j-api:1.7.7'
 
 
     compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.0-rc1'
@@ -109,12 +110,17 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
         }
         resource.appendNode('jar', resourceValues)
     }
+
     // Setting the main class
     def applicationDesc = root.'application-desc'[0]
     applicationDesc.'@main-class' = mainClassName
+
     // Writing the jnlp file filled
     File jnlpFile = new File("${buildWebstartDir}/signed/" + jnlpFileName)
-    new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+
+    def prn = new XmlNodePrinter(new PrintWriter(jnlpFile))
+    prn.setPreserveWhitespace(true)
+    prn.print(root)
 }
 
 task webstart (dependsOn: [generateJnlp])<< {
