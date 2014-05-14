@@ -3,9 +3,11 @@ apply plugin: 'eclipse'
 apply plugin: 'application'
 
 
+// TODO subst to properties. Generate current date.
 version = 403	// also set in resources/settings.properties
 // TODO configure j2se in jnlp-template.xml
 sourceCompatibility = 1.7	// see also jdk in gradle.properties, and j2se in jnlp-template.xml
+targetCompatibility = 1.7
 mainClassName = 'org.sergeys.cookbook.ui.CookBook'
 
 ext.buildWebstartDir = 'build/webstart'
@@ -116,7 +118,11 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
     applicationDesc.'@main-class' = mainClassName
     // Writing the jnlp file filled
     File jnlpFile = new File("${buildWebstartDir}/signed/" + jnlpFileName)
-    new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+
+    //new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+    def prn = new XmlNodePrinter(new PrintWriter(jnlpFile))
+    prn.setPreserveWhitespace(true)
+    prn.print(root)
 }
 
 task webstart (dependsOn: [generateJnlp])<< {
