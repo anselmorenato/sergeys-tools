@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 public class Settings {
 
-    public static final String SETTINGS_PATH = ".CookBook-devel";
+    public static final String SETTINGS_PATH = ".CookBook3-devel";
     public static final String SETTINGS_FILE = "settings.xml";
     public static final String LOG_FILE = "log.txt";
     public static final String RECIPES_SUBDIR = "recipes";
@@ -61,10 +61,10 @@ public class Settings {
         }
 
         // settings for log4j
-        extractResource("log4j.properties", false);
-        System.setProperty("log4j.configuration", new File(settingsDirPath + File.separator + "log4j.properties").toURI().toString());
+        //extractResource("log4j.properties", false);
+        //System.setProperty("log4j.configuration", new File(settingsDirPath + File.separator + "log4j.properties").toURI().toString());
         System.setProperty("log4j.log.file", settingsDirPath + File.separator + LOG_FILE);
-        
+
         // slf4j logging
         log = LoggerFactory.getLogger("cookbook");
 
@@ -202,11 +202,11 @@ public class Settings {
             }
         }
     }
-    
-    
+
+
     private void setDefaults() {
-		winSize.setSize(800.0, 600.0);
-		winPosition.setSize(50.0, 50.0);    	
+        winSize.setSize(800.0, 600.0);
+        winPosition.setSize(50.0, 50.0);
     }
 
     public Date getCurrentVersion(){
@@ -226,11 +226,11 @@ public class Settings {
 
         return date;
     }
-    
+
     public Date getSavedVersion() {
         return savedVersion;
     }
-    
+
     // required for xml serializer to work
     public void setSavedVersion(Date savedVersion) {
         this.savedVersion = savedVersion;
