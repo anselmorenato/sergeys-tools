@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-version = '413'
+version = '423'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 mainClassName = 'org.sergeys.fmws.FreemindWebstart'
@@ -125,25 +125,29 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
 
     def resource = root.resources[0]
 
-//    def j2se = resource.j2se[0]
-//    j2se.@version = "$sourceCompatibility+"
-
     def collection = files { file("${buildWebstartDir}/lib").listFiles() }
     def mainJar = "freemind-webstart-${version}.jar"
     collection.each {
         def resourceValues = [href: it.name]
-//println it.name + ' - ' + mainJar
+
+        //	println it.name + ' - ' + mainJar
+
         if (mainJar == it.name) {
-            resourceValues = [href: it.name, main: 'true']    // TODO not working?
+            resourceValues = [href: it.name, main: 'true']
         }
         resource.appendNode('jar', resourceValues)
     }
+
     // Setting the main class
     def applicationDesc = root.'application-desc'[0]
     applicationDesc.'@main-class' = mainClassName
+
     // Writing the jnlp file filled
     File jnlpFile = new File("${buildWebstartDir}/signed/" + jnlpFileName)
-    new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+
+    def prn = new XmlNodePrinter(new PrintWriter(jnlpFile))
+    prn.setPreserveWhitespace(true)
+    prn.print(root)
 }
 
 
