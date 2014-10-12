@@ -51,14 +51,17 @@ task copyFiles(type: Copy) {
 
 task copyFreemindJars(type: Copy) {
     from("$freemindDir/lib")
+    from("$freemindDir/lib/jibx")
+    from("$freemindDir/lib/SimplyHTML")
     into("$buildWebstartDir/lib")
-    include('**/*.jar')
+    //include('**/*.jar')
+    include('*.jar')
 }
 
 task packFreemindHome(type: Jar){
 
     archiveName 'freemind-home.jar'
-    //from fileTree(dir: "$freemindDir")
+    destinationDir file('build/tmp')
     from("$freemindDir")
     exclude('*.bat', '*.exe', '*.sh', 'browser', 'lib')
 }
@@ -140,4 +143,10 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
 
 task webstart (dependsOn: [generateJnlp])<< {
     println("Generating all webstart files in ${buildWebstartDir}/signed")
+}
+
+jar{
+    dependsOn packFreemindHome
+    //source files {file("build/libs/freemind-home.jar")}
+    from "build/tmp/freemind-home.jar"
 }
