@@ -69,6 +69,7 @@ public class FreemindWebstart {
             System.setProperty("freemind.base.dir", fmHome);
 
             for(String arg: args){
+                // TODO: webstart passes 2 args like '-open fullfilename'
                 log.debug("Argument passed: " + arg);
             }
 
