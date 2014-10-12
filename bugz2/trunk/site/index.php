@@ -25,8 +25,12 @@
 <p>
 FreeMind 1.0.1 repacked for Webstart.
 <p>
+This webstart app registers association with *.mm files, so it will launch FreeMind
+and open file if you'll double-click on .mm file.
+<p>
+Here, FreeMind files are repacked from original binary distribution, not recompiled. I added the launcher.
 Note that all files are signed with self-signed generated certificate,
-so you will need to enable certain security settings. Or buy me real certificate :).
+so you will need to enable certain security settings. Or just buy me real certificate :).
 <p>
 Home page: <a href="http://freemind.sourceforge.net">http://freemind.sourceforge.net</a>
 <p>
