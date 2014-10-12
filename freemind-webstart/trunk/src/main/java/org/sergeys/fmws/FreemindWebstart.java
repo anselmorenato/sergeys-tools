@@ -23,6 +23,8 @@ public class FreemindWebstart {
 
         log.info("app started");
 
+        // TODO print svn revision/version
+
         try{
             // unpack resources if needed
             String fmHome = System.getProperty("user.home") + File.separator + ".freemind-webstart-home";
