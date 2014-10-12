@@ -26,12 +26,11 @@
 FreeMind 1.0.1 repacked for Webstart.
 <p>
 Note that all files are signed with self-signed generated certificate,
-so you will need to enable certain security settings. Or buy me real certificate.
+so you will need to enable certain security settings. Or buy me real certificate :).
 <p>
 Home page: <a href="http://freemind.sourceforge.net">http://freemind.sourceforge.net</a>
 <p>
-Java 1.6
-<p>
+
 <br>
 
 <script>
