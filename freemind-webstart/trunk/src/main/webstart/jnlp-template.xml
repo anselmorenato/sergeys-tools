@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="%URL%" href="wcd.jnlp">
+<jnlp spec="1.0+" codebase="%URL%" href="substituted.jnlp">
 <!-- codebase and href are optional from 1.6_18  -->
     <information>
-        <title>Web Cache Digger</title>
-        <vendor>Sergey Selivanov</vendor>
+        <title>FreeMind</title>
+        <vendor>FreeMind</vendor>
         <icon href="%URL%/largeicon.png" kind="default"/>
         <shortcut online="true" install="false">
           <desktop/>
-          <menu submenu="Webstart Utilities"/>
+          <menu submenu="FreeMind"/>
         </shortcut>
-        <homepage href="http://svs.bugz.org.ua"/>
+        <homepage href="http://freemind.sourceforge.net"/>
         <offline-allowed/>
     </information>
 
@@ -36,8 +36,8 @@
     </resources>
 
     <application-desc
-         name="Web Cache Digger"
-         main-class="org.sergeys.webcachedigger.ui.WebCacheDigger"
+         name="FreeMind"
+         main-class="org.substituted"
          width="500"
          height="300">
     </application-desc>

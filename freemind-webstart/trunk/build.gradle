@@ -9,7 +9,7 @@ mainClassName = 'org.sergeys.fmws.FreemindWebstart'
 
 ext.freemindDir = 'f:/bin/freemind-bin-max-1.0.1'
 ext.buildWebstartDir = 'build/webstart'
-ext.webstartBaseUrl = 'http://svs.bugz.org.ua/cookbook3'
+ext.webstartBaseUrl = 'http://svs.bugz.org.ua/freemind'
 
 
 repositories {
@@ -19,16 +19,18 @@ repositories {
 dependencies {
     compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.0.2'
     compile 'org.apache.logging.log4j:log4j-core:2.0.2'
+
+    compile files("${freemindDir}/lib/freemind.jar")
 }
 
 // https://github.com/gmateo/gradle-webstart-example/blob/master/build.gradle
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'Sample App title',
+        attributes 'Implementation-Title': 'FreeMind 1.0.1',
             'Implementation-Version': version,
             'Permissions': 'all-permissions',
-            'Application-Name': 'Sample App name'
+            'Application-Name': 'FreeMind 1.0.1'
     }
 }
 
@@ -43,9 +45,13 @@ task copyFiles(type: Copy) {
 //    from("src/main/webstart")
 //    into("$buildWebstartDir/signed")
 //    include('*.png')
-    from("src/main/resources")
+    //from("src/main/resources")
+
+    // only copies icon
+
+    from("src/main/resources/images")
     into("$buildWebstartDir/signed")
-    include('largeicon.png')
+    include('**/*.png')
 
 }
 
@@ -106,7 +112,7 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
 
     File jnlpTemplateFile = new File('src/main/webstart/jnlp-template.xml')
     def root = new XmlParser().parse(jnlpTemplateFile)
-    def jnlpFileName = "sampleApp.jnlp"
+    def jnlpFileName = "freemind.jnlp"
 
     root.@codebase = webstartBaseUrl
     root.@href = jnlpFileName
@@ -114,7 +120,7 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
     def information = root.information[0]
 
     def icon = information.icon[0]
-    icon.@href = webstartBaseUrl + '/largeicon.png'
+    icon.@href = webstartBaseUrl + '/FreeMind-256.png'
 
 
     def resource = root.resources[0]
@@ -123,7 +129,7 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
 //    j2se.@version = "$sourceCompatibility+"
 
     def collection = files { file("${buildWebstartDir}/lib").listFiles() }
-    def mainJar = "sampleapp-${version}.jar"
+    def mainJar = "freemind-webstart-${version}.jar"
     collection.each {
         def resourceValues = [href: it.name]
 //println it.name + ' - ' + mainJar
