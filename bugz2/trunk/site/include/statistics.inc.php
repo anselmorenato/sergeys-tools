@@ -24,7 +24,10 @@
 
       // do not log my own requests
       if(isset($_SERVER["REMOTE_ADDR"]) &&
-          (strpos($_SERVER["REMOTE_ADDR"], "93.77.76.143"))
+        (strpos($_SERVER["REMOTE_ADDR"], "93.77.76.143")
+             || strpos($_SERVER["REMOTE_ADDR"], "77.122.97.32")
+            || strpos($_SERVER["REMOTE_ADDR"], "93.77.76.121")
+        )
       ){
           return;
       }

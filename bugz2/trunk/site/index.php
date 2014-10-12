@@ -19,6 +19,38 @@
 <br/>
 <br/>
 
+<!-- ---------------------------- -->
+<h2>FreeMind 1.0.1</h2>
+<br>
+<p>
+FreeMind 1.0.1 repacked for Webstart.
+<p>
+Note that all files are signed with self-signed generated certificate,
+so you will need to enable certain security settings. Or buy me real certificate.
+<p>
+Home page: <a href="http://freemind.sourceforge.net">http://freemind.sourceforge.net</a>
+<p>
+Java 1.6
+<p>
+<br>
+
+<script>
+    var dir = location.href.substring(0, location.href.lastIndexOf('/')+1);
+    var url = dir + "freemind/freemind.jnlp";
+    deployJava.createWebStartLaunchButton(url, '1.6.0');
+</script>
+<br/>
+
+<div class="note">
+(<a href='freemind/freemind.jnlp'>direct link</a>)
+</div>
+
+<br/>
+<br/>
+<br/>
+
+
+<!-- ---------------------------- -->
 <h2>Gallery Publisher</h2>
 <br>
 <p>
