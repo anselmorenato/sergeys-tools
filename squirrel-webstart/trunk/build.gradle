@@ -1,0 +1,160 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+version = '428'
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+mainClassName = 'org.sergeys.sqws.SquirrelWebstart'
+
+ext.originalDir = 'f:/bin/squirrelsql-3.6-optional'
+ext.buildWebstartDir = 'build/webstart'
+ext.webstartBaseUrl = 'http://svs.bugz.org.ua/squirrel'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.0.2'
+    compile 'org.apache.logging.log4j:log4j-core:2.0.2'
+
+    compile files("${originalDir}/squirrel-sql.jar")
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'SQuirrel SQL Client 3.6',
+            'Implementation-Version': version,
+            'Permissions': 'all-permissions',
+            'Application-Name': 'SQuirrel SQL Client 3.6'
+    }
+}
+
+task copyJars(type: Copy, dependsOn: [jar]) {
+    // copy compile result to signing
+    from configurations.runtime
+    from("build/libs")
+    into("$buildWebstartDir/lib")
+    include('*.jar')
+}
+
+task copyFiles(type: Copy) {
+//    from("src/main/webstart")
+//    into("$buildWebstartDir/signed")
+//    include('*.png')
+    //from("src/main/resources")
+
+    // only copies icon
+
+    from("src/main/resources/images")
+    into("$buildWebstartDir/signed")
+    include('**/*.png')
+
+}
+
+task copyOriginalJars(type: Copy) {
+    from("$originalDir")
+    into("$buildWebstartDir/lib")
+    include('**/*.jar')
+    exclude('plugins', 'icons')
+    //include('*.jar')
+}
+
+task packOriginalHome(type: Jar){
+
+    archiveName 'squirrel-home.jar'
+    destinationDir file('build/tmp')
+    from("$originalDir")
+    exclude('*.bat', '*.sh', 'lib', 'squirrel-sql.jar')
+}
+
+task createKey{
+
+    File ksfile = new File('src/main/webstart/.keystore')
+    if(!ksfile.isFile()){
+        ant.genkey(
+            keystore: 'src/main/webstart/.keystore',
+            storepass: 'password',
+            alias: 'sergey.selivanov',
+            validity: 365
+            ){
+            dname{
+                param(name: 'CN', value: 'Common Name')
+                param(name: 'OU', value: 'Org Unit')
+                param(name: 'O', value: 'Org')
+                param(name: 'C', value: 'UA')
+                param(name: 'L', value: 'Location')
+            }
+        }
+    }
+}
+
+
+task signAll(dependsOn: [copyJars, copyOriginalJars, createKey]) << {
+    new File("$buildWebstartDir/signed").mkdirs()
+    def libFiles = files { file("$buildWebstartDir/lib").listFiles() }
+    libFiles.each {
+        ant.signjar(
+                destDir: "${buildWebstartDir}/signed",
+                alias: 'sergey.selivanov',
+                jar: it,
+                keystore: 'src/main/webstart/.keystore',
+                storepass: 'password',
+                preservelastmodified: 'true')
+    }
+}
+
+task generateJnlp(dependsOn: [signAll, copyFiles]) << {
+
+    File jnlpTemplateFile = new File('src/main/webstart/jnlp-template.xml')
+    def root = new XmlParser().parse(jnlpTemplateFile)
+    def jnlpFileName = "squirrelsql.jnlp"
+
+    root.@codebase = webstartBaseUrl
+    root.@href = jnlpFileName
+
+    def information = root.information[0]
+
+    def icon = information.icon[0]
+    icon.@href = webstartBaseUrl + '/FreeMind-256.png'
+
+
+    def resource = root.resources[0]
+
+    def collection = files { file("${buildWebstartDir}/lib").listFiles() }
+    def mainJar = "squirrel-webstart-${version}.jar"
+    collection.each {
+        def resourceValues = [href: it.name]
+
+        //	println it.name + ' - ' + mainJar
+
+        if (mainJar == it.name) {
+            resourceValues = [href: it.name, main: 'true']
+        }
+        resource.appendNode('jar', resourceValues)
+    }
+
+    // Setting the main class
+    def applicationDesc = root.'application-desc'[0]
+    applicationDesc.'@main-class' = mainClassName
+
+    // Writing the jnlp file filled
+    File jnlpFile = new File("${buildWebstartDir}/signed/" + jnlpFileName)
+
+    def prn = new XmlNodePrinter(new PrintWriter(jnlpFile))
+    prn.setPreserveWhitespace(true)
+    prn.print(root)
+}
+
+
+task webstart (dependsOn: [generateJnlp])<< {
+    println("Generating all webstart files in ${buildWebstartDir}/signed")
+}
+
+jar{
+    dependsOn packOriginalHome
+    //source files {file("build/libs/freemind-home.jar")}
+    from "build/tmp/squirrel-home.jar"
+}
