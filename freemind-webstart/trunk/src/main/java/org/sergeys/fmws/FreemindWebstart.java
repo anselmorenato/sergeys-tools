@@ -67,6 +67,11 @@ public class FreemindWebstart {
             // launch main class
             //System.setProperty("freemind.base.dir", "d:/junkfreemind");
             System.setProperty("freemind.base.dir", fmHome);
+
+            for(String arg: args){
+                log.debug("Argument passed: " + arg);
+            }
+
             FreeMindStarter.main(args);
         }
         catch(Exception ex){

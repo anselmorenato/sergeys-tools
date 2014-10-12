@@ -9,6 +9,7 @@
           <desktop/>
           <menu submenu="FreeMind"/>
         </shortcut>
+        <association mime-type="application/x-freemind" extensions="mm"/>
         <homepage href="http://freemind.sourceforge.net"/>
         <offline-allowed/>
     </information>
