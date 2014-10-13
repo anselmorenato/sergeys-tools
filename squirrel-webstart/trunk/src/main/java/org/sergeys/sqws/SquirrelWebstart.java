@@ -70,14 +70,17 @@ public class SquirrelWebstart {
             // set home dir
             // launch main class
 
+            System.setProperty("sun.java2d.noddraw", "true");	// TODO: windows only?
+
             ArrayList<String> argl = new ArrayList<String>();
             argl.add("--splash:" + fmHome + File.separator + "icons/splash.jpg");
+            //argl.add("--splash:icons/splash.jpg");
             argl.add("--log-config-file");
             argl.add(fmHome + File.separator + "log4j.properties");
             argl.add("--squirrel-home");
             argl.add(fmHome);
 
-            // TODO macosx args
+            // TODO macosx and other args?
 
             String[] args1 = argl.toArray(new String[]{});
             for(String s: args1){
@@ -85,6 +88,8 @@ public class SquirrelWebstart {
             }
 
             net.sourceforge.squirrel_sql.client.Main.main(args1);
+
+            log.debug("exit");
         }
         catch(Exception ex){
             log.error("Failed to launch SQuirrel SQL", ex);
