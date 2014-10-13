@@ -3,6 +3,7 @@ package org.sergeys.sqws;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -21,8 +22,13 @@ public class SquirrelWebstart {
 
         log.info("app started");
 
+        // TODO print svn revision
+
         try{
             // unpack resources if needed
+
+            // TODO put marker file with version and check if update needed
+
             String fmHome = System.getProperty("user.home") + File.separator + ".squirrelsql-webstart-home";
             log.info("home dir " + fmHome);
             if(!new File(fmHome + File.separator + "update-log4j.properties").exists()){
@@ -64,10 +70,21 @@ public class SquirrelWebstart {
             // set home dir
             // launch main class
 
-            //System.setProperty("freemind.base.dir", fmHome);
-            //FreeMindStarter.main(args);
+            ArrayList<String> argl = new ArrayList<String>();
+            argl.add("--splash:" + fmHome + File.separator + "icons/splash.jpg");
+            argl.add("--log-config-file");
+            argl.add(fmHome + File.separator + "log4j.properties");
+            argl.add("--squirrel-home");
+            argl.add(fmHome);
 
-            net.sourceforge.squirrel_sql.client.Main.main(args);
+            // TODO macosx args
+
+            String[] args1 = argl.toArray(new String[]{});
+            for(String s: args1){
+                log.debug("Arg: " + s);
+            }
+
+            net.sourceforge.squirrel_sql.client.Main.main(args1);
         }
         catch(Exception ex){
             log.error("Failed to launch SQuirrel SQL", ex);

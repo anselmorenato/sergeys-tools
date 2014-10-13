@@ -58,9 +58,17 @@ task copyOriginalJars(type: Copy) {
     from("$originalDir")
     into("$buildWebstartDir/lib")
     include('**/*.jar')
-    exclude('plugins', 'icons')
+    exclude('plugins', 'icons', '**/xmlbeans.jar')
     //include('*.jar')
 }
+
+task copyPatchedJars(type: Copy) {
+    // original xmlbeans.jar has duplicate entries, jarsigner fails, so here is repacked file
+    from("lib")
+    into("$buildWebstartDir/lib/lib")
+    include('**/*.jar')
+}
+
 
 task packOriginalHome(type: Jar){
 
@@ -81,7 +89,7 @@ task createKey{
             validity: 365
             ){
             dname{
-                param(name: 'CN', value: 'Common Name')
+                param(name: 'CN', value: 'Sergey Selivanov')
                 param(name: 'OU', value: 'Org Unit')
                 param(name: 'O', value: 'Org')
                 param(name: 'C', value: 'UA')
@@ -92,10 +100,12 @@ task createKey{
 }
 
 
-task signAll(dependsOn: [copyJars, copyOriginalJars, createKey]) << {
+task signAll(dependsOn: [copyJars, copyOriginalJars, copyPatchedJars, createKey]) << {
     new File("$buildWebstartDir/signed").mkdirs()
+    new File("$buildWebstartDir/signed/lib").mkdirs()
     def libFiles = files { file("$buildWebstartDir/lib").listFiles() }
     libFiles.each {
+        /*
         ant.signjar(
                 destDir: "${buildWebstartDir}/signed",
                 alias: 'sergey.selivanov',
@@ -103,6 +113,20 @@ task signAll(dependsOn: [copyJars, copyOriginalJars, createKey]) << {
                 keystore: 'src/main/webstart/.keystore',
                 storepass: 'password',
                 preservelastmodified: 'true')
+                */
+    }
+
+    libFiles = files { file("$buildWebstartDir/lib/lib").listFiles() }
+    libFiles.each {
+        /*
+        ant.signjar(
+                destDir: "${buildWebstartDir}/signed/lib",
+                alias: 'sergey.selivanov',
+                jar: it,
+                keystore: 'src/main/webstart/.keystore',
+                storepass: 'password',
+                preservelastmodified: 'true')
+                */
     }
 }
 
@@ -118,7 +142,7 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
     def information = root.information[0]
 
     def icon = information.icon[0]
-    icon.@href = webstartBaseUrl + '/FreeMind-256.png'
+    icon.@href = webstartBaseUrl + '/acorn.png'
 
 
     def resource = root.resources[0]
@@ -133,7 +157,17 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
         if (mainJar == it.name) {
             resourceValues = [href: it.name, main: 'true']
         }
-        resource.appendNode('jar', resourceValues)
+        if(it.name.endsWith('.jar')){
+            resource.appendNode('jar', resourceValues)
+        }
+    }
+
+    collection = files { file("${buildWebstartDir}/lib/lib").listFiles() }
+    collection.each {
+        def resourceValues = [href: 'lib/' + it.name]
+        if(it.name.endsWith('.jar')){
+            resource.appendNode('jar', resourceValues)
+        }
     }
 
     // Setting the main class

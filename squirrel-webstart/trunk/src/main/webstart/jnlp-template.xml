@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jnlp spec="1.0+" codebase="%URL%" href="substituted.jnlp">
-<!-- codebase and href are optional from 1.6_18  -->
+
     <information>
-        <title>FreeMind</title>
-        <vendor>FreeMind</vendor>
+        <title>SQuirrel SQL Client 3.6</title>
+        <vendor>www.squirrelsql.org</vendor>
         <icon href="%URL%/largeicon.png" kind="default"/>
         <shortcut online="true" install="false">
           <desktop/>
-          <menu submenu="FreeMind"/>
+          <menu submenu="SQuirrel SQL"/>
         </shortcut>
-        <homepage href="http://freemind.sourceforge.net"/>
+        <homepage href="http://www.squirrelsql.org"/>
         <offline-allowed/>
     </information>
 
@@ -18,8 +18,6 @@
     </security>
 
     <resources>
-        <!-- Application Resources -->
-
         <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
 <!--
         <jar href="wcd.%REVISION%.jar" />
@@ -36,7 +34,7 @@
     </resources>
 
     <application-desc
-         name="FreeMind"
+         name="SQuirrel SQL Client 3.6"
          main-class="org.substituted"
          width="500"
          height="300">
