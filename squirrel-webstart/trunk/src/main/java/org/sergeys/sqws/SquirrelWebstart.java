@@ -73,7 +73,7 @@ public class SquirrelWebstart {
             System.setProperty("sun.java2d.noddraw", "true");	// TODO: windows only?
 
             ArrayList<String> argl = new ArrayList<String>();
-            argl.add("--splash:" + fmHome + File.separator + "icons/splash.jpg");
+            //argl.add("--splash:" + fmHome + File.separator + "icons/splash.jpg");
             //argl.add("--splash:icons/splash.jpg");
             argl.add("--log-config-file");
             argl.add(fmHome + File.separator + "log4j.properties");

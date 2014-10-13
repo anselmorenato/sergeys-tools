@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-version = '439'
+version = '440'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 mainClassName = 'org.sergeys.sqws.SquirrelWebstart'
