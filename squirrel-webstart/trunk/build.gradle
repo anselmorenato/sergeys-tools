@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-version = '428'
+version = '436'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 mainClassName = 'org.sergeys.sqws.SquirrelWebstart'
@@ -58,7 +58,7 @@ task copyOriginalJars(type: Copy) {
     from("$originalDir")
     into("$buildWebstartDir/lib")
     include('**/*.jar')
-    exclude('plugins', 'icons', '**/xmlbeans.jar')
+    exclude('plugins', 'icons', '**/xmlbeans.jar', '**/core.jar')
     //include('*.jar')
 }
 
@@ -105,7 +105,7 @@ task signAll(dependsOn: [copyJars, copyOriginalJars, copyPatchedJars, createKey]
     new File("$buildWebstartDir/signed/lib").mkdirs()
     def libFiles = files { file("$buildWebstartDir/lib").listFiles() }
     libFiles.each {
-        /*
+
         ant.signjar(
                 destDir: "${buildWebstartDir}/signed",
                 alias: 'sergey.selivanov',
@@ -113,12 +113,12 @@ task signAll(dependsOn: [copyJars, copyOriginalJars, copyPatchedJars, createKey]
                 keystore: 'src/main/webstart/.keystore',
                 storepass: 'password',
                 preservelastmodified: 'true')
-                */
+
     }
 
     libFiles = files { file("$buildWebstartDir/lib/lib").listFiles() }
     libFiles.each {
-        /*
+
         ant.signjar(
                 destDir: "${buildWebstartDir}/signed/lib",
                 alias: 'sergey.selivanov',
@@ -126,7 +126,7 @@ task signAll(dependsOn: [copyJars, copyOriginalJars, copyPatchedJars, createKey]
                 keystore: 'src/main/webstart/.keystore',
                 storepass: 'password',
                 preservelastmodified: 'true')
-                */
+
     }
 }
 
