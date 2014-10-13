@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-version = '437'
+version = '438'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 mainClassName = 'org.sergeys.sqws.SquirrelWebstart'
@@ -59,9 +59,11 @@ task copyOriginalJars(type: Copy) {
     into("$buildWebstartDir/lib")
     include('**/*.jar')
     exclude('plugins', 'icons',
-        '**/xmlbeans.jar',
-        '**/core.jar',
-        '**/org.eclipse.equinox.common-fixed.jar'
+        '**/xmlbeans.jar',	// duplicate entries
+        '**/core.jar',	// already signed
+        '**/org.eclipse.equinox.common.jar',
+        '**/osgi.jar',
+        '**/x86.jar'
         )
     //include('*.jar')
 }
