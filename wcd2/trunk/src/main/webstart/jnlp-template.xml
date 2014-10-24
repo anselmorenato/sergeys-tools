@@ -42,7 +42,7 @@
          height="300">
     </application-desc>
 
-    <update check="timeout" policy="always"/>
-    <!-- update check="background" policy="prompt-update"/ -->
+    <!-- update check="timeout" policy="always"/ -->
+    <update check="background" policy="prompt-update"/>
 
 </jnlp>
