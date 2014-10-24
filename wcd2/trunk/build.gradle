@@ -7,8 +7,8 @@ apply plugin: 'application'
 //apply plugin: 'build-dashboard'
 
 
-version = 416	// also set in resources/settings.properties
-sourceCompatibility = 1.6	// see also jdk in gradle.properties, and j2se in jnlp-template.xml
+version = 416    // also set in resources/settings.properties
+sourceCompatibility = 1.6    // see also jdk in gradle.properties, and j2se in jnlp-template.xml
 targetCompatibility = 1.6
 mainClassName = 'org.sergeys.webcachedigger.ui.WebCacheDigger'
 
@@ -25,19 +25,12 @@ dependencies {
         exclude module: 'log4j'
         exclude module: 'slf4j-log4j12'
     }
-//    compile 'com.h2database:h2:1.3.175'
-    compile 'com.h2database:h2:1.4.178'
+
+    compile 'com.h2database:h2:1.4.182'
     compile 'com.mpatric:mp3agic:0.8.2'
 
-//    compile 'log4j:log4j:1.2.17'
-//    compile 'org.slf4j:slf4j-log4j12:1.7.6'
-
-    //compile 'org.slf4j:slf4j-api:1.7.6'
-    compile 'org.slf4j:slf4j-api:1.7.7'
-
-
-    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.0-rc1'
-    compile 'org.apache.logging.log4j:log4j-core:2.0-rc1'
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.0.2'
+    compile 'org.apache.logging.log4j:log4j-core:2.0.2'
 }
 
 // https://github.com/gmateo/gradle-webstart-example/blob/master/build.gradle
@@ -64,8 +57,29 @@ task copyFiles(type: Copy) {
     include('*.png')
 }
 
+task createKey{
 
-task signAll(dependsOn: [copyJars]) << {
+        File ksfile = new File('src/main/webstart/.keystore')
+        if(!ksfile.isFile()){
+            ant.genkey(
+                keystore: 'src/main/webstart/.keystore',
+                storepass: 'password',
+                alias: 'sergey.selivanov',
+                validity: 365
+                ){
+                dname{
+                    param(name: 'CN', value: 'Sergey Selivanov')
+                    param(name: 'OU', value: 'Org Unit')
+                    param(name: 'O', value: 'Org')
+                    param(name: 'C', value: 'UA')
+                    param(name: 'L', value: 'Location')
+                }
+            }
+        }
+    }
+
+
+task signAll(dependsOn: [copyJars, createKey]) << {
     new File("$buildWebstartDir/signed").mkdirs()
     def libFiles = files { file("$buildWebstartDir/lib").listFiles() }
     libFiles.each {
@@ -106,7 +120,7 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
         def resourceValues = [href: it.name]
 //println it.name + ' - ' + mainJar
         if (mainJar == it.name) {
-            resourceValues = [href: it.name, main: 'true']	// TODO not working?
+            resourceValues = [href: it.name, main: 'true']
         }
         resource.appendNode('jar', resourceValues)
     }

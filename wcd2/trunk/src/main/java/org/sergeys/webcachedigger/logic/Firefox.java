@@ -52,6 +52,8 @@ public class Firefox extends AbstractBrowser {
         boolean isRelative = false;
         String[] tokens;
 
+        String dir = "";
+
         try {
             while((line = rdr.readLine()) != null){
                 if(line.toLowerCase().startsWith("[profile")){
@@ -76,48 +78,83 @@ public class Firefox extends AbstractBrowser {
                             // windows
                             if(System.getenv("LOCALAPPDATA") != null){
                                 // 7
-                                path = System.getenv("LOCALAPPDATA") + File.separator +
+                                dir = System.getenv("LOCALAPPDATA") + File.separator +
                                         "Mozilla" + File.separator + "Firefox" + File.separator +
-                                        relPath + File.separator + "Cache";
+                                        relPath;
+
+                                path = dir + File.separator + "Cache";
+                                paths.add(path);
+                                Settings.getLogger().debug("path to search (win7+): " + path);
+
+                                path = dir + File.separator + "cache2/entries";
                                 paths.add(path);
                                 Settings.getLogger().debug("path to search (win7+): " + path);
                             }
                             else if(System.getenv("USERPROFILE") != null){
                                 // xp
-                                path = System.getenv("USERPROFILE") + File.separator +
+                                dir = System.getenv("USERPROFILE") + File.separator +
                                         "Local Settings" + File.separator + "Application Data" + File.separator +
                                         "Mozilla" + File.separator + "Firefox" + File.separator +
-                                        relPath + File.separator + "Cache";
+                                        relPath;
+
+                                path = dir + File.separator + "Cache";
+                                paths.add(path);
+                                Settings.getLogger().debug("path to search (xp): " + path);
+
+                                path = dir + File.separator + "cache2/entries";
                                 paths.add(path);
                                 Settings.getLogger().debug("path to search (xp): " + path);
                             }
 
                             // macos
-                            path = System.getProperty("user.home") + File.separator +
+                            dir = System.getProperty("user.home") + File.separator +
                                     "Library" + File.separator + "Caches" + File.separator + "Firefox" + File.separator +
-                                    relPath + File.separator + "Cache";
+                                    relPath;
+
+
+                            path = dir + File.separator + "Cache";
+                            paths.add(path);
+                            Settings.getLogger().debug("path to search (macos): " + path);
+
+                            path = dir + File.separator + "cache2/entries";
                             paths.add(path);
                             Settings.getLogger().debug("path to search (macos): " + path);
 
                             // linux relative to .ini
-                            path = profilesIniPath + File.separator +
-                                    relPath + File.separator + "Cache";
+                            dir = profilesIniPath + File.separator + relPath;
+
+                            path = dir + File.separator + "Cache";
+                            paths.add(path);
+                            Settings.getLogger().debug("path to search (linux): " + path);
+
+                            path = dir + File.separator + "cache2/entries";
                             paths.add(path);
                             Settings.getLogger().debug("path to search (linux): " + path);
 
                             // ff 28, ubuntu
-                            path = System.getProperty("user.home") + File.separator +
+                            dir = System.getProperty("user.home") + File.separator +
                                     ".cache" + File.separator +
                                     "mozilla" + File.separator +
                                     "firefox" + File.separator +
-                                    relPath + File.separator +
-                                    "Cache";
+                                    relPath;
+
+                            path = dir + File.separator + "Cache";
+                            paths.add(path);
+                            Settings.getLogger().debug("path to search (linux): " + path);
+
+                            path = dir + File.separator + "cache2/entries";
                             paths.add(path);
                             Settings.getLogger().debug("path to search (linux): " + path);
                         }
                         else{
                             // absolute
-                            path = path + File.separator + "Cache";
+                            dir = path;
+
+                            path = dir + File.separator + "Cache";
+                            paths.add(path);
+                            Settings.getLogger().debug("path to search (absolute): " + path);
+
+                            path = dir + File.separator + "cache2" + File.separator + "entries";
                             paths.add(path);
                             Settings.getLogger().debug("path to search (absolute): " + path);
                         }
