@@ -4,7 +4,7 @@ apply plugin: 'application'
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 
-version = 442    // also set in resources/settings.properties
+version = 451    // also set in resources/settings.properties
 sourceCompatibility = 1.6    // see also jdk in gradle.properties, and j2se in jnlp-template.xml
 targetCompatibility = 1.6
 mainClassName = 'org.sergeys.webcachedigger.ui.WebCacheDigger'
