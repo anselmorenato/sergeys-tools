@@ -64,7 +64,7 @@ task packOriginalHome(type: Jar){
 
 
 jar {
-    dependsOn packOriginalHome, createKey
+    dependsOn packOriginalHome
 
     manifest {
         attributes 'Implementation-Title': 'SQuirrel SQL Client 3.6',
@@ -74,28 +74,41 @@ jar {
     }
 
     from "build/tmp/squirrel-home.jar"
-
-    doLast{
-
-        ant.signjar(
-            //destDir: "${buildWebstartDir}/signed",
-            alias: 'sergey.selivanov',
-            jar: jar.outputs.files[0],
-            keystore: 'src/main/webstart/.keystore',
-            storepass: 'password',
-            preservelastmodified: 'true')
-    }
 }
 
-/*
+
 task copyMyJars(type: Copy, dependsOn: [jar]) {
     // copy compile result to signing
     from configurations.runtime
     from("build/libs")
-    into("$buildWebstartDir/lib")
+    into("build/mylibs")
     include('*.jar')
 }
-*/
+
+task signMyJars(dependsOn: [copyMyJars, createKey]) {
+
+    //inputs.dir 'build/origlibs'
+    outputs.dir 'build/mylibs'
+
+    doLast{
+
+        def jars = fileTree('build/mylibs'){
+            include '**/*.jar'
+        }
+
+        jars.each{
+            println it
+            ant.signjar(
+                //destDir: "${buildWebstartDir}/signed",
+                alias: 'sergey.selivanov',
+                jar: it,
+                keystore: 'src/main/webstart/.keystore',
+                storepass: 'password',
+                preservelastmodified: 'true')
+        }
+    }
+}
+
 
 task copyOtherWebstartFiles(type: Copy) {
     // only copies icon
@@ -210,7 +223,7 @@ task signJars(dependsOn: [unsignJars, createKey]){
 
 task collectAllSignedJars(type: Copy, dependsOn: [jar, signJars]) {
 
-    from 'build/libs'
+    from 'build/mylibs'
     from 'build/signedlibs'
     into "$buildWebstartDir"
     include "**/*.jar"
