@@ -14,134 +14,136 @@ import org.sergeys.webcachedigger.logic.Settings;
 
 public class SettingsDialog extends JDialog {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel jContentPane = null;
-	private JPanel jPanelBottom = null;
-	private JButton jButtonSave = null;
-	private JButton jButtonCancel = null;
-	private SettingsPanel jPanelSettings = null;
+    private static final long serialVersionUID = 1L;
+    private JPanel jContentPane = null;
+    private JPanel jPanelBottom = null;
+    private JButton jButtonSave = null;
+    private JButton jButtonCancel = null;
+    private SettingsPanel jPanelSettings = null;
 
-	
-	/**
-	 * @param owner
-	 */
-	public SettingsDialog(Frame owner) {
-		super(owner);
-		initialize();
-	}
+    private Frame owner;
 
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
-		this.setSize(635, 445);
-		this.setModal(true);
-		this.setTitle(Messages.getString("SettingsDialog.settings")); //$NON-NLS-1$
-		this.setContentPane(getJContentPane());
-	}
+    /**
+     * @param owner
+     */
+    public SettingsDialog(Frame owner) {
+        super(owner);
+        this.owner = owner;
+        initialize();
+    }
 
-	@Override
-	public void setVisible(boolean b) {
-		
-		if(b){		
-			getJPanelSettings().setSettings();
-		}
-		
-		super.setVisible(b);
-	};
-	
-	/**
-	 * This method initializes jContentPane
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJContentPane() {
-		if (jContentPane == null) {
-			jContentPane = new JPanel();
-			jContentPane.setLayout(new BorderLayout());
-			jContentPane.add(getJPanelBottom(), BorderLayout.SOUTH);
-			jContentPane.add(getJPanelSettings(), BorderLayout.CENTER);
-		}
-		return jContentPane;
-	}
+    /**
+     * This method initializes this
+     *
+     * @return void
+     */
+    private void initialize() {
+        this.setSize(635, 445);
+        this.setModal(true);
+        this.setTitle(Messages.getString("SettingsDialog.settings")); //$NON-NLS-1$
+        this.setContentPane(getJContentPane());
+    }
 
-	/**
-	 * This method initializes jPanelBottom	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getJPanelBottom() {
-		if (jPanelBottom == null) {
-			FlowLayout flowLayout = new FlowLayout();
-			flowLayout.setAlignment(FlowLayout.RIGHT);
-			jPanelBottom = new JPanel();
-			jPanelBottom.setLayout(flowLayout);
-			jPanelBottom.add(getJButtonSave(), null);
-			jPanelBottom.add(getJButtonCancel(), null);
-		}
-		return jPanelBottom;
-	}
+    @Override
+    public void setVisible(boolean b) {
 
-	/**
-	 * This method initializes jButtonSave	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-	private JButton getJButtonSave() {
-		if (jButtonSave == null) {
-			jButtonSave = new JButton();
-			jButtonSave.setText(Messages.getString("SettingsDialog.save")); //$NON-NLS-1$
-			jButtonSave.setActionCommand(Settings.COMMAND_SAVE_SETTINGS);			
-			jButtonSave.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					setVisible(false);
-				}
-			});
-		}
-		return jButtonSave;
-	}
+        if(b){
+            getJPanelSettings().setSettings();
+        }
 
-	/**
-	 * This method initializes jButtonCancel	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-	private JButton getJButtonCancel() {
-		if (jButtonCancel == null) {
-			jButtonCancel = new JButton();
-			jButtonCancel.setText(Messages.getString("SettingsDialog.cancel")); //$NON-NLS-1$
-			jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					setVisible(false);
-				}
-			});
-		}
-		return jButtonCancel;
-	}
+        super.setVisible(b);
+    };
 
-	/**
-	 * This method initializes jPanelSettings	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private SettingsPanel getJPanelSettings() {
-		if (jPanelSettings == null) {
-			jPanelSettings = new SettingsPanel();
-			//jPanelSettings.setLayout(new GridBagLayout());
-			
-		}
-		return jPanelSettings;
-	}
-	
-	
-	public void addSaveActionListener(ActionListener l){
-		getJButtonSave().addActionListener(l);
-	}
-	
-	public void updateSettings(){
-		getJPanelSettings().updateSettings();
-		
-	}
-}  
+    /**
+     * This method initializes jContentPane
+     *
+     * @return javax.swing.JPanel
+     */
+    private JPanel getJContentPane() {
+        if (jContentPane == null) {
+            jContentPane = new JPanel();
+            jContentPane.setLayout(new BorderLayout());
+            jContentPane.add(getJPanelBottom(), BorderLayout.SOUTH);
+            jContentPane.add(getJPanelSettings(), BorderLayout.CENTER);
+        }
+        return jContentPane;
+    }
+
+    /**
+     * This method initializes jPanelBottom
+     *
+     * @return javax.swing.JPanel
+     */
+    private JPanel getJPanelBottom() {
+        if (jPanelBottom == null) {
+            FlowLayout flowLayout = new FlowLayout();
+            flowLayout.setAlignment(FlowLayout.RIGHT);
+            jPanelBottom = new JPanel();
+            jPanelBottom.setLayout(flowLayout);
+            jPanelBottom.add(getJButtonSave(), null);
+            jPanelBottom.add(getJButtonCancel(), null);
+        }
+        return jPanelBottom;
+    }
+
+    /**
+     * This method initializes jButtonSave
+     *
+     * @return javax.swing.JButton
+     */
+    private JButton getJButtonSave() {
+        if (jButtonSave == null) {
+            jButtonSave = new JButton();
+            jButtonSave.setText(Messages.getString("SettingsDialog.save")); //$NON-NLS-1$
+            jButtonSave.setActionCommand(Settings.COMMAND_SAVE_SETTINGS);
+            jButtonSave.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    setVisible(false);
+                }
+            });
+        }
+        return jButtonSave;
+    }
+
+    /**
+     * This method initializes jButtonCancel
+     *
+     * @return javax.swing.JButton
+     */
+    private JButton getJButtonCancel() {
+        if (jButtonCancel == null) {
+            jButtonCancel = new JButton();
+            jButtonCancel.setText(Messages.getString("SettingsDialog.cancel")); //$NON-NLS-1$
+            jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    setVisible(false);
+                }
+            });
+        }
+        return jButtonCancel;
+    }
+
+    /**
+     * This method initializes jPanelSettings
+     *
+     * @return javax.swing.JPanel
+     */
+    private SettingsPanel getJPanelSettings() {
+        if (jPanelSettings == null) {
+            jPanelSettings = new SettingsPanel(owner);
+            //jPanelSettings.setLayout(new GridBagLayout());
+
+        }
+        return jPanelSettings;
+    }
+
+
+    public void addSaveActionListener(ActionListener l){
+        getJButtonSave().addActionListener(l);
+    }
+
+    public void updateSettings(){
+        getJPanelSettings().updateSettings();
+
+    }
+}

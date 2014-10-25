@@ -1,10 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
-//apply plugin: 'checkstyle'
-//apply plugin: 'findbugs'
-//apply plugin: 'project-report'
-//apply plugin: 'build-dashboard'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
 
 version = 442    // also set in resources/settings.properties
 sourceCompatibility = 1.6    // see also jdk in gradle.properties, and j2se in jnlp-template.xml
@@ -140,3 +138,10 @@ task webstart (dependsOn: [generateJnlp])<< {
     println("Generating all webstart files in ${buildWebstartDir}/signed")
 }
 
+checkstyle {
+    ignoreFailures = true
+}
+
+findbugs {
+    ignoreFailures = true
+}

@@ -36,7 +36,7 @@ extends Properties
     private static final long serialVersionUID = 1L;
 
     // where to save
-    public static final String SETTINGS_PATH = ".WebCacheDigger-devel";
+    public static final String SETTINGS_PATH = ".WebCacheDigger";
     public static final String SETTINGS_FILE = "settings.xml";
     public static final String LOG_FILE = "log.txt";
 

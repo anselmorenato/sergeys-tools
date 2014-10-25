@@ -23,5 +23,12 @@
          </description>
       </item>
 
+      <item>
+         <pubDate>25 Oct 2014 14:00</pubDate>
+         <description>
+         Cache location changed for newest Firefox.
+         </description>
+      </item>
+
    </channel>
 </rss>

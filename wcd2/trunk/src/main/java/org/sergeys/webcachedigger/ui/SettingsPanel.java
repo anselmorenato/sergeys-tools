@@ -2,11 +2,14 @@ package org.sergeys.webcachedigger.ui;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.sql.SQLException;
 
@@ -25,7 +28,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
+
+
+
+
 import org.sergeys.library.OsUtils;
+import org.sergeys.library.swing.DirSelectorDialog;
 import org.sergeys.webcachedigger.logic.Database;
 import org.sergeys.webcachedigger.logic.Messages;
 import org.sergeys.webcachedigger.logic.Settings;
@@ -70,11 +78,15 @@ public class SettingsPanel extends JPanel {
     private JButton buttonLibvlc;
     private JButton btnLibvlcDetect;
 
+    private Frame owner;
+
     /**
      * This is the default constructor
+     * @param owner
      */
-    public SettingsPanel() {
+    public SettingsPanel(Frame owner) {
         super();
+        this.owner = owner;
         setBorder(new EmptyBorder(5, 5, 5, 5));
         initialize();
     }
@@ -323,7 +335,10 @@ public class SettingsPanel extends JPanel {
         return jButtonSavePath;
     }
 
+    private DirSelectorDialog dirSelector = null;
+
     protected void choosePath() {
+        /*
         JFileChooser fc = new JFileChooser();
 
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -335,6 +350,28 @@ public class SettingsPanel extends JPanel {
             getJTextFieldSavePath().setText(
                     fc.getSelectedFile().getAbsolutePath());
         }
+        */
+
+        if (dirSelector == null) {
+            dirSelector = new DirSelectorDialog(owner);
+            dirSelector.setLocationRelativeTo(owner);
+        }
+
+        PropertyChangeListener listener = new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals(DirSelectorDialog.DIRECTORY_SELECTED)) {
+
+                    String path = evt.getNewValue().toString();
+
+                    getJTextFieldSavePath().setText(path);
+                }
+            }
+        };
+
+        dirSelector.addPropertyChangeListener(DirSelectorDialog.DIRECTORY_SELECTED, listener);
+        dirSelector.setVisible(true);	// waits for closing
+        dirSelector.removePropertyChangeListener(DirSelectorDialog.DIRECTORY_SELECTED, listener);
     }
 
     /**
