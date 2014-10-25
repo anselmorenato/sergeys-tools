@@ -23,6 +23,31 @@ dependencies {
     compile files("${originalDir}/squirrel-sql.jar")
 }
 
+task createKey {
+
+    outputs.file 'src/main/webstart/.keystore'
+
+    //File ksfile = new File('src/main/webstart/.keystore')
+    //if(!ksfile.isFile()){
+    doLast{
+        ant.genkey(
+            keystore: 'src/main/webstart/.keystore',
+            storepass: 'password',
+            alias: 'sergey.selivanov',
+            validity: 365
+            ){
+                dname{
+                    param(name: 'CN', value: 'Sergey Selivanov')
+                    param(name: 'OU', value: 'Org Unit')
+                    param(name: 'O', value: 'Org')
+                    param(name: 'C', value: 'UA')
+                    param(name: 'L', value: 'Location')
+                }
+            }
+    }
+        //}
+}
+
 
 task packOriginalHome(type: Jar){
 
@@ -37,8 +62,9 @@ task packOriginalHome(type: Jar){
 }
 
 
+
 jar {
-    dependsOn packOriginalHome
+    dependsOn packOriginalHome, createKey
 
     manifest {
         attributes 'Implementation-Title': 'SQuirrel SQL Client 3.6',
@@ -48,8 +74,20 @@ jar {
     }
 
     from "build/tmp/squirrel-home.jar"
+
+    doLast{
+
+        ant.signjar(
+            //destDir: "${buildWebstartDir}/signed",
+            alias: 'sergey.selivanov',
+            jar: jar.outputs.files[0],
+            keystore: 'src/main/webstart/.keystore',
+            storepass: 'password',
+            preservelastmodified: 'true')
+    }
 }
 
+/*
 task copyMyJars(type: Copy, dependsOn: [jar]) {
     // copy compile result to signing
     from configurations.runtime
@@ -57,24 +95,26 @@ task copyMyJars(type: Copy, dependsOn: [jar]) {
     into("$buildWebstartDir/lib")
     include('*.jar')
 }
+*/
 
 task copyOtherWebstartFiles(type: Copy) {
     // only copies icon
 
     from("src/main/resources/images")
-    into("$buildWebstartDir/signed")
+    into("$buildWebstartDir")
     include('**/*.png')
 
 }
 
 task collectOriginalJars(type: Copy) {
     from("$originalDir")
+    from('lib')
     into("build/origlibs")
     include('**/*.jar')
     exclude(
         'plugins',
-        'icons'
-        //'**/xmlbeans.jar',	// duplicate entries
+        'icons',
+        '**/xmlbeans.jar'	// duplicate entries
         //'**/core.jar',	// already signed
         //'**/org.eclipse.equinox.common.jar',
         //'**/osgi.jar',
@@ -87,14 +127,10 @@ task unsignJars(dependsOn: [collectOriginalJars]) {
 
     def destdir = new File(buildDir, 'unsignedlibs')
 
-    println destdir
-
     inputs.dir 'build/origlibs'
     outputs.dir destdir
 
     doLast{
-
-        //def libFiles = files { file("build/origlibs/lib").listFiles() }
 
         copy{
             from('build/origlibs')
@@ -116,135 +152,132 @@ task unsignJars(dependsOn: [collectOriginalJars]) {
                     '-d', '*.inf','*.mf', '*.rsa', '*.sf',
                     '*.INF','*.MF', '*.RSA', '*.SF'
             }
-        }
 
-    }
-}
+            // fix: xmlbeans is broken, duplicate entries
+/*
+            def fbroken = fname.getAbsolutePath() + '.broken'
+            println fname
+            println fbroken
 
-task copyPatchedJars(type: Copy) {
-    // original xmlbeans.jar has duplicate entries, jarsigner fails, so here is repacked file
-    from("lib")
-    into("$buildWebstartDir/lib/lib")
-    include('**/*.jar')
-}
-
-
-
-task createKey{
-
-    outputs.dir 'src/main/webstart'
-
-    //File ksfile = new File('src/main/webstart/.keystore')
-    //if(!ksfile.isFile()){
-    doLast{
-        ant.genkey(
-            keystore: 'src/main/webstart/.keystore',
-            storepass: 'password',
-            alias: 'sergey.selivanov',
-            validity: 365
-            ){
-            dname{
-                param(name: 'CN', value: 'Sergey Selivanov')
-                param(name: 'OU', value: 'Org Unit')
-                param(name: 'O', value: 'Org')
-                param(name: 'C', value: 'UA')
-                param(name: 'L', value: 'Location')
+            exec {
+                commandLine 'cmd', '/c', 'copy', fname, fbroken
             }
+
+            exec {
+                ignoreExitValue true
+                commandLine 'c:/cygwin/bin/zip.exe', '-F', fbroken, '--out', fname
+            }
+
+
+            exec {
+                ignoreExitValue true
+                commandLine 'cmd', '/c', 'del',  fbroken
+            }
+*/
+        }
+
+    }
+}
+
+
+task signJars(dependsOn: [unsignJars, createKey]){
+    inputs.dir 'build/unsignedlibs'
+    outputs.dir 'build/signedlibs'
+
+    doLast{
+        copy{
+            from 'build/unsignedlibs'
+            into 'build/signedlibs'
+        }
+
+        def jars = fileTree('build/signedlibs'){
+            include '**/*.jar'
+        }
+
+        jars.each{
+            println it
+            ant.signjar(
+                //destDir: "${buildWebstartDir}/signed",
+                alias: 'sergey.selivanov',
+                jar: it,
+                keystore: 'src/main/webstart/.keystore',
+                storepass: 'password',
+                preservelastmodified: 'true')
         }
     }
-    //}
 }
 
 
-task signAll(dependsOn: [copyMyJars,  createKey]) << {
-    new File("$buildWebstartDir/signed").mkdirs()
-    new File("$buildWebstartDir/signed/lib").mkdirs()
-    def libFiles = files { file("$buildWebstartDir/lib").listFiles() }
-    libFiles.each {
+task collectAllSignedJars(type: Copy, dependsOn: [jar, signJars]) {
 
-        ant.signjar(
-                destDir: "${buildWebstartDir}/signed",
-                alias: 'sergey.selivanov',
-                jar: it,
-                keystore: 'src/main/webstart/.keystore',
-                storepass: 'password',
-                preservelastmodified: 'true')
-
-    }
-
-    libFiles = files { file("$buildWebstartDir/lib/lib").listFiles() }
-    libFiles.each {
-
-        ant.signjar(
-                destDir: "${buildWebstartDir}/signed/lib",
-                alias: 'sergey.selivanov',
-                jar: it,
-                keystore: 'src/main/webstart/.keystore',
-                storepass: 'password',
-                preservelastmodified: 'true')
-
-    }
+    from 'build/libs'
+    from 'build/signedlibs'
+    into "$buildWebstartDir"
+    include "**/*.jar"
 }
 
-task generateJnlp(dependsOn: [signAll, copyOtherWebstartFiles]) << {
+task generateJnlp(dependsOn: [collectAllSignedJars, copyOtherWebstartFiles])  {
 
-    def jnlpFileName = "${buildWebstartDir}/signed/squirrelsql.jnlp"
+    def jnlpFileName = "${buildWebstartDir}/squirrelsql.jnlp"
     outputs.file jnlpFileName
 
-    File jnlpTemplateFile = new File('src/main/webstart/jnlp-template.xml')
-    def root = new XmlParser().parse(jnlpTemplateFile)
-    //def jnlpFileName = "squirrelsql.jnlp"
+    doLast{
 
-    root.@codebase = webstartBaseUrl
-    root.@href = jnlpFileName
+        File jnlpTemplateFile = new File('src/main/webstart/jnlp-template.xml')
+        def root = new XmlParser().parse(jnlpTemplateFile)
+        //def jnlpFileName = "squirrelsql.jnlp"
 
-    def information = root.information[0]
+        root.@codebase = webstartBaseUrl
+        root.@href = 'squirrelsql.jnlp'
 
-    def icon = information.icon[0]
-    icon.@href = webstartBaseUrl + '/acorn.png'
+        def information = root.information[0]
+
+        def icon = information.icon[0]
+        icon.@href = webstartBaseUrl + '/acorn.png'
 
 
-    def resource = root.resources[0]
+        def resource = root.resources[0]
 
-    def collection = files { file("${buildWebstartDir}/lib").listFiles() }
-    def mainJar = "squirrel-webstart-${version}.jar"
-    collection.each {
-        def resourceValues = [href: it.name]
+        def collection = files { file("${buildWebstartDir}").listFiles() }
+        def mainJar = "squirrel-webstart-${version}.jar"
+        collection.each {
+            def resourceValues = [href: it.name]
 
-        //	println it.name + ' - ' + mainJar
+            //	println it.name + ' - ' + mainJar
 
-        if (mainJar == it.name) {
-            resourceValues = [href: it.name, main: 'true']
+            if (mainJar == it.name) {
+                resourceValues = [href: it.name, main: 'true']
+            }
+            if(it.name.endsWith('.jar')){
+                resource.appendNode('jar', resourceValues)
+            }
         }
-        if(it.name.endsWith('.jar')){
-            resource.appendNode('jar', resourceValues)
+
+        collection = files { file("${buildWebstartDir}/lib").listFiles() }
+        collection.each {
+            def resourceValues = [href: 'lib/' + it.name]
+            if(it.name.endsWith('.jar')){
+                resource.appendNode('jar', resourceValues)
+            }
         }
+
+        // Setting the main class
+        def applicationDesc = root.'application-desc'[0]
+        applicationDesc.'@main-class' = mainClassName
+
+        // Writing the jnlp file filled
+        //File jnlpFile = new File("${buildWebstartDir}/signed/" + jnlpFileName)
+
+        File jnlpFile = new File(jnlpFileName)
+
+        def prn = new XmlNodePrinter(new PrintWriter(jnlpFile))
+        prn.setPreserveWhitespace(true)
+        prn.print(root)
     }
-
-    collection = files { file("${buildWebstartDir}/lib/lib").listFiles() }
-    collection.each {
-        def resourceValues = [href: 'lib/' + it.name]
-        if(it.name.endsWith('.jar')){
-            resource.appendNode('jar', resourceValues)
-        }
-    }
-
-    // Setting the main class
-    def applicationDesc = root.'application-desc'[0]
-    applicationDesc.'@main-class' = mainClassName
-
-    // Writing the jnlp file filled
-    //File jnlpFile = new File("${buildWebstartDir}/signed/" + jnlpFileName)
-
-    File jnlpFile = new File(jnlpFileName)
-
-    def prn = new XmlNodePrinter(new PrintWriter(jnlpFile))
-    prn.setPreserveWhitespace(true)
-    prn.print(root)
 }
 
 
 task webstart (dependsOn: [generateJnlp])<< {
-    println("Generating all webstart files in ${buildWebstartDir}/signed")
+    println("Generating all webstart files in ${buildWebstartDir}")
 }
 
