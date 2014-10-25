@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-version = '440'
+version = '441'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 mainClassName = 'org.sergeys.sqws.SquirrelWebstart'
@@ -23,16 +23,34 @@ dependencies {
     compile files("${originalDir}/squirrel-sql.jar")
 }
 
+
+task packOriginalHome(type: Jar){
+
+    inputs.dir "$originalDir"
+    outputs.file 'build/tmp/squirrel-home.jar'
+
+
+    archiveName 'squirrel-home.jar'
+    destinationDir file('build/tmp')
+    from("$originalDir")
+    exclude('*.bat', '*.sh', 'lib', 'squirrel-sql.jar')
+}
+
+
 jar {
+    dependsOn packOriginalHome
+
     manifest {
         attributes 'Implementation-Title': 'SQuirrel SQL Client 3.6',
             'Implementation-Version': version,
             'Permissions': 'all-permissions',
             'Application-Name': 'SQuirrel SQL Client 3.6'
     }
+
+    from "build/tmp/squirrel-home.jar"
 }
 
-task copyJars(type: Copy, dependsOn: [jar]) {
+task copyMyJars(type: Copy, dependsOn: [jar]) {
     // copy compile result to signing
     from configurations.runtime
     from("build/libs")
@@ -40,12 +58,7 @@ task copyJars(type: Copy, dependsOn: [jar]) {
     include('*.jar')
 }
 
-task copyFiles(type: Copy) {
-//    from("src/main/webstart")
-//    into("$buildWebstartDir/signed")
-//    include('*.png')
-    //from("src/main/resources")
-
+task copyOtherWebstartFiles(type: Copy) {
     // only copies icon
 
     from("src/main/resources/images")
@@ -54,18 +67,58 @@ task copyFiles(type: Copy) {
 
 }
 
-task copyOriginalJars(type: Copy) {
+task collectOriginalJars(type: Copy) {
     from("$originalDir")
-    into("$buildWebstartDir/lib")
+    into("build/origlibs")
     include('**/*.jar')
-    exclude('plugins', 'icons',
-        '**/xmlbeans.jar',	// duplicate entries
-        '**/core.jar',	// already signed
-        '**/org.eclipse.equinox.common.jar',
-        '**/osgi.jar',
-        '**/x86.jar'
+    exclude(
+        'plugins',
+        'icons'
+        //'**/xmlbeans.jar',	// duplicate entries
+        //'**/core.jar',	// already signed
+        //'**/org.eclipse.equinox.common.jar',
+        //'**/osgi.jar',
+        //'**/x86.jar'
         )
     //include('*.jar')
+}
+
+task unsignJars(dependsOn: [collectOriginalJars]) {
+
+    def destdir = new File(buildDir, 'unsignedlibs')
+
+    println destdir
+
+    inputs.dir 'build/origlibs'
+    outputs.dir destdir
+
+    doLast{
+
+        //def libFiles = files { file("build/origlibs/lib").listFiles() }
+
+        copy{
+            from('build/origlibs')
+            into('build/unsignedlibs')
+            include('**/*.jar')
+        }
+
+        def libFiles = fileTree('build/unsignedlibs'){
+            include '**/*.jar'
+        }
+
+        libFiles.each {
+            println it
+
+            def fname = it
+            exec {
+                ignoreExitValue true
+                commandLine 'c:/cygwin/bin/zip.exe', fname,
+                    '-d', '*.inf','*.mf', '*.rsa', '*.sf',
+                    '*.INF','*.MF', '*.RSA', '*.SF'
+            }
+        }
+
+    }
 }
 
 task copyPatchedJars(type: Copy) {
@@ -76,18 +129,14 @@ task copyPatchedJars(type: Copy) {
 }
 
 
-task packOriginalHome(type: Jar){
-
-    archiveName 'squirrel-home.jar'
-    destinationDir file('build/tmp')
-    from("$originalDir")
-    exclude('*.bat', '*.sh', 'lib', 'squirrel-sql.jar')
-}
 
 task createKey{
 
-    File ksfile = new File('src/main/webstart/.keystore')
-    if(!ksfile.isFile()){
+    outputs.dir 'src/main/webstart'
+
+    //File ksfile = new File('src/main/webstart/.keystore')
+    //if(!ksfile.isFile()){
+    doLast{
         ant.genkey(
             keystore: 'src/main/webstart/.keystore',
             storepass: 'password',
@@ -103,10 +152,11 @@ task createKey{
             }
         }
     }
+    //}
 }
 
 
-task signAll(dependsOn: [copyJars, copyOriginalJars, copyPatchedJars, createKey]) << {
+task signAll(dependsOn: [copyMyJars,  createKey]) << {
     new File("$buildWebstartDir/signed").mkdirs()
     new File("$buildWebstartDir/signed/lib").mkdirs()
     def libFiles = files { file("$buildWebstartDir/lib").listFiles() }
@@ -136,11 +186,14 @@ task signAll(dependsOn: [copyJars, copyOriginalJars, copyPatchedJars, createKey]
     }
 }
 
-task generateJnlp(dependsOn: [signAll, copyFiles]) << {
+task generateJnlp(dependsOn: [signAll, copyOtherWebstartFiles]) << {
+
+    def jnlpFileName = "${buildWebstartDir}/signed/squirrelsql.jnlp"
+    outputs.file jnlpFileName
 
     File jnlpTemplateFile = new File('src/main/webstart/jnlp-template.xml')
     def root = new XmlParser().parse(jnlpTemplateFile)
-    def jnlpFileName = "squirrelsql.jnlp"
+    //def jnlpFileName = "squirrelsql.jnlp"
 
     root.@codebase = webstartBaseUrl
     root.@href = jnlpFileName
@@ -181,7 +234,9 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
     applicationDesc.'@main-class' = mainClassName
 
     // Writing the jnlp file filled
-    File jnlpFile = new File("${buildWebstartDir}/signed/" + jnlpFileName)
+    //File jnlpFile = new File("${buildWebstartDir}/signed/" + jnlpFileName)
+
+    File jnlpFile = new File(jnlpFileName)
 
     def prn = new XmlNodePrinter(new PrintWriter(jnlpFile))
     prn.setPreserveWhitespace(true)
@@ -193,8 +248,3 @@ task webstart (dependsOn: [generateJnlp])<< {
     println("Generating all webstart files in ${buildWebstartDir}/signed")
 }
 
-jar{
-    dependsOn packOriginalHome
-    //source files {file("build/libs/freemind-home.jar")}
-    from "build/tmp/squirrel-home.jar"
-}
