@@ -1,0 +1,3 @@
+Derived from DavMail sources
+
+http://davmail.sourceforge.net/index.html
