@@ -221,7 +221,7 @@ task signJars(dependsOn: [unsignJars, createKey]){
 }
 
 
-task collectAllSignedJars(type: Copy, dependsOn: [jar, signJars]) {
+task collectAllSignedJars(type: Copy, dependsOn: [signMyJars, signJars]) {
 
     from 'build/mylibs'
     from 'build/signedlibs'
