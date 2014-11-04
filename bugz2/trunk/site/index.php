@@ -154,7 +154,7 @@ Home page: <a href="http://freemind.sourceforge.net">http://freemind.sourceforge
 Внимание: при добавлении объемных каталогов с музыкой, по нескольку тысяч файлов,<br/>
 будет сканировать файлы несколько минут. Наберитесь терпения.
 <p>
-Работает на Windows Linux, MacOS X.
+Работает на Windows, Linux, MacOS X.
 <p>
 Требования: Java 1.6 и выше, 32 или 64 бит.
 <p>
