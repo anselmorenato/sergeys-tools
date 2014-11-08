@@ -73,7 +73,7 @@ extends Properties
     private EnumSet<FileType> activeFileTypes = EnumSet.noneOf(FileType.class);
     private boolean firstRun = true;
     private Properties resources = new Properties();
-    private Date savedVersion = new Date(0);
+    private Date savedVersionTimestamp = new Date(0);
     private String libVlc;
     private String lookAndFeel;
     private MediaPlayerType mediaPlayerType = MediaPlayerType.External;
@@ -176,7 +176,7 @@ extends Properties
 
     public static void save() throws FileNotFoundException {
 
-        instance.savedVersion = instance.getCurrentVersion();
+        instance.savedVersionTimestamp = instance.getCurrentVersionTimestamp();
 
         File dir = new File(settingsDirPath);
         if(!dir.exists()){
@@ -421,30 +421,42 @@ extends Properties
         return resources.getProperty("version.display", "");
     }
 
-    public Date getCurrentVersion(){
+    public Date getCurrentVersionTimestamp(){
 
-        String ver = resources.getProperty("version", "");
+        String ver = resources.getProperty("version.timestamp", "");
 
         String[] tokens = ver.split("-");
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(0);
-        cal.set(Integer.valueOf(tokens[0]),
-                Integer.valueOf(tokens[1]) - 1,    // month is 0 bazed
-                Integer.valueOf(tokens[2]),
-                Integer.valueOf(tokens[3]),
-                Integer.valueOf(tokens[4]));
+        try{
+            cal.set(Integer.valueOf(tokens[0]),
+                    Integer.valueOf(tokens[1]) - 1,    // month is 0 bazed
+                    Integer.valueOf(tokens[2]),
+                    Integer.valueOf(tokens[3]),
+                    Integer.valueOf(tokens[4]));
+        }
+        catch(NumberFormatException ex){
+            if(logger != null){
+                logger.error("failed to parse timestamp", ex);
+            }
+            else{
+                ex.printStackTrace();
+            }
+
+            cal = Calendar.getInstance();
+        }
         Date date = cal.getTime();
 
         return date;
     }
 
-    public Date getSavedVersion() {
-        return savedVersion;
+    public Date getSavedVersionTimestamp() {
+        return savedVersionTimestamp;
     }
 
-    public void setSavedVersion(Date savedVersion) {
-        this.savedVersion = savedVersion;
+    public void setSavedVersionTimestamp(Date savedVersion) {
+        this.savedVersionTimestamp = savedVersion;
     }
 
     public String getLibVlc() {

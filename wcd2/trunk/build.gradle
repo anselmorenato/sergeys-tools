@@ -1,10 +1,46 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.tmatesoft.svnkit:svnkit:1.8.5'
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 
-version = 451    // also set in resources/settings.properties
+// http://wickedsource.org/2014/02/28/svn-revision-gradle/
+import org.tmatesoft.svn.core.wc.*
+
+//def getSvnRevision(){
+//    ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
+//    SVNClientManager clientManager = SVNClientManager.newInstance(options);
+//    SVNStatusClient statusClient = clientManager.getStatusClient();
+//    SVNStatus status = statusClient.doStatus(projectDir, false);
+//    SVNRevision revision = status.getRevision();
+//    return revision.getNumber();
+//}
+
+ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
+SVNClientManager clientManager = SVNClientManager.newInstance(options);
+SVNStatusClient statusClient = clientManager.getStatusClient();
+SVNStatus status = statusClient.doStatus(projectDir, false);
+//SVNRevision revision = status.getRevision();
+//SVNRevision revision = status.getCommittedRevision();
+ext.svnrevision = status.getCommittedRevision().getNumber()
+ext.svndate = status.getCommittedDate()
+
+
+//version = 451    // also set in resources/settings.properties
+
+//version = '1.0.' + svnrevision.number
+version = svnrevision
+
+
 sourceCompatibility = 1.6    // see also jdk in gradle.properties, and j2se in jnlp-template.xml
 targetCompatibility = 1.6
 mainClassName = 'org.sergeys.webcachedigger.ui.WebCacheDigger'
@@ -29,6 +65,22 @@ dependencies {
     compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.0.2'
     compile 'org.apache.logging.log4j:log4j-core:2.0.2'
 }
+
+
+processResources {
+    from(sourceSets.main.resources){
+        include '**/settings.properties'
+        expand(
+            buildDate: new java.util.Date(),
+            svnRevision: svnrevision,
+            svnRevisionDate: svndate,
+            version: project.version,
+            versionTimestamp: String.format('%1$tY-%1$tm-%1$td-%1$tH-%1$tM', svndate),
+            versionDisplay: String.format('%1$te %1$tb %1$tY (rev. %2$d)', svndate, svnrevision)
+            )
+    }
+}
+
 
 // https://github.com/gmateo/gradle-webstart-example/blob/master/build.gradle
 

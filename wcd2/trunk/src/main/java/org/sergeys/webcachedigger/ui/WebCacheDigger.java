@@ -437,7 +437,7 @@ implements ActionListener, PropertyChangeListener
 //							System.out.println(msg.getPubDate() + " " + msg.getDescription());
 //						}
 
-                        if(changes != null && changes.getPubDate().after(Settings.getInstance().getSavedVersion())){
+                        if(changes != null && changes.getPubDate().after(Settings.getInstance().getSavedVersionTimestamp())){
                             ChangesDialog chdlg = new ChangesDialog(mainWindow);
                             chdlg.setLocationRelativeTo(mainWindow);
                             chdlg.createText(changes);

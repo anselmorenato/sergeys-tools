@@ -101,7 +101,7 @@ public class ChangesDialog extends JDialog {
 
             for(FeedMessage msg: feed.getMessages()){
 
-                if(msg.getPubDate().after(Settings.getInstance().getSavedVersion())){
+                if(msg.getPubDate().after(Settings.getInstance().getSavedVersionTimestamp())){
 
                     String str = String.format(
                             "<p style='text-indent: 15px;'><b>%s</b></p>" + //$NON-NLS-1$
