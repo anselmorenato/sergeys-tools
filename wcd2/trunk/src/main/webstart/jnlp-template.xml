@@ -8,7 +8,9 @@
         <icon href="%URL%/largeicon.png" kind="default"/>
          -->
 
+        <icon href="search16.png" width="16" height="16"/>
         <icon href="search32.png" width="32" height="32"/>
+        <icon href="search48.png" width="48" height="48"/>
         <icon href="search64.png" width="64" height="64"/>
         <icon href="search256.png" width="256" height="256"/>
 
