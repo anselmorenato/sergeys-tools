@@ -154,8 +154,12 @@ task generateJnlp(dependsOn: [signAll, copyFiles]) << {
 
     def information = root.information[0]
 
-    def icon = information.icon[0]
-    icon.@href = webstartUrl + '/largeicon.png'
+    //def icon = information.icon[0]
+    //icon.@href = webstartUrl + '/largeicon.png'
+
+    information.icon.each {
+        it.@href = webstartUrl + '/' + it.@href
+    }
 
 
     def resource = root.resources[0]
