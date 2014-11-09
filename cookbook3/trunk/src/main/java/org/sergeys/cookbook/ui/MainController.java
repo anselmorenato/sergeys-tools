@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -16,12 +17,15 @@ public class MainController {
     @FXML private BorderPane mainBorderPane;
     @FXML private SplitPane splitPane;
 
+
+    @FXML private MenuItem menuItemImport;
+    @FXML private MenuItem menuItemExit;
+    @FXML private MenuItem menuItemViewLog;
+    @FXML private MenuItem menuItemAbout;
+
+
     public void initialize(){
         System.out.println("init");
-
-//        double pos = Settings.getInstance().getWinDividerPosition();
-//        System.out.println(">" + pos);
-//        splitPane.setDividerPositions(pos);
     }
 
     public void setDivider(){
@@ -31,7 +35,7 @@ public class MainController {
 
     }
 
-    public void onMenuItemClose(ActionEvent e){
+    public void onMenuItemExit(ActionEvent e){
         Settings.getLogger().info("application exit");
 
         try {
@@ -55,5 +59,16 @@ public class MainController {
 
         Platform.exit();
     }
+
+    public void onMenuItemImport(ActionEvent e){
+
+    }
+    public void onMenuItemViewLog(ActionEvent e){
+    }
+
+    public void onMenuItemAbout(ActionEvent e){
+    }
+
+
 
 }
